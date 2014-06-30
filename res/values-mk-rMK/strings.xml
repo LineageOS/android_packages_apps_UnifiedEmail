@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="to" msgid="4392614766835725698">"До"</string>
+    <string name="cc" msgid="7017720927911078193">"Цц"</string>
+    <string name="bcc" msgid="3098643138241111579">"Бцц"</string>
+    <string name="subject_hint" msgid="7253964583324677128">"Предмет"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Состави е-пошта"</string>
+    <string name="add_file_attachment" msgid="2203398371671979481">"Прикачи датотека"</string>
+    <string name="add_photo_attachment" msgid="3738882100645552858">"Прикачи слика"</string>
+    <string name="save_draft" msgid="5555744208032445632">"Зачувај нацрт"</string>
+    <string name="discard" msgid="1714960202994370243">"Отфрли"</string>
+    <string name="compose" msgid="1473559896062432878">"Состави"</string>
+  <string-array name="compose_modes">
+    <item msgid="8631190144210933782">"Одговори"</item>
+    <item msgid="4085029907540221568">"Одговори на сите"</item>
+    <item msgid="857480048798815437">"Проследи"</item>
+  </string-array>
+    <string name="reply_attribution" msgid="717207316577386788">"На <xliff:g id="DATE">%s</xliff:g>, <xliff:g id="PERSON">%s</xliff:g> напиша:"</string>
+    <string name="forward_attribution" msgid="1498936339458535158">"---------- Проследена порака ----------&lt;br&gt;Од: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Датум: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Предмет: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;До: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- Проследена порака ----------"</string>
+    <string name="cc_attribution" msgid="374493748526504562">"Цц: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
+    <string name="select_attachment_type" msgid="4711524151968942082">"Избери тип прилог"</string>
+    <string name="too_large_to_attach_single" msgid="2996733972478212136">"Не може да се прикачи датотека поголема од <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"Една или повеќе датотеки не се прикачени. Ограничување <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_additional" msgid="3366607594339390249">"Датотеката не е прикачена. <xliff:g id="MAXSIZE">%1$s</xliff:g> граница е достигната."</string>
+    <string name="generic_attachment_problem" msgid="8775959340559458709">"Не можеше да се прикачи датотека."</string>
+    <string name="recipient_needed" msgid="999037027358925655">"Додај најмалку еден примач."</string>
+    <string name="recipient_error_dialog_title" msgid="6051694305498669180">"Грешка на примач"</string>
+    <string name="confirm_send_title" msgid="5663602035452564062">"Испрати порака?"</string>
+    <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"Нема текст во предметот на пораката."</string>
+    <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Нема текст во телото на пораката."</string>
+    <string name="confirm_send_message" msgid="3221546155385562874">"Испрати ја оваа порака?"</string>
+    <string name="message_discarded" msgid="5079975378884765445">"Пораката е отфрлена."</string>
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
+    <string name="custom_from_account_label" msgid="5069652141632649722">"Испрати како:"</string>
+    <string name="send" msgid="8242003661397555986">"Испрати"</string>
+    <string name="mark_read" msgid="8438349154394313195">"Обележи како прочитано"</string>
+    <string name="mark_unread" msgid="6231373939351125713">"Обележи како непрочитано"</string>
+    <string name="mute" msgid="1995954983688603977">"Исклучи звук"</string>
+    <string name="add_star" msgid="2866003744391266498">"Додај ѕвезда"</string>
+    <string name="remove_star" msgid="4372327933122106128">"Отстрани ѕвезда"</string>
+    <string name="remove_folder" msgid="4906542720439865413">"Отстрани од <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+    <string name="archive" msgid="847250094775910499">"Архивирај"</string>
+    <string name="report_spam" msgid="6467567747975393907">"Пријави спам"</string>
+    <string name="mark_not_spam" msgid="694891665407228160">"Пријави дека не е спам"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"Пријави кражба на идентитет"</string>
+    <string name="delete" msgid="844871204175957681">"Избриши"</string>
+    <string name="discard_drafts" msgid="6862272443470085375">"Отфрли нацрти"</string>
+    <string name="refresh" msgid="490989798005710951">"Освежи"</string>
+    <string name="reply" msgid="2032052598496088561">"Одговори"</string>
+    <string name="reply_all" msgid="7257248094625487557">"Одговори на сите"</string>
+    <string name="resume_draft" msgid="6450150180834092146">"Уреди"</string>
+    <string name="forward" msgid="6822914459902983767">"Проследи"</string>
+    <string name="menu_compose" msgid="6274193058224230645">"Состави"</string>
+    <string name="menu_change_folders" msgid="1542713666608888717">"Промени папки"</string>
+    <string name="menu_move_to" msgid="9138296669516358542">"Премести во"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Премести во Приемно сандаче"</string>
+    <string name="menu_manage_folders" msgid="6755623004628177492">"Поставки на папка"</string>
+    <string name="menu_show_original" msgid="4227060689700765828">"Врати автоматско приспособување големина"</string>
+    <string name="menu_folder_options" msgid="8897520487430647932">"Поставки на папка"</string>
+    <string name="menu_settings" msgid="6007027046949837282">"Поставки"</string>
+    <string name="menu_search" msgid="5297197523031943248">"Барај"</string>
+    <string name="drawer_title" msgid="5888199203222498840">"Навигација"</string>
+    <string name="mark_important" msgid="6904096897104265870">"Обележи како важно"</string>
+    <string name="mark_not_important" msgid="4550967327747977068">"Обележи како неважно"</string>
+    <string name="add_cc_label" msgid="504861315425773180">"Додај Цц/Бцц"</string>
+    <string name="add_bcc_label" msgid="7432027645493843336">"Додај Бцц"</string>
+    <string name="quoted_text" msgid="7250749398672037355">"Опфати цитиран текст"</string>
+    <string name="quoted_text_label" msgid="541007446961960617">"Цитирај текст"</string>
+    <string name="respond_inline" msgid="6797117334768201180">"Одговори во линија"</string>
+    <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
+    <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> КБ"</string>
+    <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> МБ"</string>
+    <string name="attachment_image" msgid="3832985223906528449">"Слика"</string>
+    <string name="attachment_video" msgid="7526134752988603154">"Видео"</string>
+    <string name="attachment_audio" msgid="135527133955622936">"Аудио"</string>
+    <string name="attachment_text" msgid="5544874374971562759">"Текст"</string>
+    <string name="attachment_application_msword" msgid="2326909450865637910">"Документ"</string>
+    <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"Презентација"</string>
+    <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Табеларна пресметка"</string>
+    <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
+    <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> Датотека"</string>
+    <string name="preview_attachment" msgid="6934911143603455393">"Преглед"</string>
+    <string name="save_attachment" msgid="5360128849867863132">"Зачувај"</string>
+    <string name="cancel_attachment" msgid="4651201258272223650">"Откажи"</string>
+    <string name="open_attachment" msgid="975940478986626705">"Отвори"</string>
+    <string name="install_attachment" msgid="2803531650273683382">"Инсталирај"</string>
+    <string name="download_again" msgid="7418568915429156518">"Преземи повторно"</string>
+    <string name="more_info_attachment" msgid="717244337981816703">"Информации"</string>
+    <string name="no_application_found" msgid="1945184804521392093">"Ниедна апликација не може да го отвори овој прилог за прикажување."</string>
+    <string name="fetching_attachment" msgid="2599763030649526179">"Земање прилог"</string>
+    <string name="please_wait" msgid="8797634225088247121">"Почекај..."</string>
+    <string name="saved" msgid="6660844285730790469">"Зачувано, <xliff:g id="SIZE">%s</xliff:g>"</string>
+    <string name="download_failed" msgid="442019281547315527">"Не можеше да се преземе. Допрете за да се обидете повторно."</string>
+    <string name="attachments_header" msgid="6459475590011460229">"Прилози"</string>
+    <string name="menu_photo_save_all" msgid="4295226099481995348">"Зачувај ги сите"</string>
+    <string name="menu_photo_share" msgid="2214772815165829079">"Сподели"</string>
+    <string name="menu_photo_share_all" msgid="4577299400844129078">"Сподели сè"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"Печати"</string>
+    <string name="saving" msgid="925514721138014677">"Се зачувува..."</string>
+    <string name="choosertitle_sharevia" msgid="6142681649048665134">"Сподели преку"</string>
+    <string name="contextmenu_openlink" msgid="2176176524824953775">"Отвори во прелистувач"</string>
+    <string name="contextmenu_copy" msgid="4604170699444153037">"Копирај"</string>
+    <string name="contextmenu_copylink" msgid="3580131515400610839">"Копирај УРЛ на врска"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"Прикажи слика"</string>
+    <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Бирај…"</string>
+    <string name="contextmenu_sms_dot" msgid="6481040539501081547">"СМС..."</string>
+    <string name="contextmenu_add_contact" msgid="8395100913366045250">"Додај контакт"</string>
+    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Испрати е-пошта"</string>
+    <string name="contextmenu_map" msgid="7721544518698532954">"Карта"</string>
+    <string name="contextmenu_sharelink" msgid="6213520416250245200">"Сподели врска"</string>
+    <string name="contextmenu_help" msgid="4651718679842414097">"Помош"</string>
+    <string name="contextmenu_feedback" msgid="4429118420169571473">"Испраќај повратни информации"</string>
+    <!-- no translation found for num_selected (5723323585692387843) -->
+    <skip />
+  <plurals name="move_conversation">
+    <item quantity="one" msgid="3657821200245019288">"Премести разговор"</item>
+    <item quantity="other" msgid="1685896770174368261">"Премести <xliff:g id="ID_1">%1$d</xliff:g> разговори"</item>
+  </plurals>
+    <string name="content_description" msgid="169080965055367954">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> за <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> на <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="7796658700638720091">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> за <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> во <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
+    <string name="read_string" msgid="219566857950091332">"разговорот е прочитан"</string>
+    <string name="unread_string" msgid="588180203444398297">"разговорот не е прочитан"</string>
+    <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
+    <string name="badge_subject_and_snippet" msgid="1261901365444812399">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g> — <xliff:g id="ID_3">%3$s</xliff:g>"</string>
+  <plurals name="draft">
+    <item quantity="one" msgid="333591132893648383">"Нацрт"</item>
+    <item quantity="other" msgid="6961049507579977505">"Нацрти"</item>
+  </plurals>
+    <string name="sending" msgid="8214361929125649771">"Се испраќа..."</string>
+    <string name="message_retrying" msgid="64661613119987741">"Повторно се обидуваме"</string>
+    <string name="message_failed" msgid="4820279576299009735">"Неуспешно"</string>
+    <string name="send_failed" msgid="750908595144529579">"Пораката не се испрати."</string>
+    <string name="me_object_pronoun" msgid="6957328068206184521">"јас"</string>
+    <string name="me_subject_pronoun" msgid="271527705272088475">"јас"</string>
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"Приемно сандаче"</string>
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Избришете го овој разговор?"</item>
+    <item quantity="other" msgid="930334208937121234">"Избришете ги овие <xliff:g id="COUNT">%1$d</xliff:g> разговори?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Архивирајте го овој разговор?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Архивирајте ги овие <xliff:g id="COUNT">%1$d</xliff:g> разговори?"</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <item quantity="one" msgid="3560777326142175666">"Отфрли ја оваа порака?"</item>
+    <item quantity="other" msgid="4909853098394068722">"Отфрлете ги овие <xliff:g id="COUNT">%1$d</xliff:g> пораки?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Отфрли ја оваа порака?"</string>
+    <string name="loading_conversations" msgid="2649440958602369555">"Се вчитува..."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"Сè е завршено! Имајте убав ден."</string>
+    <string name="empty_search" msgid="7123710829748939105">"Не пронајдовме ништо за „<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>“."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"Супер, нема спам тука!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"Овде нема ѓубре. Ви благодариме што рециклирате!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"Нема е-пошта во папката."</string>
+    <string name="getting_messages" msgid="563711962781090231">"Се вчитуваат вашите пораки"</string>
+    <string name="undo" msgid="6070869718469782251">"Врати"</string>
+  <plurals name="conversation_unstarred">
+    <item quantity="one" msgid="8315328190288744398">"Отстранување ѕвезда од <xliff:g id="COUNT">%1$d</xliff:g> разговор."</item>
+    <item quantity="other" msgid="2222365088907519938">"Отстранување ѕвезда од <xliff:g id="COUNT">%1$d</xliff:g> разговори."</item>
+  </plurals>
+  <plurals name="conversation_muted">
+    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; со исклучен звук."</item>
+    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; со исклучен звук."</item>
+  </plurals>
+  <plurals name="conversation_spammed">
+    <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; пријавен како спам."</item>
+    <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; пријавени како спам."</item>
+  </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; пријавен дека не е спам."</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; пријавени дека не се спам."</item>
+  </plurals>
+  <plurals name="conversation_not_important">
+    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; обележан како неважен."</item>
+    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; обележани како неважни."</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; пријавен како кражба на идентитет."</item>
+    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; пријавени како кражба на идентитет."</item>
+  </plurals>
+  <plurals name="conversation_archived">
+    <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; архивиран."</item>
+    <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; архивирани."</item>
+  </plurals>
+  <plurals name="conversation_deleted">
+    <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; избришан."</item>
+    <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; избришани."</item>
+  </plurals>
+    <string name="deleted" msgid="2757349161107268029">"Избришан"</string>
+    <string name="archived" msgid="7533995360704366325">"Архивирано"</string>
+    <string name="folder_removed" msgid="1047474677580149436">"Отстранет од <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+  <plurals name="conversation_folder_changed">
+    <item quantity="one" msgid="4930161390461457462">"Променета папка."</item>
+    <item quantity="other" msgid="8918589141287976985">"Променети папки."</item>
+  </plurals>
+    <string name="conversation_folder_moved" msgid="297469098857964678">"Преместен во <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+    <string name="search_results_header" msgid="4669917471897026269">"Резултати"</string>
+    <string name="search_unsupported" msgid="4654227193354052607">"Оваа сметка не поддржува пребарување."</string>
+    <string name="add_label" msgid="6060201715848652940">"Додај папка"</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"Прикажи ја новата порака од <xliff:g id="SENDER">%s</xliff:g>."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="1018949581192786598">"Прикажи <xliff:g id="COUNT">%1$d</xliff:g> нови пораки."</item>
+  </plurals>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"Прошири ги деталите на примачот"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"Собери детали за примач"</string>
+    <string name="contact_info_string" msgid="6911322458329265644">"Прикажи информации за контакт за <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="contact_info_string_default" msgid="596531738469809159">"Прикажи информации за контакт"</string>
+  <plurals name="show_messages_read">
+    <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> постари пораки"</item>
+  </plurals>
+    <string name="from_heading" msgid="2454519463223197231">"Од: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"Одговори на: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"До: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"Цц: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"Бцц: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"Датум: "</string>
+    <string name="show_images" msgid="1875700481186331432">"Прикажи слики"</string>
+    <string name="always_show_images" msgid="5966408990164581801">"Секогаш прикажувај слики од овој испраќач"</string>
+    <string name="always_show_images_toast" msgid="6218061921546973716">"Сликите од овој испраќач ќе се прикажуваат автоматски."</string>
+    <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
+    <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> преку <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
+    <string name="message_saved" msgid="7073947895562277576">"Пораката е зачувана како нацрт."</string>
+    <string name="sending_message" msgid="1498583163419122128">"Пораката се испраќа…"</string>
+    <string name="invalid_recipient" msgid="2161317422860961623">"Адресата <xliff:g id="WRONGEMAIL">%s</xliff:g> е неважечка."</string>
+    <string name="show_elided" msgid="6693371179492345444">"Прикажи цитиран текст"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Сокриј цитиран текст"</string>
+    <string name="message_invite_title" msgid="6757287288611722175">"Покана од календар"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Прикажи во „Календар“"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"Ќе одиш?"</string>
+    <string name="message_invite_accept" msgid="869753811259793266">"Да"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"Можеби"</string>
+    <string name="message_invite_decline" msgid="4524135969656266758">"Не"</string>
+    <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
+    <string name="send_anyway" msgid="426079691638238572">"Сепак испрати"</string>
+    <string name="ok" msgid="8339355733816891026">"Во ред"</string>
+    <string name="done" msgid="3079981801778027540">"Готово"</string>
+    <string name="cancel" msgid="8762981157252199115">"Откажи"</string>
+    <string name="clear" msgid="3184687982186479442">"Исчисти"</string>
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Успешно"</item>
+    <item msgid="7109065688039971961">"Нема поврзување."</item>
+    <item msgid="8437496123716232060">"Не можеше да се пријави."</item>
+    <item msgid="1651266301325684887">"Грешка на безбедност."</item>
+    <item msgid="1461520171154288533">"Не можеше да се синхронизира."</item>
+    <item msgid="4779810016424303449">"Внатрешна грешка"</item>
+    <item msgid="600403120960920559">"Грешка на серверот"</item>
+  </string-array>
+    <string name="tap_to_configure" msgid="1181356242354390930">"Допри за да поставиш"</string>
+    <string name="non_synced_folder_description" msgid="6059194125558004080">"За да ги гледате разговорите, синхронизирајте ја папката."</string>
+    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Синхронизирај папка"</string>
+    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> непрочитани"</item>
+  </plurals>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>+ непрочитани"</string>
+    <string name="view_more_conversations" msgid="3151067626309674344">"Прикажи повеќе разговори"</string>
+    <string name="loading_conversation" msgid="489160038366067983">"Се вчитува..."</string>
+    <string name="activity_mailbox_selection" msgid="6876105223659297603">"Избери сметка"</string>
+    <string name="activity_folder_selection" msgid="5161845867397316052">"Избери папка"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Папка за е-пошта"</string>
+    <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Промени папки"</string>
+    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Премести во"</string>
+    <string name="search_hint" msgid="3625734263059221350">"Пребарај пошта"</string>
+    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
+    <string name="network_error" msgid="2125579009654728299">"Нема поврзување"</string>
+    <string name="retry" msgid="4515885444824418022">"Обиди се повторно"</string>
+    <string name="load_more" msgid="420892447103014683">"Вчитај повеќе"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
+    <string name="shortcut_name_title" msgid="8220482314700618391">"Именувај кратенка за папка"</string>
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"Се чека синхронизирање"</string>
+    <string name="not_synced_title" msgid="794279749170198599">"Сметката не е синхронизирана"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Оваа сметка не е поставена за автоматско синхронизирање.\nДопрете "<b>"Синхронизирај сега"</b>" за да ја синхронизирате поштата еднаш или "<b>"Промени поставки на синхронизација"</b>" за да поставите автоматско синхронизирање пошта на оваа сметка."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Синхронизирај сега"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"Промени поставки на синхронизација"</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"Сликата не можеше да се вчита"</string>
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Не може да се премести бидејќи изборот содржи повеќе сметки."</string>
+    <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>" <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"Игнорирај, ѝ верувам на оваа порака"</string>
+    <string name="via_domain" msgid="380109230928079350">"преку <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
+  <string-array name="moveto_folder_sections">
+    <item msgid="6984976603137892898">"Систем"</item>
+    <item msgid="6593672292311851204">"Често користени"</item>
+    <item msgid="3584541772344786752">"Сите папки"</item>
+  </string-array>
+  <string-array name="change_folder_sections">
+    <item msgid="53174547922204815">"Тековни папки"</item>
+    <item msgid="8635593741453580597">"Други папки"</item>
+  </string-array>
+    <string name="signin" msgid="8958889809095796177">"Пријави се"</string>
+    <string name="info" msgid="6009817562073541204">"Информации"</string>
+    <string name="report" msgid="5417082746232614958">"Пријави"</string>
+    <string name="sync_error" msgid="7368819509040597851">"Не можеше да се синхронизира."</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"Вашиот уред нема доволно простор во меморијата за синхронизирање."</string>
+    <string name="storage" msgid="3262760336059073446">"Меморија"</string>
+    <string name="senders_split_token" msgid="5895854795157860258">", "</string>
+    <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
+    <string name="all_folders_heading" msgid="2506843494725730618">"Сите папки"</string>
+    <string name="recent_folders_heading" msgid="8613621794529777406">"Неодамнешни папки"</string>
+    <string name="message_details_title" msgid="2183394728494962332">"Детали на порака"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"Автоматско продолжување"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"Изберете кој екран да се прикажува откако ќе избришете порака"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Постави параметар за автоматско продолжување\n(откако ќе избришеш, итн.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"Понови"</item>
+    <item msgid="5562093094216840213">"Постари"</item>
+    <item msgid="3331655314944797957">"Список со разговори"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"Прикажи понов разговор откако ќе избришеш"</item>
+    <item msgid="732746454445519134">"Прикажи постар разговор откако ќе избришеш"</item>
+    <item msgid="2189929276292165301">"Прикажи список со разговори откако ќе избришеш"</item>
+  </string-array>
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"Продолжи до"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Исчисти одобрувања за слика"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Исчисти одобрувања за слика?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Ќе престане прикажувањето подредени слики од испраќачи кои претходно сте ги овозможиле."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Сликите нема автоматски да се прикажат."</string>
+    <string name="preferences_signature_title" msgid="888167074398030574">"Потпис"</string>
+    <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Потпис"</string>
+    <string name="preferences_signature_summary_not_set" msgid="2830886980620445857">"Не е поставено"</string>
+    <string name="notification_action_reply" msgid="6015299134424685297">"Одговори"</string>
+    <string name="notification_action_reply_all" msgid="20020468410400912">"Одговори на сите"</string>
+    <string name="notification_action_archive" msgid="81978513898440040">"Архивирај"</string>
+    <string name="notification_action_remove_label" msgid="5852730267411032291">"Отстрани етикета"</string>
+    <string name="notification_action_delete" msgid="327773454111551791">"Избриши"</string>
+    <string name="notification_action_undo_archive" msgid="7280710366587361219">"Архивирано"</string>
+    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Етикетата е отстранета"</string>
+    <string name="notification_action_undo_delete" msgid="3105611327110905438">"Избришано"</string>
+    <string name="veiled_address" msgid="1209670815434513191"></string>
+    <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
+    <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
+    <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
+    <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> нова порака"</item>
+    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g> нови пораки"</item>
+  </plurals>
+    <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="silent_ringtone" msgid="5856834572357761687">"Тивко"</string>
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"Архивирај и избриши дејства"</string>
+  <string-array name="prefEntries_removal_action">
+    <item msgid="1938422987822134657">"Прикажи само архива"</item>
+    <item msgid="5737880287951287278">"Прикажи само избриши"</item>
+    <item msgid="4279948809971752573">"Прикажи архива и избриши"</item>
+  </string-array>
+  <string-array name="prefSummaries_removal_action_summary">
+    <item msgid="492039800376391677">"Прикажи само архива"</item>
+    <item msgid="8350973578419775975">"Прикажи само избриши"</item>
+    <item msgid="2967059853409454648">"Прикажи архива и избриши"</item>
+  </string-array>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Архивирај и избриши дејства"</string>
+    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Одговори на сите"</string>
+    <string name="preferences_default_reply_all_summary_impl" msgid="9131944420965452592">"Користи како стандард за одговарање пораки"</string>
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Помини со прст за да се архивира"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Помини со прст за да избришеш"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"Во список на разговор"</string>
+    <string name="preference_sender_image_title" msgid="2441320893522058724">"Слика на испраќач"</string>
+    <string name="preference_sender_image_description" msgid="7126493917536558232">"Прикажи покрај името во списокот со разговори"</string>
+    <string name="empty_trash" msgid="652435297593538512">"Испразни ја Корпата"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"Испразни „Спам“"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Испразни ја Корпата?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Испразни „Спам“?"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> порака трајно ќе се избрише."</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> пораки трајно ќе се избришат."</item>
+  </plurals>
+    <string name="drawer_open" msgid="6074646853178471940">"Отвори фиока за навигација"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"Затвори фиока за навигација"</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Допрете ја сликата на испраќачот за да го изберете тој разговор."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Допрете и задржете за да изберете еден разговор, потоа допрете за да изберете повеќе."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"Икона на папка"</string>
+    <string name="add_account" msgid="2162808366829269770">"Додај сметка"</string>
+    <string name="attached_message" msgid="4267189489654642035">"Прикачена порака"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"Вчера, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Отфрли совет"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"Автоматското синхронизирање е исклучено."</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Допри за да вклучиш."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"Синхронизацијата на сметка е исклучена"</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Вклучете во <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"Поставки на сметка"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="NUMBER">%1$s</xliff:g> не се испратени во <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Вклучи автоматско синхронизирање?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Промените што ги правите на сите апликации и сметки, не само на Gmail, ќе се синхронизираат на интернет, на останатите ваши уреди и на вашиот <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
+    <string name="phone" msgid="5171715391553213328">"телефон"</string>
+    <string name="tablet" msgid="7956969657216748522">"таблет"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Вклучи"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"Прикажи <xliff:g id="NUMBER">%1$s</xliff:g> повеќе папки"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"Сокриј папки"</string>
+    <string name="print" msgid="7905250801319578415">"Печати"</string>
+    <string name="print_all" msgid="1789808179145024065">"Печати сѐ"</string>
+  <plurals name="num_messages">
+    <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> порака"</item>
+    <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g> пораки"</item>
+  </plurals>
+    <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> во <xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="draft_to_heading" msgid="3448702197598500284">"Нацрт до: "</string>
+    <string name="draft_heading" msgid="4654861166951306093">"Нацрт"</string>
+    <string name="quoted_text_hidden_print" msgid="8572207101897331252">"Цитираниот текст е сокриен"</string>
+  <plurals name="num_attachments">
+    <item quantity="one" msgid="3344123914734915029">"<xliff:g id="COUNT">%1$d</xliff:g> прилог"</item>
+    <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> прилози"</item>
+  </plurals>
+    <string name="no_subject" msgid="7823949839148118599">"(без предмет)"</string>
+    <string name="vacation_responder" msgid="145292667520371875">"Автоматски одговор"</string>
+    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"Автоматски одговор"</string>
+    <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"Порака"</string>
+    <string name="send_to_contacts_text" msgid="2696513899649703420">"Испрати само на моите „Контакти“"</string>
+    <string name="send_to_domain_text" msgid="5055332409482662383">"Испрати само на <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"Започнува"</string>
+    <string name="pick_end_date_title" msgid="2068598706186320098">"Завршува (Изборно)"</string>
+    <string name="date_not_set" msgid="4925325938525330766">"Не е поставено"</string>
+    <string name="set_end_date_dialog_title" msgid="72028456826019380">"Краен датум (изборно)"</string>
+    <string name="custom_date" msgid="7566383722092597487">"Приспособено"</string>
+    <string name="date_none" msgid="1033448683454519235">"Нема"</string>
+    <string name="discard_changes" msgid="57677638191085556">"Отфрли промени?"</string>
+    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"Промените на автоматскиот одговор се зачувани"</string>
+    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"Промените на автоматскиот одговор се отфрлени"</string>
+    <string name="vacation_responder_off" msgid="3502054743467746285">"Исклучено"</string>
+    <string name="vacation_responder_on" msgid="5242690599331655563">"Вклучено, од <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Вклучено, од <xliff:g id="START_DATE">%1$s</xliff:g> до <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
+    <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Додај предмет или порака"</string>
+    <string name="view_entire_message" msgid="1553882732296911563">"Прикажи цела порака"</string>
+    <string name="eml_loader_error_toast" msgid="2107905951183729575">"Не може да се отвори датотеката"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"Помош"</string>
+    <string name="feedback" msgid="79365993169715049">"Испраќај повратни информации"</string>
+    <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> верзија <xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <string name="print_dialog" msgid="8754985880654139587">"Печати..."</string>
+    <string name="copyright_information" msgid="1673715390305905781">"Информации за авторски права"</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"Политика за приватност"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"Лиценци на софтвер со отворен код"</string>
+    <string name="reply_choice_yes" msgid="5279400403860280271">"Да"</string>
+    <string name="reply_choice_no" msgid="1626377088683186268">"Не"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"Во ред"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"Хехе"</string>
+    <string name="reply_choice_thanks" msgid="8365439191962120322">"Фала"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"Се согласувам"</string>
+    <string name="reply_choice_nice" msgid="7472107121354003424">"Убаво"</string>
+    <string name="reply_on_my_way" msgid="8200386879475660650">"На пат сум"</string>
+    <string name="reply_choice_later" msgid="6294535370720117768">"Во ред, ќе ти јавам"</string>
+    <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
+    <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Потврдување дејства"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"Потврди пред бришење"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"Потврди пред архивирање"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"Потврди пред испраќање"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"Автоматски приспособи пораки"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"Намали ја пораката за да ја собере на екранот"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"Дејства за пораки"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"Секогаш прикажувај ги дејствата за пораките на врвот на екранот"</item>
+    <item msgid="1197074110597228768">"Прикажувај ги дејствата за пораките на врвот на екранот само кога е свртен вертикално"</item>
+    <item msgid="8496844279095098067">"Не прикажувај ги дејствата за пораките надвор од заглавието на пораката"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"Секогаш прикажувај"</item>
+    <item msgid="8546075502478857367">"Прикажувај само вертикално"</item>
+    <item msgid="863690009910739926">"Не прикажувај"</item>
+  </string-array>
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"Автоматско продолжување"</string>
+    <string name="clear_history_title" msgid="8974919373315137028">"Исчисти историја на пребарување"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"Историјата на пребарување е исчистена."</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"Да се исчисти историјата на пребарување?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Ќе се отстранат сите пребарувања што сте ги извеле претходно."</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Управувај со сметки"</string>
+</resources>
