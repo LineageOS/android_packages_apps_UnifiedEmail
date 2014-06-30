@@ -678,6 +678,8 @@
     <skip />
     <!-- no translation found for help_and_info (7873089811705257882) -->
     <skip />
+    <!-- no translation found for help_and_feedback (8247702474242002137) -->
+    <skip />
     <!-- no translation found for feedback (79365993169715049) -->
     <skip />
     <!-- no translation found for copyright (8707923211554475583) -->
@@ -744,5 +746,9 @@
     <!-- no translation found for clear_history_dialog_message (3779277353786135671) -->
     <skip />
     <!-- no translation found for manage_accounts_menu_item (1585009985898462502) -->
+    <skip />
+    <!-- no translation found for general_preferences_title (8621924870295902645) -->
+    <skip />
+    <!-- no translation found for activity_preferences (6611815076475600840) -->
     <skip />
 </resources>

@@ -320,8 +320,7 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Semua folder"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Folder terbaru"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Butiran mesej"</string>
-    <!-- no translation found for preference_advance_to_title (5129119549230481490) -->
-    <skip />
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"Auto maju"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"Tetapkan pilihan auto mara\n(selepas anda memadamkan, dsb.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Lebih baharu"</item>
@@ -333,8 +332,7 @@
     <item msgid="732746454445519134">"Tunjukkan perbualan yang lebih lama selepas memadamkan"</item>
     <item msgid="2189929276292165301">"Tunjukkan senarai perbualan selepas memadamkan"</item>
   </string-array>
-    <!-- no translation found for prefDialogTitle_autoAdvance (6912968951235868060) -->
-    <skip />
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"Mara ke"</string>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Padam bersih kebenaran gambar"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Padam bersih kebenaran gambar?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Berhenti memaparkan imej sebaris daripada penghantar yang anda benarkan sebelum ini."</string>
@@ -355,8 +353,10 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <!-- no translation found for new_messages:one (1039991646835933015) -->
-    <!-- no translation found for new_messages:other (6295442146249725952) -->
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> mesej baharu"</item>
+    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g> mesej baharu"</item>
+  </plurals>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Senyap"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Arkib &amp; padam tindakan"</string>
@@ -444,6 +444,8 @@
     <string name="view_entire_message" msgid="1553882732296911563">"Lihat seluruh mesej"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Tidak dapat membuka fail ini"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Bantuan"</string>
+    <!-- no translation found for help_and_feedback (8247702474242002137) -->
+    <skip />
     <string name="feedback" msgid="79365993169715049">"Hantar maklum balas"</string>
     <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
     <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> versi <xliff:g id="VERSION">%2$s</xliff:g>"</string>
@@ -463,34 +465,28 @@
     <string name="reply_choice_later" msgid="6294535370720117768">"OK, saya akan hubungi anda"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
-    <!-- no translation found for preference_header_action_confirmations (1764964041519032154) -->
-    <skip />
-    <!-- no translation found for preference_confirm_before_delete_title (950789555970278587) -->
-    <skip />
-    <!-- no translation found for preference_confirm_before_archive_title (237445234989486590) -->
-    <skip />
-    <!-- no translation found for preference_confirm_before_send_title (3718309715757387457) -->
-    <skip />
-    <!-- no translation found for preferences_conversation_mode_title (6712673875809375620) -->
-    <skip />
-    <!-- no translation found for preferences_conversation_mode_summary (6310522471722441546) -->
-    <skip />
-    <!-- no translation found for preferences_disable_snap_headers_title (7803887396971658547) -->
-    <skip />
-    <!-- no translation found for prefSummaries_snapHeader:0 (6008949895584107910) -->
-    <!-- no translation found for prefSummaries_snapHeader:1 (1197074110597228768) -->
-    <!-- no translation found for prefSummaries_snapHeader:2 (8496844279095098067) -->
-    <!-- no translation found for prefEntries_snapHeader:0 (8453672890190461527) -->
-    <!-- no translation found for prefEntries_snapHeader:1 (8546075502478857367) -->
-    <!-- no translation found for prefEntries_snapHeader:2 (863690009910739926) -->
-    <!-- no translation found for clear_history_title (8974919373315137028) -->
-    <skip />
-    <!-- no translation found for search_history_cleared (1524305711478787614) -->
-    <skip />
-    <!-- no translation found for clear_history_dialog_title (2726420681651913195) -->
-    <skip />
-    <!-- no translation found for clear_history_dialog_message (3779277353786135671) -->
-    <skip />
-    <!-- no translation found for manage_accounts_menu_item (1585009985898462502) -->
-    <skip />
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Pengesahan Tindakan"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"Sahkan sebelum memadam"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"Sahkan sebelum mengarkib"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"Sahkan sebelum menghantar"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"Auto-muat mesej"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"Kecilkan mesej untuk memadankannya dengan saiz skrin"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"Tindakan mesej"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"Sentiasa tunjukkan tindakan mesej di bahagian atas skrin"</item>
+    <item msgid="1197074110597228768">"Hanya tunjukkan tindakan mesej di bahagian atas skrin apabila diputarkan kepada potret"</item>
+    <item msgid="8496844279095098067">"Jangan tunjukkan tindakan mesej di luar pengepala mesej"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"Sentiasa tunjukkan"</item>
+    <item msgid="8546075502478857367">"Hanya tunjukkan dalam potret"</item>
+    <item msgid="863690009910739926">"Jangan tunjukkan"</item>
+  </string-array>
+    <string name="clear_history_title" msgid="8974919373315137028">"Bersihkan sejarah carian"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"Sejarah carian dipadam bersih."</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"Padam bersih sejarah carian?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Semua carian yang telah anda lakukan sebelum ini akan dialih keluar."</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Urus Akaun"</string>
+    <string name="general_preferences_title" msgid="8621924870295902645">"Tetapan umum"</string>
+    <string name="activity_preferences" msgid="6611815076475600840">"Tetapan"</string>
 </resources>

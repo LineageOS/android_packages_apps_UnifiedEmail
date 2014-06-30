@@ -320,8 +320,7 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"Toate dosarele"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Dosare recente"</string>
     <string name="message_details_title" msgid="2183394728494962332">"Detalii mesaj"</string>
-    <!-- no translation found for preference_advance_to_title (5129119549230481490) -->
-    <skip />
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"Înaintare automată"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"Setaţi preferinţa pentru înaintare automată\n(după ce ştergeţi etc.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mai noi"</item>
@@ -333,8 +332,7 @@
     <item msgid="732746454445519134">"Afişaţi conversaţia mai veche după ce ştergeţi"</item>
     <item msgid="2189929276292165301">"Afişaţi lista de conversaţii după ce ştergeţi"</item>
   </string-array>
-    <!-- no translation found for prefDialogTitle_autoAdvance (6912968951235868060) -->
-    <skip />
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"Înaintați la"</string>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Ștergeți aprobările pentru imagini"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Ștergeți aprobările pentru imagini?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Nu mai afișați imaginile inline de la expeditori acceptați anterior."</string>
@@ -355,8 +353,10 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <!-- no translation found for new_messages:one (1039991646835933015) -->
-    <!-- no translation found for new_messages:other (6295442146249725952) -->
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> mesaj nou"</item>
+    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g> (de) mesaje noi"</item>
+  </plurals>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Silențios"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"Arhivați și Ștergeți"</string>
@@ -444,6 +444,8 @@
     <string name="view_entire_message" msgid="1553882732296911563">"Afișați tot mesajul"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"Fișierul nu poate fi deschis"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Ajutor"</string>
+    <!-- no translation found for help_and_feedback (8247702474242002137) -->
+    <skip />
     <string name="feedback" msgid="79365993169715049">"Trimiteţi feedback"</string>
     <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
     <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> versiunea <xliff:g id="VERSION">%2$s</xliff:g>"</string>
@@ -463,34 +465,28 @@
     <string name="reply_choice_later" msgid="6294535370720117768">"OK, revin mai târziu"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
-    <!-- no translation found for preference_header_action_confirmations (1764964041519032154) -->
-    <skip />
-    <!-- no translation found for preference_confirm_before_delete_title (950789555970278587) -->
-    <skip />
-    <!-- no translation found for preference_confirm_before_archive_title (237445234989486590) -->
-    <skip />
-    <!-- no translation found for preference_confirm_before_send_title (3718309715757387457) -->
-    <skip />
-    <!-- no translation found for preferences_conversation_mode_title (6712673875809375620) -->
-    <skip />
-    <!-- no translation found for preferences_conversation_mode_summary (6310522471722441546) -->
-    <skip />
-    <!-- no translation found for preferences_disable_snap_headers_title (7803887396971658547) -->
-    <skip />
-    <!-- no translation found for prefSummaries_snapHeader:0 (6008949895584107910) -->
-    <!-- no translation found for prefSummaries_snapHeader:1 (1197074110597228768) -->
-    <!-- no translation found for prefSummaries_snapHeader:2 (8496844279095098067) -->
-    <!-- no translation found for prefEntries_snapHeader:0 (8453672890190461527) -->
-    <!-- no translation found for prefEntries_snapHeader:1 (8546075502478857367) -->
-    <!-- no translation found for prefEntries_snapHeader:2 (863690009910739926) -->
-    <!-- no translation found for clear_history_title (8974919373315137028) -->
-    <skip />
-    <!-- no translation found for search_history_cleared (1524305711478787614) -->
-    <skip />
-    <!-- no translation found for clear_history_dialog_title (2726420681651913195) -->
-    <skip />
-    <!-- no translation found for clear_history_dialog_message (3779277353786135671) -->
-    <skip />
-    <!-- no translation found for manage_accounts_menu_item (1585009985898462502) -->
-    <skip />
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Confirmări pentru acțiuni"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"Confirmaţi înainte de a şterge"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"Confirmaţi înainte de a arhiva"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"Confirmaţi înainte de a trimite"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"Ajustați mesajele automat"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"Micșorați mesajele pentru a se încadra pe ecran"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"Acţiuni pentru mesaje"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"Afişaţi întotdeauna acţiunile pentru mesaje în partea de sus a ecranului"</item>
+    <item msgid="1197074110597228768">"Afişaţi acţiunile pentru mesaje în partea de sus a ecranului numai când acesta este rotit în modul Portret"</item>
+    <item msgid="8496844279095098067">"Nu afişaţi acţiunile pentru mesaje în afara antetului mesajului"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"Afişaţi întotdeauna"</item>
+    <item msgid="8546075502478857367">"Afişaţi numai în modul Portret"</item>
+    <item msgid="863690009910739926">"Nu afişaţi"</item>
+  </string-array>
+    <string name="clear_history_title" msgid="8974919373315137028">"Ștergeți istoricul căutărilor"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"Istoricul căutărilor a fost şters."</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"Ștergeți istoricul căutărilor?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Toate căutările pe care le-aţi efectuat anterior vor fi eliminate."</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Gestionaţi conturile"</string>
+    <string name="general_preferences_title" msgid="8621924870295902645">"Setările generale"</string>
+    <string name="activity_preferences" msgid="6611815076475600840">"Setări"</string>
 </resources>

@@ -444,6 +444,7 @@
     <string name="view_entire_message" msgid="1553882732296911563">"Ver todo el mensaje"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"No se puede abrir el archivo"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Ayuda"</string>
+    <string name="help_and_feedback" msgid="8247702474242002137">"Ayuda y opiniones"</string>
     <string name="feedback" msgid="79365993169715049">"Danos tu opinión"</string>
     <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
     <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> versión <xliff:g id="VERSION">%2$s</xliff:g>"</string>
@@ -454,8 +455,8 @@
     <string name="open_source_licenses" msgid="6831573769505612579">"Licencias software libre"</string>
     <string name="reply_choice_yes" msgid="5279400403860280271">"Sí"</string>
     <string name="reply_choice_no" msgid="1626377088683186268">"No"</string>
-    <string name="reply_choice_ok" msgid="5138061449166345173">"Aceptar"</string>
-    <string name="reply_choice_hehe" msgid="7883585007161871893">"Je Je"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"Vale"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"Je, je"</string>
     <string name="reply_choice_thanks" msgid="8365439191962120322">"Gracias"</string>
     <string name="reply_choice_i_agree" msgid="24980061720212740">"Estoy de acuerdo"</string>
     <string name="reply_choice_nice" msgid="7472107121354003424">"Genial"</string>
@@ -485,4 +486,6 @@
     <string name="clear_history_dialog_title" msgid="2726420681651913195">"¿Borrar historial de búsqueda?"</string>
     <string name="clear_history_dialog_message" msgid="3779277353786135671">"Se eliminarán todas las búsquedas que hayas hecho."</string>
     <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Administrar cuentas"</string>
+    <string name="general_preferences_title" msgid="8621924870295902645">"Ajustes generales"</string>
+    <string name="activity_preferences" msgid="6611815076475600840">"Ajustes"</string>
 </resources>

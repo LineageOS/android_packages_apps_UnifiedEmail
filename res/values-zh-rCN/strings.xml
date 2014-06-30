@@ -320,8 +320,7 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"所有文件夹"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"近期文件夹"</string>
     <string name="message_details_title" msgid="2183394728494962332">"邮件详情"</string>
-    <!-- no translation found for preference_advance_to_title (5129119549230481490) -->
-    <skip />
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"自动跳转"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"自动跳转偏好设置\n（在您执行删除等操作后）"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"后一个会话"</item>
@@ -333,8 +332,7 @@
     <item msgid="732746454445519134">"在您执行删除操作后显示较旧的前一个会话"</item>
     <item msgid="2189929276292165301">"在您执行删除操作后显示会话列表"</item>
   </string-array>
-    <!-- no translation found for prefDialogTitle_autoAdvance (6912968951235868060) -->
-    <skip />
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"跳转至"</string>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"清除“显示图片”设置"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"是否要清除“显示图片”设置？"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"对于您之前允许显示其邮件内嵌图片的发件人，停止显示其邮件内的图片。"</string>
@@ -355,8 +353,10 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>：<xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <!-- no translation found for new_messages:one (1039991646835933015) -->
-    <!-- no translation found for new_messages:other (6295442146249725952) -->
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"有<xliff:g id="COUNT">%1$d</xliff:g>封新邮件"</item>
+    <item quantity="other" msgid="6295442146249725952">"有<xliff:g id="COUNT">%1$d</xliff:g>封新邮件"</item>
+  </plurals>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>：<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"静音"</string>
     <string name="preference_removal_action_title" msgid="6585232628422090835">"归档和删除操作"</string>
@@ -444,6 +444,8 @@
     <string name="view_entire_message" msgid="1553882732296911563">"查看邮件全文"</string>
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"无法打开此文件"</string>
     <string name="help_and_info" msgid="7873089811705257882">"帮助"</string>
+    <!-- no translation found for help_and_feedback (8247702474242002137) -->
+    <skip />
     <string name="feedback" msgid="79365993169715049">"发送反馈"</string>
     <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
     <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g><xliff:g id="VERSION">%2$s</xliff:g>版"</string>
@@ -463,34 +465,28 @@
     <string name="reply_choice_later" msgid="6294535370720117768">"我会尽快回复你"</string>
     <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
     <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
-    <!-- no translation found for preference_header_action_confirmations (1764964041519032154) -->
-    <skip />
-    <!-- no translation found for preference_confirm_before_delete_title (950789555970278587) -->
-    <skip />
-    <!-- no translation found for preference_confirm_before_archive_title (237445234989486590) -->
-    <skip />
-    <!-- no translation found for preference_confirm_before_send_title (3718309715757387457) -->
-    <skip />
-    <!-- no translation found for preferences_conversation_mode_title (6712673875809375620) -->
-    <skip />
-    <!-- no translation found for preferences_conversation_mode_summary (6310522471722441546) -->
-    <skip />
-    <!-- no translation found for preferences_disable_snap_headers_title (7803887396971658547) -->
-    <skip />
-    <!-- no translation found for prefSummaries_snapHeader:0 (6008949895584107910) -->
-    <!-- no translation found for prefSummaries_snapHeader:1 (1197074110597228768) -->
-    <!-- no translation found for prefSummaries_snapHeader:2 (8496844279095098067) -->
-    <!-- no translation found for prefEntries_snapHeader:0 (8453672890190461527) -->
-    <!-- no translation found for prefEntries_snapHeader:1 (8546075502478857367) -->
-    <!-- no translation found for prefEntries_snapHeader:2 (863690009910739926) -->
-    <!-- no translation found for clear_history_title (8974919373315137028) -->
-    <skip />
-    <!-- no translation found for search_history_cleared (1524305711478787614) -->
-    <skip />
-    <!-- no translation found for clear_history_dialog_title (2726420681651913195) -->
-    <skip />
-    <!-- no translation found for clear_history_dialog_message (3779277353786135671) -->
-    <skip />
-    <!-- no translation found for manage_accounts_menu_item (1585009985898462502) -->
-    <skip />
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"操作确认"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"删除前先确认"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"归档前先确认"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"发送前先确认"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"自动调整邮件内容缩放比例"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"缩小邮件内容以使其适合屏幕大小"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"邮件操作"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"一律在屏幕顶部显示邮件操作"</item>
+    <item msgid="1197074110597228768">"仅当旋转到纵向模式时，才在屏幕顶部显示邮件操作"</item>
+    <item msgid="8496844279095098067">"不要在邮件顶部以外的地方显示邮件操作"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"一律显示"</item>
+    <item msgid="8546075502478857367">"仅在纵向模式下显示"</item>
+    <item msgid="863690009910739926">"不显示"</item>
+  </string-array>
+    <string name="clear_history_title" msgid="8974919373315137028">"清除搜索记录"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"已清除搜索记录。"</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"要清除搜索记录吗？"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"此操作会移除您之前的全部搜索记录。"</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"管理帐户"</string>
+    <string name="general_preferences_title" msgid="8621924870295902645">"常规设置"</string>
+    <string name="activity_preferences" msgid="6611815076475600840">"设置"</string>
 </resources>
