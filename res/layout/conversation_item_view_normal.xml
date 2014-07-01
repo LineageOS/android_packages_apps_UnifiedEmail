@@ -121,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:src="@drawable/ic_attachment_holo_light"
+                    android:src="@drawable/ic_attach_file_20dp"
                     style="@style/ConversationListPaperclipStyle" />
 
                 <!-- for Email -->
