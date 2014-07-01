@@ -21,7 +21,7 @@
     android:id="@+id/body_wrapper"
     style="@style/ComposeFieldLayout">
 
-    <EditText android:id="@+id/body"
+    <com.android.mail.compose.BodyView android:id="@+id/body"
         android:hint="@string/body_hint"
         style="@style/ComposeBodyView" />
 
