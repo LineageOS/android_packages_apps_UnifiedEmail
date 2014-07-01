@@ -3806,7 +3806,7 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     private void perhapsStartWelcomeTour() {
         if (mAccount != null && mAccount.isAccountReady()) {
-            LoaderManager.LoaderCallbacks<Boolean> welcomeLoaderCallbacks =
+            LoaderManager.LoaderCallbacks<?> welcomeLoaderCallbacks =
                     mActivity.getWelcomeCallbacks();
             if (welcomeLoaderCallbacks != null) {
                 // The callback is responsible for showing the tour when appropriate.
