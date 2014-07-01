@@ -20,14 +20,13 @@
     <dimen name="conversation_header_margin_side">15dp</dimen>
     <dimen name="conversation_header_font_size">24sp</dimen>
     <dimen name="conversation_header_padding_side">24dp</dimen>
-    <dimen name="conversation_message_content_margin_side">24dp</dimen>
     <dimen name="conversation_page_gutter">0dip</dimen>
     <dimen name="message_header_inner_side_padding">16dp</dimen>
     <dimen name="message_header_contact_photo_width">64dp</dimen>
     <dimen name="message_header_contact_photo_height">64dp</dimen>
     <dimen name="message_header_action_button_width">56dp</dimen>
     <dimen name="message_header_action_button_height">56dp</dimen>
-    <dimen name="message_details_header_padding_start_collapsed">104dip</dimen>
+    <dimen name="message_details_header_padding_start_expanded">104dip</dimen>
     <dimen name="message_sender_name_text_size">20sp</dimen>
     <dimen name="message_header_subtitle_text_size">16sp</dimen>
     <dimen name="super_collapsed_height">39sp</dimen>

@@ -465,10 +465,12 @@
     </plurals>
 
     <!-- Conversation message header strings -->
-    <!--  Icon name for expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
-    <string name="expand_recipient_details">Expand recipient details</string>
-    <!--  Icon name for collapsing recipient details in a message when viewing it. [CHAR LIMIT=40] -->
-    <string name="collapse_recipient_details">Collapse recipient details</string>
+    <!--  Text for showing the date and expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
+    <string name="date_and_view_details"><xliff:g id="date">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'>View details&lt;/a></string>
+    <!--  Text for collapsing recipient details in a message when viewing it. [CHAR LIMIT=40] -->
+    <string name="hide_details">Hide details</string>
+    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="to_message_header">to <xliff:g id="recipients">%1$s</xliff:g></string>
     <!--  Icon name for showing sender contact information. [CHAR LIMIT=100] -->
     <string name="contact_info_string">Show contact information for <xliff:g id="name">%1$s</xliff:g></string>
     <!--  Icon name for showing sender contact information when we cannot get sender info. [CHAR LIMIT=100] -->
@@ -479,17 +481,19 @@
         <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
     </plurals>
     <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
-    <string name="from_heading">From:\u0020</string>
+    <string name="from_heading">From:</string>
     <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
-    <string name="replyto_heading">Reply-to:\u0020</string>
+    <string name="replyto_heading">Reply-to:</string>
     <!-- Shown to display the to recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="to_heading">To:\u0020</string>
+    <!-- Shown to display the to recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="to_heading_no_space">To:</string>
     <!-- Shown to display the cc recipient(s) of the message [CHAR LIMIT=10] -->
-    <string name="cc_heading">Cc:\u0020</string>
+    <string name="cc_heading">Cc:</string>
     <!-- Shown to display the bcc recipient(s) of the message [CHAR LIMIT=10] -->
-    <string name="bcc_heading">Bcc:\u0020</string>
-    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
-    <string name="date_heading">Date:\u0020</string>
+    <string name="bcc_heading">Bcc:</string>
+    <!-- Shown to display the date of the message [CHAR LIMIT=10] -->
+    <string name="date_heading">Date:</string>
     <!-- Displayed above an HTML message to show the images in that message [CHAR LIMIT=40] -->
     <string name="show_images">Show pictures</string>
     <!-- Displayed above an HTML message to always show images in messages from that sender [CHAR LIMIT=40] -->
@@ -886,9 +890,6 @@
     <!-- Action bar title for viewing messages that are attached to another message. -->
     <string name="attached_message">Attached message</string>
 
-    <!-- Shown to display the date of the message when the message was received yesterday. [CHAR LIMIT=50]  -->
-    <string name="date_message_received_yesterday">Yesterday, <xliff:g id="datetime">%1$s</xliff:g></string>
-
     <!-- Content description for the "X" image icon for dismissing a tip. This is used for spoken description of the icon when touch explore is enabled. [CHAR LIMIT=50] -->
     <string name="dismiss_tip_hover_text">Dismiss tip</string>
 
@@ -959,7 +960,7 @@
     <!-- Shown to display the date of the message [CHAR LIMIT=50] -->
     <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> at <xliff:g id="time">%2$s</xliff:g></string>
     <!-- Shown to display the to recipient(s) of the message if the message is a draft [CHAR LIMIT=20] -->
-    <string name="draft_to_heading">Draft To:\u0020</string>
+    <string name="draft_to_heading">Draft To:</string>
 
     <!-- Shown to display in the message header if the message is a draft and there are no "to" addresses in the draft [CHAR LIMIT=10] -->
     <string name="draft_heading">Draft</string>

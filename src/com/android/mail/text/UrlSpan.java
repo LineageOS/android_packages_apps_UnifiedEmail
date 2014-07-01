@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Google Inc.
+ * Copyright (C) 2014 Google Inc.
  * Licensed to The Android Open Source Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,29 +15,23 @@
  * limitations under the License.
  */
 
-package com.android.mail.browse;
+package com.android.mail.text;
 
 import android.text.TextPaint;
 import android.text.style.URLSpan;
-import android.view.View;
 
-import com.android.mail.compose.ComposeActivity;
-import com.android.mail.providers.Account;
-
-public class EmailAddressSpan extends URLSpan {
-
-    private final Account mAccount;
-    private final String mEmailAddress;
-
-    public EmailAddressSpan(Account account, String emailAddress) {
-        super("mailto:" + emailAddress);
-        mAccount = account;
-        mEmailAddress = emailAddress;
-    }
-
-    @Override
-    public void onClick(View view) {
-        ComposeActivity.composeToAddress(view.getContext(), mAccount, mEmailAddress);
+/**
+ * Extension to URLSpan that does not have underlines.
+ * Stupid URLSpan.<p/>
+ *
+ * WARNING: this span will not work if the TextView it uses
+ * saves and restores its text since TextView can only save
+ * and restore {@link android.text.ParcelableSpan}s which
+ * can only be implemented by framework Spans.
+ */
+public class UrlSpan extends URLSpan {
+    public UrlSpan(String url) {
+        super(url);
     }
 
     /**

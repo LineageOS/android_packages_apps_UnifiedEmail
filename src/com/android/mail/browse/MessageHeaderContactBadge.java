@@ -18,29 +18,55 @@
 package com.android.mail.browse;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.QuickContactBadge;
 
+import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
-import com.android.mail.utils.LogUtils;
 
-public class MessageHeaderContactBadge extends QuickContactBadge {
+public class MessageHeaderContactBadge extends ImageView implements View.OnClickListener {
+
+    private final QuickContactBadge mQuickContactBadge;
+
+    private Drawable mDefaultAvatar;
+
     public MessageHeaderContactBadge(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public MessageHeaderContactBadge(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public MessageHeaderContactBadge(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        mQuickContactBadge = new QuickContactBadge(context, attrs, defStyle);
+        setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         Analytics.getInstance().sendEvent("quick_contact", "clicked", null, 0);
-        super.onClick(v);
+        mQuickContactBadge.onClick(v);
+    }
+
+    public void setImageToDefault() {
+        if (mDefaultAvatar == null) {
+            mDefaultAvatar = getResources().getDrawable(R.drawable.ic_contact_picture);
+        }
+        setImageDrawable(mDefaultAvatar);
+    }
+
+    public void assignContactUri(Uri contactUri) {
+        mQuickContactBadge.assignContactUri(contactUri);
+    }
+
+    public void assignContactFromEmail(String emailAddress, boolean lazyLookup) {
+        mQuickContactBadge.assignContactFromEmail(emailAddress, lazyLookup);
     }
 }
