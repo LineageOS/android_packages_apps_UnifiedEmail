@@ -75,7 +75,7 @@ public class FormattedDateBuilder {
         if (DateUtils.isToday(when)) {
             return formatDateTime(when, DateUtils.FORMAT_SHOW_TIME);
         } else if (isCurrentYear(when)) {
-            return DateUtils.getRelativeDateTimeString(mContext, when, DateUtils.DAY_IN_MILLIS,
+            return getRelativeDateTimeString(mContext, when, DateUtils.DAY_IN_MILLIS,
                     2 * DateUtils.WEEK_IN_MILLIS,
                     DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_MONTH);
         } else {
@@ -124,5 +124,31 @@ public class FormattedDateBuilder {
         sb.setLength(0);
         DateUtils.formatDateRange(mContext, dateFormatter, when, when, flags);
         return sb.toString();
+    }
+
+    /**
+     * A port of
+     * {@link DateUtils#getRelativeDateTimeString(android.content.Context, long, long, long, int)}
+     * that does not include the time in strings like "2 days ago".
+     */
+    private static CharSequence getRelativeDateTimeString(Context c, long time, long minResolution,
+            long transitionResolution, int flags) {
+        final long now = System.currentTimeMillis();
+        final long duration = Math.abs(now - time);
+
+        // getRelativeTimeSpanString() doesn't correctly format relative dates
+        // above a week or exact dates below a day, so clamp
+        // transitionResolution as needed.
+        if (transitionResolution > DateUtils.WEEK_IN_MILLIS) {
+            transitionResolution = DateUtils.WEEK_IN_MILLIS;
+        } else if (transitionResolution < DateUtils.DAY_IN_MILLIS) {
+            transitionResolution = DateUtils.DAY_IN_MILLIS;
+        }
+
+        if (duration < transitionResolution) {
+            return DateUtils.getRelativeTimeSpanString(time, now, minResolution, flags);
+        } else {
+            return DateUtils.getRelativeTimeSpanString(c, time, false);
+        }
     }
 }
