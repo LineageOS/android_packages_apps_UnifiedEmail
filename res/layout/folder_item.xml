@@ -32,10 +32,6 @@
         android:src="@drawable/folder_parent_icon"
         style="@style/FolderParentIconStyle" />
 
-    <ImageView
-        android:id="@+id/color_block"
-        style="@style/FolderColorBoxStyle" />
-
     <FrameLayout
         android:id="@+id/message_counts"
         android:layout_width="wrap_content"
@@ -61,7 +57,6 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:duplicateParentState="true"
-        android:visibility="gone"
         style="@style/FolderListIconStyle" />
 
     <TextView
@@ -78,9 +73,9 @@
         android:includeFontPadding="false"
         android:maxLines="2"
         android:ellipsize="end"
-        android:textColor="@color/folder_item_text_color"
         android:textAlignment="viewStart"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/folder_item_text_color"
+        android:textSize="@dimen/drawer_item_font_size"
         style="@style/FolderListItemStyle" />
 
 </com.android.mail.ui.FolderItemView>
