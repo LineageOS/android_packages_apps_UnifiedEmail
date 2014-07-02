@@ -31,6 +31,14 @@
         android:scaleType="centerCrop"
         android:contentDescription="@string/contact_info_string"
         style="@style/ConversationViewMarginStyle" />
+    <!-- invisible view so that the quick contact will expand from the image -->
+    <QuickContactBadge
+        android:id="@+id/invisible_quick_contact"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/message_header_contact_photo_margin"
+        android:layout_marginBottom="@dimen/message_header_contact_photo_margin"
+        android:visibility="invisible" />
     <!-- draft should match photo in dimensions -->
     <ImageView
         android:id="@+id/draft"
