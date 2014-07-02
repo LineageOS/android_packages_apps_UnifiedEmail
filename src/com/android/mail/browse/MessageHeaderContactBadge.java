@@ -30,7 +30,7 @@ import com.android.mail.analytics.Analytics;
 
 public class MessageHeaderContactBadge extends ImageView implements View.OnClickListener {
 
-    private final QuickContactBadge mQuickContactBadge;
+    private QuickContactBadge mQuickContactBadge;
 
     private Drawable mDefaultAvatar;
 
@@ -45,14 +45,15 @@ public class MessageHeaderContactBadge extends ImageView implements View.OnClick
     public MessageHeaderContactBadge(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mQuickContactBadge = new QuickContactBadge(context, attrs, defStyle);
         setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         Analytics.getInstance().sendEvent("quick_contact", "clicked", null, 0);
-        mQuickContactBadge.onClick(v);
+        if (mQuickContactBadge != null) {
+            mQuickContactBadge.onClick(v);
+        }
     }
 
     public void setImageToDefault() {
@@ -63,10 +64,18 @@ public class MessageHeaderContactBadge extends ImageView implements View.OnClick
     }
 
     public void assignContactUri(Uri contactUri) {
-        mQuickContactBadge.assignContactUri(contactUri);
+        if (mQuickContactBadge != null) {
+            mQuickContactBadge.assignContactUri(contactUri);
+        }
     }
 
     public void assignContactFromEmail(String emailAddress, boolean lazyLookup) {
-        mQuickContactBadge.assignContactFromEmail(emailAddress, lazyLookup);
+        if (mQuickContactBadge != null) {
+            mQuickContactBadge.assignContactFromEmail(emailAddress, lazyLookup);
+        }
+    }
+
+    public void setQuickContactBadge(QuickContactBadge quickContactBadge) {
+        mQuickContactBadge = quickContactBadge;
     }
 }
