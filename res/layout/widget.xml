@@ -28,7 +28,7 @@
     <LinearLayout
         android:id="@+id/widget_header"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="48sp"
         android:orientation="horizontal"
         android:paddingLeft="8dip"
         android:paddingRight="8dip"

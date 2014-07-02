@@ -48,6 +48,8 @@ import com.google.common.base.Objects;
  * @author phamm
  */
 public class ConversationItemViewCoordinates {
+    private static final int SINGLE_LINE = 1;
+
     // Modes
     static final int MODE_COUNT = 2;
     static final int WIDE_MODE = 0;
@@ -224,13 +226,6 @@ public class ConversationItemViewCoordinates {
     final int sendersLineCount;
     final float sendersFontSize;
 
-    // Badge. optional.
-    final int badgeLeft;
-    final int badgeTop;
-    final int badgeWidth;
-    final int badgeHeight;
-    final int badgeLineCount;
-
     // Subject.
     final int subjectX;
     final int subjectY;
@@ -238,6 +233,14 @@ public class ConversationItemViewCoordinates {
     final int subjectHeight;
     final int subjectLineCount;
     final float subjectFontSize;
+
+    // Snippet.
+    final int snippetX;
+    final int snippetY;
+    final int snippetWidth;
+    final int snippetHeight;
+    final int snippetLineCount;
+    final float snippetFontSize;
 
     // Folders.
     final int foldersLeft;
@@ -331,16 +334,7 @@ public class ConversationItemViewCoordinates {
 
         mMode = calculateMode(res, config);
 
-        final int layoutId;
-        if (isWideMode()) {
-            layoutId = R.layout.conversation_item_view_wide;
-        } else {
-            if (config.getWidth() >= mMinListWidthIsSpacious) {
-                layoutId = R.layout.conversation_item_view_normal_spacious;
-            } else {
-                layoutId = R.layout.conversation_item_view_normal;
-            }
-        }
+        final int layoutId = R.layout.conversation_item_view;
 
         ViewGroup view = (ViewGroup) cache.getView(layoutId);
         if (view == null) {
@@ -350,7 +344,7 @@ public class ConversationItemViewCoordinates {
 
         // Show/hide optional views before measure/layout call
 
-        final View attachmentPreviews = view.findViewById(R.id.attachment_previews);;
+        final View attachmentPreviews = view.findViewById(R.id.attachment_previews);
         if (config.getAttachmentPreviewMode() != ATTACHMENT_PREVIEW_NONE) {
             final LayoutParams params = attachmentPreviews.getLayoutParams();
             attachmentPreviews.setVisibility(View.VISIBLE);
@@ -430,43 +424,33 @@ public class ConversationItemViewCoordinates {
         sendersY = getY(senders) + sendersTopAdjust;
         sendersWidth = senders.getWidth();
         sendersHeight = senders.getHeight();
-        sendersLineCount = getLineCount(senders);
+        sendersLineCount = SINGLE_LINE;
         sendersFontSize = senders.getTextSize();
-
-        final TextView badge = (TextView) view.findViewById(R.id.badge);
-        if (badge != null) {
-            badgeLeft = getX(badge);
-            badgeTop = getY(badge);
-            badgeWidth = senders.getWidth();
-            badgeHeight = senders.getHeight();
-            badgeLineCount = getLineCount(senders);
-        } else {
-            badgeLeft = badgeTop = badgeWidth = badgeHeight = badgeLineCount = 0;
-        }
 
         final TextView subject = (TextView) view.findViewById(R.id.subject);
         final int subjectTopAdjust = getLatinTopAdjustment(subject);
         subjectX = getX(subject);
-        if (isWideMode()) {
-            subjectY = getY(subject) + subjectTopAdjust;
-        } else {
-            subjectY = getY(subject) + sendersTopAdjust;
-        }
+        subjectY = getY(subject) + sendersTopAdjust;
         subjectWidth = subject.getWidth();
         subjectHeight = subject.getHeight();
-        subjectLineCount = getLineCount(subject);
+        subjectLineCount = SINGLE_LINE;
         subjectFontSize = subject.getTextSize();
+
+        final TextView snippet = (TextView) view.findViewById(R.id.snippet);
+        final int snippetTopAdjust = getLatinTopAdjustment(snippet);
+        snippetX = getX(snippet);
+        snippetY = getY(snippet) + snippetTopAdjust;
+        snippetWidth = snippet.getWidth();
+        snippetHeight = snippet.getHeight();
+        snippetLineCount = SINGLE_LINE;
+        snippetFontSize = snippet.getTextSize();
 
         if (config.areFoldersVisible()) {
             // vertically align folders min left edge with subject
             final boolean isRtl = ViewUtils.isViewRtl(view);
-            foldersLeft = (isRtl) ? 0 : subjectX;
-            foldersRight = (isRtl) ? subjectX + subjectWidth : getX(folders) + folders.getWidth();
-            if (isWideMode()) {
-                foldersY = getY(folders);
-            } else {
-                foldersY = getY(folders) + sendersTopAdjust;
-            }
+            foldersLeft = (isRtl) ? 0 : snippetX;
+            foldersRight = (isRtl) ? snippetX + snippetWidth : getX(folders) + folders.getWidth();
+            foldersY = getY(folders) + sendersTopAdjust;
             foldersHeight = folders.getHeight();
             foldersTypeface = folders.getTypeface();
             foldersTextBottomPadding = res
@@ -568,7 +552,7 @@ public class ConversationItemViewCoordinates {
             progressBarHeight = 0;
         }
 
-        height = view.getHeight() + (isWideMode() ? 0 : sendersTopAdjust);
+        height = view.getHeight() + sendersTopAdjust;
         Utils.traceEndSection();
     }
 
@@ -590,10 +574,6 @@ public class ConversationItemViewCoordinates {
 
     public int getMode() {
         return mMode;
-    }
-
-    public boolean isWideMode() {
-        return mMode == WIDE_MODE;
     }
 
     /**
@@ -631,9 +611,7 @@ public class ConversationItemViewCoordinates {
         final Resources res = context.getResources();
         switch (attachmentPreviewMode) {
             case ATTACHMENT_PREVIEW_UNREAD:
-                return (int) (isWideMode()
-                        ? res.getDimension(R.dimen.attachment_preview_height_tall_wide)
-                        : res.getDimension(R.dimen.attachment_preview_height_tall));
+                return (int) res.getDimension(R.dimen.attachment_preview_height_tall);
             case ATTACHMENT_PREVIEW_READ:
                 return (int) res.getDimension(R.dimen.attachment_preview_height_short);
             default:
@@ -663,18 +641,6 @@ public class ConversationItemViewCoordinates {
             view = (View) view.getParent();
         }
         return y;
-    }
-
-    /**
-     * Returns the number of lines of this text view. Delegates to built-in TextView logic on JB+.
-     */
-    @SuppressLint("NewApi")
-    private static int getLineCount(TextView textView) {
-        if (Utils.isRunningJellybeanOrLater()) {
-            return textView.getMaxLines();
-        } else {
-            return Math.round(((float) textView.getHeight()) / textView.getLineHeight());
-        }
     }
 
     /**
