@@ -1063,17 +1063,17 @@ public class ConversationItemView extends View
 
     private void createSubject(final boolean isUnread) {
         final String badgeText = mHeader.badgeText == null ? "" : mHeader.badgeText;
-        final String subject = filterTag(getContext(), mHeader.conversation.subject);
-        final Spannable displayedStringBuilder = new SpannableString(
-                Conversation.getSubjectForDisplay(mContext, badgeText, subject));
+        String subject = filterTag(getContext(), mHeader.conversation.subject);
+        subject = Conversation.getSubjectForDisplay(mContext, badgeText, subject);
+        final Spannable displayedStringBuilder = new SpannableString(subject);
 
         // since spans affect text metrics, add spans to the string before measure/layout or fancy
         // ellipsizing
 
         final int badgeTextLength = formatBadgeText(displayedStringBuilder, badgeText);
 
-        final int subjectTextLength = badgeTextLength + ((subject != null) ? subject.length() : 0)
-                + ((badgeTextLength > 0) ? 1 : 0);
+        final int subjectTextLength = badgeTextLength + subject.length() +
+                ((badgeTextLength > 0) ? 1 : 0);
         if (!TextUtils.isEmpty(subject)) {
             displayedStringBuilder.setSpan(TextAppearanceSpan.wrap(
                     isUnread ? sSubjectTextUnreadSpan : sSubjectTextReadSpan),
