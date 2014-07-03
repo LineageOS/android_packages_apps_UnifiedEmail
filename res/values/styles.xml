@@ -219,6 +219,17 @@
         <item name="android:paddingLeft">@dimen/conversation_header_padding_side</item>
     </style>
 
+    <style name="ConversationFooterButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">80sp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:textColor">@color/conversation_view_footer_text_color</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <!-- Conversation view message header styles -->
     <style name="MessageHeaderPresenceStyle">
         <item name="android:layout_width">wrap_content</item>

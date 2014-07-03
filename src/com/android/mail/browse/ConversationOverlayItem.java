@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.CursorAdapter;
 
+import com.android.mail.browse.ConversationViewAdapter.ConversationViewType;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.LogUtils;
 
@@ -40,7 +41,7 @@ public abstract class ConversationOverlayItem {
     /**
      * @see Adapter#getItemViewType(int)
      */
-    public abstract int getType();
+    public abstract @ConversationViewType int getType();
     /**
      * Inflate and perform one-time initialization on a view for later binding.
      */

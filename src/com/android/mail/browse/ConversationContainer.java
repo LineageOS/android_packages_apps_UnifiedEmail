@@ -75,7 +75,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private static final String TAG = ConversationViewFragment.LAYOUT_TAG;
 
     private static final int[] BOTTOM_LAYER_VIEW_IDS = {
-        R.id.webview
+        R.id.conversation_webview
     };
 
     private static final int[] TOP_LAYER_VIEW_IDS = {
@@ -249,7 +249,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mWebView = (ConversationWebView) findViewById(R.id.webview);
+        mWebView = (ConversationWebView) findViewById(R.id.conversation_webview);
         mWebView.addScrollListener(this);
 
         for (int id : BOTTOM_LAYER_VIEW_IDS) {
@@ -967,6 +967,27 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
         mOverlayPositions = overlayPositions;
         positionOverlays(mOffsetY, false /* postAddView */);
+    }
+
+    /**
+     * Remove the view that corresponds to the item in the {@link ConversationViewAdapter}
+     * at the specified index.<p/>
+     *
+     * <b>Note:</b> the view is actually pushed off-screen and recycled
+     * as though it were scrolled off.
+     * @param adapterIndex The index for the view in the adapter.
+     */
+    public void removeViewAtAdapterIndex(int adapterIndex) {
+        // need to temporarily set the offset to 0 so that we can ensure we're pushing off-screen.
+        final int offsetY = mOffsetY;
+        mOffsetY = 0;
+        final OverlayView overlay = mOverlayViews.get(adapterIndex);
+        if (overlay != null) {
+            final int height = getHeight();
+            onOverlayScrolledOff(adapterIndex, overlay, height, height + overlay.view.getHeight());
+        }
+        // restore the offset to its original value after the view has been moved off-screen.
+        mOffsetY = offsetY;
     }
 
     private void traceLayout(String msg, Object... params) {
