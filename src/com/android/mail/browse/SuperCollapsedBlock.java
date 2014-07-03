@@ -20,7 +20,7 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -31,7 +31,7 @@ import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
  * so the listener can hide the block and reveal the corresponding collapsed message headers.
  *
  */
-public class SuperCollapsedBlock extends LinearLayout implements View.OnClickListener {
+public class SuperCollapsedBlock extends FrameLayout implements View.OnClickListener {
 
     public interface OnClickListener {
         /**
@@ -71,7 +71,8 @@ public class SuperCollapsedBlock extends LinearLayout implements View.OnClickLis
     }
 
     public void setCount(int count) {
-        mSuperCollapsedText.setText(
+        mSuperCollapsedText.setText(String.valueOf(count));
+        setContentDescription(
                 getResources().getQuantityString(R.plurals.show_messages_read, count, count));
     }
 

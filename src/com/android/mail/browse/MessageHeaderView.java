@@ -94,8 +94,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     private static final String LAYOUT_TAG = "message header layout";
     private static final String MEASURE_TAG = "message header measure";
 
-    private static final String RECIPIENT_HEADING_DELIMITER = "   ";
-
     private static final String LOG_TAG = LogTag.getLogTag();
 
     // This is a debug only feature
@@ -103,6 +101,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
     private MessageHeaderViewCallbacks mCallbacks;
 
+    private View mBorderView;
     private ViewGroup mUpperHeaderView;
     private View mTitleContainer;
     private View mSnapHeaderBottomBorder;
@@ -249,6 +248,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mBorderView = findViewById(R.id.message_header_border);
         mUpperHeaderView = (ViewGroup) findViewById(R.id.upper_header);
         mTitleContainer = findViewById(R.id.title_container);
         mSnapHeaderBottomBorder = findViewById(R.id.snap_header_bottom_border);
@@ -663,6 +663,14 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             }
 
             setChildMarginEnd(mTitleContainer, mTitleContainerMarginEnd);
+        }
+
+        final ConversationViewAdapter adapter = mMessageHeaderItem.getAdapter();
+        if (adapter != null) {
+            mBorderView.setVisibility(
+                    adapter.isPreviousItemSuperCollapsed(mMessageHeaderItem) ? GONE : VISIBLE);
+        } else {
+            mBorderView.setVisibility(VISIBLE);
         }
     }
 
