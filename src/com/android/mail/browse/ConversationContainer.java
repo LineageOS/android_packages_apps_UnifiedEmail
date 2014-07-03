@@ -356,7 +356,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         removeViewInLayout(mAdditionalBottomBorder);
         mAdditionalBottomBorderAdded = false;
 
-        mSnapEnabled = isSnapEnabled();
+//        mSnapEnabled = isSnapEnabled();
+        mSnapEnabled = false; // TODO - re-enable when dogfooders howl
         positionOverlays(mOffsetY, false /* postAddView */);
     }
 
