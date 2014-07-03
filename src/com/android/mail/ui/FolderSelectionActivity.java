@@ -44,7 +44,6 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MailObservable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
-import com.android.mail.welcome.WelcomeTourCompletionListener;
 import com.android.mail.widget.WidgetProvider;
 import com.android.oldbitmap.BitmapCache;
 
