@@ -875,7 +875,7 @@ public class Conversation implements Parcelable {
     public static String getSubjectForDisplay(Context context, String badgeText,
             String filteredSubject) {
         if (TextUtils.isEmpty(filteredSubject)) {
-            return "";
+            return context.getString(R.string.no_subject);
         } else if (!TextUtils.isEmpty(badgeText)) {
             if (sBadgeAndSubject == null) {
                 sBadgeAndSubject = context.getString(R.string.badge_and_subject);

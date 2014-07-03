@@ -19,9 +19,9 @@ package com.android.mail.print;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.text.TextUtils;
 
 import com.android.mail.R;
+import com.android.mail.providers.Conversation;
 import com.android.mail.ui.AbstractHtmlTemplates;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -65,8 +65,9 @@ public class HtmlPrintTemplates extends AbstractHtmlTemplates {
         final String numMessageString = res.getQuantityString(
                 R.plurals.num_messages, numMessages, numMessages);
 
-        final String printedSubject = TextUtils.isEmpty(subject)
-                ? res.getString(R.string.no_subject) : subject;
+        final String printedSubject =
+                Conversation.getSubjectForDisplay(mContext, null /* badgeText */, subject);
+
         append(mConversationUpper, mLogo, mContext.getString(R.string.app_name),
                 printedSubject, numMessageString);
 
