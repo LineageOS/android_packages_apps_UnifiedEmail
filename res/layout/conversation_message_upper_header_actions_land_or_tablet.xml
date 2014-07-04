@@ -25,16 +25,16 @@
     <ImageView
         android:id="@+id/reply"
         style="@style/MessageHeaderActionButtonStyle"
-        android:src="@drawable/ic_reply_holo_light"
+        android:src="@drawable/ic_reply_24dp"
         android:contentDescription="@string/reply" />
     <ImageView
         android:id="@+id/reply_all"
         style="@style/MessageHeaderActionButtonStyle"
-        android:src="@drawable/ic_reply_all_holo_light"
+        android:src="@drawable/ic_reply_all_24dp"
         android:contentDescription="@string/reply_all" />
     <ImageView
         android:id="@+id/forward"
         style="@style/MessageHeaderActionButtonStyle"
-        android:src="@drawable/ic_forward_holo_light"
+        android:src="@drawable/ic_forward_24dp"
         android:contentDescription="@string/forward" />
 </merge>
