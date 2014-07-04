@@ -28,8 +28,7 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
 
     private final ArrayList<FolderSelectorAdapter> mSections =
             new ArrayList<FolderSelectorAdapter>();
-    public final static int TYPE_SECTION_HEADER = 0;
-    public final static int TYPE_ITEM = 1;
+    public final static int TYPE_ITEM = 0;
 
     public void addSection(FolderSelectorAdapter adapter) {
         mSections.add(adapter);
@@ -90,15 +89,6 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
         return -1;
     }
 
-    @Override
-    public boolean areAllItemsEnabled() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled(int position) {
-        return (getItemViewType(position) != TYPE_SECTION_HEADER);
-    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

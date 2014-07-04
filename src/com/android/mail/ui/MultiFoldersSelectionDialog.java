@@ -138,14 +138,12 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
                         // TODO(mindyp): we currently do not support frequently moved to
                         // folders, at headers[1]; need to define what that means.*/
 
-                        final String[] headers = context.getResources().getStringArray(
-                                R.array.change_folder_sections);
                         Cursor c = AddableFolderSelectorAdapter.filterFolders(data,
                                 ImmutableSet.of(FolderType.INBOX_SECTION), originalChecked,
                                 true /* includeOnlyInitiallySelected */);
                         if (c.getCount() > 0) {
                             mAdapter.addSection(new AddableFolderSelectorAdapter(context, c,
-                                    checked, R.layout.multi_folders_view, headers[0]));
+                                    checked, R.layout.multi_folders_view));
                         }
 
                         c = AddableFolderSelectorAdapter.filterFolders(data,
@@ -153,7 +151,7 @@ public class MultiFoldersSelectionDialog extends FolderSelectionDialog {
                                 false /* includeOnlyInitiallySelected */);
                         if (c.getCount() > 0) {
                             mAdapter.addSection(new AddableFolderSelectorAdapter(context, c,
-                                    checked, R.layout.multi_folders_view, headers[1]));
+                                    checked, R.layout.multi_folders_view));
                         }
 
                         dialog.getListView().setAdapter(mAdapter);

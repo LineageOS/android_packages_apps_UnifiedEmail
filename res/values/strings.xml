@@ -649,19 +649,6 @@
     <!-- Displayed in the message heading. Shown if the message was sent via another domain. [CHAR LIMIT=10] -->
     <string name="via_domain">via <xliff:g id="viaDomain">%1$s</xliff:g></string>
 
-    <!-- The section headers for the move to folder dialog [CHAR LIMIT=15] -->
-    <string-array name="moveto_folder_sections">
-        <item>System</item>
-        <item>Frequently Used</item>
-        <item>All Folders</item>
-    </string-array>
-
-    <!-- The section headers for the change folder dialog [CHAR LIMIT=20] -->
-    <string-array name="change_folder_sections">
-        <item>Current Folders</item>
-        <item>Other Folders</item>
-    </string-array>
-
     <!-- Button text for the button to click to have the user sign in again or adjust their credentials. [CHAR LIMIT=20]-->
     <string name="signin">Sign-in</string>
     <!-- Button text for the button to click for more information. [CHAR LIMIT=20]-->

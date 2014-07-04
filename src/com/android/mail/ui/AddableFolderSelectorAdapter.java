@@ -32,8 +32,8 @@ import java.util.Set;
 public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
 
     public AddableFolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> selected, int layout, String header) {
-        super(context, folders, selected, layout, header);
+            Set<String> selected, int layout) {
+        super(context, folders, selected, layout);
     }
 
     /**

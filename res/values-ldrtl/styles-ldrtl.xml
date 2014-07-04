@@ -213,6 +213,11 @@
         <item name="android:layout_alignParentStart">true</item>
     </style>
 
+    <style name="FolderSelectionItemStyle" parent="AbstractFolderSelectionItemStyle">
+        <item name="android:layout_marginStart">@dimen/folder_selection_margin_start</item>
+        <item name="android:layout_marginEnd">@dimen/folder_selection_margin_end</item>
+    </style>
+
     <style name="FolderColorBoxStyle" parent="AbstractFolderColorBoxStyle">
         <item name="android:layout_alignParentStart">true</item>
     </style>
