@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="to" msgid="4392614766835725698">"প্রতি"</string>
+    <string name="cc" msgid="7017720927911078193">"Cc"</string>
+    <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
+    <string name="subject_hint" msgid="7253964583324677128">"বিষয়"</string>
+    <string name="body_hint" msgid="4279864165439577668">"ইমেল লিখুন"</string>
+    <string name="add_file_attachment" msgid="2203398371671979481">"ফাইল সংযুক্ত করুন"</string>
+    <string name="add_photo_attachment" msgid="3738882100645552858">"ছবি সংযুক্ত করুন"</string>
+    <string name="save_draft" msgid="5555744208032445632">"খসড়া সংরক্ষণ করুন"</string>
+    <string name="discard" msgid="1714960202994370243">"পরিত্যাগ করুন"</string>
+    <string name="compose" msgid="1473559896062432878">"লিখুন"</string>
+  <string-array name="compose_modes">
+    <item msgid="8631190144210933782">"উত্তর দিন"</item>
+    <item msgid="4085029907540221568">"সকলকে উত্তর দিন"</item>
+    <item msgid="857480048798815437">"ফরোয়ার্ড"</item>
+  </string-array>
+    <string name="reply_attribution" msgid="717207316577386788">"<xliff:g id="DATE">%s</xliff:g> এ, <xliff:g id="PERSON">%s</xliff:g> লিখেছেন:"</string>
+    <string name="forward_attribution" msgid="1498936339458535158">"---------- ফরোয়ার্ড করা বার্তা ----------&lt;br&gt;থেকে: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;তারিখ: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;বিষয়: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;প্রতি: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- ফরোয়ার্ড করা বার্তা ----------"</string>
+    <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
+    <string name="select_attachment_type" msgid="4711524151968942082">"সংযুক্তির প্রকার চয়ন করুন"</string>
+    <string name="too_large_to_attach_single" msgid="2996733972478212136">"<xliff:g id="MAXSIZE">%1$s</xliff:g> এর বেশি ফাইল সংযুক্ত করা যাবে না।"</string>
+    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"একটি বা তার বেশি ফাইল সংযুক্ত হয়নি। সীমা <xliff:g id="MAXSIZE">%1$s</xliff:g>।"</string>
+    <string name="too_large_to_attach_additional" msgid="3366607594339390249">"ফাইল সংযুক্ত হয়নি। <xliff:g id="MAXSIZE">%1$s</xliff:g> সীমাতে পৌঁছেছে।"</string>
+    <string name="generic_attachment_problem" msgid="8775959340559458709">"ফাইল সংযুক্ত করা যায়নি।"</string>
+    <string name="recipient_needed" msgid="999037027358925655">"কমপক্ষে একজন প্রাপককে জুড়ুন।"</string>
+    <string name="recipient_error_dialog_title" msgid="6051694305498669180">"প্রাপক ত্রুটি"</string>
+    <string name="confirm_send_title" msgid="5663602035452564062">"বার্তা পাঠাবেন?"</string>
+    <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"বার্তার বিষয়ে কোনো পাঠ্য নেই।"</string>
+    <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"বার্তার মূল অংশে কোনো পাঠ্য নেই।"</string>
+    <string name="confirm_send_message" msgid="3221546155385562874">"এই বার্তাটি পাঠাবেন?"</string>
+    <string name="message_discarded" msgid="5079975378884765445">"বার্তা পরিত্যাগ করা হয়েছে।"</string>
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
+    <string name="custom_from_account_label" msgid="5069652141632649722">"এই রূপে মেল পাঠান:"</string>
+    <string name="send" msgid="8242003661397555986">"পাঠান"</string>
+    <string name="mark_read" msgid="8438349154394313195">"পঠিত বলে চিহ্নিত করুন"</string>
+    <string name="mark_unread" msgid="6231373939351125713">"অপঠিত হিসাবে চিহ্নিত করুন"</string>
+    <string name="mute" msgid="1995954983688603977">"নিঃশব্দ করুন"</string>
+    <string name="add_star" msgid="2866003744391266498">"তারা জুড়ুন"</string>
+    <string name="remove_star" msgid="4372327933122106128">"তারা চিহ্ন সরান"</string>
+    <string name="remove_folder" msgid="4906542720439865413">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> থেকে সরান"</string>
+    <string name="archive" msgid="847250094775910499">"সংরক্ষণ করুন"</string>
+    <string name="report_spam" msgid="6467567747975393907">"স্প্যাম প্রতিবেদন করুন"</string>
+    <string name="mark_not_spam" msgid="694891665407228160">"স্প্যাম নয় রূপে প্রতিবেদন করুন"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"ফিশিং প্রতিবেদন করুন"</string>
+    <string name="delete" msgid="844871204175957681">"মুছুন"</string>
+    <string name="discard_drafts" msgid="6862272443470085375">"খসড়াগুলি পরিত্যাগ করুন"</string>
+    <string name="refresh" msgid="490989798005710951">"রিফ্রেশ"</string>
+    <string name="reply" msgid="2032052598496088561">"উত্তর দিন"</string>
+    <string name="reply_all" msgid="7257248094625487557">"সকলকে উত্তর দিন"</string>
+    <string name="resume_draft" msgid="6450150180834092146">"সম্পাদনা করুন"</string>
+    <string name="forward" msgid="6822914459902983767">"ফরোয়ার্ড করুন"</string>
+    <string name="menu_compose" msgid="6274193058224230645">"লিখুন"</string>
+    <string name="menu_change_folders" msgid="1542713666608888717">"ফোল্ডারগুলি পরিবর্তন করুন"</string>
+    <string name="menu_move_to" msgid="9138296669516358542">"এতে সরান"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"ইনবক্সে সরান"</string>
+    <string name="menu_manage_folders" msgid="6755623004628177492">"ফোল্ডার সেটিংস"</string>
+    <string name="menu_show_original" msgid="4227060689700765828">"স্বয়ং-আকারবদল ফেরান"</string>
+    <string name="menu_folder_options" msgid="8897520487430647932">"ফোল্ডার সেটিংস"</string>
+    <string name="menu_settings" msgid="6007027046949837282">"সেটিংস"</string>
+    <string name="menu_search" msgid="5297197523031943248">"অনুসন্ধান করুন"</string>
+    <string name="drawer_title" msgid="5888199203222498840">"নেভিগেশন"</string>
+    <string name="mark_important" msgid="6904096897104265870">"গুরুত্বপূর্ণ রূপে চিহ্নিত করুন"</string>
+    <string name="mark_not_important" msgid="4550967327747977068">"গুরুত্বপূর্ণ নয় বলে চিহ্নিত করুন"</string>
+    <string name="add_cc_label" msgid="504861315425773180">"Cc/Bcc জুড়ুন"</string>
+    <string name="add_bcc_label" msgid="7432027645493843336">"Bcc জুড়ুন"</string>
+    <string name="quoted_text" msgid="7250749398672037355">"উদ্ধৃত পাঠ্যকে অন্তর্ভুক্ত করুন"</string>
+    <string name="quoted_text_label" msgid="541007446961960617">"উদ্ধৃতি পাঠ্য"</string>
+    <string name="respond_inline" msgid="6797117334768201180">"ইনলাইন প্রতিক্রিয়া দিন"</string>
+    <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
+    <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
+    <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
+    <string name="attachment_image" msgid="3832985223906528449">"চিত্র"</string>
+    <string name="attachment_video" msgid="7526134752988603154">"ভিডিও"</string>
+    <string name="attachment_audio" msgid="135527133955622936">"অডিও"</string>
+    <string name="attachment_text" msgid="5544874374971562759">"পাঠ্য"</string>
+    <string name="attachment_application_msword" msgid="2326909450865637910">"দস্তাবেজ"</string>
+    <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"উপস্থাপনা"</string>
+    <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"স্প্রেডশীট"</string>
+    <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
+    <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> ফাইল"</string>
+    <string name="preview_attachment" msgid="6934911143603455393">"পূর্বরূপ"</string>
+    <string name="save_attachment" msgid="5360128849867863132">"সংরক্ষণ করুন"</string>
+    <string name="cancel_attachment" msgid="4651201258272223650">"বাতিল করুন"</string>
+    <string name="open_attachment" msgid="975940478986626705">"খুলুন"</string>
+    <string name="install_attachment" msgid="2803531650273683382">"ইনস্টল করুন"</string>
+    <string name="download_again" msgid="7418568915429156518">"আবার ডাউনলোড করুন"</string>
+    <string name="more_info_attachment" msgid="717244337981816703">"তথ্য"</string>
+    <string name="no_application_found" msgid="1945184804521392093">"কোনো অ্যাপ্লিকেশনই এই সংযুক্তিটিকে দেখার জন্য খুলতে পারছে না।"</string>
+    <string name="fetching_attachment" msgid="2599763030649526179">"সংযুক্তি আনা হচ্ছে"</string>
+    <string name="please_wait" msgid="8797634225088247121">"দয়া করে অপেক্ষা করুন..."</string>
+    <string name="saved" msgid="6660844285730790469">"সংরক্ষণ হয়েছে, <xliff:g id="SIZE">%s</xliff:g>"</string>
+    <string name="download_failed" msgid="442019281547315527">"ডাউনলোড করা যায়নি। পুনঃচেষ্টা করতে স্পর্শ করুন।"</string>
+    <string name="attachments_header" msgid="6459475590011460229">"সংযুক্তিগুলি"</string>
+    <string name="menu_photo_save_all" msgid="4295226099481995348">"সবকিছু সংরক্ষণ করুন"</string>
+    <string name="menu_photo_share" msgid="2214772815165829079">"ভাগ করুন"</string>
+    <string name="menu_photo_share_all" msgid="4577299400844129078">"সমস্ত ভাগ করুন"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"মুদ্রণ"</string>
+    <string name="saving" msgid="925514721138014677">"সংরক্ষণ হচ্ছে..."</string>
+    <string name="choosertitle_sharevia" msgid="6142681649048665134">"এর মাধ্যমে ভাগ করুন"</string>
+    <string name="contextmenu_openlink" msgid="2176176524824953775">"ব্রাউজারে খুলুন"</string>
+    <string name="contextmenu_copy" msgid="4604170699444153037">"অনুলিপি করুন"</string>
+    <string name="contextmenu_copylink" msgid="3580131515400610839">"লিঙ্ক URL অনুলিপি করুন"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"চিত্র দেখুন"</string>
+    <string name="contextmenu_dial_dot" msgid="9104426720103729453">"ডায়াল করুন..."</string>
+    <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS…"</string>
+    <string name="contextmenu_add_contact" msgid="8395100913366045250">"পরিচিতি জুড়ুন"</string>
+    <string name="contextmenu_send_mail" msgid="8301941130009797208">"ইমেল পাঠান"</string>
+    <string name="contextmenu_map" msgid="7721544518698532954">"মানচিত্র"</string>
+    <string name="contextmenu_sharelink" msgid="6213520416250245200">"লিঙ্ক ভাগ করুন"</string>
+    <string name="contextmenu_help" msgid="4651718679842414097">"সহায়তা"</string>
+    <string name="contextmenu_feedback" msgid="4429118420169571473">"প্রতিক্রিয়া পাঠান"</string>
+    <!-- no translation found for num_selected (5723323585692387843) -->
+    <skip />
+  <plurals name="move_conversation">
+    <item quantity="one" msgid="3657821200245019288">"কথোপকথন সরান"</item>
+    <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g>টি কথোপকথন সরান"</item>
+  </plurals>
+    <string name="content_description" msgid="169080965055367954">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> <xliff:g id="SUBJECT">%3$s</xliff:g> সম্পর্কে, <xliff:g id="SNIPPET">%4$s</xliff:g> <xliff:g id="DATE">%5$s</xliff:g> এ, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="7796658700638720091">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> <xliff:g id="SUBJECT">%3$s</xliff:g> সম্পর্কে, <xliff:g id="SNIPPET">%4$s</xliff:g> <xliff:g id="TIME">%5$s</xliff:g> এ, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
+    <string name="read_string" msgid="219566857950091332">"কথোপকথন পঠন"</string>
+    <string name="unread_string" msgid="588180203444398297">"কথোপকথন পড়া হয়নি"</string>
+    <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
+    <string name="badge_subject_and_snippet" msgid="1261901365444812399">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g> — <xliff:g id="ID_3">%3$s</xliff:g>"</string>
+  <plurals name="draft">
+    <item quantity="one" msgid="333591132893648383">"খসড়া"</item>
+    <item quantity="other" msgid="6961049507579977505">"খসড়াগুলি"</item>
+  </plurals>
+    <string name="sending" msgid="8214361929125649771">"পাঠানো হচ্ছে..."</string>
+    <string name="message_retrying" msgid="64661613119987741">"পুনরায় চেষ্টা করা হচ্ছে..."</string>
+    <string name="message_failed" msgid="4820279576299009735">"ব্যর্থ"</string>
+    <string name="send_failed" msgid="750908595144529579">"বার্তা পাঠানো যায়নি।"</string>
+    <string name="me_object_pronoun" msgid="6957328068206184521">"আমি"</string>
+    <string name="me_subject_pronoun" msgid="271527705272088475">"আমি"</string>
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"ইনবক্স"</string>
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"এই কথোপকথনটি মুছবেন?"</item>
+    <item quantity="other" msgid="930334208937121234">"এই <xliff:g id="COUNT">%1$d</xliff:g>টি কথোপকথন মুছবেন?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"এই কথোপকথনটি সংরক্ষণাগারভুক্ত করবেন?"</item>
+    <item quantity="other" msgid="4713469868399246772">"এই <xliff:g id="COUNT">%1$d</xliff:g>টি কথোপকথন সংরক্ষণাগারভুক্ত করবেন?"</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <item quantity="one" msgid="3560777326142175666">"এই বার্তাটি পরিত্যাগ করবেন?"</item>
+    <item quantity="other" msgid="4909853098394068722">"এই <xliff:g id="COUNT">%1$d</xliff:g>টি বার্তা পরিত্যাগ করবেন?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"এই বার্তাটি পরিত্যাগ করবেন?"</string>
+    <string name="loading_conversations" msgid="2649440958602369555">"লোড হচ্ছে..."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"আপনি সমস্ত মেল পড়ে ফেলেছেন! এখন আপনার দিনটি উপভোগ করুন।"</string>
+    <string name="empty_search" msgid="7123710829748939105">"ওহো! আমরা \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" এর জন্য কিছু খুঁজে পাইনি।"</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"কি আনন্দ, এখানে কোনো স্প্যাম নেই!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"এখানে কোনো ট্র্যাশ নেই। রিসাইকেল করার জন্য ধন্যবাদ!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"এখানে কোনো মেল ​​নেই।"</string>
+    <string name="getting_messages" msgid="563711962781090231">"আপনার বার্তাগুলি প্রাপ্ত করা হচ্ছে"</string>
+    <string name="undo" msgid="6070869718469782251">"পূর্বাবস্থায় ফিরুন"</string>
+  <plurals name="conversation_unstarred">
+    <item quantity="one" msgid="8315328190288744398">"<xliff:g id="COUNT">%1$d</xliff:g>টি কথোপকথন তারকা চিহ্নমুক্ত হচ্ছে।"</item>
+    <item quantity="other" msgid="2222365088907519938">"<xliff:g id="COUNT">%1$d</xliff:g>টি কথোপকথন তারকা চিহ্নমুক্ত হচ্ছে।"</item>
+  </plurals>
+  <plurals name="conversation_muted">
+    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি নিঃশব্দ করা হয়েছে।"</item>
+    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি নিঃশব্দ করা হয়েছে।"</item>
+  </plurals>
+  <plurals name="conversation_spammed">
+    <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি স্প্যাম হিসাবে প্রতিবেদন করা হয়েছে।"</item>
+    <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি স্প্যাম হিসাবে প্রতিবেদন করা হয়েছে।"</item>
+  </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি স্প্যাম নয় হিসাবে প্রতিবেদন করা হয়েছে।"</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি স্প্যাম নয় হিসাবে প্রতিবেদন করা হয়েছে।"</item>
+  </plurals>
+  <plurals name="conversation_not_important">
+    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি গুরুত্বপূর্ণ নয় হিসাবে চিহ্নিত হয়েছে।"</item>
+    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি গুরুত্বপূর্ণ নয় হিসাবে চিহ্নিত হয়েছে।"</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি ফিশিং হিসাবে প্রতিবেদন করা হয়েছে।"</item>
+    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি ফিশিং হিসাবে প্রতিবেদন করা হয়েছে।"</item>
+  </plurals>
+  <plurals name="conversation_archived">
+    <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি সংরক্ষণাগারভুক্ত হয়েছে।"</item>
+    <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি সংরক্ষণাগারভুক্ত হয়েছে।"</item>
+  </plurals>
+  <plurals name="conversation_deleted">
+    <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি মোছা হয়েছে।"</item>
+    <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;টি মোছা হয়েছে।"</item>
+  </plurals>
+    <string name="deleted" msgid="2757349161107268029">"মোছা হয়েছে"</string>
+    <string name="archived" msgid="7533995360704366325">"সংরক্ষণাগারভুক্ত"</string>
+    <string name="folder_removed" msgid="1047474677580149436">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> থেকে সরানো হয়েছে"</string>
+  <plurals name="conversation_folder_changed">
+    <item quantity="one" msgid="4930161390461457462">"ফোল্ডার পরিবর্তন হয়েছে।"</item>
+    <item quantity="other" msgid="8918589141287976985">"ফোল্ডারগুলি পরিবর্তন হয়েছে।"</item>
+  </plurals>
+    <string name="conversation_folder_moved" msgid="297469098857964678">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> এ সরানো হয়েছে"</string>
+    <string name="search_results_header" msgid="4669917471897026269">"ফলাফল"</string>
+    <string name="search_unsupported" msgid="4654227193354052607">"এই অ্যাকাউন্টে অনুসন্ধানের সুবিধা নেই।"</string>
+    <string name="add_label" msgid="6060201715848652940">"ফোল্ডার জুড়ুন"</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"<xliff:g id="SENDER">%s</xliff:g> এর থেকে নতুন বার্তা দেখান।"</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="1018949581192786598">"<xliff:g id="COUNT">%1$d</xliff:g>টি নতুন বার্তা দেখান।"</item>
+  </plurals>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"প্রাপকের বিশদ বিবরণ প্রসারিত করুন"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"প্রাপকের বিশদ বিবরণ সঙ্কুচিত করুন"</string>
+    <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g> এর যোগাযোগের তথ্য দেখান"</string>
+    <string name="contact_info_string_default" msgid="596531738469809159">"যোগাযোগের তথ্য দেখান"</string>
+  <plurals name="show_messages_read">
+    <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g>টি পুরোনো বার্তা"</item>
+  </plurals>
+    <string name="from_heading" msgid="2454519463223197231">"প্রেরক: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"একে-উত্তর দিন: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"প্রতি: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"Cc: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"Bcc: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"তারিখ: "</string>
+    <string name="show_images" msgid="1875700481186331432">"ছবিগুলি দেখান"</string>
+    <string name="always_show_images" msgid="5966408990164581801">"এই প্রেরকের থেকে ছবিগুলি সর্বদা দেখান"</string>
+    <string name="always_show_images_toast" msgid="6218061921546973716">"এই প্রেরকের পাঠানো ছবিগুলি স্বয়ংক্রিয়ভাবে দেখানো হবে।"</string>
+    <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
+    <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="VIA_DOMAIN">%3$s</xliff:g> এর মাধ্যমে <xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
+    <string name="message_saved" msgid="7073947895562277576">"বার্তাটি খসড়া হিসাবে সংরক্ষিত হয়েছে।"</string>
+    <string name="sending_message" msgid="1498583163419122128">"বার্তা পাঠানো হচ্ছে..."</string>
+    <string name="invalid_recipient" msgid="2161317422860961623">"<xliff:g id="WRONGEMAIL">%s</xliff:g> ঠিকানাটি অবৈধ।"</string>
+    <string name="show_elided" msgid="6693371179492345444">"উদ্ধৃত পাঠ্য দেখান"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ উদ্ধৃত পাঠ্য লুকান"</string>
+    <string name="message_invite_title" msgid="6757287288611722175">"ক্যালেন্ডার আমন্ত্রণ"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"ক্যালেন্ডারে দেখুন"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"আসছেন?"</string>
+    <string name="message_invite_accept" msgid="869753811259793266">"হ্যাঁ"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"হয়তো"</string>
+    <string name="message_invite_decline" msgid="4524135969656266758">"না"</string>
+    <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
+    <string name="send_anyway" msgid="426079691638238572">"তথাপিও পাঠান"</string>
+    <string name="ok" msgid="8339355733816891026">"ঠিক আছে"</string>
+    <string name="done" msgid="3079981801778027540">"সম্পন্ন"</string>
+    <string name="cancel" msgid="8762981157252199115">"বাতিল করুন"</string>
+    <string name="clear" msgid="3184687982186479442">"সাফ করুন"</string>
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"সফল"</item>
+    <item msgid="7109065688039971961">"কোনো সংযোগ নেই৷"</item>
+    <item msgid="8437496123716232060">"সাইন ইন করা যায়নি।"</item>
+    <item msgid="1651266301325684887">"নিরাপত্তাজনিত ত্রুটি"</item>
+    <item msgid="1461520171154288533">"সিঙ্ক করা যায়নি।"</item>
+    <item msgid="4779810016424303449">"অভ্যন্তরীণ ত্রুটি"</item>
+    <item msgid="600403120960920559">"সার্ভার ত্রুটি"</item>
+  </string-array>
+    <string name="tap_to_configure" msgid="1181356242354390930">"সেট আপ করতে স্পর্শ করুন"</string>
+    <string name="non_synced_folder_description" msgid="6059194125558004080">"কথোপকথনগুলি দেখতে, এই ফোল্ডারটি সিঙ্ক করুন।"</string>
+    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"ফোল্ডার সিঙ্ক করুন"</string>
+    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g>টি অপঠিত"</item>
+  </plurals>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>টি+ অপঠিত"</string>
+    <string name="view_more_conversations" msgid="3151067626309674344">"আরো কথোপকথন দেখুন"</string>
+    <string name="loading_conversation" msgid="489160038366067983">"লোড হচ্ছে..."</string>
+    <string name="activity_mailbox_selection" msgid="6876105223659297603">"অ্যাকাউন্ট চয়ন করুন"</string>
+    <string name="activity_folder_selection" msgid="5161845867397316052">"ফোল্ডার চয়ন করুন"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"ইমেল ফোল্ডার"</string>
+    <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"ফোল্ডারগুলি পরিবর্তন করুন"</string>
+    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"এতে সরান"</string>
+    <string name="search_hint" msgid="3625734263059221350">"মেল অনুসন্ধান করুন"</string>
+    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
+    <string name="network_error" msgid="2125579009654728299">"কোনো সংযোগ নেই"</string>
+    <string name="retry" msgid="4515885444824418022">"পুনরায় চেষ্টা করুন"</string>
+    <string name="load_more" msgid="420892447103014683">"আরো লোড করুন"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
+    <string name="shortcut_name_title" msgid="8220482314700618391">"ফোল্ডার শর্টকাটের নাম দিন"</string>
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"সিঙ্কের জন্য অপেক্ষারত"</string>
+    <string name="not_synced_title" msgid="794279749170198599">"অ্যাকাউন্ট সিঙ্ক হয়নি"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"এই অ্যাকাউন্টটি স্বয়ংক্রিয়ভাবে সিঙ্ক করার জন্য সেট আপ করা নেই।\nমেল একবার সিঙ্ক করার জন্য "<b>"এখন সিঙ্ক করুন"</b>" স্পর্শ করুন, অথবা মেল স্বয়ংক্রিয়ভাবে সিঙ্ক করার জন্য এই অ্যাকাউন্টটিকে সেট আপ করতে "<b>"সিঙ্ক সেটিংস পরিবর্তন করুন"</b>"।"</string>
+    <string name="manual_sync" msgid="6743983544685622800">"এখন সিঙ্ক করুন"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"সিঙ্ক সেটিংস পরিবর্তন করুন"</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"চিত্রটি লোড করা যায়নি"</string>
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"নির্বাচনে একাধিক অ্যাকাউন্ট থাকার কারণে সরানো যাবে না।"</string>
+    <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"না, আমি এই বার্তাটিকে বিশ্বাস করি"</string>
+    <string name="via_domain" msgid="380109230928079350">"<xliff:g id="VIADOMAIN">%1$s</xliff:g> এর মাধ্যমে"</string>
+  <string-array name="moveto_folder_sections">
+    <item msgid="6984976603137892898">"সিস্টেম"</item>
+    <item msgid="6593672292311851204">"পুনঃপুন ব্যবহৃত"</item>
+    <item msgid="3584541772344786752">"সকল ফোল্ডার"</item>
+  </string-array>
+  <string-array name="change_folder_sections">
+    <item msgid="53174547922204815">"বর্তমান ফোল্ডারগুলি"</item>
+    <item msgid="8635593741453580597">"অন্যান্য ফোল্ডারগুলি"</item>
+  </string-array>
+    <string name="signin" msgid="8958889809095796177">"সাইন-ইন করুন"</string>
+    <string name="info" msgid="6009817562073541204">"তথ্য"</string>
+    <string name="report" msgid="5417082746232614958">"প্রতিবেদন করুন"</string>
+    <string name="sync_error" msgid="7368819509040597851">"সিঙ্ক করা যায়নি।"</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"সিঙ্ক করার জন্য আপনার ডিভাইসে পর্যাপ্ত সঞ্চয় স্থান নেই।"</string>
+    <string name="storage" msgid="3262760336059073446">"সঞ্চয়স্থান"</string>
+    <string name="senders_split_token" msgid="5895854795157860258">", "</string>
+    <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)টি"</string>
+    <string name="all_folders_heading" msgid="2506843494725730618">"সকল ফোল্ডার"</string>
+    <string name="recent_folders_heading" msgid="8613621794529777406">"সাম্প্রতিক ফোল্ডারগুলি"</string>
+    <string name="message_details_title" msgid="2183394728494962332">"বার্তার বিশদ বিবরণ"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"স্বয়ং-অগ্রবর্তী"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"আপনি একটি বার্তা মোছার পরে কোন স্ক্রিন দেখানো হবে তা চয়ন করুন"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"স্বয়ং-অগ্রবর্তী অভিরুচি সেট করুন\n(আপনি মোছার, ইত্যাদির পরে)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"অপেক্ষাকৃত নতুন"</item>
+    <item msgid="5562093094216840213">"অপেক্ষাকৃত পুরানো"</item>
+    <item msgid="3331655314944797957">"কথোপকথন তালিকা"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"আপনি মোছার পর অপেক্ষাকৃত নতুন কথোপকথন দেখান"</item>
+    <item msgid="732746454445519134">"আপনি মোছার পর অপেক্ষাকৃত পুরানো কথোপকথন দেখান"</item>
+    <item msgid="2189929276292165301">"আপনি মোছার পর কথোপকথন তালিকা দেখান"</item>
+  </string-array>
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"এতে পাঠান"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"ছবি অনুমোদনগুলি সাফ করুন"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"ছবি অনুমোদনগুলি সাফ করবেন?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"আপনি পূর্বে যেসব প্রেরকদের অনুমোদন করেছিলেন তাদের থেকে ইনলাইন চিত্রগুলির প্রদর্শন বন্ধ করুন।"</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"ছবিগুলি স্বয়ংক্রিয়ভাবে দেখানো হবে না।"</string>
+    <string name="preferences_signature_title" msgid="888167074398030574">"স্বাক্ষর"</string>
+    <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"স্বাক্ষর"</string>
+    <string name="preferences_signature_summary_not_set" msgid="2830886980620445857">"সেট করা নেই"</string>
+    <string name="notification_action_reply" msgid="6015299134424685297">"উত্তর দিন"</string>
+    <string name="notification_action_reply_all" msgid="20020468410400912">"সকলকে উত্তর দিন"</string>
+    <string name="notification_action_archive" msgid="81978513898440040">"সংরক্ষণাগারে রাখুন"</string>
+    <string name="notification_action_remove_label" msgid="5852730267411032291">"লেবেল সরান"</string>
+    <string name="notification_action_delete" msgid="327773454111551791">"মুছুন"</string>
+    <string name="notification_action_undo_archive" msgid="7280710366587361219">"সংরক্ষণাগারভুক্ত"</string>
+    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"লেবেল সরানো হয়েছে"</string>
+    <string name="notification_action_undo_delete" msgid="3105611327110905438">"মোছা হয়েছে"</string>
+    <string name="veiled_address" msgid="1209670815434513191"></string>
+    <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
+    <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
+    <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
+    <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g>টি নতুন বার্তা"</item>
+    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g>টি নতুন বার্তা"</item>
+  </plurals>
+    <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="silent_ringtone" msgid="5856834572357761687">"নীরব"</string>
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"ক্রিয়াগুলি সংরক্ষণাগারভুক্ত করুন বা মুছুন"</string>
+  <string-array name="prefEntries_removal_action">
+    <item msgid="1938422987822134657">"শুধুমাত্র সংরক্ষণাগার দেখান"</item>
+    <item msgid="5737880287951287278">"শুধুমাত্র মোছা দেখান"</item>
+    <item msgid="4279948809971752573">"সংরক্ষণ এবং মুছুন দেখান"</item>
+  </string-array>
+  <string-array name="prefSummaries_removal_action_summary">
+    <item msgid="492039800376391677">"শুধুমাত্র সংরক্ষণাগার দেখান"</item>
+    <item msgid="8350973578419775975">"কেবলমাত্র মোছা দেখান"</item>
+    <item msgid="2967059853409454648">"সংরক্ষণাগার দেখান ও মুছুন"</item>
+  </string-array>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"সংরক্ষণ এবং বিলোপ ক্রিয়াগুলি"</string>
+    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"সকলকে উত্তর দিন"</string>
+    <string name="preferences_default_reply_all_summary_impl" msgid="9131944420965452592">"বার্তার উত্তরগুলির জন্য ডিফল্ট হিসাবে ব্যবহার করুন"</string>
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"সংরক্ষণ করতে সোয়াইপ করুন"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"মুছতে সোয়াইপ করুন"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"কথোপকথন তালিকাতে"</string>
+    <string name="preference_sender_image_title" msgid="2441320893522058724">"প্রেরকের চিত্র"</string>
+    <string name="preference_sender_image_description" msgid="7126493917536558232">"কথোপকথন তালিকায় নামের পাশে দেখান"</string>
+    <string name="empty_trash" msgid="652435297593538512">"ট্র্যাশ খালি করুন"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"স্প্যাম খালি করুন"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"ট্র্যাশ খালি করবেন?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"স্প্যাম খালি করবেন?"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g>টি বার্তা স্থায়ীভাবে মুছে যাবে।"</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g>টি বার্তা স্থায়ীভাবে মুছে যাবে।"</item>
+  </plurals>
+    <string name="drawer_open" msgid="6074646853178471940">"নেভিগেশান ড্রয়ার খুলুন"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"নেভিগেশান ড্রয়ার বন্ধ করুন"</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"একটি প্রেরকের চিত্রকে স্পর্শ করে সেই কথোপকথনটি নির্বাচন করুন।"</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"একটি কথোপকথন নির্বাচন করতে স্পর্শ করুন ও ধরে থাকুন, তারপর আরো নির্বাচন করতে স্পর্শ করুন।"</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"ফোল্ডার আইকন"</string>
+    <string name="add_account" msgid="2162808366829269770">"অ্যাকাউন্ট জুড়ুন"</string>
+    <string name="attached_message" msgid="4267189489654642035">"সংযুক্ত বার্তা"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"গতকাল, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"টিপ খারিজ করুন"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"স্বয়ং-সিঙ্ক বন্ধ আছে।"</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"চালু করতে স্পর্শ করুন।"</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"অ্যাকাউন্ট সিঙ্ক বন্ধ আছে।"</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> এর মধ্যে চালু করুন।"</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"অ্যাকাউন্ট সেটিংস"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g> এ <xliff:g id="NUMBER">%1$s</xliff:g>টি অপ্রেরিত"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"স্বয়ং-সিঙ্ক চালু করবেন?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"শুধুমাত্র Gmail এ নয়, সমস্ত অ্যাপ্লিকেশনে এবং অ্যাকাউন্টে আপনার করা পরিবর্তনগুলি, ওয়েব, আপনার অন্যান্য ডিভাইস, এবং আপনার <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> এর মধ্যে সিঙ্ক্রোনাইজ হবে।"</string>
+    <string name="phone" msgid="5171715391553213328">"ফোন"</string>
+    <string name="tablet" msgid="7956969657216748522">"ট্যাবলেট"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"চালু করুন"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"আরো <xliff:g id="NUMBER">%1$s</xliff:g>টি ফোল্ডার দেখান"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"ফোল্ডারগুলি লুকান"</string>
+    <string name="print" msgid="7905250801319578415">"মুদ্রণ"</string>
+    <string name="print_all" msgid="1789808179145024065">"সবগুলি মুদ্রণ করুন"</string>
+  <plurals name="num_messages">
+    <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g>টি বার্তা"</item>
+    <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g>টি বার্তা"</item>
+  </plurals>
+    <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> তারিখে <xliff:g id="TIME">%2$s</xliff:g> এ"</string>
+    <string name="draft_to_heading" msgid="3448702197598500284">"এর প্রতি খসড়া: "</string>
+    <string name="draft_heading" msgid="4654861166951306093">"খসড়া"</string>
+    <string name="quoted_text_hidden_print" msgid="8572207101897331252">"উদ্ধৃত পাঠ্য লুক্কায়িত"</string>
+  <plurals name="num_attachments">
+    <item quantity="one" msgid="3344123914734915029">"<xliff:g id="COUNT">%1$d</xliff:g>টি সংযুক্তি"</item>
+    <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g>টি সংযুক্তি"</item>
+  </plurals>
+    <string name="no_subject" msgid="7823949839148118599">"(কোনো বিষয় নেই)"</string>
+    <string name="vacation_responder" msgid="145292667520371875">"ছুটিতে থাকাকালীন উত্তর"</string>
+    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"ছুটিতে থাকাকালীন উত্তর"</string>
+    <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"বার্তা"</string>
+    <string name="send_to_contacts_text" msgid="2696513899649703420">"শুধুমাত্র আমার পরিচিতিগুলিকে পাঠান"</string>
+    <string name="send_to_domain_text" msgid="5055332409482662383">"শুধুমাত্র <xliff:g id="DOMAIN">%1$s</xliff:g> এ পাঠান"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"শুরু হবে"</string>
+    <string name="pick_end_date_title" msgid="2068598706186320098">"শেষ হবে (ঐচ্ছিক)"</string>
+    <string name="date_not_set" msgid="4925325938525330766">"সেট করা নেই"</string>
+    <string name="set_end_date_dialog_title" msgid="72028456826019380">"সমাপ্তি তারিখ (ঐচ্ছিক)"</string>
+    <string name="custom_date" msgid="7566383722092597487">"কাস্টম"</string>
+    <string name="date_none" msgid="1033448683454519235">"কোনো কিছুই নয়"</string>
+    <string name="discard_changes" msgid="57677638191085556">"পরিবর্তনগুলি পরিত্যাগ করবেন?"</string>
+    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"ছুটিতে থাকাকালীন উত্তরে করা পরিবর্তনগুলি সংরক্ষিত হয়েছে"</string>
+    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"ছুটিতে থাকাকালীন উত্তরে করা পরিবর্তনগুলি পরিত্যাগ করা হয়েছে"</string>
+    <string name="vacation_responder_off" msgid="3502054743467746285">"বন্ধ আছে"</string>
+    <string name="vacation_responder_on" msgid="5242690599331655563">"চালু আছে, <xliff:g id="DATE">%1$s</xliff:g> তারিখ থেকে"</string>
+    <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"চালু আছে, <xliff:g id="START_DATE">%1$s</xliff:g> থেকে <xliff:g id="END_DATE">%2$s</xliff:g> পর্যন্ত"</string>
+    <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"একটি বিষয় বা বার্তা জুড়ুন"</string>
+    <string name="view_entire_message" msgid="1553882732296911563">"সমগ্র বার্তাটি দেখুন"</string>
+    <string name="eml_loader_error_toast" msgid="2107905951183729575">"এই ফাইলটি খোলা যাচ্ছে না"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"সহায়তা"</string>
+    <string name="feedback" msgid="79365993169715049">"প্রতিক্রিয়া পাঠান"</string>
+    <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> সংস্করণ <xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <string name="print_dialog" msgid="8754985880654139587">"মুদ্রণ..."</string>
+    <string name="copyright_information" msgid="1673715390305905781">"কপিরাইট তথ্য"</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"গোপনীয়তা নীতি"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"মুক্ত উৎস লাইসেন্স"</string>
+    <string name="reply_choice_yes" msgid="5279400403860280271">"হ্যাঁ"</string>
+    <string name="reply_choice_no" msgid="1626377088683186268">"না"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"ঠিক আছে"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"হে হে"</string>
+    <string name="reply_choice_thanks" msgid="8365439191962120322">"ধন্যবাদ"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"আমি সহমত জানাচ্ছি"</string>
+    <string name="reply_choice_nice" msgid="7472107121354003424">"সুন্দর"</string>
+    <string name="reply_on_my_way" msgid="8200386879475660650">"রাস্তায় আছি"</string>
+    <string name="reply_choice_later" msgid="6294535370720117768">"ঠিক আছে, পরে আমি আপনার সঙ্গে এই কথা বলছি"</string>
+    <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
+    <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"অ্যাকশনের নিশ্চিতকরণগুলি"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"মোছার আগে নিশ্চিত করুন"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"সংরক্ষণাগারভুক্ত করার আগে নিশ্চিত করুন"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"পাঠানোর আগে নিশ্চিত করুন"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"বার্তা স্বয়ংক্রিয় ভাবে মানানসই"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"স্ক্রীনের সাথে মানানসই করার জন্য বার্তাগুলিকে সংকুচিত করুন"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"বার্তা অ্যাকশনগুলি"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"সর্বদা স্ক্রীনের শীর্ষে বার্তা অ্যাকশনগুলি দেখান"</item>
+    <item msgid="1197074110597228768">"প্রতিকৃতি মোডে ঘোরানো হলেই কেবলমাত্র বার্তা অ্যাকশনগুলিকে স্ক্রীনের শীর্ষে দেখান"</item>
+    <item msgid="8496844279095098067">"বার্তার শিরোলেখের বাইরে বার্তা অ্যাকশনগুলি দেখাবেন না"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"সর্বদা দেখান"</item>
+    <item msgid="8546075502478857367">"শুধুমাত্র প্রতিকৃতি মোডে দেখান"</item>
+    <item msgid="863690009910739926">"দেখাবেন না"</item>
+  </string-array>
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"স্বয়ং-স্থানান্তরণ"</string>
+    <string name="clear_history_title" msgid="8974919373315137028">"অনুসন্ধানের ইতিহাস সাফ করুন"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"অনুসন্ধানের ইতিহাস সাফ করা হয়েছে৷"</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"অনুসন্ধানের ইতিহাস সাফ করতে চান?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"আপনার দ্বারা পূর্বে করা সমস্ত অনুসন্ধানকে সরানো হবে৷"</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"অ্যাকাউন্টগুলি পরিচালনা করুন"</string>
+</resources>

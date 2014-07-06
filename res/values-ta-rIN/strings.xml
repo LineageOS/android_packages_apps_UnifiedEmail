@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="to" msgid="4392614766835725698">"பெறுநர்"</string>
+    <string name="cc" msgid="7017720927911078193">"Cc"</string>
+    <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
+    <string name="subject_hint" msgid="7253964583324677128">"தலைப்பு"</string>
+    <string name="body_hint" msgid="4279864165439577668">"மின்னஞ்சலை எழுதவும்"</string>
+    <string name="add_file_attachment" msgid="2203398371671979481">"கோப்பை இணை"</string>
+    <string name="add_photo_attachment" msgid="3738882100645552858">"படத்தை இணை"</string>
+    <string name="save_draft" msgid="5555744208032445632">"வரைவைச் சேமி"</string>
+    <string name="discard" msgid="1714960202994370243">"விலக்கு"</string>
+    <string name="compose" msgid="1473559896062432878">"எழுது"</string>
+  <string-array name="compose_modes">
+    <item msgid="8631190144210933782">"பதிலளி"</item>
+    <item msgid="4085029907540221568">"எல்லோருக்கும் பதிலளி"</item>
+    <item msgid="857480048798815437">"முன்னனுப்பு"</item>
+  </string-array>
+    <string name="reply_attribution" msgid="717207316577386788">"<xliff:g id="DATE">%s</xliff:g> அன்று, <xliff:g id="PERSON">%s</xliff:g> எழுதியது:"</string>
+    <string name="forward_attribution" msgid="1498936339458535158">"---------- முன்னனுப்பப்பட்ட செய்தி ----------&lt;br&gt;அனுப்புநர்: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;தேதி: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;தலைப்பு: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;பெறுநர்: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- முன்னனுப்பப்பட்ட செய்தி ----------"</string>
+    <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
+    <string name="select_attachment_type" msgid="4711524151968942082">"இணைப்பின் வகையைத் தேர்வுசெய்யவும்"</string>
+    <string name="too_large_to_attach_single" msgid="2996733972478212136">"<xliff:g id="MAXSIZE">%1$s</xliff:g> விடப் பெரிய கோப்பை இணைக்க முடியாது."</string>
+    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"ஒன்று அல்லது அதற்கு மேற்பட்ட கோப்புகள் இணைக்கப்படவில்லை. வரம்பு <xliff:g id="MAXSIZE">%1$s</xliff:g> ஆகும்."</string>
+    <string name="too_large_to_attach_additional" msgid="3366607594339390249">"கோப்பு இணைக்கப்படவில்லை. <xliff:g id="MAXSIZE">%1$s</xliff:g> வரம்பு முடிந்தது."</string>
+    <string name="generic_attachment_problem" msgid="8775959340559458709">"கோப்பை இணைக்க முடியவில்லை."</string>
+    <string name="recipient_needed" msgid="999037027358925655">"குறைந்தது ஒரு பெறுநரையாவது சேர்க்க வேண்டும்."</string>
+    <string name="recipient_error_dialog_title" msgid="6051694305498669180">"பெறுநர் பிழை"</string>
+    <string name="confirm_send_title" msgid="5663602035452564062">"செய்தியை அனுப்பவா?"</string>
+    <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"செய்தித் தலைப்பில் எந்த உரையும் இல்லை."</string>
+    <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"செய்திப் பகுதியில் எந்த உரையும் இல்லை."</string>
+    <string name="confirm_send_message" msgid="3221546155385562874">"இந்தச் செய்தியை அனுப்பவா?"</string>
+    <string name="message_discarded" msgid="5079975378884765445">"செய்தி விலக்கப்பட்டது."</string>
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
+    <string name="custom_from_account_label" msgid="5069652141632649722">"அஞ்சலை இவ்வாறு அனுப்புக:"</string>
+    <string name="send" msgid="8242003661397555986">"அனுப்பு"</string>
+    <string name="mark_read" msgid="8438349154394313195">"படித்ததாகக் குறி"</string>
+    <string name="mark_unread" msgid="6231373939351125713">"படித்ததெனக் குறி"</string>
+    <string name="mute" msgid="1995954983688603977">"முடக்கு"</string>
+    <string name="add_star" msgid="2866003744391266498">"நட்சத்திரத்தைச் சேர்"</string>
+    <string name="remove_star" msgid="4372327933122106128">"நட்சத்திரத்தை அகற்று"</string>
+    <string name="remove_folder" msgid="4906542720439865413">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> இலிருந்து அகற்று"</string>
+    <string name="archive" msgid="847250094775910499">"காப்பிடு"</string>
+    <string name="report_spam" msgid="6467567747975393907">"ஸ்பேமைப் புகாரளி"</string>
+    <string name="mark_not_spam" msgid="694891665407228160">"ஸ்பேம் இல்லையெனப் புகாரளி"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"ஃபிஷிங்கைப் புகாரளி"</string>
+    <string name="delete" msgid="844871204175957681">"நீக்கு"</string>
+    <string name="discard_drafts" msgid="6862272443470085375">"வரைவுகளை நிராகரி"</string>
+    <string name="refresh" msgid="490989798005710951">"புதுப்பி"</string>
+    <string name="reply" msgid="2032052598496088561">"பதிலளி"</string>
+    <string name="reply_all" msgid="7257248094625487557">"எல்லோருக்கும் பதிலளி"</string>
+    <string name="resume_draft" msgid="6450150180834092146">"மாற்று"</string>
+    <string name="forward" msgid="6822914459902983767">"முன்னனுப்பு"</string>
+    <string name="menu_compose" msgid="6274193058224230645">"எழுது"</string>
+    <string name="menu_change_folders" msgid="1542713666608888717">"கோப்புறைகளை மாற்று"</string>
+    <string name="menu_move_to" msgid="9138296669516358542">"இதற்கு நகர்த்து"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"இன்பாக்ஸிற்கு நகர்த்து"</string>
+    <string name="menu_manage_folders" msgid="6755623004628177492">"கோப்புறை அமைப்புகள்"</string>
+    <string name="menu_show_original" msgid="4227060689700765828">"தன்னியக்க அளவு மாற்றத்தை மாற்றியமை"</string>
+    <string name="menu_folder_options" msgid="8897520487430647932">"கோப்புறை அமைப்புகள்"</string>
+    <string name="menu_settings" msgid="6007027046949837282">"அமைப்புகள்"</string>
+    <string name="menu_search" msgid="5297197523031943248">"தேடு"</string>
+    <string name="drawer_title" msgid="5888199203222498840">"செல்"</string>
+    <string name="mark_important" msgid="6904096897104265870">"முக்கியமானதாகக் குறி"</string>
+    <string name="mark_not_important" msgid="4550967327747977068">"முக்கியமானதல்ல எனக் குறி"</string>
+    <string name="add_cc_label" msgid="504861315425773180">"Cc/Bcc ஐச் சேர்"</string>
+    <string name="add_bcc_label" msgid="7432027645493843336">"Bcc ஐச் சேர்"</string>
+    <string name="quoted_text" msgid="7250749398672037355">"மேற்கோளிட்ட உரையைச் சேர்"</string>
+    <string name="quoted_text_label" msgid="541007446961960617">"உரையை மேற்கோளிடு"</string>
+    <string name="respond_inline" msgid="6797117334768201180">"இன்லைனில் பதிலளி"</string>
+    <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> பை."</string>
+    <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> கி.பை"</string>
+    <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> மெபை"</string>
+    <string name="attachment_image" msgid="3832985223906528449">"படம்"</string>
+    <string name="attachment_video" msgid="7526134752988603154">"வீடியோ"</string>
+    <string name="attachment_audio" msgid="135527133955622936">"ஆடியோ"</string>
+    <string name="attachment_text" msgid="5544874374971562759">"உரை"</string>
+    <string name="attachment_application_msword" msgid="2326909450865637910">"ஆவணம்"</string>
+    <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"விளக்கக்காட்சி"</string>
+    <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"விரிதாள்"</string>
+    <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
+    <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> கோப்பு"</string>
+    <string name="preview_attachment" msgid="6934911143603455393">"மாதிரிக்காட்சி"</string>
+    <string name="save_attachment" msgid="5360128849867863132">"சேமி"</string>
+    <string name="cancel_attachment" msgid="4651201258272223650">"ரத்துசெய்"</string>
+    <string name="open_attachment" msgid="975940478986626705">"திற"</string>
+    <string name="install_attachment" msgid="2803531650273683382">"நிறுவு"</string>
+    <string name="download_again" msgid="7418568915429156518">"மீண்டும் பதிவிறக்கு"</string>
+    <string name="more_info_attachment" msgid="717244337981816703">"தகவல்"</string>
+    <string name="no_application_found" msgid="1945184804521392093">"பார்ப்பதற்கு, இந்த இணைப்பை எந்தப் பயன்பாட்டாலும் திறக்க முடியாது."</string>
+    <string name="fetching_attachment" msgid="2599763030649526179">"இணைப்பைப் பெறுகிறது"</string>
+    <string name="please_wait" msgid="8797634225088247121">"காத்திருக்கவும்…"</string>
+    <string name="saved" msgid="6660844285730790469">"சேமிக்கப்பட்டது, <xliff:g id="SIZE">%s</xliff:g>"</string>
+    <string name="download_failed" msgid="442019281547315527">"பதிவிறக்க முடியவில்லை. மீண்டும் முயற்சிக்க தொடவும்."</string>
+    <string name="attachments_header" msgid="6459475590011460229">"இணைப்புகள்"</string>
+    <string name="menu_photo_save_all" msgid="4295226099481995348">"எல்லாவற்றையும் சேமி"</string>
+    <string name="menu_photo_share" msgid="2214772815165829079">"பகிர்"</string>
+    <string name="menu_photo_share_all" msgid="4577299400844129078">"அனைத்தையும் பகிர்"</string>
+    <string name="menu_photo_print" msgid="1751063711206436775">"அச்சிடு"</string>
+    <string name="saving" msgid="925514721138014677">"சேமிக்கிறது..."</string>
+    <string name="choosertitle_sharevia" msgid="6142681649048665134">"இதன் வழியாகப் பகிர்"</string>
+    <string name="contextmenu_openlink" msgid="2176176524824953775">"உலாவியில் திற"</string>
+    <string name="contextmenu_copy" msgid="4604170699444153037">"நகலெடு"</string>
+    <string name="contextmenu_copylink" msgid="3580131515400610839">"இணைப்பு URL ஐ நகலெடு"</string>
+    <string name="contextmenu_view_image" msgid="8855189263365643422">"படத்தைக் காண்பி"</string>
+    <string name="contextmenu_dial_dot" msgid="9104426720103729453">"அழை..."</string>
+    <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS…"</string>
+    <string name="contextmenu_add_contact" msgid="8395100913366045250">"தொடர்பைச் சேர்"</string>
+    <string name="contextmenu_send_mail" msgid="8301941130009797208">"மின்னஞ்சல் அனுப்பு"</string>
+    <string name="contextmenu_map" msgid="7721544518698532954">"வரைபடம்"</string>
+    <string name="contextmenu_sharelink" msgid="6213520416250245200">"இணைப்பைப் பகிர்"</string>
+    <string name="contextmenu_help" msgid="4651718679842414097">"உதவி"</string>
+    <string name="contextmenu_feedback" msgid="4429118420169571473">"கருத்தை அனுப்பு"</string>
+    <!-- no translation found for num_selected (5723323585692387843) -->
+    <skip />
+  <plurals name="move_conversation">
+    <item quantity="one" msgid="3657821200245019288">"உரையாடலை நகர்த்து"</item>
+    <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> உரையாடல்களை நகர்த்து"</item>
+  </plurals>
+    <string name="content_description" msgid="169080965055367954">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> குறித்து <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> அன்று <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="7796658700638720091">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> குறித்து <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> க்கு அனுப்பிய <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
+    <string name="read_string" msgid="219566857950091332">"உரையாடல் படிக்கப்பட்டது"</string>
+    <string name="unread_string" msgid="588180203444398297">"படிக்காத உரையாடல்"</string>
+    <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
+    <string name="badge_subject_and_snippet" msgid="1261901365444812399">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g> — <xliff:g id="ID_3">%3$s</xliff:g>"</string>
+  <plurals name="draft">
+    <item quantity="one" msgid="333591132893648383">"வரைவு"</item>
+    <item quantity="other" msgid="6961049507579977505">"வரைவுகள்"</item>
+  </plurals>
+    <string name="sending" msgid="8214361929125649771">"அனுப்புகிறது…"</string>
+    <string name="message_retrying" msgid="64661613119987741">"மீண்டும் முயல்கிறது…"</string>
+    <string name="message_failed" msgid="4820279576299009735">"தோல்வி"</string>
+    <string name="send_failed" msgid="750908595144529579">"செய்தி அனுப்பப்படவில்லை."</string>
+    <string name="me_object_pronoun" msgid="6957328068206184521">"எனக்கு"</string>
+    <string name="me_subject_pronoun" msgid="271527705272088475">"எனக்கு"</string>
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"இன்பாக்ஸ்"</string>
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"உரையாடலை நீக்கவா?"</item>
+    <item quantity="other" msgid="930334208937121234">"இந்த <xliff:g id="COUNT">%1$d</xliff:g> உரையாடல்களை நீக்கவா?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"உரையாடலைக் காப்பகப்படுத்தவா?"</item>
+    <item quantity="other" msgid="4713469868399246772">"இந்த <xliff:g id="COUNT">%1$d</xliff:g> உரையாடல்களைக் காப்பகப்படுத்தவா?"</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <item quantity="one" msgid="3560777326142175666">"செய்தியை நிராகரிக்கவா?"</item>
+    <item quantity="other" msgid="4909853098394068722">"<xliff:g id="COUNT">%1$d</xliff:g> செய்திகளை நிராகரிக்கவா?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"இந்தச் செய்தியை நிராகரிக்கவா?"</string>
+    <string name="loading_conversations" msgid="2649440958602369555">"ஏற்றுகிறது..."</string>
+    <string name="empty_inbox" msgid="7623182658180140245">"முடித்துவிட்டீர்கள்! இந்த நாளில் மகிழ்ச்சியாக இருங்கள்."</string>
+    <string name="empty_search" msgid="7123710829748939105">"அச்சச்சோ! \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" க்கான எதையும் நாங்கள் கண்டறியவில்லை."</string>
+    <string name="empty_spam_folder" msgid="7915096608607243274">"ஆஹா, ஸ்பேம் இங்கு இல்லை!"</string>
+    <string name="empty_trash_folder" msgid="2205589798674653912">"இங்கு குப்பை இல்லை. மறுசுழற்சி செய்ததற்கு நன்றி!"</string>
+    <string name="empty_folder" msgid="107806583742395757">"இங்கு அஞ்சல் ஏதுமில்லை."</string>
+    <string name="getting_messages" msgid="563711962781090231">"செய்திகளைப் பெறுகிறது"</string>
+    <string name="undo" msgid="6070869718469782251">"செயல்தவிர்"</string>
+  <plurals name="conversation_unstarred">
+    <item quantity="one" msgid="8315328190288744398">"<xliff:g id="COUNT">%1$d</xliff:g> உரையாடலில் இருந்து நட்சத்திரம் நீக்கப்படுகிறது."</item>
+    <item quantity="other" msgid="2222365088907519938">"<xliff:g id="COUNT">%1$d</xliff:g> உரையாடல்களிலிருந்து நட்சத்திரம் நீக்கப்படுகிறது."</item>
+  </plurals>
+  <plurals name="conversation_muted">
+    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல் முடக்கப்பட்டது."</item>
+    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல்கள் முடக்கப்பட்டன."</item>
+  </plurals>
+  <plurals name="conversation_spammed">
+    <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல் ஸ்பேம் எனப் புகாரளிக்கப்பட்டது."</item>
+    <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல்கள் ஸ்பேம் எனப் புகாரளிக்கப்பட்டன."</item>
+  </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல் ஸ்பேம் அல்ல என அறிவிக்கப்பட்டது."</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல்கள் ஸ்பேம் அல்ல என அறிவிக்கப்பட்டன."</item>
+  </plurals>
+  <plurals name="conversation_not_important">
+    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல் முக்கியமில்லாதததாகக் குறிக்கப்பட்டது."</item>
+    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல் முக்கியமில்லாதவையாகக் குறிக்கப்பட்டன"</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல் ஃபிஷிங் எனப் புகாரளிக்கப்பட்டது."</item>
+    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல்கள் ஃபிஷிங் எனப் புகாரளிக்கப்பட்டன."</item>
+  </plurals>
+  <plurals name="conversation_archived">
+    <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல் காப்பகப்படுத்தப்பட்டது."</item>
+    <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல்கள் காப்பகப்படுத்தப்பட்டன."</item>
+  </plurals>
+  <plurals name="conversation_deleted">
+    <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல் நீக்கப்பட்டது."</item>
+    <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; உரையாடல்கள் நீக்கப்பட்டன."</item>
+  </plurals>
+    <string name="deleted" msgid="2757349161107268029">"நீக்கப்பட்டது"</string>
+    <string name="archived" msgid="7533995360704366325">"காப்பகப்படுத்தப்பட்டது"</string>
+    <string name="folder_removed" msgid="1047474677580149436">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> இலிருந்து நீக்கப்பட்டது"</string>
+  <plurals name="conversation_folder_changed">
+    <item quantity="one" msgid="4930161390461457462">"மாற்றப்பட்ட கோப்புறை."</item>
+    <item quantity="other" msgid="8918589141287976985">"மாற்றப்பட்ட கோப்புறைகள்."</item>
+  </plurals>
+    <string name="conversation_folder_moved" msgid="297469098857964678">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> க்கு நகர்த்தப்பட்டது"</string>
+    <string name="search_results_header" msgid="4669917471897026269">"முடிவுகள்"</string>
+    <string name="search_unsupported" msgid="4654227193354052607">"இந்தக் கணக்கில் தேடல் ஆதரிக்கப்படவில்லை."</string>
+    <string name="add_label" msgid="6060201715848652940">"கோப்புறையைச் சேர்"</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"<xliff:g id="SENDER">%s</xliff:g> இடமிருந்து வந்த புதிய செய்தியை காட்டு."</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="other" msgid="1018949581192786598">"<xliff:g id="COUNT">%1$d</xliff:g> புதிய செய்திகளைக் காட்டு."</item>
+  </plurals>
+    <string name="expand_recipient_details" msgid="2266544827446346880">"பெறுநர் விவரங்களை விரிவாக்கு"</string>
+    <string name="collapse_recipient_details" msgid="3608892454869745927">"பெறுநர் விவரங்களைச் சுருக்கு"</string>
+    <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g> க்கான தொடர்பு தகவலைக் காட்டு"</string>
+    <string name="contact_info_string_default" msgid="596531738469809159">"தொடர்பு தகவலைக் காட்டு"</string>
+  <plurals name="show_messages_read">
+    <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> பழைய செய்திகள்"</item>
+  </plurals>
+    <string name="from_heading" msgid="2454519463223197231">"அனுப்புநர்: "</string>
+    <string name="replyto_heading" msgid="8563992423173220512">"பதிலளிக்கவேண்டியது: "</string>
+    <string name="to_heading" msgid="1142876841308812954">"பெறுநர்: "</string>
+    <string name="cc_heading" msgid="52678613787360092">"Cc: "</string>
+    <string name="bcc_heading" msgid="4698055226318660420">"Bcc: "</string>
+    <string name="date_heading" msgid="2086174555097691910">"தேதி: "</string>
+    <string name="show_images" msgid="1875700481186331432">"படங்களைக் காட்டு"</string>
+    <string name="always_show_images" msgid="5966408990164581801">"இந்த அனுப்புநரிடமிருந்து வரும் படங்களை எப்போதும் காட்டு"</string>
+    <string name="always_show_images_toast" msgid="6218061921546973716">"இந்த அனுப்புநரிடமிருந்து வரும் படங்கள் தானாகவே காண்பிக்கப்படும்."</string>
+    <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
+    <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="VIA_DOMAIN">%3$s</xliff:g> வழியாக <xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
+    <string name="message_saved" msgid="7073947895562277576">"செய்தி வரைவாகச் சேமிக்கப்பட்டது."</string>
+    <string name="sending_message" msgid="1498583163419122128">"செய்தியை அனுப்புகிறது…"</string>
+    <string name="invalid_recipient" msgid="2161317422860961623">"<xliff:g id="WRONGEMAIL">%s</xliff:g> முகவரி தவறானது."</string>
+    <string name="show_elided" msgid="6693371179492345444">"மேற்கோளிட்ட உரையைக் காட்டு"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ மேற்கோளிட்ட உரையை மறை"</string>
+    <string name="message_invite_title" msgid="6757287288611722175">"கேலெண்டர் அழைப்பு"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"கேலெண்டரில் காட்டு"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"கலந்துகொள்கிறீர்களா?"</string>
+    <string name="message_invite_accept" msgid="869753811259793266">"ஆம்"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"கலந்துகொள்ளலாம்"</string>
+    <string name="message_invite_decline" msgid="4524135969656266758">"இல்லை"</string>
+    <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
+    <string name="send_anyway" msgid="426079691638238572">"எப்படியேனும் அனுப்பு"</string>
+    <string name="ok" msgid="8339355733816891026">"சரி"</string>
+    <string name="done" msgid="3079981801778027540">"முடிந்தது"</string>
+    <string name="cancel" msgid="8762981157252199115">"ரத்துசெய்"</string>
+    <string name="clear" msgid="3184687982186479442">"அழி"</string>
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"வெற்றி"</item>
+    <item msgid="7109065688039971961">"இணைப்பு இல்லை."</item>
+    <item msgid="8437496123716232060">"உள்நுழைய முடியவில்லை."</item>
+    <item msgid="1651266301325684887">"பாதுகாப்புப் பிழை."</item>
+    <item msgid="1461520171154288533">"ஒத்திசைக்க முடியவில்லை."</item>
+    <item msgid="4779810016424303449">"அகப் பிழை"</item>
+    <item msgid="600403120960920559">"சேவையகப் பிழை"</item>
+  </string-array>
+    <string name="tap_to_configure" msgid="1181356242354390930">"அமைக்க தொடவும்."</string>
+    <string name="non_synced_folder_description" msgid="6059194125558004080">"உரையாடல்களைப் பார்க்க, இந்தக் கோப்புறையை ஒத்திசைக்கவும்."</string>
+    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"கோப்புறையை ஒத்திசை"</string>
+    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> படிக்காத செய்திகள்"</item>
+  </plurals>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>+ படிக்காதவை"</string>
+    <string name="view_more_conversations" msgid="3151067626309674344">"மேலும் உரையாடல்களைக் காட்டு"</string>
+    <string name="loading_conversation" msgid="489160038366067983">"ஏற்றுகிறது..."</string>
+    <string name="activity_mailbox_selection" msgid="6876105223659297603">"கணக்கைத் தேர்வுசெய்"</string>
+    <string name="activity_folder_selection" msgid="5161845867397316052">"கோப்புறையைத் தேர்வுசெய்"</string>
+    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"மின்னஞ்சல் கோப்புறை"</string>
+    <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"கோப்புறைகளை மாற்று"</string>
+    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"இதற்கு நகர்த்து"</string>
+    <string name="search_hint" msgid="3625734263059221350">"அஞ்சலில் தேடு"</string>
+    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
+    <string name="network_error" msgid="2125579009654728299">"இணைப்பு இல்லை"</string>
+    <string name="retry" msgid="4515885444824418022">"மீண்டும் முயற்சிசெய்க"</string>
+    <string name="load_more" msgid="420892447103014683">"மேலும் ஏற்று"</string>
+    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <skip />
+    <string name="shortcut_name_title" msgid="8220482314700618391">"கோப்புறையின் குறுக்குவழியைப் பெயரிடுக"</string>
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"ஒத்திசைக்கப்படுவதற்காகக் காத்திருக்கிறது"</string>
+    <string name="not_synced_title" msgid="794279749170198599">"கணக்கு ஒத்திசைக்கப்படவில்லை"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"இந்தக் கணக்கு தானாக ஒத்திசைக்க அமைக்கப்படவில்லை.\nஅஞ்சலை ஒருமுறை ஒத்திசைக்க "<b>"இப்போது ஒத்திசை"</b>" என்பதைத் தொடவும் அல்லது அஞ்சலைத் தானாக ஒத்திசைப்பதற்கு இந்தக் கணக்கை அமைக்க "<b>"ஒத்திசைவு அமைப்புகளை மாற்றவும்"</b>"."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"இப்போது ஒத்திசை"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"ஒத்திசைவு அமைப்புகளை மாற்று"</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"படத்தை ஏற்ற முடியவில்லை"</string>
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"பல கணக்குகளைத் தேர்வுசெய்துள்ளதால் செய்திகளை நகர்த்த முடியவில்லை."</string>
+    <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"தவிர், இந்தச் செய்தியை நம்புகிறேன்"</string>
+    <string name="via_domain" msgid="380109230928079350">"<xliff:g id="VIADOMAIN">%1$s</xliff:g> வழியாக"</string>
+  <string-array name="moveto_folder_sections">
+    <item msgid="6984976603137892898">"அமைப்பு"</item>
+    <item msgid="6593672292311851204">"அடிக்கடிப் பயன்படுத்துவது"</item>
+    <item msgid="3584541772344786752">"எல்லா கோப்புறைகளும்"</item>
+  </string-array>
+  <string-array name="change_folder_sections">
+    <item msgid="53174547922204815">"நடப்பு கோப்புறை"</item>
+    <item msgid="8635593741453580597">"பிற கோப்புறைகள்"</item>
+  </string-array>
+    <string name="signin" msgid="8958889809095796177">"உள்நுழைக"</string>
+    <string name="info" msgid="6009817562073541204">"தகவல்"</string>
+    <string name="report" msgid="5417082746232614958">"அறிக்கையிடு"</string>
+    <string name="sync_error" msgid="7368819509040597851">"ஒத்திசைக்க முடியவில்லை."</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"உங்கள் சாதனத்தில் ஒத்திசைக்கப் போதுமான சேமிப்பிடம் இல்லை."</string>
+    <string name="storage" msgid="3262760336059073446">"சேமிப்பிடம்"</string>
+    <string name="senders_split_token" msgid="5895854795157860258">", "</string>
+    <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
+    <string name="all_folders_heading" msgid="2506843494725730618">"அனைத்து கோப்புறைகள்"</string>
+    <string name="recent_folders_heading" msgid="8613621794529777406">"சமீபத்திய கோப்புறைகள்"</string>
+    <string name="message_details_title" msgid="2183394728494962332">"செய்தி விவரங்கள்"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"தன்னியக்க மேம்பட்ட அமைப்பு"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"செய்தியை நீக்கிய பின் எந்த திரையை காண்பிக்க வேண்டும் என்பதை தேர்வுசெய்க"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"தன்னியக்க மேம்பட்ட விருப்பத்தேர்வை அமைக்கவும்\n(நான் நீக்கிய பிறகு, போன்றவை.)"</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item msgid="3400401085256526376">"புதியது"</item>
+    <item msgid="5562093094216840213">"பழையது"</item>
+    <item msgid="3331655314944797957">"உரையாடல் பட்டியல்"</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item msgid="6389534341359835440">"நீக்கிய பின்னர் புதிய உரையாடலைக் காட்டு"</item>
+    <item msgid="732746454445519134">"நீக்கிய பின்னர் பழைய உரையாடலைக் காட்டு"</item>
+    <item msgid="2189929276292165301">"நீக்கிய பின்னர் உரையாடல் பட்டியலைக் காட்டு"</item>
+  </string-array>
+    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"இதற்கு மேம்படுத்து"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"பட அனுமதிகளை அழி"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"பட அனுமதிகளை அழிக்கவா?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"முன்பு அனுமதித்த அனுப்பநர்களின் இன்லைன் படங்களைக் காண்பிப்பதை நிறத்தவும்."</string>
+    <string name="sender_whitelist_cleared" msgid="917434007919176024">"படங்களைத் தானாகக் காண்பிக்க முடியாது."</string>
+    <string name="preferences_signature_title" msgid="888167074398030574">"கையொப்பம்"</string>
+    <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"கையொப்பம்"</string>
+    <string name="preferences_signature_summary_not_set" msgid="2830886980620445857">"அமைக்கப்படவில்லை"</string>
+    <string name="notification_action_reply" msgid="6015299134424685297">"பதிலளி"</string>
+    <string name="notification_action_reply_all" msgid="20020468410400912">"எல்லோருக்கும் பதிலளி"</string>
+    <string name="notification_action_archive" msgid="81978513898440040">"காப்பிடு"</string>
+    <string name="notification_action_remove_label" msgid="5852730267411032291">"லேபிளை அகற்று"</string>
+    <string name="notification_action_delete" msgid="327773454111551791">"நீக்கு"</string>
+    <string name="notification_action_undo_archive" msgid="7280710366587361219">"காப்பகப்படுத்தப்பட்டது"</string>
+    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"லேபிள் அகற்றப்பட்டது"</string>
+    <string name="notification_action_undo_delete" msgid="3105611327110905438">"நீக்கப்பட்டது"</string>
+    <string name="veiled_address" msgid="1209670815434513191"></string>
+    <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
+    <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
+    <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
+    <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
+  <plurals name="new_messages">
+    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> புதிய செய்தி"</item>
+    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g> புதிய செய்திகள்"</item>
+  </plurals>
+    <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="silent_ringtone" msgid="5856834572357761687">"நிசப்தம்"</string>
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"காப்பிடு &amp; நீக்கு செயல்கள்"</string>
+  <string-array name="prefEntries_removal_action">
+    <item msgid="1938422987822134657">"காப்பிடு என்பதை மட்டும் காட்டு"</item>
+    <item msgid="5737880287951287278">"நீக்கு என்பதை மட்டும் காட்டு"</item>
+    <item msgid="4279948809971752573">"காப்பிடு &amp; நீக்கு இரண்டையும் காட்டு"</item>
+  </string-array>
+  <string-array name="prefSummaries_removal_action_summary">
+    <item msgid="492039800376391677">"காப்பிடு என்பதை மட்டும் காட்டு"</item>
+    <item msgid="8350973578419775975">"நீக்கு என்பதை மட்டும் காட்டு"</item>
+    <item msgid="2967059853409454648">"காப்பிடு &amp; நீக்கு இரண்டையும் காட்டு"</item>
+  </string-array>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"காப்பிடு &amp; நீக்கு செயல்கள்"</string>
+    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"எல்லோருக்கும் பதிலளி"</string>
+    <string name="preferences_default_reply_all_summary_impl" msgid="9131944420965452592">"செய்தி பதிலளிப்புகளுக்கான இயல்புநிலையாகப் பயன்படுத்து"</string>
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"காப்பகப்படுத்த தேய்க்கவும்"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"நீக்க ஸ்வைப் செய்யவும்"</string>
+    <string name="preference_swipe_description" msgid="5132683510510041028">"உரையாடல் பட்டியலில்"</string>
+    <string name="preference_sender_image_title" msgid="2441320893522058724">"அனுப்புநரின் படம்"</string>
+    <string name="preference_sender_image_description" msgid="7126493917536558232">"உரையாடல் பட்டியலில் பெயருக்கு அருகில் காட்டு"</string>
+    <string name="empty_trash" msgid="652435297593538512">"குப்பையைக் காலியாக்கு"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"ஸ்பேமைக் காலியாக்கு"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"குப்பையைக் காலியாக்கவா?"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"ஸ்பேமைக் காலியாக்கவா?"</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> செய்தி நிரந்தரமாக நீக்கப்படும்."</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> செய்திகள் நிரந்தரமாக நீக்கப்படும்."</item>
+  </plurals>
+    <string name="drawer_open" msgid="6074646853178471940">"வழிசெலுத்தல் டிராயரைத் திற"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"வழிசெலுத்தல் டிராயரை மூடு"</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"உரையாடலைத் தேர்ந்தெடுக்க அனுப்புநர் படத்தைத் தொடவும்."</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"ஒரு உரையாடலைத் தேர்ந்தெடுக்க அதைத் தொட்டுப் பிடிக்கவும், பிறகு மேலும் உரையாடல்களைத் தேர்ந்தெடுக்க தொடவும்."</string>
+    <string name="folder_icon_desc" msgid="1500547397347480618">"கோப்புறை ஐகான்"</string>
+    <string name="add_account" msgid="2162808366829269770">"கணக்கைச் சேர்"</string>
+    <string name="attached_message" msgid="4267189489654642035">"இணைக்கப்பட்ட செய்தி"</string>
+    <string name="date_message_received_yesterday" msgid="5690676561028193570">"நேற்று, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
+    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"உதவிக்குறிப்பை நிராகரி"</string>
+    <string name="auto_sync_off" msgid="7185342309138211107">"தானாக ஒத்திசைப்பது முடக்கப்பட்டுள்ளது."</string>
+    <string name="tap_to_enable_sync" msgid="3334767826332383085">"இயக்க தொடவும்."</string>
+    <string name="account_sync_off" msgid="5699548271856775808">"கணக்கு ஒத்திசைவு முடக்கப்பட்டுள்ளது."</string>
+    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> இல் இயக்கவும்."</string>
+    <string name="account_settings_param" msgid="5277032997773498476">"கணக்கு அமைப்புகள்"</string>
+    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g> இல் <xliff:g id="NUMBER">%1$s</xliff:g> அனுப்பப்படாத செய்திகள் உள்ளன"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"தானாக ஒத்திசைப்பதை இயக்கவா?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"நீங்கள் மாற்றங்களைச் செய்யும் எல்லா பயன்பாடுகளும், கணக்குகளும், Gmail மட்டுமில்லாமல், இணையம், உங்களது பிற சாதனங்கள் மற்றும் உங்கள் <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> ஆகிவற்றிற்கு இடையே ஒத்திசைக்கப்படும்."</string>
+    <string name="phone" msgid="5171715391553213328">"தொலைபேசி"</string>
+    <string name="tablet" msgid="7956969657216748522">"டேப்லெட்"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"இயக்கு"</string>
+    <string name="show_n_more_folders" msgid="337747297817699776">"மேலும் <xliff:g id="NUMBER">%1$s</xliff:g> கோப்புறைகளைக் காட்டு"</string>
+    <string name="hide_folders" msgid="7473552966537131652">"கோப்புறைகளை மறை"</string>
+    <string name="print" msgid="7905250801319578415">"அச்சிடு"</string>
+    <string name="print_all" msgid="1789808179145024065">"அனைத்தையும் அச்சிடு"</string>
+  <plurals name="num_messages">
+    <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> செய்தி"</item>
+    <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g> செய்திகள்"</item>
+  </plurals>
+    <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> அன்று <xliff:g id="TIME">%2$s</xliff:g> மணிக்கு"</string>
+    <string name="draft_to_heading" msgid="3448702197598500284">"இவருக்கான வரைவு: "</string>
+    <string name="draft_heading" msgid="4654861166951306093">"வரைவு"</string>
+    <string name="quoted_text_hidden_print" msgid="8572207101897331252">"மேற்கோளிட்ட உரை மறைக்கப்பட்டுள்ளது"</string>
+  <plurals name="num_attachments">
+    <item quantity="one" msgid="3344123914734915029">"<xliff:g id="COUNT">%1$d</xliff:g> இணைப்பு"</item>
+    <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> இணைப்புகள்"</item>
+  </plurals>
+    <string name="no_subject" msgid="7823949839148118599">"(தலைப்பு இல்லை)"</string>
+    <string name="vacation_responder" msgid="145292667520371875">"விடுமுறை பதிலளிப்பான்"</string>
+    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"விடுமுறை பதிலளிப்பான்"</string>
+    <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"செய்தி"</string>
+    <string name="send_to_contacts_text" msgid="2696513899649703420">"எனது தொடர்புகளுக்கு மட்டும் அனுப்பு"</string>
+    <string name="send_to_domain_text" msgid="5055332409482662383">"<xliff:g id="DOMAIN">%1$s</xliff:g> க்கு மட்டும் அனுப்பு"</string>
+    <string name="pick_start_date_title" msgid="915230000170560933">"தொடக்கம்"</string>
+    <string name="pick_end_date_title" msgid="2068598706186320098">"முடிவு (விருப்பத்திற்குரியது)"</string>
+    <string name="date_not_set" msgid="4925325938525330766">"அமைக்கப்படவில்லை"</string>
+    <string name="set_end_date_dialog_title" msgid="72028456826019380">"முடிவு தேதி (விருப்பத்திற்குரியது)"</string>
+    <string name="custom_date" msgid="7566383722092597487">"தனிப்பயன்"</string>
+    <string name="date_none" msgid="1033448683454519235">"ஏதுமில்லை"</string>
+    <string name="discard_changes" msgid="57677638191085556">"மாற்றங்களை நிராகரிக்கவா?"</string>
+    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"விடுமுறை பதிலளிப்பானில் செய்யப்பட்ட மாற்றங்கள் சேமிக்கப்பட்டன"</string>
+    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"விடுமுறை பதிலளிப்பானில் செய்யப்பட்ட மாற்றங்கள் நிராகரிக்கப்பட்டன"</string>
+    <string name="vacation_responder_off" msgid="3502054743467746285">"முடக்கு"</string>
+    <string name="vacation_responder_on" msgid="5242690599331655563">"<xliff:g id="DATE">%1$s</xliff:g> முதல் இயக்கத்தில் உள்ளது"</string>
+    <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"<xliff:g id="START_DATE">%1$s</xliff:g> இலிருந்து <xliff:g id="END_DATE">%2$s</xliff:g> வரை இயக்கத்தில் இருக்கும்"</string>
+    <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"தலைப்பு அல்லது செய்தியைச் சேர்க்கவும்"</string>
+    <string name="view_entire_message" msgid="1553882732296911563">"முழுத் தகவலையும் காட்டு"</string>
+    <string name="eml_loader_error_toast" msgid="2107905951183729575">"இந்தக் கோப்பைத் திறக்க முடியவில்லை"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"உதவி"</string>
+    <string name="feedback" msgid="79365993169715049">"கருத்தை அனுப்பு"</string>
+    <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
+    <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="VERSION">%2$s</xliff:g> பதிப்பு"</string>
+    <string name="view_app_page" msgid="5320196120982618014"></string>
+    <string name="print_dialog" msgid="8754985880654139587">"அச்சிடு..."</string>
+    <string name="copyright_information" msgid="1673715390305905781">"பதிப்புரிமை தகவல்"</string>
+    <string name="privacy_policy" msgid="2072093492013385609">"தனியுரிமைக் கொள்கை"</string>
+    <string name="open_source_licenses" msgid="6831573769505612579">"ஓப்பன் சோர்ஸ் உரிமங்கள்"</string>
+    <string name="reply_choice_yes" msgid="5279400403860280271">"ஆம்"</string>
+    <string name="reply_choice_no" msgid="1626377088683186268">"இல்லை"</string>
+    <string name="reply_choice_ok" msgid="5138061449166345173">"சரி"</string>
+    <string name="reply_choice_hehe" msgid="7883585007161871893">"ஹிஹி"</string>
+    <string name="reply_choice_thanks" msgid="8365439191962120322">"நன்றி"</string>
+    <string name="reply_choice_i_agree" msgid="24980061720212740">"ஆம்"</string>
+    <string name="reply_choice_nice" msgid="7472107121354003424">"அருமை"</string>
+    <string name="reply_on_my_way" msgid="8200386879475660650">"வந்துகொண்டிருக்கிறேன்"</string>
+    <string name="reply_choice_later" msgid="6294535370720117768">"சரி, பின்னர் தெரிவிக்கிறேன்"</string>
+    <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
+    <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
+    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"செயலுக்கான உறுதிப்படுத்தல்கள்"</string>
+    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"நீக்கும் முன் உறுதிசெய்"</string>
+    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"காப்பகப்படுத்தும் முன் உறுதிசெய்"</string>
+    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"அனுப்பும் முன் உறுதிசெய்"</string>
+    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"செய்திகளைத் தானாகப் பொருத்து"</string>
+    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"திரைக்குப் பொருந்துமாறு செய்திகளைச் சுருக்கு"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"செய்தியின் செயல்கள்"</string>
+  <string-array name="prefSummaries_snapHeader">
+    <item msgid="6008949895584107910">"எப்போதும் திரையின் மேல் பகுதியில் செய்தியின் செயல்களைக் காட்டு"</item>
+    <item msgid="1197074110597228768">"நீளவாக்கிற்கு சுழற்றும் போது, திரையில் மேல்பகுதியில் மட்டும் செய்தியின் செயல்களைக் காட்டு"</item>
+    <item msgid="8496844279095098067">"செய்தியின் தலைப்பிற்கு வெளியே செய்தியின் செயல்களைக் காட்டாதே"</item>
+  </string-array>
+  <string-array name="prefEntries_snapHeader">
+    <item msgid="8453672890190461527">"எப்போதும் காட்டு"</item>
+    <item msgid="8546075502478857367">"நீளவாக்கில் மட்டும் காட்டு"</item>
+    <item msgid="863690009910739926">"காட்டாதே"</item>
+  </string-array>
+    <string name="preference_advance_to_title" msgid="5129119549230481490">"தன்னியக்க மேம்பாடு"</string>
+    <string name="clear_history_title" msgid="8974919373315137028">"தேடல் வரலாற்றை அழி"</string>
+    <string name="search_history_cleared" msgid="1524305711478787614">"தேடல் வரலாறு அழிக்கப்பட்டது."</string>
+    <string name="clear_history_dialog_title" msgid="2726420681651913195">"தேடல் வரலாற்றை அழிக்கவா?"</string>
+    <string name="clear_history_dialog_message" msgid="3779277353786135671">"உங்களின் முந்தைய தேடல்கள் எல்லாம் அகற்றப்படும்."</string>
+    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"கணக்குகளை நிர்வகி"</string>
+</resources>
