@@ -83,7 +83,7 @@
     <string name="mark_not_important" msgid="4550967327747977068">"Marcar como no importante"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Añadir Cc/Cco"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Añadir Cco"</string>
-    <string name="feedback" msgid="79365993169715049">"Danos tu opinión"</string>
+    <string name="feedback" msgid="79365993169715049">"Enviar sugerencias"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Ayuda"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Incluir texto citado"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Citar texto"</string>
@@ -127,7 +127,7 @@
     <string name="contextmenu_map" msgid="7721544518698532954">"Mapa"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Compartir enlace"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Ayuda"</string>
-    <string name="contextmenu_feedback" msgid="4429118420169571473">"Danos tu opinión"</string>
+    <string name="contextmenu_feedback" msgid="4429118420169571473">"Enviar sugerencias"</string>
     <!-- no translation found for num_selected (5723323585692387843) -->
     <skip />
   <plurals name="move_conversation">
