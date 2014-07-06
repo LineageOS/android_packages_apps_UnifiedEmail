@@ -62,7 +62,7 @@
     <string name="report_spam" msgid="6467567747975393907">"รายงานจดหมายขยะ"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"รายงานว่าไม่ใช่สแปม"</string>
     <string name="report_phishing" msgid="5714205737453138338">"รายงานฟิชชิง"</string>
-    <string name="delete" msgid="844871204175957681">"ลบ"</string>
+    <string name="delete" msgid="844871204175957681">"นำออก"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"ยกเลิกข้อความร่าง"</string>
     <string name="refresh" msgid="490989798005710951">"รีเฟรช"</string>
     <string name="reply" msgid="2032052598496088561">"ตอบ"</string>
@@ -154,8 +154,8 @@
     <string name="me_subject_pronoun" msgid="271527705272088475">"ฉัน"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"กล่องจดหมาย"</string>
   <plurals name="confirm_delete_conversation">
-    <item quantity="one" msgid="3731948757247905508">"ลบการสนทนานี้หรือไม่"</item>
-    <item quantity="other" msgid="930334208937121234">"ลบการสนทนาทั้ง <xliff:g id="COUNT">%1$d</xliff:g> รายการนี้หรือไม่"</item>
+    <item quantity="one" msgid="3731948757247905508">"นำออกการสนทนานี้หรือไม่"</item>
+    <item quantity="other" msgid="930334208937121234">"นำออกการสนทนาทั้ง <xliff:g id="COUNT">%1$d</xliff:g> รายการนี้หรือไม่"</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
     <item quantity="one" msgid="2990537295519552069">"เก็บการสนทนานี้ถาวรหรือไม่"</item>
@@ -203,10 +203,10 @@
     <item quantity="other" msgid="3012054504370916482">"เก็บ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"ลบ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
-    <item quantity="other" msgid="8630099095360065837">"ลบ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
+    <item quantity="one" msgid="4398693029405479323">"นำออก &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
+    <item quantity="other" msgid="8630099095360065837">"นำออก &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
   </plurals>
-    <string name="deleted" msgid="2757349161107268029">"ลบแล้ว"</string>
+    <string name="deleted" msgid="2757349161107268029">"นำออกแล้ว"</string>
     <string name="archived" msgid="7533995360704366325">"เก็บถาวร"</string>
     <string name="folder_removed" msgid="1047474677580149436">"นำออกจาก <xliff:g id="FOLDERNAME">%1$s</xliff:g> แล้ว"</string>
   <plurals name="conversation_folder_changed">
@@ -321,17 +321,17 @@
     <string name="recent_folders_heading" msgid="8613621794529777406">"โฟลเดอร์ล่าสุด"</string>
     <string name="message_details_title" msgid="2183394728494962332">"รายละเอียดข้อความ"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"เลื่อนไปข้างหน้าโดยอัตโนมัติ"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"เลือกหน้าจอที่จะแสดงขึ้นหลังจากที่คุณลบข้อความ"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"ตั้งค่ากำหนดเลื่อนอัตโนมัติ\n(หลังจากที่คุณลบ ฯลฯ)"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"เลือกหน้าจอที่จะแสดงขึ้นหลังจากที่คุณนำออกข้อความ"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"ตั้งค่ากำหนดเลื่อนอัตโนมัติ\n(หลังจากที่คุณนำออก ฯลฯ)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"ใหม่กว่า"</item>
     <item msgid="5562093094216840213">"เก่ากว่า"</item>
     <item msgid="3331655314944797957">"รายการการสนทนา"</item>
   </string-array>
   <string-array name="prefSummaries_autoAdvance">
-    <item msgid="6389534341359835440">"แสดงการสนทนาที่ใหม่กว่าหลังจากลบ"</item>
-    <item msgid="732746454445519134">"แสดงการสนทนาที่เก่ากว่าหลังจากลบ"</item>
-    <item msgid="2189929276292165301">"แสดงรายการสนทนาหลังจากลบ"</item>
+    <item msgid="6389534341359835440">"แสดงการสนทนาที่ใหม่กว่าหลังจากนำออก"</item>
+    <item msgid="732746454445519134">"แสดงการสนทนาที่เก่ากว่าหลังจากนำออก"</item>
+    <item msgid="2189929276292165301">"แสดงรายการสนทนาหลังจากนำออก"</item>
   </string-array>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"ล้างการอนุมัติภาพ"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"ล้างการอนุมัติภาพไหม"</string>
@@ -343,11 +343,11 @@
     <string name="notification_action_reply" msgid="6015299134424685297">"ตอบ"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"ตอบทั้งหมด"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"เก็บถาวร"</string>
-    <string name="notification_action_remove_label" msgid="5852730267411032291">"ลบป้ายกำกับ"</string>
-    <string name="notification_action_delete" msgid="327773454111551791">"ลบ"</string>
+    <string name="notification_action_remove_label" msgid="5852730267411032291">"นำออกป้ายกำกับ"</string>
+    <string name="notification_action_delete" msgid="327773454111551791">"นำออก"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"เก็บถาวรแล้ว"</string>
-    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"ลบป้ายกำกับแล้ว"</string>
-    <string name="notification_action_undo_delete" msgid="3105611327110905438">"ลบแล้ว"</string>
+    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"นำออกป้ายกำกับแล้ว"</string>
+    <string name="notification_action_undo_delete" msgid="3105611327110905438">"นำออกแล้ว"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
@@ -356,32 +356,32 @@
     <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> ข้อความใหม่"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"เงียบ"</string>
-    <string name="preference_removal_action_title" msgid="6585232628422090835">"การดำเนินการ \"เก็บ\" และ \"ลบ\""</string>
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"การดำเนินการ \"เก็บ\" และ \"นำออก\""</string>
   <string-array name="prefEntries_removal_action">
     <item msgid="1938422987822134657">"แสดงเฉพาะ \"เก็บ\""</item>
-    <item msgid="5737880287951287278">"แสดงเฉพาะ \"ลบ\""</item>
-    <item msgid="4279948809971752573">"แสดง \"เก็บ\" และ \"ลบ\""</item>
+    <item msgid="5737880287951287278">"แสดงเฉพาะ \"นำออก\""</item>
+    <item msgid="4279948809971752573">"แสดง \"เก็บ\" และ \"นำออก\""</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
     <item msgid="492039800376391677">"แสดงเฉพาะ \"เก็บ\""</item>
-    <item msgid="8350973578419775975">"แสดงเฉพาะ \"ลบ\""</item>
-    <item msgid="2967059853409454648">"แสดง \"เก็บ\" และ \"ลบ\""</item>
+    <item msgid="8350973578419775975">"แสดงเฉพาะ \"นำออก\""</item>
+    <item msgid="2967059853409454648">"แสดง \"เก็บ\" และ \"นำออก\""</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"การดำเนินการ \"เก็บ\" และ \"ลบ\""</string>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"การดำเนินการ \"เก็บ\" และ \"นำออก\""</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"ตอบทั้งหมด"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="9131944420965452592">"ใช้เป็นค่าเริ่มต้นสำหรับการตอบกลับข้อความ"</string>
     <string name="preference_swipe_title_archive" msgid="1178014339238995814">"กวาดนิ้วเพื่อเก็บถาวร"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"กวาดนิ้วเพื่อลบ"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"กวาดนิ้วเพื่อนำออก"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"ในรายการการสนทนา"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"ภาพของผู้ส่ง"</string>
     <string name="preference_sender_image_description" msgid="7126493917536558232">"แสดงข้างชื่อในรายการสนทนา"</string>
-    <string name="empty_trash" msgid="652435297593538512">"ลบทุกอย่างในถังขยะ"</string>
-    <string name="empty_spam" msgid="6064497180615519589">"ลบทุกอย่างในสแปม"</string>
-    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"ลบทุกอย่างในถังขยะหรือไม่"</string>
-    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"ลบทุกอย่างในสแปมหรือไม่"</string>
+    <string name="empty_trash" msgid="652435297593538512">"นำออกทุกอย่างในถังขยะ"</string>
+    <string name="empty_spam" msgid="6064497180615519589">"นำออกทุกอย่างในสแปม"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"นำออกทุกอย่างในถังขยะหรือไม่"</string>
+    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"นำออกทุกอย่างในสแปมหรือไม่"</string>
   <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> ข้อความจะถูกลบออกอย่างถาวร"</item>
-    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> ข้อความจะถูกลบออกอย่างถาวร"</item>
+    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> ข้อความจะถูกนำออกออกอย่างถาวร"</item>
+    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> ข้อความจะถูกนำออกออกอย่างถาวร"</item>
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"เปิดช่องการนำทาง"</string>
     <string name="drawer_close" msgid="2764774620737876943">"ปิดช่องการนำทาง"</string>
