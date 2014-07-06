@@ -27,7 +27,7 @@
     <string name="add_photo_attachment" msgid="3738882100645552858">"إرفاق صورة"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"إرفاق فيديو"</string>
     <string name="save_draft" msgid="5555744208032445632">"حفظ كمسودة"</string>
-    <string name="discard" msgid="1714960202994370243">"إلغاء"</string>
+    <string name="discard" msgid="1714960202994370243">"تجاهل"</string>
     <string name="compose" msgid="1473559896062432878">"إنشاء"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"رد"</item>
@@ -262,7 +262,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"مزامنة المجلد"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> مقروءة"</item>
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</item>
   </plurals>
     <string name="actionbar_large_unread_count" msgid="2780005218279965391">"أكثر من <xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"عرض المزيد من المحادثات"</string>

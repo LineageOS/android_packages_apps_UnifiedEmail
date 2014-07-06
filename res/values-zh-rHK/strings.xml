@@ -73,7 +73,7 @@
     <string name="menu_compose" msgid="6274193058224230645">"撰寫"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"更改資料夾"</string>
     <string name="menu_move_to" msgid="9138296669516358542">"移至"</string>
-    <string name="menu_move_to_inbox" msgid="3201472943201077389">"移到收件匣"</string>
+    <string name="menu_move_to_inbox" msgid="3201472943201077389">"移到收件箱"</string>
     <string name="menu_manage_folders" msgid="6755623004628177492">"資料夾設定"</string>
     <string name="menu_show_original" msgid="4227060689700765828">"取消自動調整大小"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"資料夾設定"</string>
@@ -148,7 +148,7 @@
     <string name="send_failed" msgid="750908595144529579">"未發送郵件。"</string>
     <string name="me_object_pronun" msgid="7668994569594901571">"我"</string>
     <string name="me_subject_pronun" msgid="1088657349831581116">"我"</string>
-    <string name="inbox_folders_heading" msgid="3960094746248976565">"收件匣"</string>
+    <string name="inbox_folders_heading" msgid="3960094746248976565">"收件箱"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"刪除這個對話群組？"</item>
     <item quantity="other" msgid="930334208937121234">"刪除這 <xliff:g id="COUNT">%1$d</xliff:g> 個對話群組？"</item>

@@ -145,7 +145,7 @@
     <item quantity="other" msgid="6961049507579977505">"Kladder"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Sender…"</string>
-    <string name="send_failed" msgid="750908595144529579">"Besked ikke sendt."</string>
+    <string name="send_failed" msgid="750908595144529579">"Meddelelsen blev ikke sendt."</string>
     <string name="me_object_pronun" msgid="7668994569594901571">"mig"</string>
     <string name="me_subject_pronun" msgid="1088657349831581116">"mig"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Indbakke"</string>
@@ -161,7 +161,7 @@
     <item quantity="one" msgid="5974090449454432874">"Vil du kassere kladderne fra denne samtale?"</item>
     <item quantity="other" msgid="4173815457177336569">"Vil du kassere kladderne fra disse <xliff:g id="COUNT">%1$d</xliff:g> samtaler?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="1149834186404614612">"Vil du kassere denne besked?"</string>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Vil du kassere denne meddelelse?"</string>
     <string name="loading_conversations" msgid="2649440958602369555">"Indlæser..."</string>
     <string name="no_conversations" msgid="35400008890372241">"Der er ingen samtaler."</string>
     <string name="undo" msgid="6070869718469782251">"Fortryd"</string>
@@ -209,16 +209,16 @@
     <string name="search_unsupported" msgid="4654227193354052607">"Søgningen understøttes ikke på denne konto."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Søger..."</string>
     <string name="add_label" msgid="6060201715848652940">"Tilføj mappe"</string>
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"Ny besked fra <xliff:g id="SENDER">%s</xliff:g>. Vis."</string>
+    <string name="new_incoming_messages_one" msgid="164529476439626369">"Ny meddelelse fra <xliff:g id="SENDER">%s</xliff:g>. Vis."</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> nye beskeder. Vis."</item>
+    <item quantity="other" msgid="6028908826781946980">"<xliff:g id="COUNT">%1$d</xliff:g> nye meddelelser. Vis."</item>
   </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Udvid modtageroplysninger"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Skjul modtageroplysninger"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Vis kontaktoplysninger for <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Vis kontaktoplysninger"</string>
   <plurals name="show_messages_read">
-    <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> ældre beskeder"</item>
+    <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> ældre meddelelser"</item>
   </plurals>
     <string name="from_heading" msgid="2454519463223197231">"Fra: "</string>
     <string name="replyto_heading" msgid="8563992423173220512">"Svar til: "</string>
@@ -246,7 +246,7 @@
     <string name="yes" msgid="7474216525286833848">"Ja"</string>
     <string name="no" msgid="427548507197604096">"Nej"</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
-    <string name="done" msgid="3079981801778027540">"Udført"</string>
+    <string name="done" msgid="3079981801778027540">"Udfør"</string>
     <string name="cancel" msgid="8762981157252199115">"Annuller"</string>
     <string name="clear" msgid="3184687982186479442">"Ryd"</string>
   <string-array name="sync_status">
@@ -291,7 +291,7 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Flytning er ikke mulig, fordi markeringen indeholder flere konti."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignorer, jeg har tillid til denne besked"</string>
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignorer. Jeg har tillid til denne."</string>
     <string name="via_domain" msgid="380109230928079350">"via <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"System"</item>
@@ -308,10 +308,10 @@
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Alle mapper"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Seneste mapper"</string>
-    <string name="message_details_title" msgid="2183394728494962332">"Beskeddetaljer"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"Gå automatisk frem"</string>
+    <string name="message_details_title" msgid="2183394728494962332">"Meddelelsesinfo"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"Efterfølgende skærm"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Vælg, hvilken skærm der skal vises, når du har slettet en meddelelse"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Indstil Gå automatisk frem\n(efter sletning osv.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Angiv efterfølgende skærm\n(efter sletning osv.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Nyere"</item>
     <item msgid="5562093094216840213">"Ældre"</item>
@@ -322,8 +322,8 @@
     <item msgid="732746454445519134">"Vis ældre samtale efter sletning"</item>
     <item msgid="2189929276292165301">"Vis samtalelisten efter sletning"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Ryd billedgodkendelserne"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vil du rydde billedgodkendelserne?"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Ryd billedtilladelser"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Vil du rydde billedtilladelserne?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Stop visning af indlejrede billeder i tekst fra afsendere, du tidligere har tilladt."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Billeder vil ikke blive vist automatisk."</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"Signatur"</string>
@@ -342,28 +342,28 @@
     <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
     <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
     <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> nye beskeder"</string>
+    <string name="new_messages" msgid="4419173946074516420">"<xliff:g id="COUNT">%1$d</xliff:g> nye meddelelser"</string>
     <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="5856834572357761687">"Lydløs"</string>
-    <string name="preference_removal_action_title" msgid="6585232628422090835">"Arkiverede og slettede handlinger"</string>
+    <string name="preference_removal_action_title" msgid="6585232628422090835">"Handlinger for arkivering og sletning"</string>
   <string-array name="prefEntries_removal_action">
-    <item msgid="1938422987822134657">"Vis kun arkiverede"</item>
-    <item msgid="5737880287951287278">"Vis kun slettede"</item>
-    <item msgid="4279948809971752573">"Vis arkiverede og slettede"</item>
+    <item msgid="1938422987822134657">"Vis kun \"arkivér\""</item>
+    <item msgid="5737880287951287278">"Vis kun \"slet\""</item>
+    <item msgid="4279948809971752573">"Vis \"arkivér\" og \"slet\""</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="492039800376391677">"Vis kun arkiverede"</item>
-    <item msgid="8350973578419775975">"Vis kun slettede"</item>
-    <item msgid="2967059853409454648">"Vis arkiverede og slettede"</item>
+    <item msgid="492039800376391677">"Vis kun \"arkivér\""</item>
+    <item msgid="8350973578419775975">"Vis kun \"slet\""</item>
+    <item msgid="2967059853409454648">"Vis \"arkivér\" og \"slet\""</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Arkiverede og slettede handlinger"</string>
+    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Handlinger for arkivering og sletning"</string>
     <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Svar alle"</string>
     <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"Brug som standardsvar på meddelelser"</string>
-    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Stryg med fingeren for at arkivere"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Stryg med fingeren for at slette"</string>
+    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Stryg til siden for at arkivere"</string>
+    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Stryg til siden for at slette"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"På samtaleliste"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"Afsenderbillede"</string>
-    <string name="preference_sender_image_description" msgid="7126493917536558232">"Vis ved siden af navnet i samtalelisten"</string>
+    <string name="preference_sender_image_description" msgid="7126493917536558232">"Vis ud for navnet i samtalelisten"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"Stryg ned for at opdatere"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"Tjekker din e-mail"</string>
     <string name="empty_trash" msgid="652435297593538512">"Tøm papirkurv"</string>
@@ -376,7 +376,7 @@
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"Åbn navigationsskuffen"</string>
     <string name="drawer_close" msgid="2764774620737876943">"Luk navigationsskuffen"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tryk på et afsenderbillede for at vælge den samtale."</string>
+    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Tryk på afsenderbilledet for at markere samtalen."</string>
     <string name="long_press_to_select_tip" msgid="9205666839837250150">"Tryk og hold nede for at vælge en samtale, og tryk derefter igen for at vælge flere."</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"Mappeikon"</string>
     <string name="add_account" msgid="2162808366829269770">"Tilføj konto"</string>

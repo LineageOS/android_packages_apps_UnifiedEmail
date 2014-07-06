@@ -182,8 +182,8 @@
     <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; har rapporterats som Inte skräppost."</item>
   </plurals>
   <plurals name="conversation_not_important">
-    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; har markerats som oviktig."</item>
-    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; har markerats som oviktig."</item>
+    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; har markerats som icke viktig."</item>
+    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; har markerats som icke viktig."</item>
   </plurals>
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; har rapporterats som nätfiske."</item>

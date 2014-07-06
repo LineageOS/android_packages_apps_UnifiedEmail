@@ -62,7 +62,7 @@
     <string name="archive" msgid="847250094775910499">"ຈັດເກັບ"</string>
     <string name="report_spam" msgid="6467567747975393907">"ລາຍງານສະແປມ"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"ລາຍງານວ່າບໍ່ແມ່ນສະແປມ"</string>
-    <string name="report_phishing" msgid="5714205737453138338">"ລາຍງານຟິຊຊິ່ງ"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"ລາຍງານຟິດຊິ່ງ"</string>
     <string name="delete" msgid="844871204175957681">"ລຶບ"</string>
     <string name="discard_drafts" msgid="6862272443470085375">"ຍົກເລີກສະບັບຮ່າງ"</string>
     <string name="refresh" msgid="490989798005710951">"ໂຫລດຂໍ້ມູນໃໝ່"</string>

@@ -194,8 +194,8 @@
     <item quantity="other" msgid="3012054504370916482">"Архивировано (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"Удаленных цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="8630099095360065837">"Удаленных цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="4398693029405479323">"Удалено цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="other" msgid="8630099095360065837">"Удалено цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Удалено"</string>
     <string name="archived" msgid="7533995360704366325">"Отправлено в архив"</string>

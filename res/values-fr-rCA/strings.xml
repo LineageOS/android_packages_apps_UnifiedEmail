@@ -22,7 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
     <string name="bcc" msgid="3098643138241111579">"Cci"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Objet"</string>
-    <string name="body_hint" msgid="4279864165439577668">"Compose email"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Composez un message"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Joindre un fichier"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Joindre une photo"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"Joindre une vidéo"</string>
@@ -56,8 +56,8 @@
     <string name="mark_read" msgid="8438349154394313195">"Marquer comme lu"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Marquer comme non lu"</string>
     <string name="mute" msgid="1995954983688603977">"Ignorer"</string>
-    <string name="add_star" msgid="2866003744391266498">"Activer le suivi"</string>
-    <string name="remove_star" msgid="4372327933122106128">"Supprimer le suivi"</string>
+    <string name="add_star" msgid="2866003744391266498">"Marquer comme favorite"</string>
+    <string name="remove_star" msgid="4372327933122106128">"Ne plus marquer comme favorite"</string>
     <string name="remove_folder" msgid="4906542720439865413">"Supprimer de <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="847250094775910499">"Archiver"</string>
     <string name="report_spam" msgid="6467567747975393907">"Signaler comme pourriel"</string>
@@ -166,8 +166,8 @@
     <string name="no_conversations" msgid="35400008890372241">"Aucune conversation"</string>
     <string name="undo" msgid="6070869718469782251">"Annuler"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="8315328190288744398">"Désactivation du suivi de <xliff:g id="COUNT">%1$d</xliff:g> conversation en cours…"</item>
-    <item quantity="other" msgid="2222365088907519938">"Désactivation du suivi de <xliff:g id="COUNT">%1$d</xliff:g> conversations en cours…"</item>
+    <item quantity="one" msgid="8315328190288744398">"Suppression de l\'étoile de <xliff:g id="COUNT">%1$d</xliff:g> conversation en cours…"</item>
+    <item quantity="other" msgid="2222365088907519938">"Suppression de l\'étoile de <xliff:g id="COUNT">%1$d</xliff:g> conversations en cours…"</item>
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations ignorées."</item>
@@ -332,10 +332,10 @@
     <string name="notification_action_reply" msgid="6015299134424685297">"Répondre"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"Répondre à tous"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"Archiver"</string>
-    <string name="notification_action_remove_label" msgid="5852730267411032291">"Supprimer le libellé"</string>
+    <string name="notification_action_remove_label" msgid="5852730267411032291">"Supprimer l\'étiquette"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"suppr"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"Archivée"</string>
-    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Libellé supprimé."</string>
+    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Étiquette supprimée."</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"Message supprimé."</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>

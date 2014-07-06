@@ -87,7 +87,7 @@
     <string name="help_and_info" msgid="7873089811705257882">"עזרה"</string>
     <string name="quoted_text" msgid="7250749398672037355">"כלול טקסט מצוטט"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"צטט טקסט"</string>
-    <string name="respond_inline" msgid="6797117334768201180">"השב בתוך שורה"</string>
+    <string name="respond_inline" msgid="6797117334768201180">"השב בתוך הטקסט"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> KB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
