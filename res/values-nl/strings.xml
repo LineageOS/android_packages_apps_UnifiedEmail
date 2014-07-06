@@ -331,8 +331,8 @@
     <item msgid="732746454445519134">"Oudere conversatie weergeven na het verwijderen"</item>
     <item msgid="2189929276292165301">"Conversatielijst weergeven na het verwijderen"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Goedkeuringen voor foto\'s wissen"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Goedkeuringen voor foto\'s wissen?"</string>
+    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Goedkeuring van foto\'s wissen"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Goedkeuring van foto\'s wissen?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Niet langer inline-afbeeldingen weergeven van afzenders die u eerder heeft toegestaan."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Afbeeldingen worden niet automatisch weergegeven."</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"Handtekening"</string>

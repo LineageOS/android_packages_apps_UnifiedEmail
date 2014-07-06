@@ -170,7 +170,7 @@
     <string name="empty_spam_folder" msgid="7915096608607243274">"Hoyaaa, hakuna barua taka!"</string>
     <string name="empty_trash_folder" msgid="2205589798674653912">"Hakuna takataka hapa. Asante kwa kurejeleza!"</string>
     <string name="empty_folder" msgid="107806583742395757">"Hakuna barua pepe."</string>
-    <string name="getting_messages" msgid="563711962781090231">"Inaleta ujumbe wako"</string>
+    <string name="getting_messages" msgid="563711962781090231">"Inaleta barua pepe zako"</string>
     <string name="undo" msgid="6070869718469782251">"Tendua"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="8315328190288744398">"Inaondoa nyota kwenye mazungumzo <xliff:g id="COUNT">%1$d</xliff:g>."</item>
