@@ -88,7 +88,7 @@ public class AttachmentActionHandler {
                         mAttachment.destination == destination)) {
             mView.viewAttachment();
         } else {
-            showDownloadingDialog();
+            showDownloadingDialog(false);
             startDownloadingAttachment(destination);
         }
     }
@@ -138,8 +138,11 @@ public class AttachmentActionHandler {
     /**
      * Displays a loading dialog to be used for downloading attachments.
      * Must be called on the UI thread.
+     *
+     * @param isForLoadRestOfMessage If the dialog is showed for load the rest of the message
+     * {@code true} or just for attachments {@code false}
      */
-    public void showDownloadingDialog() {
+    public DialogFragment showDownloadingDialog(boolean isForLoadRestOfMessage) {
         final FragmentTransaction ft = mFragmentManager.beginTransaction();
         final Fragment prev = mFragmentManager.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
         if (prev != null) {
@@ -149,8 +152,9 @@ public class AttachmentActionHandler {
 
          // Create and show the dialog.
         final DialogFragment newFragment = AttachmentProgressDialogFragment.newInstance(
-                mAttachment);
+                mAttachment, isForLoadRestOfMessage);
         newFragment.show(ft, PROGRESS_FRAGMENT_TAG);
+        return newFragment;
     }
 
     /**

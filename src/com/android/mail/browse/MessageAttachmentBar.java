@@ -90,6 +90,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         super(context, attrs);
 
         mActionHandler = new AttachmentActionHandler(context, this);
+        mActionHandler.setViewOnFinish(false);
     }
 
     public void initialize(FragmentManager fragmentManager) {
@@ -108,6 +109,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
      * cause sub-views to update.
      */
     public void render(Attachment attachment, Uri accountUri, boolean loaderResult) {
+        mActionHandler.setViewOnFinish(false);
+
         // get account uri for potential eml viewer usage
         mAccountUri = accountUri;
 
@@ -170,6 +173,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     }
 
     private boolean onClick(final int res, final View v) {
+        mActionHandler.setViewOnFinish(true);
         if (res == R.id.preview_attachment) {
             previewAttachment();
         } else if (res == R.id.save_attachment) {
@@ -183,7 +187,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             }
         } else if (res == R.id.download_again) {
             if (mAttachment.isPresentLocally()) {
-                mActionHandler.showDownloadingDialog();
+                mActionHandler.showDownloadingDialog(false);
                 mActionHandler.startRedownloadingAttachment(mAttachment);
 
                 Analytics.getInstance().sendEvent("redownload_attachment",
@@ -226,7 +230,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
             if ((mAttachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
                 // This is a dummy. We need to download it, but not attempt to open or preview.
-                mActionHandler.showDownloadingDialog();
+                mActionHandler.showDownloadingDialog(false);
                 mActionHandler.setViewOnFinish(false);
                 mActionHandler.startDownloadingAttachment(AttachmentDestination.CACHE);
 
@@ -312,6 +316,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
     @Override
     public void viewAttachment() {
+System.out.println("JRC::viewAttachment(): " + mAttachment.contentUri);
         if (mAttachment.contentUri == null) {
             LogUtils.e(LOG_TAG, "viewAttachment with null content uri");
             return;
@@ -342,6 +347,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
     private void previewAttachment() {
         if (mAttachment.canPreview()) {
+System.out.println("JRC::previewAttachment(): " + mAttachment.previewIntentUri);
             final Intent previewIntent =
                     new Intent(Intent.ACTION_VIEW, mAttachment.previewIntentUri);
             getContext().startActivity(previewIntent);

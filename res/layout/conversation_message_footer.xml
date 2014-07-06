@@ -45,4 +45,12 @@
         android:orientation="vertical"
         style="@style/AttachmentMarginStyle" />
 
+    <include layout="@layout/conversation_message_load_more_bar"
+        android:id="@+id/message_load_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        style="@style/AttachmentMarginStyle" />
+
 </com.android.mail.browse.MessageFooterView>

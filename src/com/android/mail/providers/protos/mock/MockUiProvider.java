@@ -193,6 +193,7 @@ public final class MockUiProvider extends ContentProvider {
         conversationMap.put(ConversationColumns.NUM_MESSAGES, 1);
         conversationMap.put(ConversationColumns.NUM_DRAFTS, 1);
         conversationMap.put(ConversationColumns.SENDING_STATE, 1);
+        conversationMap.put(ConversationColumns.LOADED, 1);
         conversationMap.put(ConversationColumns.READ, 0);
         conversationMap.put(ConversationColumns.SEEN, 0);
         conversationMap.put(ConversationColumns.STARRED, 0);
@@ -232,13 +233,13 @@ public final class MockUiProvider extends ContentProvider {
         for (int i = 0; i < messageCount; i++) {
             if (i % 2 == 0) {
                 info.addMessage(new MessageInfo(false, false,
-                        i + "Test <testsender@test.com>", -1, "testsender@test.com"));
+                        i + "Test <testsender@test.com>", -1, "testsender@test.com", true));
             } else if (i % 3 == 0) {
                 info.addMessage(new MessageInfo(true, false, i + "sender@test.com", -1,
-                        "sender@test.com"));
+                        "sender@test.com", true));
             } else {
                 info.addMessage(new MessageInfo(false, false, MessageInfo.SENDER_LIST_TOKEN_ELIDED,
-                        -1, null));
+                        -1, null, true));
             }
         }
         return info.toBlob();
