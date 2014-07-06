@@ -128,7 +128,7 @@
     <string name="contextmenu_map" msgid="7721544518698532954">"Mapa"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Compartir enlace"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Ayuda"</string>
-    <string name="contextmenu_feedback" msgid="4429118420169571473">"Danos tu opinión"</string>
+    <string name="contextmenu_feedback" msgid="4429118420169571473">"Enviar sugerencias"</string>
     <!-- no translation found for num_selected (5723323585692387843) -->
     <skip />
   <plurals name="move_conversation">
@@ -140,8 +140,7 @@
     <string name="read_string" msgid="219566857950091332">"conversación leída"</string>
     <string name="unread_string" msgid="588180203444398297">"conversación no leída"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> - <xliff:g id="ID_2">%s</xliff:g>"</string>
-    <string name="badge_subject_and_snippet" msgid="1261901365444812399">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g> — <xliff:g id="ID_3">%3$s</xliff:g>"</string>
+    <string name="badge_and_subject" msgid="8920967904126321854">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g>"</string>
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"Borrador"</item>
     <item quantity="other" msgid="6961049507579977505">"Borradores"</item>
@@ -221,19 +220,21 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Mostrar <xliff:g id="COUNT">%1$d</xliff:g> mensajes nuevos."</item>
   </plurals>
-    <string name="expand_recipient_details" msgid="2266544827446346880">"Ampliar información del destinatario"</string>
-    <string name="collapse_recipient_details" msgid="3608892454869745927">"Contraer información del destinatario"</string>
+    <string name="date_and_view_details" msgid="855883928446828805">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Detalles&lt;/a&gt;"</string>
+    <string name="hide_details" msgid="7022374044607095589">"Ocultar detalles"</string>
+    <string name="to_message_header" msgid="7406436821725529743">"para <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Mostrar información de contacto de <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Mostrar información de contacto"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> mensajes antiguos"</item>
   </plurals>
-    <string name="from_heading" msgid="2454519463223197231">"De: "</string>
-    <string name="replyto_heading" msgid="8563992423173220512">"Responder a: "</string>
+    <string name="from_heading" msgid="8950294114718418954">"De:"</string>
+    <string name="replyto_heading" msgid="2081358811894701297">"Responder a:"</string>
     <string name="to_heading" msgid="1142876841308812954">"Para: "</string>
-    <string name="cc_heading" msgid="52678613787360092">"Cc: "</string>
-    <string name="bcc_heading" msgid="4698055226318660420">"Cco: "</string>
-    <string name="date_heading" msgid="2086174555097691910">"Fecha: "</string>
+    <string name="to_heading_no_space" msgid="350137729589860168">"Para:"</string>
+    <string name="cc_heading" msgid="8116221732072085180">"Cc:"</string>
+    <string name="bcc_heading" msgid="5528824453033598299">"Cco:"</string>
+    <string name="date_heading" msgid="2414358582984879303">"Fecha:"</string>
     <string name="show_images" msgid="1875700481186331432">"Mostrar imágenes"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Mostrar siempre imágenes de este remitente"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Las imágenes de este remitente se mostrarán automáticamente."</string>
@@ -300,15 +301,6 @@
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignorar. Confío en el mensaje."</string>
     <string name="via_domain" msgid="380109230928079350">"vía <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
-  <string-array name="moveto_folder_sections">
-    <item msgid="6984976603137892898">"Sistema"</item>
-    <item msgid="6593672292311851204">"Uso frecuente"</item>
-    <item msgid="3584541772344786752">"Todas las carpetas"</item>
-  </string-array>
-  <string-array name="change_folder_sections">
-    <item msgid="53174547922204815">"Carpetas actuales"</item>
-    <item msgid="8635593741453580597">"Otras carpetas"</item>
-  </string-array>
     <string name="signin" msgid="8958889809095796177">"Iniciar sesión"</string>
     <string name="info" msgid="6009817562073541204">"Información"</string>
     <string name="report" msgid="5417082746232614958">"Informar"</string>
@@ -393,7 +385,6 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"Icono de carpeta"</string>
     <string name="add_account" msgid="2162808366829269770">"Añadir cuenta"</string>
     <string name="attached_message" msgid="4267189489654642035">"Mensaje adjunto"</string>
-    <string name="date_message_received_yesterday" msgid="5690676561028193570">"Ayer, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Ignorar sugerencia"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"La opción de sincronización automática está desactivada."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Tocar para activar."</string>
@@ -415,7 +406,7 @@
     <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g> mensajes"</item>
   </plurals>
     <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> a las <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="draft_to_heading" msgid="3448702197598500284">"Borrador para: "</string>
+    <string name="draft_to_heading" msgid="4507350107532317093">"Borrador para:"</string>
     <string name="draft_heading" msgid="4654861166951306093">"Borrador"</string>
     <string name="quoted_text_hidden_print" msgid="8572207101897331252">"El texto citado está oculto"</string>
   <plurals name="num_attachments">
@@ -445,7 +436,7 @@
     <string name="eml_loader_error_toast" msgid="2107905951183729575">"No se puede abrir el archivo"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Ayuda"</string>
     <string name="help_and_feedback" msgid="8247702474242002137">"Ayuda y opiniones"</string>
-    <string name="feedback" msgid="79365993169715049">"Danos tu opinión"</string>
+    <string name="feedback" msgid="79365993169715049">"Enviar sugerencias"</string>
     <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
     <string name="version" msgid="5053508951230261148">"<xliff:g id="APP_NAME">%1$s</xliff:g> versión <xliff:g id="VERSION">%2$s</xliff:g>"</string>
     <string name="view_app_page" msgid="5320196120982618014"></string>

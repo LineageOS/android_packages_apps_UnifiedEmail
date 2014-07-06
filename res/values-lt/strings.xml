@@ -140,8 +140,7 @@
     <string name="read_string" msgid="219566857950091332">"pokalbis perskaitytas"</string>
     <string name="unread_string" msgid="588180203444398297">"pokalbis neskaitytas"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g>–<xliff:g id="ID_2">%s</xliff:g>"</string>
-    <string name="badge_subject_and_snippet" msgid="1261901365444812399">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g> – <xliff:g id="ID_3">%3$s</xliff:g>"</string>
+    <string name="badge_and_subject" msgid="8920967904126321854">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g>"</string>
   <plurals name="draft">
     <item quantity="one" msgid="333591132893648383">"Juodraštis"</item>
     <item quantity="other" msgid="6961049507579977505">"Juodrašč."</item>
@@ -221,19 +220,21 @@
   <plurals name="new_incoming_messages_many">
     <item quantity="other" msgid="1018949581192786598">"Rodyti naujų pranešimų: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
-    <string name="expand_recipient_details" msgid="2266544827446346880">"Išskleisti išsamią gavėjo informaciją"</string>
-    <string name="collapse_recipient_details" msgid="3608892454869745927">"Sutraukti išsamią gavėjo informaciją"</string>
+    <string name="date_and_view_details" msgid="855883928446828805">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Peržiūrėti išsamią informaciją&lt;/a&gt;"</string>
+    <string name="hide_details" msgid="7022374044607095589">"Slėpti išsamią informaciją"</string>
+    <string name="to_message_header" msgid="7406436821725529743">"kam: <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Rodyti <xliff:g id="NAME">%1$s</xliff:g> kontaktinę informaciją"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Rodyti kontaktinę informaciją"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="7439716291751085801">"Senesnių pranešimų: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="from_heading" msgid="2454519463223197231">"Nuo: "</string>
-    <string name="replyto_heading" msgid="8563992423173220512">"Atsakyti: "</string>
+    <string name="from_heading" msgid="8950294114718418954">"Nuo:"</string>
+    <string name="replyto_heading" msgid="2081358811894701297">"Atsakyti:"</string>
     <string name="to_heading" msgid="1142876841308812954">"Kam: "</string>
-    <string name="cc_heading" msgid="52678613787360092">"Cc: "</string>
-    <string name="bcc_heading" msgid="4698055226318660420">"Bcc: "</string>
-    <string name="date_heading" msgid="2086174555097691910">"Data: "</string>
+    <string name="to_heading_no_space" msgid="350137729589860168">"Kam:"</string>
+    <string name="cc_heading" msgid="8116221732072085180">"Cc:"</string>
+    <string name="bcc_heading" msgid="5528824453033598299">"Bcc:"</string>
+    <string name="date_heading" msgid="2414358582984879303">"Data:"</string>
     <string name="show_images" msgid="1875700481186331432">"Rodyti paveiksl."</string>
     <string name="always_show_images" msgid="5966408990164581801">"Visada rodyti iš šio siunt. gaut. pav."</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Iš šio siuntėjo gauti paveikslėliai bus rodomi automatiškai."</string>
@@ -300,15 +301,6 @@
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Nepaisyti, pasitikiu pranešim."</string>
     <string name="via_domain" msgid="380109230928079350">"per <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
-  <string-array name="moveto_folder_sections">
-    <item msgid="6984976603137892898">"Sistema"</item>
-    <item msgid="6593672292311851204">"Dažnai naudoj."</item>
-    <item msgid="3584541772344786752">"Visi aplankai"</item>
-  </string-array>
-  <string-array name="change_folder_sections">
-    <item msgid="53174547922204815">"Dabartiniai aplankai"</item>
-    <item msgid="8635593741453580597">"Kiti aplankai"</item>
-  </string-array>
     <string name="signin" msgid="8958889809095796177">"Prisijungti"</string>
     <string name="info" msgid="6009817562073541204">"Informacija"</string>
     <string name="report" msgid="5417082746232614958">"Pranešti"</string>
@@ -393,7 +385,6 @@
     <string name="folder_icon_desc" msgid="1500547397347480618">"Aplanko piktograma"</string>
     <string name="add_account" msgid="2162808366829269770">"Pridėti paskyrą"</string>
     <string name="attached_message" msgid="4267189489654642035">"Pridėtas pranešimas"</string>
-    <string name="date_message_received_yesterday" msgid="5690676561028193570">"Vakar, <xliff:g id="DATETIME">%1$s</xliff:g>"</string>
     <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Atsisakyti patarimo"</string>
     <string name="auto_sync_off" msgid="7185342309138211107">"Automatinis sinchronizavimas išjungtas."</string>
     <string name="tap_to_enable_sync" msgid="3334767826332383085">"Įjungti palietus."</string>
@@ -415,7 +406,7 @@
     <item quantity="other" msgid="3111597053027796035">"Pranešimų: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
     <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="draft_to_heading" msgid="3448702197598500284">"Juodraštis kam: "</string>
+    <string name="draft_to_heading" msgid="4507350107532317093">"Juodraštis kam:"</string>
     <string name="draft_heading" msgid="4654861166951306093">"Juodraštis"</string>
     <string name="quoted_text_hidden_print" msgid="8572207101897331252">"Cituojamas tekstas paslėptas"</string>
   <plurals name="num_attachments">
