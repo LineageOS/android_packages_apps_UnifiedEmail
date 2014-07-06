@@ -24,12 +24,14 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.emailcommon.provider.EmailContent;
 import com.android.mail.R;
 import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.browse.ConversationContainer.DetachListener;
@@ -54,6 +56,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     private LoaderManager mLoaderManager;
     private FragmentManager mFragmentManager;
     private AttachmentCursor mAttachmentsCursor;
+    private MessageLoadMoreBar mLoadMore;
     private TextView mTitleText;
     private AttachmentTileGrid mAttachmentGrid;
     private LinearLayout mAttachmentBarList;
@@ -78,6 +81,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        mLoadMore = (MessageLoadMoreBar)findViewById(R.id.message_load_more);
         mTitleText = (TextView) findViewById(R.id.attachments_header_text);
         mAttachmentGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
         mAttachmentBarList = (LinearLayout) findViewById(R.id.attachment_bar_list);
@@ -86,6 +90,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     public void initialize(LoaderManager loaderManager, FragmentManager fragmentManager) {
         mLoaderManager = loaderManager;
         mFragmentManager = fragmentManager;
+        mLoadMore.initialize(fragmentManager);
     }
 
     public void bind(MessageHeaderItem headerItem, Uri accountUri, boolean measureOnly) {
@@ -102,16 +107,40 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 headerItem.getMessage().attachmentListUri)) {
             mAttachmentGrid.removeAllViewsInLayout();
             mAttachmentBarList.removeAllViewsInLayout();
+            mLoadMore.setVisibility(View.GONE);
             mTitleText.setVisibility(View.GONE);
             mAttachmentGrid.setVisibility(View.GONE);
             mAttachmentBarList.setVisibility(View.GONE);
         }
 
+        mMessageHeaderItem = headerItem;
+
+        Message msg = mMessageHeaderItem.getMessage();
+        if (!msg.loaded) {
+            mLoadMore.setVisibility(View.VISIBLE);
+
+            // We need to load the dummy attachment
+            requestLoader(measureOnly);
+
+        } else {
+            mLoadMore.setVisibility(View.GONE);
+
+            // Request load of attachment
+            requestLoader(measureOnly);
+
+            // Do an initial render if initLoader didn't already do one
+            if (mAttachmentGrid.getChildCount() == 0 &&
+                    mAttachmentBarList.getChildCount() == 0) {
+                renderAttachments(false);
+            }
+        }
+        setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
+    }
+
+    private void requestLoader(boolean measureOnly) {
         // If this MessageFooterView is being bound to a new attachment, we need to unbind with the
         // old loader
         final Integer oldAttachmentLoaderId = getAttachmentLoaderId();
-
-        mMessageHeaderItem = headerItem;
 
         final Integer attachmentLoaderId = getAttachmentLoaderId();
         // Destroy the loader if we are attempting to load a different attachment
@@ -127,13 +156,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                     attachmentLoaderId);
             mLoaderManager.initLoader(attachmentLoaderId, Bundle.EMPTY, this);
         }
-
-        // Do an initial render if initLoader didn't already do one
-        if (mAttachmentGrid.getChildCount() == 0 &&
-                mAttachmentBarList.getChildCount() == 0) {
-            renderAttachments(false);
-        }
-        setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
     }
 
     private void renderAttachments(boolean loaderResult) {
@@ -157,24 +179,42 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             return;
         }
 
+        final Message msg = mMessageHeaderItem.getMessage();
+
+
         // filter the attachments into tiled and non-tiled
         final int maxSize = attachments.size();
         final List<Attachment> tiledAttachments = new ArrayList<Attachment>(maxSize);
         final List<Attachment> barAttachments = new ArrayList<Attachment>(maxSize);
 
         for (Attachment attachment : attachments) {
+            // We don't need to show dummy or incomplete attachments. We have a load more
+            // to load the rest of the message
+            if (TextUtils.isEmpty(attachment.getName()) ||
+                    (attachment.flags & EmailContent.Attachment.FLAG_DUMMY_ATTACHMENT) ==
+                    EmailContent.Attachment.FLAG_DUMMY_ATTACHMENT) {
+                continue;
+            }
             if (AttachmentTile.isTiledAttachment(attachment)) {
                 tiledAttachments.add(attachment);
             } else {
                 barAttachments.add(attachment);
             }
         }
-        mMessageHeaderItem.getMessage().attachmentsJson = Attachment.toJSONArray(attachments);
+        msg.attachmentsJson = Attachment.toJSONArray(attachments);
 
-        mTitleText.setVisibility(View.VISIBLE);
+        int tiledAttachmentsCount = tiledAttachments.size();
+        int barAttachmentsCount = barAttachments.size();
+        if (tiledAttachmentsCount + barAttachmentsCount > 0) {
+            mTitleText.setVisibility(View.VISIBLE);
+        }
 
-        renderTiledAttachments(tiledAttachments, loaderResult);
-        renderBarAttachments(barAttachments, loaderResult);
+        if (tiledAttachmentsCount > 0) {
+            renderTiledAttachments(tiledAttachments, loaderResult);
+        }
+        if (barAttachmentsCount > 0) {
+            renderBarAttachments(barAttachments, loaderResult);
+        }
     }
 
     private void renderTiledAttachments(List<Attachment> tiledAttachments, boolean loaderResult) {
@@ -228,10 +268,18 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAttachmentsCursor = (AttachmentCursor) data;
 
-        if (mAttachmentsCursor == null || mAttachmentsCursor.isClosed()) {
+        if (mMessageHeaderItem == null || mAttachmentsCursor == null
+                || mAttachmentsCursor.isClosed()) {
             return;
         }
 
+        final Message msg = mMessageHeaderItem.getMessage();
+        if (msg.loaded) {
+            mLoadMore.onMessageLoaded();
+        } else {
+            mAttachmentsCursor.moveToPosition(0);
+            mLoadMore.setAttachment(mAttachmentsCursor.get());
+        }
         renderAttachments(true);
     }
 

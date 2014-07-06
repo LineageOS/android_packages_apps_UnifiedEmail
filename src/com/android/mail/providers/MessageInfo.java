@@ -24,6 +24,7 @@ import com.google.common.base.Objects;
 public class MessageInfo implements Parcelable {
     public static final String SENDER_LIST_TOKEN_ELIDED = " .. ";
 
+    public boolean loaded;
     public boolean read;
     public boolean starred;
     public String sender;
@@ -34,8 +35,8 @@ public class MessageInfo implements Parcelable {
     }
 
     public MessageInfo(boolean isRead, boolean isStarred, String senderString, int p,
-            String email) {
-        set(isRead, isStarred, senderString, p, email);
+            String email, boolean loaded) {
+        set(isRead, isStarred, senderString, p, email, loaded);
     }
 
     private MessageInfo(Parcel in) {
@@ -44,6 +45,7 @@ public class MessageInfo implements Parcelable {
         sender = in.readString();
         priority = in.readInt();
         senderEmail = in.readString();
+        loaded = (in.readInt() != 0);
     }
 
     @Override
@@ -58,14 +60,17 @@ public class MessageInfo implements Parcelable {
         dest.writeString(sender);
         dest.writeInt(priority);
         dest.writeString(senderEmail);
+        dest.writeInt(loaded ? 1 : 0);
     }
 
-    public void set(boolean isRead, boolean isStarred, String senderString, int p, String email) {
+    public void set(boolean isRead, boolean isStarred, String senderString, int p,
+            String email, boolean isLoaded) {
         read = isRead;
         starred = isStarred;
         sender = senderString;
         priority = p;
         senderEmail = email;
+        loaded = isLoaded;
     }
 
     public boolean markRead(boolean isRead) {
@@ -78,7 +83,7 @@ public class MessageInfo implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(read, starred, sender, senderEmail);
+        return Objects.hashCode(loaded, read, starred, sender, senderEmail, priority);
     }
 
     public static final Creator<MessageInfo> CREATOR = new Creator<MessageInfo>() {
@@ -106,6 +111,8 @@ public class MessageInfo implements Parcelable {
         builder.append(senderEmail);
         builder.append(", priority = ");
         builder.append(priority);
+        builder.append(", loaded = ");
+        builder.append(loaded);
         builder.append("]");
         return builder.toString();
     }

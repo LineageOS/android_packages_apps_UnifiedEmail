@@ -33,10 +33,12 @@ public class AttachmentProgressDialogFragment extends DialogFragment {
     private AttachmentCommandHandler mCommandHandler;
 
     private Attachment mAttachment;
+    private boolean mIsForLoadRestOfMessage;
 
     private ProgressDialog mDialog;
 
-    static AttachmentProgressDialogFragment newInstance(Attachment attachment) {
+    static AttachmentProgressDialogFragment newInstance(Attachment attachment,
+            boolean isForLoadRestOfMessage) {
         final AttachmentProgressDialogFragment f = new AttachmentProgressDialogFragment();
 
         // Supply the attachment as an argument.
@@ -66,7 +68,8 @@ public class AttachmentProgressDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
         mDialog = new ProgressDialog(getActivity());
-        mDialog.setTitle(R.string.fetching_attachment);
+        mDialog.setTitle(mIsForLoadRestOfMessage ? R.string.fetching_message
+                : R.string.fetching_attachment);
         mDialog.setMessage(mAttachment.getName());
         mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mDialog.setIndeterminate(true);

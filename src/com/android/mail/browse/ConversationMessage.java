@@ -72,7 +72,7 @@ public final class ConversationMessage extends Message {
      *
      */
     public int getStateHashCode() {
-        return Objects.hashCode(uri, read, starred, getAttachmentsStateHashCode());
+        return Objects.hashCode(uri, loaded, read, starred, getAttachmentsStateHashCode());
     }
 
     private int getAttachmentsStateHashCode() {

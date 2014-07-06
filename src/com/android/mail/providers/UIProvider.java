@@ -998,6 +998,7 @@ public class UIProvider {
         ConversationColumns.ATTACHMENT_PREVIEW_URI1,
         ConversationColumns.ATTACHMENT_PREVIEW_STATES,
         ConversationColumns.ATTACHMENT_PREVIEWS_COUNT,
+        ConversationColumns.LOADED
     };
 
     /**
@@ -1143,6 +1144,11 @@ public class UIProvider {
          * ConversationPriority to interpret this field.
          */
         public static final String PRIORITY = "priority";
+
+        /**
+         * This int column indicates whether the conversation has been loaded
+         */
+        public static final String LOADED = "loaded";
 
         /**
          * This int column indicates whether the conversation has been read
@@ -1538,7 +1544,8 @@ public class UIProvider {
         MessageColumns.SPAM_WARNING_LEVEL,
         MessageColumns.SPAM_WARNING_LINK_TYPE,
         MessageColumns.VIA_DOMAIN,
-        MessageColumns.IS_SENDING
+        MessageColumns.IS_SENDING,
+        MessageColumns.LOADED
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -1584,6 +1591,7 @@ public class UIProvider {
     public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 32;
     public static final int MESSAGE_VIA_DOMAIN_COLUMN = 33;
     public static final int MESSAGE_IS_SENDING_COLUMN = 34;
+    public static final int MESSAGE_LOADED_COLUMN = 35;
 
     public static final class CursorStatus {
         // The cursor is actively loading more data
@@ -1731,6 +1739,11 @@ public class UIProvider {
          * any external images.
          */
         public static final String ALWAYS_SHOW_IMAGES = "alwaysShowImages";
+
+        /**
+         * This boolean column indicates whether the message has been loaded
+         */
+        public static final String LOADED = "loaded";
 
         /**
          * This boolean column indicates whether the message has been read

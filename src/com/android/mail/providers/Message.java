@@ -35,6 +35,7 @@ import com.android.emailcommon.internet.MimeMessage;
 import com.android.emailcommon.internet.MimeUtility;
 import com.android.emailcommon.mail.MessagingException;
 import com.android.emailcommon.mail.Part;
+import com.android.emailcommon.provider.EmailContent;
 import com.android.emailcommon.utility.ConversionUtilities;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.ui.HtmlMessage;
@@ -147,6 +148,10 @@ public class Message implements Parcelable, HtmlMessage {
      */
     public boolean alwaysShowImages;
     /**
+     * @see UIProvider.MessageColumns#LOADED
+     */
+    public boolean loaded;
+    /**
      * @see UIProvider.MessageColumns#READ
      */
     public boolean read;
@@ -254,6 +259,7 @@ public class Message implements Parcelable, HtmlMessage {
         dest.writeInt(spamLinkType);
         dest.writeString(viaDomain);
         dest.writeInt(isSending ? 1 : 0);
+        dest.writeInt(loaded ? 1 : 0);
     }
 
     private Message(Parcel in) {
@@ -288,6 +294,7 @@ public class Message implements Parcelable, HtmlMessage {
         spamLinkType = in.readInt();
         viaDomain = in.readString();
         isSending = in.readInt() != 0;
+        loaded = in.readInt() != 0;
     }
 
     public Message() {
@@ -362,6 +369,8 @@ public class Message implements Parcelable, HtmlMessage {
             spamLinkType = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN);
             viaDomain = cursor.getString(UIProvider.MESSAGE_VIA_DOMAIN_COLUMN);
             isSending = cursor.getInt(UIProvider.MESSAGE_IS_SENDING_COLUMN) != 0;
+            loaded = cursor.getInt(UIProvider.MESSAGE_LOADED_COLUMN)  ==
+                    EmailContent.Message.FLAG_LOADED_COMPLETE;
         }
     }
 
