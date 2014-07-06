@@ -86,7 +86,7 @@
     <string name="help_and_info" msgid="7873089811705257882">"Guida"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Includi testo citato"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Testo citato"</string>
-    <string name="respond_inline" msgid="6797117334768201180">"Risposta incorporata"</string>
+    <string name="respond_inline" msgid="6797117334768201180">"Rispondi in linea"</string>
     <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> kB"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
@@ -322,7 +322,7 @@
   </string-array>
     <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Cancella approvazioni immagini"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Cancellare le approvazioni per le immagini?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Non mostrare più le immagini incorporate nei messsaggi di mittenti in precedenza autorizzati."</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Non mostrare più le immagini incorporate nei messaggi di mittenti in precedenza autorizzati."</string>
     <string name="sender_whitelist_cleared" msgid="917434007919176024">"Le immagini non saranno mostrate automaticamente."</string>
     <string name="preferences_signature_title" msgid="888167074398030574">"Firma"</string>
     <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Firma"</string>

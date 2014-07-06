@@ -308,7 +308,7 @@
     <string name="recent_folders_heading" msgid="8613621794529777406">"最近開いたフォルダ"</string>
     <string name="message_details_title" msgid="2183394728494962332">"メッセージの詳細"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"自動表示"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"メッセージを削除した後に表示する画面を選択します"</string>
+    <string name="auto_advance_summary" msgid="573927628806250719">"メッセージを削除した後に表示する画面を選択する"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"自動表示の設定\n（削除などの後）"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"前"</item>
@@ -361,7 +361,7 @@
     <string name="preference_swipe_title_delete" msgid="8611320022727435597">"スワイプして削除"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"スレッドリスト内"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"送信者の画像"</string>
-    <string name="preference_sender_image_description" msgid="7126493917536558232">"スレッドリストの名前の横に表示します"</string>
+    <string name="preference_sender_image_description" msgid="7126493917536558232">"スレッドリストの名前の横に表示する"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"下にスワイプして更新"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"メールを確認しています"</string>
     <string name="empty_trash" msgid="652435297593538512">"ゴミ箱を空にする"</string>

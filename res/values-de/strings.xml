@@ -144,7 +144,7 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Senden..."</string>
     <string name="send_failed" msgid="750908595144529579">"Nicht gesendet"</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"ich"</string>
+    <string name="me_object_pronun" msgid="7668994569594901571">"mich"</string>
     <string name="me_subject_pronun" msgid="1088657349831581116">"ich"</string>
     <string name="inbox_folders_heading" msgid="3960094746248976565">"Posteingang"</string>
   <plurals name="confirm_delete_conversation">
@@ -284,7 +284,7 @@
     <string name="not_synced_title" msgid="794279749170198599">"Konto nicht synchronisiert"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Für dieses Konto ist keine automatische Synchronisierung eingerichtet.\nZur einmaligen Synchronisierung der E-Mails tippen Sie auf "<b>"Synchronisieren"</b>". Zum Einrichten der automatischen Synchronisierung für dieses Konto tippen Sie auf "<b>"Synchronisierungseinstellungen ändern"</b>"."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synchronisieren"</string>
-    <string name="change_sync_settings" msgid="5514293926214426577">"Synchr.-Einstellungen ändern"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"Synchronisierungseinstellungen ändern"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Fehler beim Laden des Bildes"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Verschieben nicht möglich, weil mehrere Konten ausgewählt wurden."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>

@@ -22,7 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"Копија"</string>
     <string name="bcc" msgid="3098643138241111579">"Скривена копија"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Наслов"</string>
-    <string name="body_hint" msgid="4279864165439577668">"Напишите поруку е-поште"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Напишите имејл"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Приложи датотеку"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"Приложи слику"</string>
     <string name="save_draft" msgid="5555744208032445632">"Сачувај недовршену поруку"</string>
@@ -121,7 +121,7 @@
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Позови..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Додај контакт"</string>
-    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Пошаљи поруку е-поште"</string>
+    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Пошаљи имејл"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Мапа"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Дели везу"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Помоћ"</string>
@@ -280,7 +280,7 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Именовање пречице директоријума"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Чека се синхронизација"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Адреса е-поште ће се ускоро појавити."</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"Имејл адреса ће се ускоро појавити."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Налог није синхронизован"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Овај налог није подешен за аутоматску синхронизацију.\nДодирните "<b>"Синхронизуј одмах"</b>" да бисте синхронизовали пошту једном, односно "<b>"Промени подешавања синхронизације"</b>" да бисте подесили овај налог да аутоматски синхронизује пошту."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр. одмах"</string>

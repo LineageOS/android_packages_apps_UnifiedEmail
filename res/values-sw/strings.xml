@@ -207,9 +207,9 @@
     <string name="search_unsupported" msgid="4654227193354052607">"Utafutaji hauauniwi kwenye akaunti hii."</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Inatafuta…"</string>
     <string name="add_label" msgid="6060201715848652940">"Ongeza folda"</string>
-    <string name="new_incoming_messages_one" msgid="827152289636155810">"Onyesha ujumbe mpya kutoka kwa <xliff:g id="SENDER">%s</xliff:g>."</string>
+    <string name="new_incoming_messages_one" msgid="827152289636155810">"Onyesha barua pepe mpya kutoka kwa <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="1018949581192786598">"Onyesha ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya."</item>
+    <item quantity="other" msgid="1018949581192786598">"Onyesha barua pepe <xliff:g id="COUNT">%1$d</xliff:g> mpya."</item>
   </plurals>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Panua maelezo ya mpokeaji"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Kunja maelezo ya wapokeaji"</string>
@@ -260,9 +260,9 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sawazisha Folda"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> ambazo hazijasomwa"</item>
+    <item quantity="other" msgid="6210217540181960613">"Hujasoma barua pepe <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Zaidi ya <xliff:g id="COUNT">%1$d</xliff:g> ambazo hazijasomwa"</string>
+    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Hujasoma zaidi ya barua pepe <xliff:g id="COUNT">%1$d</xliff:g>"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ona mazungumzo zaidi"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Inapakia…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Chagua akaunti"</string>
@@ -279,8 +279,8 @@
     <!-- no translation found for load_attachment (6181745283445986413) -->
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Ipe jina njia ya mkato ya folda"</string>
-    <string name="wait_for_sync_title" msgid="2767841242539238015">"Inasubiri usawazishaji"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Barua pepe yako itaonekana baada ya muda mfupi."</string>
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"Inasubiri kusawazishwa"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"Barua pepe zako zitaonekana baada ya muda mfupi."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Akaunti haijasawazishwa"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Akaunti hii haijawekwa kujisawazisha kiotomatiki.\nGusa "<b>"Sawazisha Sasa"</b>" ili kusawazisha barua pepe mara moja, au "<b>"Badilisha Mipangilio ya Usawazishaji"</b>" ili kuweka akaunti hii isawazishe barua pepe kiotomatiki."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sawazisha sasa"</string>
@@ -309,7 +309,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Maelezo ya ujumbe"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Endeleza kiotomatiki"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Chagua skrini ya kuonyesha baada ya kufuta barua pepe"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Weka mapendeleo pevu ya kitomatiki\n(baada ya kufuta, n.k.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Weka mapendeleo ya kuendeleza kiotomatiki\n(baada ya kufuta, n.k.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Mpya zaidi"</item>
     <item msgid="5562093094216840213">"Nzee zaidi"</item>

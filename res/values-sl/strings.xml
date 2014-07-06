@@ -309,7 +309,7 @@
     <string name="message_details_title" msgid="2183394728494962332">"Podrobnosti sporočila"</string>
     <string name="auto_advance_label" msgid="3192951873988392119">"Samodejno napredovanje"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"Izberite, kateri zaslon naj se prikaže po brisanju sporočila"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Nastavitev samodejnega napredovanja\n(po brisanju ipd.)"</string>
+    <string name="auto_advance_help_title" msgid="8091541690538426090">"Nastavitev samodejnega napredovanja \n(po brisanju ipd.)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="3400401085256526376">"Novejši"</item>
     <item msgid="5562093094216840213">"Starejši"</item>
@@ -396,7 +396,7 @@
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Vklopi"</string>
     <string name="show_n_more_folders" msgid="337747297817699776">"Prikaži še toliko map: <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="hide_folders" msgid="7473552966537131652">"Skrij mape"</string>
-    <string name="print" msgid="7905250801319578415">"Tiskanje"</string>
+    <string name="print" msgid="7905250801319578415">"Natisni"</string>
     <string name="print_all" msgid="1789808179145024065">"Natisni vse"</string>
   <plurals name="num_messages">
     <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> sporočilo"</item>

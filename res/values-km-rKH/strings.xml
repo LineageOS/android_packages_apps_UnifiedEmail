@@ -91,7 +91,7 @@
     <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> គីឡូបៃ"</string>
     <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> មេកាបៃ"</string>
     <string name="attachment_image" msgid="3832985223906528449">"រូបភាព"</string>
-    <string name="attachment_video" msgid="7526134752988603154">"វីដេអូ"</string>
+    <string name="attachment_video" msgid="7526134752988603154">"វីដេអូ​"</string>
     <string name="attachment_audio" msgid="135527133955622936">"សំឡេង"</string>
     <string name="attachment_text" msgid="5544874374971562759">"អត្ថបទ"</string>
     <string name="attachment_application_msword" msgid="2326909450865637910">"ឯកសារ"</string>
@@ -101,7 +101,7 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"ឯកសារ <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"មើល​ជាមុន"</string>
     <string name="save_attachment" msgid="5360128849867863132">"រក្សាទុក"</string>
-    <string name="cancel_attachment" msgid="4651201258272223650">"បោះ​បង់"</string>
+    <string name="cancel_attachment" msgid="4651201258272223650">"បោះ​បង់​"</string>
     <string name="download_again" msgid="7418568915429156518">"ទាញ​យក​ម្ដងទៀត"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"ព័ត៌មាន"</string>
     <string name="no_application_found" msgid="1945184804521392093">"គ្មាន​កម្មវិធី​អាច​បើក​ឯកសារ​ភ្ជាប់​នេះ​ ដើម្បី​មើល។"</string>
@@ -111,7 +111,7 @@
     <string name="download_failed" msgid="442019281547315527">"មិន​អាច​ទាញ​យក​។ ប៉ះ​ដើម្បី​ព្យាយាម​ម្ដង​ទៀត​។"</string>
     <string name="attachments_header" msgid="6459475590011460229">"ឯកសារ​ភ្ជាប់"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"រក្សា​ទុក​ទាំងអស់"</string>
-    <string name="menu_photo_share" msgid="2214772815165829079">"ចែករំលែក"</string>
+    <string name="menu_photo_share" msgid="2214772815165829079">"ចែករំលែក​"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"ចែក​រំលែក​ទាំងអស់"</string>
     <string name="saving" msgid="925514721138014677">"កំពុង​រក្សាទុក..."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"ចែករំលែក​តាម"</string>
@@ -243,9 +243,9 @@
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="yes" msgid="7474216525286833848">"បាទ/ចាស"</string>
     <string name="no" msgid="427548507197604096">"ទេ"</string>
-    <string name="ok" msgid="8339355733816891026">"យល់​ព្រម"</string>
+    <string name="ok" msgid="8339355733816891026">"យល់​ព្រម​"</string>
     <string name="done" msgid="3079981801778027540">"ធ្វើ​រួច"</string>
-    <string name="cancel" msgid="8762981157252199115">"បោះ​បង់"</string>
+    <string name="cancel" msgid="8762981157252199115">"បោះ​បង់​"</string>
     <string name="clear" msgid="3184687982186479442">"សម្អាត"</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"ជោគជ័យ"</item>
@@ -373,9 +373,9 @@
     <item quantity="other" msgid="2182899395748020953">"សារ <xliff:g id="COUNT">%1$d</xliff:g> ​នឹង​ត្រូវ​បាន​លុប​ជា​​អចិន្ត្រៃយ៍។"</item>
   </plurals>
     <string name="drawer_open" msgid="6074646853178471940">"បើក​កា​រ​រុករក​​ថត"</string>
-    <string name="drawer_close" msgid="2764774620737876943">"បិទ​ការ​រុករក​ថត"</string>
+    <string name="drawer_close" msgid="2764774620737876943">"បិទ​ការ​រុករក​ថត​"</string>
     <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"ប៉ះ​រូបភាព​របស់​អ្នក​ផ្ញើ ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​នោះ​។"</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ការ​សន្ទនា​មួយ បន្ទាប់​មក​ប៉ះ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​ច្រើន​ទៀត។"</string>
+    <string name="long_press_to_select_tip" msgid="9205666839837250150">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ការ​សន្ទនា​មួយ បន្ទាប់​មក​ប៉ះ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​ច្រើន​ទៀត។​"</string>
     <string name="folder_icon_desc" msgid="1500547397347480618">"រូប​តំណាង​ថត"</string>
     <string name="add_account" msgid="2162808366829269770">"បន្ថែម​គណនី"</string>
     <string name="attached_message" msgid="4267189489654642035">"សារ​ដែល​បាន​ភ្ជាប់"</string>
@@ -423,8 +423,8 @@
     <string name="custom_date" msgid="7566383722092597487">"តាម​បំណង"</string>
     <string name="date_none" msgid="1033448683454519235">"គ្មាន"</string>
     <string name="discard_changes" msgid="57677638191085556">"បោះបង់​ការ​ផ្លាស់ប្ដូរ?"</string>
-    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"បាន​រក្សាទុក​ការ​ផ្លាស់ប្ដូរ​ការ​ឆ្លើយតប​ពេល​វិស្សមកាល"</string>
-    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"​បាន​បោះបង់​ការ​ឆ្លើយតប​ពេល​​វិស្សមកាល"</string>
+    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"បាន​រក្សាទុក​ការ​ផ្លាស់ប្ដូរ​ការ​ឆ្លើយតប​ពេល​វិស្សមកាល​"</string>
+    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"​បាន​បោះបង់​ការ​ឆ្លើយតប​ពេល​​វិស្សមកាល​"</string>
     <string name="vacation_responder_off" msgid="3502054743467746285">"បិទ"</string>
     <string name="vacation_responder_on" msgid="5242690599331655563">"បើក ពី<xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"បើក​ ពី <xliff:g id="START_DATE">%1$s</xliff:g> ដល់ <xliff:g id="END_DATE">%2$s</xliff:g>"</string>

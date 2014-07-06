@@ -66,7 +66,7 @@
     <string name="discard_drafts" msgid="6862272443470085375">"Hylkää luonnokset"</string>
     <string name="refresh" msgid="490989798005710951">"Päivitä"</string>
     <string name="reply" msgid="2032052598496088561">"Vastaa"</string>
-    <string name="reply_all" msgid="7257248094625487557">"Vastaa kaik."</string>
+    <string name="reply_all" msgid="7257248094625487557">"Vastaa kaikille"</string>
     <string name="resume_draft" msgid="6450150180834092146">"Muokkaa"</string>
     <string name="forward" msgid="6822914459902983767">"Lähetä edelleen"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Viestin kirjoitus"</string>
@@ -280,7 +280,7 @@
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"Nimeä kansion pikakuvake"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Odotetaan synkronointia"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"Sähköpostit näytetään piakkoin."</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"Sähköpostit näytetään pian."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Tiliä ei ole synkronoitu"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tätä tiliä ei ole määritetty synkronoitavaksi automaattisesti.\nKosketa "<b>"Synkronoi"</b>" synkronoidaksesi sähköpostit kerran tai "<b>"Muuta synkronointiasetuksia"</b>" asettaaksesi tilin synkronoimaan sähköpostit automaattisesti."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synkronoi"</string>

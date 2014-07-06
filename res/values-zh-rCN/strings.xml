@@ -56,8 +56,8 @@
     <string name="mark_unread" msgid="6231373939351125713">"标记为未读"</string>
     <string name="mute" msgid="1995954983688603977">"忽略"</string>
     <string name="add_star" msgid="2866003744391266498">"加注星标"</string>
-    <string name="remove_star" msgid="4372327933122106128">"删除星标"</string>
-    <string name="remove_folder" msgid="4906542720439865413">"从<xliff:g id="FOLDERNAME">%1$s</xliff:g>中删除"</string>
+    <string name="remove_star" msgid="4372327933122106128">"移除星标"</string>
+    <string name="remove_folder" msgid="4906542720439865413">"从“<xliff:g id="FOLDERNAME">%1$s</xliff:g>”中移除"</string>
     <string name="archive" msgid="847250094775910499">"归档"</string>
     <string name="report_spam" msgid="6467567747975393907">"举报垃圾邮件"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"这不是垃圾邮件"</string>
@@ -197,7 +197,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"已删除"</string>
     <string name="archived" msgid="7533995360704366325">"已归档"</string>
-    <string name="folder_removed" msgid="1047474677580149436">"已从<xliff:g id="FOLDERNAME">%1$s</xliff:g>中删除"</string>
+    <string name="folder_removed" msgid="1047474677580149436">"已从“<xliff:g id="FOLDERNAME">%1$s</xliff:g>”中移除"</string>
   <plurals name="conversation_folder_changed">
     <item quantity="one" msgid="4930161390461457462">"已更改文件夹。"</item>
     <item quantity="other" msgid="8918589141287976985">"已更改文件夹。"</item>
@@ -330,10 +330,10 @@
     <string name="notification_action_reply" msgid="6015299134424685297">"回复"</string>
     <string name="notification_action_reply_all" msgid="20020468410400912">"全部回复"</string>
     <string name="notification_action_archive" msgid="81978513898440040">"归档"</string>
-    <string name="notification_action_remove_label" msgid="5852730267411032291">"删除标签"</string>
+    <string name="notification_action_remove_label" msgid="5852730267411032291">"移除标签"</string>
     <string name="notification_action_delete" msgid="327773454111551791">"删除"</string>
     <string name="notification_action_undo_archive" msgid="7280710366587361219">"已归档"</string>
-    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"已删除标签"</string>
+    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"已移除标签"</string>
     <string name="notification_action_undo_delete" msgid="3105611327110905438">"已删除"</string>
     <string name="veiled_address" msgid="1209670815434513191"></string>
     <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
@@ -361,7 +361,7 @@
     <string name="preference_swipe_title_delete" msgid="8611320022727435597">"滑动删除邮件"</string>
     <string name="preference_swipe_description" msgid="5132683510510041028">"在会话列表中"</string>
     <string name="preference_sender_image_title" msgid="2441320893522058724">"发件人头像"</string>
-    <string name="preference_sender_image_description" msgid="7126493917536558232">"在会话列表中的名称旁显示"</string>
+    <string name="preference_sender_image_description" msgid="7126493917536558232">"在会话列表中的姓名旁显示"</string>
     <string name="swipe_down_to_refresh" msgid="6401908905820786227">"下拉即可刷新"</string>
     <string name="checking_for_mail" msgid="2301797903350897130">"正在检查邮件"</string>
     <string name="empty_trash" msgid="652435297593538512">"清空已删除邮件"</string>

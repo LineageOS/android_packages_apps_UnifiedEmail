@@ -260,7 +260,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"مزامنة المجلد"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> مقروءة"</item>
+    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</item>
   </plurals>
     <string name="actionbar_large_unread_count" msgid="2780005218279965391">"أكثر من <xliff:g id="COUNT">%1$d</xliff:g> غير مقروءة"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"عرض المزيد من المحادثات"</string>

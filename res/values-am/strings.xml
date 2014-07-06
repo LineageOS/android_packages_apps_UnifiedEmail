@@ -21,7 +21,7 @@
     <string name="to" msgid="4392614766835725698">"ለ"</string>
     <string name="cc" msgid="7017720927911078193">"ካርቦን ቅጂ"</string>
     <string name="bcc" msgid="3098643138241111579">"ስውር ቅጂ"</string>
-    <string name="subject_hint" msgid="7253964583324677128">"ርእሰ ጉዳይ"</string>
+    <string name="subject_hint" msgid="7253964583324677128">"ርዕሰ ጉዳይ"</string>
     <string name="body_hint" msgid="4279864165439577668">"ኢሜይል ፃፍ"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"ፋይል አያይዝ"</string>
     <string name="add_photo_attachment" msgid="3738882100645552858">"ስዕል አያይዝ"</string>
@@ -101,7 +101,7 @@
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> ፋይል"</string>
     <string name="preview_attachment" msgid="6934911143603455393">"ቅድመ-ዕይታ"</string>
     <string name="save_attachment" msgid="5360128849867863132">"አስቀምጥ"</string>
-    <string name="cancel_attachment" msgid="4651201258272223650">"ሰርዝ"</string>
+    <string name="cancel_attachment" msgid="4651201258272223650">"ይቅር"</string>
     <string name="download_again" msgid="7418568915429156518">"እንደገና አውርድ"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"መረጃ"</string>
     <string name="no_application_found" msgid="1945184804521392093">"ይህንን አባሪ ለማየት ምንም መተግበሪያ ሊከፍት አይችልም።"</string>
@@ -245,7 +245,7 @@
     <string name="no" msgid="427548507197604096">"የለም"</string>
     <string name="ok" msgid="8339355733816891026">"እሺ"</string>
     <string name="done" msgid="3079981801778027540">"ተከናውኗል"</string>
-    <string name="cancel" msgid="8762981157252199115">"ሰርዝ"</string>
+    <string name="cancel" msgid="8762981157252199115">"ይቅር"</string>
     <string name="clear" msgid="3184687982186479442">"አጽዳ"</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"ተሳክቷል"</item>
@@ -279,8 +279,8 @@
     <!-- no translation found for load_attachment (6181745283445986413) -->
     <skip />
     <string name="shortcut_name_title" msgid="8220482314700618391">"ለአቃፊ አቋራጭ ስም ስጥ"</string>
-    <string name="wait_for_sync_title" msgid="2767841242539238015">"ማመሳሰል በመጠበቅ ላይ"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"ኢሜይልህ ከትንሽ ጊዜ በኋላ ብቅ ይላል።"</string>
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"አስምር በመጠበቅ ላይ"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"የእርስዎ ኢሜይል ከትንሽ ጊዜ በኋላ ብቅ ይላል።"</string>
     <string name="not_synced_title" msgid="794279749170198599">"መለያ አልተመሳሰለም"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"ይህ መለያ በራስ-ሰር እንዲመሳሰል አልተዋቀረም።\nመልዕክት አንዴ ለማመሳሰል "<b>"አሁን አመሳስል"</b>"ን ንካ፣ ወይም ደግሞ ይሄ መለያ መልዕክት በራስ-ሰር እንዲያመሳስል ለማዋቀር "<b>"የማመሳሰል ቅንብሮችን ቀይር"</b>"።"</string>
     <string name="manual_sync" msgid="6743983544685622800">"አሁን አመሳስል"</string>
@@ -289,7 +289,7 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"ምርጫው ብዙ መለያዎችን ስለያዘ ማንቀሳቀስ አይቻልም።"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <string name="ignore_spam_warning" msgid="1554651881128904262">"ተወው፣ ይህን መልዕክት አምነዋለሁ"</string>
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"ችላ በል፣ ይህን መልዕክት አምነዋለሁ"</string>
     <string name="via_domain" msgid="380109230928079350">"በ<xliff:g id="VIADOMAIN">%1$s</xliff:g> በኩል"</string>
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"ስርዓት"</item>
@@ -307,7 +307,7 @@
     <string name="all_folders_heading" msgid="2506843494725730618">"ሁሉም አቃፊዎች"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"የቅርብ ጊዜ አቃፊዎች"</string>
     <string name="message_details_title" msgid="2183394728494962332">"የመልዕክት ዝርዝሮች"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"በራስ-አልቅ"</string>
+    <string name="auto_advance_label" msgid="3192951873988392119">"ራስ-አልቅ"</string>
     <string name="auto_advance_summary" msgid="573927628806250719">"አንድ መልዕክት ከሰረዙ በኋላ የትኛው ማያ ገጽ እንዲታይ እንደሚፈልጉ ይምረጡ።"</string>
     <string name="auto_advance_help_title" msgid="8091541690538426090">"የራስ-አልቅ ምርጫዎችን ያዋቅሩ\n(ከሰረዙ በኋላ፣ ወዘተ.)"</string>
   <string-array name="prefEntries_autoAdvance">
@@ -366,7 +366,7 @@
     <string name="checking_for_mail" msgid="2301797903350897130">"መልዕክት በማየት ላይ"</string>
     <string name="empty_trash" msgid="652435297593538512">"መጣያውን አጽዳ"</string>
     <string name="empty_spam" msgid="6064497180615519589">"አይፈለጌ መልዕክትን አጽዳ"</string>
-    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"መጣያውን ይጽዳ?"</string>
+    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"መጣያው ይጽዳ?"</string>
     <string name="empty_spam_dialog_title" msgid="8091014690336479280">"አይፈለጌ መልዕክት ይጽዳ?"</string>
   <plurals name="empty_folder_dialog_message">
     <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> መልዕክት እስከመጨረሻው ይሰረዛል።"</item>
