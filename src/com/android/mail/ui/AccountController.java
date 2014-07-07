@@ -70,13 +70,6 @@ public interface AccountController {
     VeiledAddressMatcher getVeiledAddressMatcher();
 
     /**
-     * Handles selecting an account from within the {@link FolderListFragment}.
-     *
-     * @param account the account to change to.
-     */
-    void changeAccount(Account account);
-
-    /**
      * Handles selecting the currently active account from within
      * the {@link FolderListFragment}.
      */
@@ -85,12 +78,12 @@ public interface AccountController {
     /**
      * Registers to receive changes upon drawer closing when a changeAccount is called.
      */
-    void registerDrawerClosedObserver(final DataSetObserver observer);
+    void registerFolderOrAccountChangedObserver(final DataSetObserver observer);
 
     /**
      * Removes a listener from receiving current account changes.
      */
-    void unregisterDrawerClosedObserver(final DataSetObserver observer);
+    void unregisterFolderOrAccountChangedObserver(final DataSetObserver observer);
 
     /**
      * When the {@link FolderListFragment} has a new account ready for changing to,
