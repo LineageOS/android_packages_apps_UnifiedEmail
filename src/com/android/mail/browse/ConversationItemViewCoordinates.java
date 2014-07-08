@@ -237,7 +237,7 @@ public class ConversationItemViewCoordinates {
     // Snippet.
     final int snippetX;
     final int snippetY;
-    final int snippetWidth;
+    final int maxSnippetWidth;
     final int snippetHeight;
     final int snippetLineCount;
     final float snippetFontSize;
@@ -413,8 +413,11 @@ public class ConversationItemViewCoordinates {
             contactImagesX = contactImagesY = contactImagesWidth = contactImagesHeight = 0;
         }
 
+        final boolean isRtl = ViewUtils.isViewRtl(view);
+
         final View star = view.findViewById(R.id.star);
-        starX = getX(star);
+        final int starPadding = res.getDimensionPixelSize(R.dimen.conv_list_star_padding_start);
+        starX = getX(star) + (isRtl ? 0 : starPadding);
         starY = getY(star);
         starWidth = star.getWidth();
 
@@ -430,7 +433,7 @@ public class ConversationItemViewCoordinates {
         final TextView subject = (TextView) view.findViewById(R.id.subject);
         final int subjectTopAdjust = getLatinTopAdjustment(subject);
         subjectX = getX(subject);
-        subjectY = getY(subject) + sendersTopAdjust;
+        subjectY = getY(subject) + subjectTopAdjust;
         subjectWidth = subject.getWidth();
         subjectHeight = subject.getHeight();
         subjectLineCount = SINGLE_LINE;
@@ -440,16 +443,15 @@ public class ConversationItemViewCoordinates {
         final int snippetTopAdjust = getLatinTopAdjustment(snippet);
         snippetX = getX(snippet);
         snippetY = getY(snippet) + snippetTopAdjust;
-        snippetWidth = snippet.getWidth();
+        maxSnippetWidth = snippet.getWidth();
         snippetHeight = snippet.getHeight();
         snippetLineCount = SINGLE_LINE;
         snippetFontSize = snippet.getTextSize();
 
         if (config.areFoldersVisible()) {
             // vertically align folders min left edge with subject
-            final boolean isRtl = ViewUtils.isViewRtl(view);
-            foldersLeft = (isRtl) ? 0 : snippetX;
-            foldersRight = (isRtl) ? snippetX + snippetWidth : getX(folders) + folders.getWidth();
+            foldersLeft = getX(folders);
+            foldersRight = foldersLeft + folders.getWidth();
             foldersY = getY(folders) + sendersTopAdjust;
             foldersHeight = folders.getHeight();
             foldersTypeface = folders.getTypeface();
