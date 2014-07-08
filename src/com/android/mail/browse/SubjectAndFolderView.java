@@ -87,7 +87,7 @@ public class SubjectAndFolderView extends TextView
         mFolderPaddingAfter = r.getDimensionPixelOffset(
                 R.dimen.conversation_folder_padding_after);
         mRoundedCornerRadius = r.getDimensionPixelOffset(
-                R.dimen.conversation_folder_rounded_corner_radius);
+                R.dimen.folder_rounded_corner_radius);
         mFolderSpanTextSize = r.getDimension(R.dimen.conversation_folder_font_size);
         mFolderMarginTop = r.getDimensionPixelOffset(R.dimen.conversation_folder_margin_top);
     }

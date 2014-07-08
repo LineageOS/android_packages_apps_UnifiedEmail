@@ -868,7 +868,7 @@
         <item name="android:layout_toLeftOf">@id/star</item>
     </style>
 
-    <style name="ConversationListSnippetStyle">
+    <style name="ConversationListSnippetAndFoldersStyle">
         <item name="android:layout_below">@id/subject</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_toLeftOf">@id/star</item>
@@ -877,6 +877,7 @@
     <style name="ConversationListStarStyle">
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentRight">true</item>
+        <item name="android:paddingLeft">@dimen/conv_list_star_padding_start</item>
     </style>
 
     <style name="AttachmentPreviewOverflowStyle">
