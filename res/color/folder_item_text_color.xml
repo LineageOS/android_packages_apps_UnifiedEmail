@@ -21,5 +21,5 @@
     <item app:state_drag_mode="true" android:state_drag_can_accept="false"
           android:color="@color/folder_disabled_drop_target_text_color" />
     <item android:state_activated="true" android:color="@android:color/white" />
-    <item android:color="@color/dark_gray_text_color" />
+    <item android:color="@color/folder_item_text_color_normal" />
 </selector>

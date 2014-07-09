@@ -645,9 +645,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         final int icon = folder.iconResId;
         if (icon > 0) {
             iconView.setImageResource(icon);
-            iconView.setVisibility(View.VISIBLE);
         } else {
-            iconView.setVisibility(View.GONE);
+            LogUtils.e(LogUtils.TAG, "No icon returned for folder %s", folder);
         }
     }
 
