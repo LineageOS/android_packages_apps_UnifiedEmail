@@ -19,5 +19,5 @@
     <string name="load_more_summary">Tap here to load the rest of the message</string>
 
     <!-- Dialog title for fetching the rest of the message -->
-    <string name="fetching_message">Fetching message</string>
+    <string name="fetching_message">Fetching message\u2026</string>
 </resources>
