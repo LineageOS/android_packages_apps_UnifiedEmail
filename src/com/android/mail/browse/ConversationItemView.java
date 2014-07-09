@@ -1076,12 +1076,10 @@ public class ConversationItemView extends View
 
         final int badgeTextLength = formatBadgeText(displayedStringBuilder, badgeText);
 
-        final int subjectTextLength = badgeTextLength + subject.length() +
-                ((badgeTextLength > 0) ? 1 : 0);
         if (!TextUtils.isEmpty(subject)) {
             displayedStringBuilder.setSpan(TextAppearanceSpan.wrap(
                     isUnread ? sSubjectTextUnreadSpan : sSubjectTextReadSpan),
-                    badgeTextLength, subjectTextLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    badgeTextLength, subject.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (isActivated() && showActivatedText()) {
             displayedStringBuilder.setSpan(sActivatedTextSpan, badgeTextLength,
