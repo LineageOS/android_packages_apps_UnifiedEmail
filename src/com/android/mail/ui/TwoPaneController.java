@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -24,8 +25,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.v4.widget.DrawerLayout;
-import android.view.Gravity;
+import android.view.View;
 import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
@@ -41,14 +41,28 @@ import com.android.mail.utils.Utils;
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
  * abounds.
  */
-public final class TwoPaneController extends AbstractActivityController {
+public final class TwoPaneController extends AbstractActivityController implements
+        ConversationViewFrame.DownEventListener {
 
     private static final String SAVED_MISCELLANEOUS_VIEW = "saved-miscellaneous-view";
     private static final String SAVED_MISCELLANEOUS_VIEW_TRANSACTION_ID =
             "saved-miscellaneous-view-transaction-id";
 
     private TwoPaneLayout mLayout;
+    @Deprecated
     private Conversation mConversationToShow;
+
+    /**
+     * 2-pane, in wider configurations, allows peeking at a conversation view without having the
+     * conversation marked-as-read as far as read/unread state goes.<br>
+     * <br>
+     * This flag applies to {@link AbstractActivityController#mCurrentConversation} and indicates
+     * that the current conversation, if set, is in a 'peeking' state. If there is no current
+     * conversation, peeking is implied (in certain view configurations) and this value is
+     * meaningless.
+     */
+    // TODO: save in instance state
+    private boolean mCurrentConversationJustPeeking;
 
     /**
      * Used to determine whether onViewModeChanged should skip a potential
@@ -58,6 +72,15 @@ public final class TwoPaneController extends AbstractActivityController {
 
     public TwoPaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
+    }
+
+    public boolean isCurrentConversationJustPeeking() {
+        return mCurrentConversationJustPeeking;
+    }
+
+    private boolean isConversationOnlyMode() {
+        return getCurrentConversation() != null && !isCurrentConversationJustPeeking()
+                && !mLayout.shouldShowPreviewPanel();
     }
 
     /**
@@ -121,10 +144,6 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public boolean onCreate(Bundle savedState) {
-        mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
-        mDrawerContainer.setDrawerTitle(Gravity.START,
-                mActivity.getActivityContext().getString(R.string.drawer_title));
-        mDrawerPullout = mDrawerContainer.findViewById(R.id.content_pane);
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
         if (mLayout == null) {
             // We need the layout for everything. Crash/Return early if it is null.
@@ -132,7 +151,11 @@ public final class TwoPaneController extends AbstractActivityController {
             return false;
         }
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
-        mLayout.setDrawerLayout(mDrawerContainer);
+        mActivity.getWindow().setBackgroundDrawable(null);
+
+        final FolderListFragment flf = getFolderListFragment();
+        flf.setMiniDrawerEnabled(true);
+        flf.setMinimized(true);
 
         if (savedState != null) {
             mSavedMiscellaneousView = savedState.getBoolean(SAVED_MISCELLANEOUS_VIEW, false);
@@ -197,12 +220,25 @@ public final class TwoPaneController extends AbstractActivityController {
             mViewMode.enterConversationListMode();
         }
 
-        if (!Utils.isEmpty(folder.parent)) {
-            // Show the up affordance when digging into child folders.
-            mActionBarController.setBackButton();
-        }
         setHierarchyFolder(folder);
         super.onFolderSelected(folder);
+    }
+
+    public boolean isDrawerOpen() {
+        final FolderListFragment flf = getFolderListFragment();
+        return flf != null && !flf.isMinimized();
+    }
+
+    @Override
+    protected void toggleDrawerState() {
+        final FolderListFragment flf = getFolderListFragment();
+        if (flf == null) {
+            LogUtils.w(LOG_TAG, "no drawer to toggle open/closed");
+            return;
+        }
+        flf.setMinimized(!flf.isMinimized());
+        mLayout.requestLayout();
+        resetActionBarIcon();
     }
 
     @Override
@@ -216,6 +252,9 @@ public final class TwoPaneController extends AbstractActivityController {
         mSavedMiscellaneousView = false;
 
         super.onViewModeChanged(newMode);
+        if (!isConversationOnlyMode()) {
+            mFloatingComposeButton.setVisibility(View.VISIBLE);
+        }
         if (newMode != ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
             // Clear the wait fragment
             hideWaitForInitialization();
@@ -251,16 +290,15 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void resetActionBarIcon() {
-        if (isDrawerEnabled()) {
-            return;
-        }
-        // On two-pane, the back button is only removed in the conversation list mode for top level
-        // folders, and shown for every other condition.
-        if ((mViewMode.isListMode() && (Folder.isRoot(mFolder) || mFolder.parent == null))
-                || mViewMode.isWaitingForSync()) {
-            mActionBarController.removeBackButton();
+        final ActionBar ab = mActivity.getActionBar();
+        final boolean isChildFolder = getFolder() != null && !Utils.isEmpty(getFolder().parent);
+        if (isConversationOnlyMode() || isChildFolder) {
+            ab.setHomeAsUpIndicator(R.drawable.ic_arrow_back_wht_24dp);
+            ab.setHomeActionContentDescription(0 /* system default */);
         } else {
-            mActionBarController.setBackButton();
+            ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
+            ab.setHomeActionContentDescription(
+                    isDrawerOpen() ? R.string.drawer_close : R.string.drawer_open);
         }
     }
 
@@ -316,6 +354,11 @@ public final class TwoPaneController extends AbstractActivityController {
         // while viewing a conversation don't change the viewmode: the mode stays
         // ViewMode.CONVERSATION and yet the conversation list goes in and out of visibility.
         enableOrDisableCab();
+
+        // close the drawer, if open
+        if (isDrawerOpen()) {
+            toggleDrawerState();
+        }
 
         // When a mode change is required, wait for onConversationVisibilityChanged(), the signal
         // that the mode change animation has finished, before rendering the conversation.
@@ -394,28 +437,12 @@ public final class TwoPaneController extends AbstractActivityController {
      */
     @Override
     public boolean handleUpPress() {
-        int mode = mViewMode.getMode();
-        if (mode == ViewMode.CONVERSATION || mViewMode.isAdMode()) {
+        if (isConversationOnlyMode()) {
             handleBackPress();
-        } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
-            if (mLayout.isConversationListCollapsed()
-                    || (ConversationListContext.isSearchResult(mConvListContext) && !Utils.
-                            showTwoPaneSearchResults(mActivity.getApplicationContext()))) {
-                handleBackPress();
-            } else {
-                mActivity.finish();
-            }
-        } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
-            mActivity.finish();
-        } else if (mode == ViewMode.CONVERSATION_LIST
-                || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
-            if (Folder.isRoot(mFolder)) {
-                // Show the drawer
-                toggleDrawerState();
-            } else {
-                popView(true);
-            }
+        } else {
+            toggleDrawerState();
         }
+
         return true;
     }
 
@@ -423,7 +450,11 @@ public final class TwoPaneController extends AbstractActivityController {
     public boolean handleBackPress() {
         // Clear any visible undo bars.
         mToastBar.hide(false, false /* actionClicked */);
-        popView(false);
+        if (isDrawerOpen()) {
+            toggleDrawerState();
+        } else {
+            popView(false);
+        }
         return true;
     }
 
@@ -458,22 +489,9 @@ public final class TwoPaneController extends AbstractActivityController {
             // inbox. This fixes b/9006969 so that on smaller tablets where we have this
             // hybrid one and two-pane mode, we will return to the inbox. On larger tablets,
             // we will instead exit the app.
-            } else {
-                // Don't think mLayout could be null but checking just in case
-                if (mLayout == null) {
-                    LogUtils.wtf(LOG_TAG, new Throwable(), "mLayout is null");
-                }
-                // mFolder could be null if back is pressed while account is waiting for sync
-                final boolean shouldLoadInbox = mode == ViewMode.CONVERSATION_LIST &&
-                        mFolder != null &&
-                        !mFolder.folderUri.equals(mAccount.settings.defaultInbox) &&
-                        mLayout != null && !mLayout.isExpansiveLayout();
-                if (shouldLoadInbox) {
-                    loadAccountInbox();
-                } else if (!preventClose) {
-                    // There is nothing else to pop off the stack.
-                    mActivity.finish();
-                }
+            } else if (!preventClose) {
+                // There is nothing else to pop off the stack.
+                mActivity.finish();
             }
         }
     }
@@ -538,7 +556,8 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public boolean isDrawerEnabled() {
-        return mLayout.isDrawerEnabled();
+        // two-pane has its own drawer-like thing that expands inline from a minimized state.
+        return false;
     }
 
     @Override
@@ -565,5 +584,15 @@ public final class TwoPaneController extends AbstractActivityController {
         if (selectPosition >= 0) {
             getConversationListFragment().setRawSelected(selectPosition, true);
         }
+    }
+
+    @Override
+    public boolean onInterceptCVDownEvent() {
+        // handle a down event on CV by closing the drawer if open
+        if (isDrawerOpen()) {
+            toggleDrawerState();
+            return true;
+        }
+        return false;
     }
 }

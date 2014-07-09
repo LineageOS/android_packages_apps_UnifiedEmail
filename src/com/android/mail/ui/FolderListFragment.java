@@ -123,6 +123,7 @@ public class FolderListFragment extends ListFragment implements
     private FolderSelector mFolderChanger;
     /** Object that changes accounts on our behalf */
     private AccountController mAccountController;
+    private DrawerController mDrawerController;
 
     /** The currently selected folder (the folder being viewed).  This is never null. */
     private FolderUri mSelectedFolderUri = FolderUri.EMPTY;
@@ -202,6 +203,10 @@ public class FolderListFragment extends ListFragment implements
     private ContactResolver mContactResolver;
 
     private boolean mInboxPresent;
+
+    private boolean mMiniDrawerEnabled;
+    private boolean mIsMinimized;
+    private MiniDrawerView mMiniDrawerView;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -289,6 +294,25 @@ public class FolderListFragment extends ListFragment implements
             return;
         }
         mActivity = (ControllableActivity) activity;
+
+        final int avatarSize = getActivity().getResources().getDimensionPixelSize(
+                R.dimen.account_avatar_dimension);
+
+        mImagesCache = new UnrefedBitmapCache(Utils.isLowRamDevice(getActivity()) ?
+                0 : avatarSize * avatarSize * IMAGE_CACHE_COUNT,
+                AVATAR_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION,
+                AVATAR_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY);
+        mContactResolver = new ContactResolver(getActivity().getContentResolver(),
+                mImagesCache);
+
+        mMiniDrawerView.setController(this);
+        if (!mMiniDrawerEnabled) {
+            mMiniDrawerView.setVisibility(View.GONE);
+        } else {
+            // set up initial state
+            setMinimized(isMinimized());
+        }
+
         final FolderController controller = mActivity.getFolderController();
         // Listen to folder changes in the future
         mFolderObserver = new FolderObserver() {
@@ -350,6 +374,9 @@ public class FolderListFragment extends ListFragment implements
                     }
                     mFolderWatcher.updateAccountList(getAllAccounts());
                     rebuildAccountList();
+                    if (mMiniDrawerEnabled) {
+                        mMiniDrawerView.refresh();
+                    }
                 }
             };
             mAllAccountsObserver.initialize(accountController);
@@ -362,6 +389,8 @@ public class FolderListFragment extends ListFragment implements
                 dc.registerDrawerListener(mDrawerListener);
             }
         }
+
+        mDrawerController = mActivity.getDrawerController();
 
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
@@ -381,16 +410,20 @@ public class FolderListFragment extends ListFragment implements
         mFolderWatcher.updateAccountList(getAllAccounts());
 
         setListAdapter(mMergedAdapter);
+    }
 
-        final int avatarSize = getActivity().getResources().getDimensionPixelSize(
-                R.dimen.account_avatar_dimension);
+    public BitmapCache getBitmapCache() {
+        return mImagesCache;
+    }
 
-        mImagesCache = new UnrefedBitmapCache(Utils.isLowRamDevice(getActivity()) ?
-                0 : avatarSize * avatarSize * IMAGE_CACHE_COUNT,
-                AVATAR_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION,
-                AVATAR_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY);
-        mContactResolver = new ContactResolver(getActivity().getContentResolver(),
-                mImagesCache);
+    public ContactResolver getContactResolver() {
+        return mContactResolver;
+    }
+
+    public void toggleDrawerState() {
+        if (mDrawerController != null) {
+            mDrawerController.toggleDrawerState();
+        }
     }
 
     /**
@@ -436,6 +469,8 @@ public class FolderListFragment extends ListFragment implements
         } else {
             mInboxPresent = true;
         }
+
+        mMiniDrawerView = (MiniDrawerView) rootView.findViewById(R.id.mini_drawer);
 
         return rootView;
     }
@@ -577,27 +612,31 @@ public class FolderListFragment extends ListFragment implements
             folder = null;
         }
         if (folder != null) {
-            // Go to the conversation list for this folder.
-            if (!folder.folderUri.equals(mSelectedFolderUri)) {
-                mNextFolder = folder;
-                mAccountController.closeDrawer(true /** hasNewFolderOrAccount */,
-                        null /** nextAccount */,
-                        folder /** nextFolder */);
-
-                final String label = (folderType == DrawerItem.FOLDER_RECENT) ? "recent" : "normal";
-                Analytics.getInstance().sendEvent("switch_folder", folder.getTypeDescription(),
-                        label, 0);
-
-            } else {
-                // Clicked on same folder, just close drawer
-                mAccountController.closeDrawer(false /** hasNewFolderOrAccount */,
-                        null /** nextAccount */,
-                        folder /** nextFolder */);
-            }
+            final String label = (folderType == DrawerItem.FOLDER_RECENT) ? "recent" : "normal";
+            onFolderSelected(folder, label);
         }
     }
 
-    protected void onAccountSelected(Account account) {
+    public void onFolderSelected(Folder folder, String analyticsLabel) {
+        // Go to the conversation list for this folder.
+        if (!folder.folderUri.equals(mSelectedFolderUri)) {
+            mNextFolder = folder;
+            mAccountController.closeDrawer(true /** hasNewFolderOrAccount */,
+                    null /** nextAccount */,
+                    folder /** nextFolder */);
+
+            Analytics.getInstance().sendEvent("switch_folder", folder.getTypeDescription(),
+                    analyticsLabel, 0);
+
+        } else {
+            // Clicked on same folder, just close drawer
+            mAccountController.closeDrawer(false /** hasNewFolderOrAccount */,
+                    null /** nextAccount */,
+                    folder /** nextFolder */);
+        }
+    }
+
+    public void onAccountSelected(Account account) {
         // Only reset the cache if the account has changed.
         if (mCurrentAccount == null || account == null ||
                 !mCurrentAccount.getEmailAddress().equals(account.getEmailAddress())) {
@@ -616,7 +655,6 @@ public class FolderListFragment extends ListFragment implements
 
     @Override
     public Loader<ObjectCursor<Folder>> onCreateLoader(int id, Bundle args) {
-        mListView.setEmptyView(null);
         final Uri folderListUri;
         if (id == FOLDER_LIST_LOADER_ID) {
             if (mFolderListUri != null) {
@@ -641,6 +679,11 @@ public class FolderListFragment extends ListFragment implements
         if (mFolderAdapter != null) {
             if (loader.getId() == FOLDER_LIST_LOADER_ID) {
                 mFolderAdapter.setCursor(data);
+
+                if (mMiniDrawerEnabled) {
+                    mMiniDrawerView.refresh();
+                }
+
             } else if (loader.getId() == ALL_FOLDER_LIST_LOADER_ID) {
                 mFolderAdapter.setAllFolderListCursor(data);
             }
@@ -663,7 +706,7 @@ public class FolderListFragment extends ListFragment implements
      *  frequency of use.
      * @return a list of accounts, sorted by frequency of use
      */
-    protected Account[] getAllAccounts() {
+    public Account[] getAllAccounts() {
         if (mAllAccountsObserver != null) {
             return mAllAccountsObserver.getAllAccounts();
         }
@@ -681,12 +724,42 @@ public class FolderListFragment extends ListFragment implements
         }
     }
 
+    public boolean isMiniDrawerEnabled() {
+        return mMiniDrawerEnabled;
+    }
+
+    public void setMiniDrawerEnabled(boolean enabled) {
+        mMiniDrawerEnabled = enabled;
+        setMinimized(isMinimized()); // init visual state
+    }
+
+    public boolean isMinimized() {
+        return mMiniDrawerEnabled && mIsMinimized;
+    }
+
+    public void setMinimized(boolean minimized) {
+        if (!mMiniDrawerEnabled) {
+            return;
+        }
+
+        mIsMinimized = minimized;
+
+        if (isMinimized()) {
+            mMiniDrawerView.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.INVISIBLE);
+        } else {
+            mMiniDrawerView.setVisibility(View.INVISIBLE);
+            mListView.setVisibility(View.VISIBLE);
+        }
+    }
+
     /**
      * Interface for all cursor adapters that allow setting a cursor and being destroyed.
      */
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
         /** Update the folder list cursor with the cursor given here. */
         void setCursor(ObjectCursor<Folder> cursor);
+        ObjectCursor<Folder> getCursor();
         /** Update the all folder list cursor with the cursor given here. */
         void setAllFolderListCursor(ObjectCursor<Folder> cursor);
         /** Remove all observers and destroy the object. */
@@ -987,6 +1060,11 @@ public class FolderListFragment extends ListFragment implements
         }
 
         @Override
+        public ObjectCursor<Folder> getCursor() {
+            return mCursor;
+        }
+
+        @Override
         public void setAllFolderListCursor(final ObjectCursor<Folder> cursor) {
             mAllFolderListCursor = cursor;
             rebuildAccountList();
@@ -1089,6 +1167,11 @@ public class FolderListFragment extends ListFragment implements
         }
 
         @Override
+        public ObjectCursor<Folder> getCursor() {
+            throw new UnsupportedOperationException("drawers don't have hierarchical folders");
+        }
+
+        @Override
         public void setAllFolderListCursor(final ObjectCursor<Folder> cursor) {
             // Not necessary in HierarchicalFolderListAdapter
         }
@@ -1174,6 +1257,14 @@ public class FolderListFragment extends ListFragment implements
 
     protected MergedAdapter<ListAdapter> getMergedAdapter() {
         return mMergedAdapter;
+    }
+
+    public Account getCurrentAccount() {
+        return mCurrentAccount;
+    }
+
+    public ObjectCursor<Folder> getFoldersCursor() {
+        return (mFolderAdapter != null) ? mFolderAdapter.getCursor() : null;
     }
 
     private class FooterAdapter extends BaseAdapter {
@@ -1322,6 +1413,13 @@ public class FolderListFragment extends ListFragment implements
             // synced.
             mSelectedFolderUri = FolderUri.EMPTY;
             mCurrentFolderForUnreadCheck = null;
+
+            // also set/update the mini-drawer
+            if (mMiniDrawerEnabled) {
+                //foobar
+                mMiniDrawerView.refresh();
+            }
+
         } else if (account == null) {
             // This should never happen currently, but is a safeguard against a very incorrect
             // non-null account -> null account transition.

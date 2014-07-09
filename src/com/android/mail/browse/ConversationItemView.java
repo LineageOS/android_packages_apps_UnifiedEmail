@@ -130,7 +130,7 @@ public class ConversationItemView extends View
     private static Bitmap STATE_FORWARDED;
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
     private static Bitmap STATE_CALENDAR_INVITE;
-    private static Bitmap VISIBLE_CONVERSATION_CARET;
+    private static Drawable VISIBLE_CONVERSATION_HIGHLIGHT;
     private static Drawable RIGHT_EDGE_TABLET;
 
     private static String sSendersSplitToken;
@@ -173,8 +173,6 @@ public class ConversationItemView extends View
 
     /** Whether we are on a tablet device or not */
     private final boolean mTabletDevice;
-    /** Whether we are on an expansive tablet */
-    private final boolean mIsExpansiveTablet;
     /** When in conversation mode, true if the list is hidden */
     private final boolean mListCollapsible;
 
@@ -384,8 +382,6 @@ public class ConversationItemView extends View
         mContext = context.getApplicationContext();
         final Resources res = mContext.getResources();
         mTabletDevice = Utils.useTabletUI(res);
-        mIsExpansiveTablet =
-                mTabletDevice ? res.getBoolean(R.bool.use_expansive_tablet_ui) : false;
         mListCollapsible = res.getBoolean(R.bool.list_collapsible);
         mAccount = account;
 
@@ -452,7 +448,8 @@ public class ConversationItemView extends View
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_forward_holo_light);
             STATE_CALENDAR_INVITE =
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
-            VISIBLE_CONVERSATION_CARET = BitmapFactory.decodeResource(res, R.drawable.caret_grey);
+            VISIBLE_CONVERSATION_HIGHLIGHT = res.getDrawable(
+                    R.drawable.visible_conversation_highlight);
             RIGHT_EDGE_TABLET = res.getDrawable(R.drawable.list_edge_tablet);
 
             // Initialize colors.
@@ -1298,20 +1295,11 @@ public class ConversationItemView extends View
             RIGHT_EDGE_TABLET.draw(canvas);
 
             if (isActivated()) {
-                // draw caret on the end, centered vertically
-                final int x = (isRtl) ? 0 : getWidth() - VISIBLE_CONVERSATION_CARET.getWidth();
-                final int y = (getHeight() - VISIBLE_CONVERSATION_CARET.getHeight()) / 2;
-                if (isRtl) {
-                    // draw the bitmap mirrored in RTL mode
-                    canvas.save();
-                    canvas.scale(-1, 1,
-                            x + VISIBLE_CONVERSATION_CARET.getWidth()/2,
-                            y + VISIBLE_CONVERSATION_CARET.getHeight()/2);
-                    canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
-                    canvas.restore();
-                } else {
-                    canvas.drawBitmap(VISIBLE_CONVERSATION_CARET, x, y, null);
-                }
+                final int w = VISIBLE_CONVERSATION_HIGHLIGHT.getIntrinsicWidth();
+                VISIBLE_CONVERSATION_HIGHLIGHT.setBounds(
+                        (isRtl) ? getWidth() - w : 0, 0,
+                        (isRtl) ? getWidth() : w, getHeight());
+                VISIBLE_CONVERSATION_HIGHLIGHT.draw(canvas);
             }
         }
         Utils.traceEndSection();
@@ -1384,7 +1372,7 @@ public class ConversationItemView extends View
     @Override
     public boolean toggleSelectedStateOrBeginDrag() {
         ViewMode mode = mActivity.getViewMode();
-        if (mIsExpansiveTablet && mode.isListMode()) {
+        if (mTabletDevice && mode.isListMode()) {
             return beginDragMode();
         } else {
             return toggleSelectedState("long_press");

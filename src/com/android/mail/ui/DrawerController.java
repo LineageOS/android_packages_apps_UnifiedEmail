@@ -29,5 +29,6 @@ public interface DrawerController {
     void unregisterDrawerListener(DrawerLayout.DrawerListener l);
     boolean isDrawerOpen();
     boolean isDrawerVisible();
+    void toggleDrawerState();
 
 }

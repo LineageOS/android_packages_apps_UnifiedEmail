@@ -267,6 +267,9 @@ public class Utils {
     /**
      * @return <code>true</code> if the right edge effect should be displayed on list items
      */
+    @Deprecated
+    // TODO: remove this now that visual design no longer has right-edge caret (which made it so
+    // the hard right edge was drawn IN list items to ensure the caret didn't get an edge)
     public static boolean getDisplayListRightEdgeEffect(final boolean tabletDevice,
             final boolean listCollapsible, final int viewMode) {
         return tabletDevice && !listCollapsible

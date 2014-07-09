@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2012 Google Inc.
+     Copyright (C) 2014 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.mail.browse.ConversationPager
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/conversation_pager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-</com.android.mail.browse.ConversationPager>
+<resources>
+    <style name="TwoPaneConversationList">
+        <item name="android:paddingEnd">@dimen/two_pane_tl_side</item>
+        <item name="android:paddingTop">@dimen/two_pane_tl_top</item>
+    </style>
+</resources>

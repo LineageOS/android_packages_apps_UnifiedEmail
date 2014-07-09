@@ -17,7 +17,4 @@
 -->
 <resources>
     <integer name="conversation_list_search_header_mode">0</integer>
-    <integer name="folder_list_weight">9</integer>
-    <integer name="conversation_list_weight">15</integer>
-    <integer name="conversation_view_weight">25</integer>
 </resources>

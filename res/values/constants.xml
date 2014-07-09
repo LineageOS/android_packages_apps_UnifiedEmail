@@ -18,7 +18,6 @@
 <resources>
     <!-- Boolean value indicating whether the tablet UI should be used. -->
     <bool name="use_tablet_ui">false</bool>
-    <bool name="use_expansive_tablet_ui">false</bool>
     <integer name="conversation_header_mode">1</integer>
     <integer name="conversation_list_search_header_mode">1</integer>
 
@@ -28,14 +27,8 @@
     <!-- Frequency (in milliseconds) for the refresh of timestamps in conversation list fragments. -->
     <integer name="timestamp_update_interval">60000</integer>
 
-    <!-- Relative weights of the different views.  These three
-         determine how much of the screen width is taken by the
-         different views. For the default layout (phone), these values
-         are equal. These are only used in TwoPaneLayout, so they need
-         to be specified for sw600dp and sw720dp layouts. -->
-    <integer name="folder_list_weight">1</integer>
-    <integer name="conversation_list_weight">1</integer>
-    <integer name="conversation_view_weight">1</integer>
+    <integer name="conversation_list_weight">2</integer>
+    <integer name="conversation_view_weight">3</integer>
     <!-- Max unread count to show for a folder -->
     <integer name="maxUnreadCount">99</integer>
     <integer name="swipeScrollSlop">2</integer>
