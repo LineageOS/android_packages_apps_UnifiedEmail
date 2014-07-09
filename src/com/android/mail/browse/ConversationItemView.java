@@ -35,6 +35,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -356,8 +357,9 @@ public class ConversationItemView extends View
                 // Draw the box.
                 sFoldersPaint.setColor(bgColor);
                 sFoldersPaint.setStyle(Paint.Style.FILL);
-                canvas.drawRoundRect(xLeft, y, xLeft + width - sFoldersStartPadding,
-                        y + height, sFolderRoundedCornerRadius, sFolderRoundedCornerRadius,
+                final RectF rect =
+                        new RectF(xLeft, y, xLeft + width - sFoldersStartPadding, y + height);
+                canvas.drawRoundRect(rect, sFolderRoundedCornerRadius, sFolderRoundedCornerRadius,
                         sFoldersPaint);
 
                 // Draw the text.
