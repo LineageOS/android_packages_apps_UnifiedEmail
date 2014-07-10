@@ -33,12 +33,8 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.SimpleCursorAdapter;
 
-import com.android.oldbitmap.AltBitmapCache;
-import com.android.oldbitmap.BitmapCache;
-import com.android.oldbitmap.DecodeAggregator;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.bitmap.ContactResolver;
@@ -46,7 +42,6 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewCoordinates.CoordinatesCache;
 import com.android.mail.browse.SwipeableConversationItemView;
-import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -57,6 +52,7 @@ import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.android.oldbitmap.BitmapCache;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
@@ -216,9 +212,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                         newAccount.settings.importanceMarkersEnabled
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO) ==
                         newAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)
-                && mAccount.settings.convListIcon == newAccount.settings.convListIcon
-                && mAccount.settings.convListAttachmentPreviews ==
-                        newAccount.settings.convListAttachmentPreviews) {
+                && mAccount.settings.convListIcon == newAccount.settings.convListIcon) {
             accountChanged = false;
         } else {
             accountChanged = true;
@@ -231,8 +225,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
         Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_SENDER_IMAGES_ENABLED, Boolean
                 .toString(newAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE));
-        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ATTACHMENT_PREVIEWS_ENABLED,
-                Boolean.toString(newAccount.settings.convListAttachmentPreviews));
         Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_REPLY_ALL_SETTING,
                 (newAccount.settings.replyBehavior == UIProvider.DefaultReplyBehavior.REPLY)
                 ? "reply"
@@ -247,17 +239,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private static final String LOG_TAG = LogTag.getLogTag();
     private static final int INCREASE_WAIT_COUNT = 2;
 
-    private final BitmapCache mAttachmentPreviewsCache;
-    private final DecodeAggregator mAttachmentPreviewsDecodeAggregator;
     private final BitmapCache mSendersImagesCache;
     private final ContactResolver mContactResolver;
-
-    private static final int ATTACHMENT_PREVIEWS_CACHE_TARGET_SIZE_BYTES = 0; // TODO: enable cache
-    /**
-     * This is the fractional portion of the total cache size above that's dedicated to non-pooled
-     * bitmaps. (This is basically the portion of cache dedicated to GIFs.)
-     */
-    private static final float ATTACHMENT_PREVIEWS_CACHE_NON_POOLED_FRACTION = 0.1f;
 
     public AnimatedAdapter(Context context, ConversationCursor cursor,
             ConversationSelectionSet batch, ControllableActivity activity,
@@ -270,9 +253,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mShowFooter = false;
         mListView = listView;
 
-        mAttachmentPreviewsCache = new AltBitmapCache(ATTACHMENT_PREVIEWS_CACHE_TARGET_SIZE_BYTES,
-                ATTACHMENT_PREVIEWS_CACHE_NON_POOLED_FRACTION, 0);
-        mAttachmentPreviewsDecodeAggregator = new DecodeAggregator();
         mSendersImagesCache = mActivity.getSenderImageCache();
 
         mContactResolver =
@@ -386,9 +366,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             view = new SwipeableConversationItemView(context, mAccount.getEmailAddress());
         }
         view.bind(conv, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
-                getAttachmentPreviewsSetting(), getParallaxSpeedAlternativeSetting(),
-                getParallaxDirectionAlternativeSetting(), mSwipeEnabled, mImportanceMarkersEnabled,
-                mShowChevronsEnabled, this);
+                mSwipeEnabled, mImportanceMarkersEnabled, mShowChevronsEnabled, this);
         return view;
     }
 
@@ -787,9 +765,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 position, null, parent);
         view.reset();
         view.bind(conversation, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
-                getAttachmentPreviewsSetting(), getParallaxSpeedAlternativeSetting(),
-                getParallaxDirectionAlternativeSetting(), mSwipeEnabled, mImportanceMarkersEnabled,
-                mShowChevronsEnabled, this);
+                mSwipeEnabled, mImportanceMarkersEnabled, mShowChevronsEnabled, this);
         mAnimatingViews.put(conversation.id, view);
         return view;
     }
@@ -797,18 +773,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private int getCheckboxSetting() {
         return mAccount != null ? mAccount.settings.convListIcon :
             ConversationListIcon.DEFAULT;
-    }
-
-    private boolean getAttachmentPreviewsSetting() {
-        return mAccount == null || mAccount.settings.convListAttachmentPreviews;
-    }
-
-    private boolean getParallaxSpeedAlternativeSetting() {
-        return MailPrefs.get(mContext).getParallaxSpeedAlternative();
-    }
-
-    private boolean getParallaxDirectionAlternativeSetting() {
-        return MailPrefs.get(mContext).getParallaxDirectionAlternative();
     }
 
     @Override
@@ -1117,14 +1081,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         return oldCursor;
     }
 
-    public BitmapCache getAttachmentPreviewsCache() {
-        return mAttachmentPreviewsCache;
-    }
-
-    public DecodeAggregator getAttachmentPreviewsDecodeAggregator() {
-        return mAttachmentPreviewsDecodeAggregator;
-    }
-
     public BitmapCache getSendersImagesCache() {
         return mSendersImagesCache;
     }
@@ -1182,11 +1138,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         for (final ConversationSpecialItemView specialView : mFleetingViews) {
             specialView.onConversationListVisibilityChanged(visible);
         }
-    }
-
-    public void onScrollStateChanged(final int scrollState) {
-        final boolean scrolling = scrollState != OnScrollListener.SCROLL_STATE_IDLE;
-        mAttachmentPreviewsCache.setBlocking(scrolling);
     }
 
     public int getViewMode() {

@@ -91,9 +91,6 @@ public class ConversationItemViewModel {
 
     boolean hasDraftMessage;
 
-    // Attachment Previews overflow
-    String overflowText;
-
     // View Width
     public int viewWidth;
 
@@ -147,8 +144,7 @@ public class ConversationItemViewModel {
      * @return the view model for this conversation, or null
      */
     @VisibleForTesting
-    static ConversationItemViewModel forConversationIdOrNull(
-            String account, long conversationId) {
+    static ConversationItemViewModel forConversationIdOrNull(String account, long conversationId) {
         final Pair<String, Long> key = new Pair<String, Long>(account, conversationId);
         synchronized(sConversationHeaderMap) {
             return sConversationHeaderMap.get(key);

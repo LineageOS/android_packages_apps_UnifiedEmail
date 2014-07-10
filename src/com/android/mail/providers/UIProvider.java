@@ -164,7 +164,6 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.SNAP_HEADERS, Integer.class)
             .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, Integer.class)
             .put(AccountColumns.SettingsColumns.CONV_LIST_ICON, Integer.class)
-            .put(AccountColumns.SettingsColumns.CONV_LIST_ATTACHMENT_PREVIEWS, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_DELETE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, Integer.class)
             .put(AccountColumns.SettingsColumns.CONFIRM_SEND, Integer.class)
@@ -538,14 +537,6 @@ public class UIProvider {
              * {@link UIProvider.ConversationListIcon}.
              */
             public static final String CONV_LIST_ICON = "conversation_list_icon";
-
-            /**
-             * Integer column containing the user's preference for whether to show attachment
-             * previews or not in the conversation list view. A non zero value indicates that
-             * attachment previews should be displayed.
-             */
-            public static final String CONV_LIST_ATTACHMENT_PREVIEWS
-                    = "conversation_list_attachment_previews";
 
             /**
              * Integer column containing the user's specified confirm delete preference value.
@@ -1042,10 +1033,6 @@ public class UIProvider {
         ConversationColumns.SENDER_INFO,
         ConversationColumns.CONVERSATION_BASE_URI,
         ConversationColumns.REMOTE,
-        ConversationColumns.ATTACHMENT_PREVIEW_URI0,
-        ConversationColumns.ATTACHMENT_PREVIEW_URI1,
-        ConversationColumns.ATTACHMENT_PREVIEW_STATES,
-        ConversationColumns.ATTACHMENT_PREVIEWS_COUNT,
         ConversationColumns.ORDER_KEY
     };
 
@@ -1084,11 +1071,7 @@ public class UIProvider {
     public static final int CONVERSATION_SENDER_INFO_COLUMN = 23;
     public static final int CONVERSATION_BASE_URI_COLUMN = 24;
     public static final int CONVERSATION_REMOTE_COLUMN = 25;
-    public static final int CONVERSATION_ATTACHMENT_PREVIEW_URI0_COLUMN = 26;
-    public static final int CONVERSATION_ATTACHMENT_PREVIEW_URI1_COLUMN = 27;
-    public static final int CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN = 28;
-    public static final int CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN = 29;
-    public static final int CONVERSATION_ORDER_KEY_COLUMN = 30;
+    public static final int CONVERSATION_ORDER_KEY_COLUMN = 26;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -1268,34 +1251,6 @@ public class UIProvider {
          * when handling relative urls in the message content
          */
         public static final String CONVERSATION_BASE_URI = "conversationBaseUri";
-
-        /**
-         * This string column contains the uri of the first attachment preview of the first unread
-         * message, denoted by UNREAD_MESSAGE_ID.
-         */
-        public static final String ATTACHMENT_PREVIEW_URI0 = "attachmentPreviewUri0";
-
-        /**
-         * This string column contains the uri of the second attachment preview of the first unread
-         * message, denoted by UNREAD_MESSAGE_ID.
-         */
-        public static final String ATTACHMENT_PREVIEW_URI1 = "attachmentPreviewUri1";
-
-        /**
-         * This int column contains the states of the attachment previews of the first unread
-         * message, the same message used for the snippet. The states is a packed int,
-         * where the first and second bits represent the SIMPLE and BEST state of the first
-         * attachment preview, while the third and fourth bits represent those states for the
-         * second attachment preview. For each bit, a one means that rendition of that attachment
-         * preview is downloaded.
-         */
-        public static final String ATTACHMENT_PREVIEW_STATES = "attachmentPreviewStates";
-
-        /**
-         * This int column contains the total count of images in the first unread message. The
-         * total count may be higher than the number of ATTACHMENT_PREVIEW_URI columns.
-         */
-        public static final String ATTACHMENT_PREVIEWS_COUNT = "attachmentPreviewsCount";
 
         /**
          * This long column contains the data that is used for ordering the result.
