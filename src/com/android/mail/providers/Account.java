@@ -791,6 +791,13 @@ public class Account implements Parcelable {
     }
 
     /**
+     * The account id is an unique id to represent this account.
+     */
+    public String getAccountId() {
+        return accountManagerName;
+    }
+
+    /**
      * Returns the real name associated with the account, e.g. "John Doe" or null if no such name
      * has been configured
      * @return sender name
