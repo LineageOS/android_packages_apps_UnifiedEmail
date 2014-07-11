@@ -991,7 +991,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         final Account account = getAccount();
         final Conversation conversation = mMessage.getConversation();
         final String baseUri =
-                AbstractConversationViewFragment.buildBaseUri(account, conversation);
+                AbstractConversationViewFragment.buildBaseUri(getContext(), account, conversation);
         PrintUtils.printMessage(getContext(), mMessage, conversation.subject,
                 mAddressCache, conversation.getBaseUri(baseUri), useJavascript);
     }

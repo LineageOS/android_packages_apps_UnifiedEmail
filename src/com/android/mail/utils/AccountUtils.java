@@ -77,7 +77,7 @@ public class AccountUtils {
                     UIProvider.ACCOUNTS_PROJECTION, null, null, null);
             if (accountsCursor != null) {
                 while (accountsCursor.moveToNext()) {
-                    account = new Account(accountsCursor);
+                    account = Account.builder().buildFrom(accountsCursor);
                     if (!account.isAccountSyncRequired()) {
                         accounts.add(account);
                     }
@@ -105,7 +105,7 @@ public class AccountUtils {
                     UIProvider.ACCOUNTS_PROJECTION, null, null, null);
             if (accountsCursor != null) {
                 while (accountsCursor.moveToNext()) {
-                    accounts.add(new Account(accountsCursor));
+                    accounts.add(Account.builder().buildFrom(accountsCursor));
                 }
             }
         } finally {

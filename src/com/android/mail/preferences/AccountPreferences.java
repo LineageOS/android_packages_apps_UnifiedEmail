@@ -17,6 +17,7 @@ package com.android.mail.preferences;
 
 import android.content.Context;
 
+import com.android.mail.providers.Account;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
@@ -69,11 +70,12 @@ public class AccountPreferences extends VersionedPrefs {
         return PREFS_NAME_PREFIX + '-' + account;
     }
 
-    public static synchronized AccountPreferences get(Context context, String accountEmail) {
-        AccountPreferences pref = mInstances.get(accountEmail);
+    public static synchronized AccountPreferences get(Context context, Account account) {
+        final String id = account.getAccountId(context);
+        AccountPreferences pref = mInstances.get(id);
         if (pref == null) {
-            pref = new AccountPreferences(context, accountEmail);
-            mInstances.put(accountEmail, pref);
+            pref = new AccountPreferences(context, id);
+            mInstances.put(id, pref);
         }
         return pref;
     }

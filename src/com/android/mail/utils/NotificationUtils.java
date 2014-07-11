@@ -233,7 +233,7 @@ public class NotificationUtils {
                         final Account account;
                         try {
                             if (accountCursor.moveToFirst()) {
-                                account = new Account(accountCursor);
+                                account = Account.builder().buildFrom(accountCursor);
                             } else {
                                 continue;
                             }
