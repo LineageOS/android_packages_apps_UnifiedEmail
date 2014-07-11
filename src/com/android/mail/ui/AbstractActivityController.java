@@ -92,7 +92,6 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
@@ -1889,78 +1888,20 @@ public abstract class AbstractActivityController implements ActivityController,
         if (isCurrentConversationInView(target)) {
             final int autoAdvanceSetting = mAccount.settings.getAutoAdvanceSetting();
 
-            if (autoAdvanceSetting == AutoAdvance.UNSET && mIsTablet) {
-                displayAutoAdvanceDialogAndPerformAction(operation);
-                return false;
-            } else {
-                // If we don't have one set, but we're here, just take the default
-                final int autoAdvance = (autoAdvanceSetting == AutoAdvance.UNSET) ?
-                        AutoAdvance.DEFAULT : autoAdvanceSetting;
+            // If we don't have one set, but we're here, just take the default
+            final int autoAdvance = (autoAdvanceSetting == AutoAdvance.UNSET) ?
+                    AutoAdvance.DEFAULT : autoAdvanceSetting;
 
-                final Conversation next = mTracker.getNextConversation(autoAdvance, target);
-                LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
-                // Set mAutoAdvanceOp *before* showConversation() to ensure that it runs when the
-                // transition doesn't run (i.e. it "completes" immediately).
-                mAutoAdvanceOp = operation;
-                showConversation(next);
-                return (mAutoAdvanceOp == null);
-            }
+            final Conversation next = mTracker.getNextConversation(autoAdvance, target);
+            LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
+            // Set mAutoAdvanceOp *before* showConversation() to ensure that it runs when the
+            // transition doesn't run (i.e. it "completes" immediately).
+            mAutoAdvanceOp = operation;
+            showConversation(next);
+            return (mAutoAdvanceOp == null);
         }
 
         return true;
-    }
-
-    /**
-     * Displays a the auto-advance dialog, and when the user makes a selection, the preference is
-     * stored, and the specified operation is run.
-     */
-    private void displayAutoAdvanceDialogAndPerformAction(final Runnable operation) {
-        final String[] autoAdvanceDisplayOptions =
-                mContext.getResources().getStringArray(R.array.prefEntries_autoAdvance);
-        final String[] autoAdvanceOptionValues =
-                mContext.getResources().getStringArray(R.array.prefValues_autoAdvance);
-
-        final String defaultValue = mContext.getString(R.string.prefDefault_autoAdvance);
-        int initialIndex = 0;
-        for (int i = 0; i < autoAdvanceOptionValues.length; i++) {
-            if (defaultValue.equals(autoAdvanceOptionValues[i])) {
-                initialIndex = i;
-                break;
-            }
-        }
-
-        final DialogInterface.OnClickListener listClickListener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichItem) {
-                        final String autoAdvanceValue = autoAdvanceOptionValues[whichItem];
-                        final int autoAdvanceValueInt =
-                                UIProvider.AutoAdvance.getAutoAdvanceInt(autoAdvanceValue);
-                        mAccount.settings.setAutoAdvanceSetting(autoAdvanceValueInt);
-
-                        // Save the user's setting
-                        final ContentValues values = new ContentValues(1);
-                        values.put(
-                                AccountColumns.SettingsColumns.AUTO_ADVANCE, autoAdvanceValueInt);
-
-                        final ContentResolver resolver = mContext.getContentResolver();
-                        resolver.update(mAccount.updateSettingsUri, values, null, null);
-
-                        // Dismiss the dialog, as clicking the items in the list doesn't close the
-                        // dialog.
-                        dialog.dismiss();
-                        if (operation != null) {
-                            operation.run();
-                        }
-                    }
-                };
-
-        new AlertDialog.Builder(mActivity.getActivityContext()).setTitle(
-                R.string.auto_advance_help_title)
-                .setSingleChoiceItems(autoAdvanceDisplayOptions, initialIndex, listClickListener)
-                .setPositiveButton(null, null)
-                .create()
-                .show();
     }
 
     @Override

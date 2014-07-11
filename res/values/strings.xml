@@ -696,10 +696,6 @@
          Options contain "newer message","older message", etc. [CHAR LIMIT=32] -->
     <string name="preference_advance_to_title">Auto-advance</string>
 
-    <!-- Title of the dialog that appears the first time they perform an action that would cause
-         auto advance logic to fire [CHAR LIMIT=70] -->
-    <string name="auto_advance_help_title">Set auto-advance preference\n(after you delete, etc.)</string>
-
     <!-- The auto-advance modes -->
     <string-array name="prefEntries_autoAdvance">
         <!-- Newer conversation -->
