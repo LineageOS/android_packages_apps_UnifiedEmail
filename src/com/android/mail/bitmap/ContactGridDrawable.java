@@ -21,7 +21,7 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import com.android.oldbitmap.BitmapCache;
+import com.android.bitmap.BitmapCache;
 import com.android.mail.R;
 
 /**

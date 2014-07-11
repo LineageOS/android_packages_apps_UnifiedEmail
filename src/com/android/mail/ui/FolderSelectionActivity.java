@@ -34,6 +34,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.android.bitmap.BitmapCache;
 import com.android.mail.R;
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.providers.Account;
@@ -45,7 +46,6 @@ import com.android.mail.utils.MailObservable;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
 import com.android.mail.widget.WidgetProvider;
-import com.android.oldbitmap.BitmapCache;
 
 import java.util.ArrayList;
 
