@@ -24,6 +24,7 @@ import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -37,7 +38,8 @@ import com.android.mail.utils.FolderUri;
 
 public class WidgetConversationListItemViewBuilder {
     // Static colors
-    private static int SUBJECT_TEXT_COLOR;
+    private static int SUBJECT_TEXT_COLOR_READ;
+    private static int SUBJECT_TEXT_COLOR_UNREAD;
     private static int SNIPPET_TEXT_COLOR;
     private static int DATE_TEXT_COLOR_READ;
     private static int DATE_TEXT_COLOR_UNREAD;
@@ -112,7 +114,8 @@ public class WidgetConversationListItemViewBuilder {
         final Resources res = context.getResources();
 
         // Initialize colors
-        SUBJECT_TEXT_COLOR = res.getColor(R.color.subject_text_color);
+        SUBJECT_TEXT_COLOR_READ = res.getColor(R.color.subject_text_color_read);
+        SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
         SNIPPET_TEXT_COLOR = res.getColor(R.color.snippet_text_color);
         DATE_TEXT_COLOR_READ = res.getColor(R.color.date_text_color_read);
         DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
@@ -159,8 +162,10 @@ public class WidgetConversationListItemViewBuilder {
             subjectBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        subjectBuilder.setSpan(new ForegroundColorSpan(SUBJECT_TEXT_COLOR), 0,
-                subjectBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        final CharacterStyle subjectStyle = new ForegroundColorSpan(
+                isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ);
+        subjectBuilder.setSpan(subjectStyle, 0, subjectBuilder.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         final CharSequence styledSubject = addStyle(subjectBuilder, subjectFontSize, 0);
 
         final SpannableStringBuilder snippetBuilder = new SpannableStringBuilder(snippet);
