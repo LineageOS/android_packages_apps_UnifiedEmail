@@ -404,6 +404,13 @@ public class SendersView {
         return formattedToHeader;
     }
 
+    public static SpannableString getSingularDraftString() {
+        final SpannableString formattedDraftString = new SpannableString(sDraftSingularString);
+        final CharacterStyle readStyle = CharacterStyle.wrap(sDraftsStyleSpan);
+        formattedDraftString.setSpan(readStyle, 0, formattedDraftString.length(), 0);
+        return formattedDraftString;
+    }
+
     private static void clearResourceCache() {
         sDraftSingularString = null;
     }

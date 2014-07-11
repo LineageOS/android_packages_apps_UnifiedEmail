@@ -660,6 +660,16 @@ function setConversationHeaderSpacerHeight(spacerHeight) {
     measurePositions();
 }
 
+function setConversationFooterSpacerHeight(spacerHeight) {
+    var spacer = document.getElementById("conversation-footer");
+    if (!spacer) {
+        console.log("can't set spacer for conversation footer");
+        return;
+    }
+    spacer.style.height = spacerHeight + "px";
+    measurePositions();
+}
+
 function setMessageHeaderSpacerHeight(messageDomId, spacerHeight) {
     var spacer = document.querySelector("#" + messageDomId + " > .mail-message-header");
     setSpacerHeight(spacer, spacerHeight);

@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -72,8 +73,12 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
 
     public void setCount(int count) {
         mSuperCollapsedText.setText(String.valueOf(count));
+        final Resources res = getResources();
+        final int colorId = mModel.hasDraft() ?
+                R.color.text_color_draft_red : R.color.conversation_view_text_color_light;
+        mSuperCollapsedText.setTextColor(res.getColor(colorId));
         setContentDescription(
-                getResources().getQuantityString(R.plurals.show_messages_read, count, count));
+                res.getQuantityString(R.plurals.show_messages_read, count, count));
     }
 
     @Override

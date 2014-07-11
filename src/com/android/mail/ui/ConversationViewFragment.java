@@ -51,6 +51,7 @@ import com.android.mail.analytics.AnalyticsTimer;
 import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationContainer.OverlayPosition;
+import com.android.mail.browse.ConversationFooterView.ConversationFooterCallbacks;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
@@ -96,8 +97,8 @@ import java.util.Set;
  */
 public class ConversationViewFragment extends AbstractConversationViewFragment implements
         SuperCollapsedBlock.OnClickListener, OnLayoutChangeListener,
-        MessageHeaderView.MessageHeaderViewCallbacks,
-        MessageFooterView.MessageFooterCallbacks, WebViewContextMenu.Callbacks {
+        MessageHeaderView.MessageHeaderViewCallbacks, MessageFooterView.MessageFooterCallbacks,
+        WebViewContextMenu.Callbacks, ConversationFooterCallbacks {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -275,7 +276,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(context);
 
         mAdapter = new ConversationViewAdapter(mActivity, this,
-                getLoaderManager(), this, this, getContactInfoSource(), this,
+                getLoaderManager(), this, this, getContactInfoSource(), this, this,
                 getListController(), this, mAddressCache, dateBuilder, mBidiFormatter);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
@@ -722,6 +723,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         boolean prevSafeForImages = alwaysShowImages;
 
+        boolean hasDraft = false;
         while (messageCursor.moveToPosition(++pos)) {
             final ConversationMessage msg = messageCursor.getMessage();
 
@@ -747,6 +749,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                     expandedState = ExpansionState.COLLAPSED;
                 } else {
                     expandedState = ExpansionState.SUPER_COLLAPSED;
+                    hasDraft |= msg.isDraft();
                 }
             }
             mViewState.setShouldShowImages(msg, prevState.getShouldShowImages(msg));
@@ -784,8 +787,9 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                     // Special-case for a single collapsed message: no need to super-collapse it.
                     renderMessage(prevCollapsedMsg, false /* expanded */, prevSafeForImages);
                 } else {
-                    renderSuperCollapsedBlock(collapsedStart, pos - 1);
+                    renderSuperCollapsedBlock(collapsedStart, pos - 1, hasDraft);
                 }
+                hasDraft = false; // reset hasDraft
                 prevCollapsedMsg = null;
                 collapsedStart = -1;
             }
@@ -818,8 +822,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         return (MessageHeaderItem) mAdapter.getItem(count - 2);
     }
 
-    private void renderSuperCollapsedBlock(int start, int end) {
-        final int blockPos = mAdapter.addSuperCollapsedBlock(start, end);
+    private void renderSuperCollapsedBlock(int start, int end, boolean hasDraft) {
+        final int blockPos = mAdapter.addSuperCollapsedBlock(start, end, hasDraft);
         final int blockPx = measureOverlayHeight(blockPos);
         mTemplates.appendSuperCollapsedHtml(start, mWebView.screenPxToWebPx(blockPx));
     }
@@ -934,6 +938,17 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     // END conversation header callbacks
+
+    // START conversation footer callbacks
+
+    @Override
+    public void onConversationFooterHeightChange(int newHeight) {
+        final int h = mWebView.screenPxToWebPx(newHeight);
+
+        mWebView.loadUrl(String.format("javascript:setConversationFooterSpacerHeight(%s);", h));
+    }
+
+    // END conversation footer callbacks
 
     // START message header callbacks
     @Override
@@ -1492,6 +1507,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             changed = true;
         }
 
+        final ConversationFooterItem footerItem = mAdapter.getFooterItem();
+        if (footerItem != null) {
+            footerItem.invalidateMeasurement();
+        }
         if (!idsOfChangedBodies.isEmpty()) {
             mWebView.loadUrl(String.format("javascript:replaceMessageBodies([%s]);",
                     TextUtils.join(",", idsOfChangedBodies)));
@@ -1515,6 +1534,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         if (footerItem != null) {
             footerItem.setLastMessageHeaderItem(getLastMessageHeaderItem());
+            footerItem.invalidateMeasurement();
             mAdapter.addItem(footerItem);
         }
 
