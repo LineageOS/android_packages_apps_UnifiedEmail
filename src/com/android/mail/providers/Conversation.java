@@ -35,9 +35,7 @@ import com.android.mail.ui.ConversationCursorLoader;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -69,26 +67,6 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#HAS_ATTACHMENTS
      */
     public final boolean hasAttachments;
-    /**
-     * Union of attachmentPreviewUri0 and attachmentPreviewUri1
-     */
-    public transient ArrayList<String> attachmentPreviews;
-    /**
-     * @see UIProvider.ConversationColumns#ATTACHMENT_PREVIEW_URI0
-     */
-    public String attachmentPreviewUri0;
-    /**
-     * @see UIProvider.ConversationColumns#ATTACHMENT_PREVIEW_URI1
-     */
-    public String attachmentPreviewUri1;
-    /**
-     * @see UIProvider.ConversationColumns#ATTACHMENT_PREVIEW_STATES
-     */
-    public final int attachmentPreviewStates;
-    /**
-     * @see UIProvider.ConversationColumns#ATTACHMENT_PREVIEWS_COUNT
-     */
-    public final int attachmentPreviewsCount;
     /**
      * @see UIProvider.ConversationColumns#MESSAGE_LIST_URI
      */
@@ -219,10 +197,6 @@ public class Conversation implements Parcelable {
         dest.writeParcelable(conversationInfo, 0);
         dest.writeParcelable(conversationBaseUri, 0);
         dest.writeInt(isRemote ? 1 : 0);
-        dest.writeString(attachmentPreviewUri0);
-        dest.writeString(attachmentPreviewUri1);
-        dest.writeInt(attachmentPreviewStates);
-        dest.writeInt(attachmentPreviewsCount);
         dest.writeLong(orderKey);
     }
 
@@ -251,11 +225,6 @@ public class Conversation implements Parcelable {
         conversationInfo = in.readParcelable(loader);
         conversationBaseUri = in.readParcelable(null);
         isRemote = in.readInt() != 0;
-        attachmentPreviews = null;
-        attachmentPreviewUri0 = in.readString();
-        attachmentPreviewUri1 = in.readString();
-        attachmentPreviewStates = in.readInt();
-        attachmentPreviewsCount = in.readInt();
         orderKey = in.readLong();
     }
 
@@ -341,15 +310,6 @@ public class Conversation implements Parcelable {
         conversationBaseUri = !TextUtils.isEmpty(conversationBase) ?
                 Uri.parse(conversationBase) : null;
         isRemote = cursor.getInt(UIProvider.CONVERSATION_REMOTE_COLUMN) != 0;
-        attachmentPreviews = null;
-        attachmentPreviewUri0 = cursor.getString(
-                UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_URI0_COLUMN);
-        attachmentPreviewUri1 = cursor.getString(
-                UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_URI1_COLUMN);
-        attachmentPreviewStates = cursor.getInt(
-                UIProvider.CONVERSATION_ATTACHMENT_PREVIEW_STATES_COLUMN);
-        attachmentPreviewsCount = cursor.getInt(
-                UIProvider.CONVERSATION_ATTACHMENT_PREVIEWS_COUNT_COLUMN);
         orderKey = cursor.getLong(UIProvider.CONVERSATION_ORDER_KEY_COLUMN);
     }
 
@@ -384,11 +344,6 @@ public class Conversation implements Parcelable {
         conversationInfo = other.conversationInfo;
         conversationBaseUri = other.conversationBaseUri;
         isRemote = other.isRemote;
-        attachmentPreviews = null;
-        attachmentPreviewUri0 = other.attachmentPreviewUri0;
-        attachmentPreviewUri1 = other.attachmentPreviewUri1;
-        attachmentPreviewStates = other.attachmentPreviewStates;
-        attachmentPreviewsCount = other.attachmentPreviewsCount;
         orderKey = other.orderKey;
     }
 
@@ -398,8 +353,7 @@ public class Conversation implements Parcelable {
             boolean seen, boolean starred, FolderList rawFolders, int convFlags, int personalLevel,
             boolean spam, boolean phishing, boolean muted, Uri accountUri,
             ConversationInfo conversationInfo, Uri conversationBase, boolean isRemote,
-            String attachmentPreviewUri0, String attachmentPreviewUri1, int attachmentPreviewStates,
-            int attachmentPreviewsCount, String permalink, long orderKey) {
+            String permalink, long orderKey) {
         if (conversationInfo == null) {
             throw new IllegalArgumentException("Null conversationInfo");
         }
@@ -425,11 +379,6 @@ public class Conversation implements Parcelable {
         this.conversationInfo = conversationInfo;
         this.conversationBaseUri = conversationBase;
         this.isRemote = isRemote;
-        this.attachmentPreviews = null;
-        this.attachmentPreviewUri0 = attachmentPreviewUri0;
-        this.attachmentPreviewUri1 = attachmentPreviewUri1;
-        this.attachmentPreviewStates = attachmentPreviewStates;
-        this.attachmentPreviewsCount = attachmentPreviewsCount;
         this.orderKey = orderKey;
     }
 
@@ -455,10 +404,6 @@ public class Conversation implements Parcelable {
         private ConversationInfo mConversationInfo;
         private Uri mConversationBaseUri;
         private boolean mIsRemote;
-        private String mAttachmentPreviewUri0;
-        private String mAttachmentPreviewUri1;
-        private int mAttachmentPreviewStates;
-        private int mAttachmentPreviewsCount;
         private String mPermalink;
         private long mOrderKey;
 
@@ -570,26 +515,6 @@ public class Conversation implements Parcelable {
             return this;
         }
 
-        public Builder setAttachmentPreviewUri0(String attachmentPreviewUri0) {
-            mAttachmentPreviewUri0 = attachmentPreviewUri0;
-            return this;
-        }
-
-        public Builder setAttachmentPreviewUri1(String attachmentPreviewUri1) {
-            mAttachmentPreviewUri1 = attachmentPreviewUri1;
-            return this;
-        }
-
-        public Builder setAttachmentPreviewStates(int attachmentPreviewStates) {
-            mAttachmentPreviewStates = attachmentPreviewStates;
-            return this;
-        }
-
-        public Builder setAttachmentPreviewsCount(int attachmentPreviewsCount) {
-            mAttachmentPreviewsCount = attachmentPreviewsCount;
-            return this;
-        }
-
         public Builder setPermalink(String permalink) {
             mPermalink = permalink;
             return this;
@@ -610,8 +535,7 @@ public class Conversation implements Parcelable {
             return new Conversation(mId, mUri, mSubject, mDateMs, mHasAttachments, mMessageListUri,
                     mSendingState, mPriority, mRead, mSeen, mStarred, mRawFolders, mConvFlags,
                     mPersonalLevel, mSpam, mPhishing, mMuted, mAccountUri, mConversationInfo,
-                    mConversationBaseUri, mIsRemote, mAttachmentPreviewUri0, mAttachmentPreviewUri1,
-                    mAttachmentPreviewStates, mAttachmentPreviewsCount, mPermalink, mOrderKey);
+                    mConversationBaseUri, mIsRemote, mPermalink, mOrderKey);
         }
     }
 
@@ -830,19 +754,6 @@ public class Conversation implements Parcelable {
 
     public String getBaseUri(String defaultValue) {
         return conversationBaseUri != null ? conversationBaseUri.toString() : defaultValue;
-    }
-
-    public ArrayList<String> getAttachmentPreviewUris() {
-        if (attachmentPreviews == null) {
-            attachmentPreviews = Lists.newArrayListWithCapacity(2);
-            if (!TextUtils.isEmpty(attachmentPreviewUri0)) {
-                attachmentPreviews.add(attachmentPreviewUri0);
-            }
-            if (!TextUtils.isEmpty(attachmentPreviewUri1)) {
-                attachmentPreviews.add(attachmentPreviewUri1);
-            }
-        }
-        return attachmentPreviews;
     }
 
     /**
