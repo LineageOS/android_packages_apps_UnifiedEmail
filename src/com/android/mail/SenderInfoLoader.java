@@ -33,7 +33,7 @@ import android.provider.ContactsContract.Contacts.Photo;
 import android.provider.ContactsContract.Data;
 import android.util.Pair;
 
-import com.android.oldbitmap.Trace;
+import com.android.bitmap.util.Trace;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 

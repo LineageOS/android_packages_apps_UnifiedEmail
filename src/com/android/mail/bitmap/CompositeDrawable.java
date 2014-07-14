@@ -6,7 +6,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import com.android.oldbitmap.Trace;
+import com.android.bitmap.util.Trace;
 
 import java.util.ArrayList;
 import java.util.List;

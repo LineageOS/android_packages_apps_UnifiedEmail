@@ -15,10 +15,9 @@
  */
 package com.android.mail.bitmap;
 
-import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
 
-import com.android.oldbitmap.DecodeTask;
+import com.android.bitmap.RequestKey;
 import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
 
 import java.io.ByteArrayInputStream;
@@ -29,7 +28,7 @@ import java.io.InputStream;
  * A request object for contact images. ContactRequests have a destination because multiple
  * ContactRequests can share the same decoded data.
  */
-public class ContactRequest implements DecodeTask.Request {
+public class ContactRequest implements RequestKey {
 
     private final String mName;
     private final String mEmail;
@@ -83,7 +82,7 @@ public class ContactRequest implements DecodeTask.Request {
     }
 
     @Override
-    public AssetFileDescriptor createFd() throws IOException {
+    public Cancelable createFileDescriptorFactoryAsync(RequestKey key, Callback callback) {
         return null;
     }
 

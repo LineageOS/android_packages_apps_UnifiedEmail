@@ -14,9 +14,9 @@ import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.Drawable;
 
-import com.android.oldbitmap.BitmapCache;
-import com.android.oldbitmap.ReusableBitmap;
-import com.android.oldbitmap.DecodeTask.Request;
+import com.android.bitmap.BitmapCache;
+import com.android.bitmap.RequestKey;
+import com.android.bitmap.ReusableBitmap;
 import com.android.mail.R;
 import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
 
@@ -31,6 +31,9 @@ public class AccountAvatarDrawable extends Drawable implements ContactDrawableIn
     private final Paint mBitmapPaint;
     private final Paint mBorderPaint;
     private final Matrix mMatrix;
+
+    private int mDecodeWidth;
+    private int mDecodeHeight;
 
     private static Bitmap DEFAULT_AVATAR = null;
 
@@ -79,15 +82,15 @@ public class AccountAvatarDrawable extends Drawable implements ContactDrawableIn
      */
     private void drawBitmap(final Bitmap bitmap, final int width, final int height,
             final Canvas canvas) {
-        Rect bounds = getBounds();
+        final Rect bounds = getBounds();
         // Draw bitmap through shader first.
-        BitmapShader shader = new BitmapShader(bitmap, TileMode.CLAMP,
-                TileMode.CLAMP);
+        final BitmapShader shader = new BitmapShader(bitmap, TileMode.CLAMP, TileMode.CLAMP);
         mMatrix.reset();
 
         // Fit bitmap to bounds.
-        float scale = Math.max((float) bounds.width() / width,
-                (float) bounds.height() / height);
+        final float boundsWidth = (float) bounds.width();
+        final float boundsHeight = (float) bounds.height();
+        final float scale = Math.max(boundsWidth / width, boundsHeight / height);
         mMatrix.postScale(scale, scale);
 
         // Translate bitmap to dst bounds.
@@ -95,15 +98,11 @@ public class AccountAvatarDrawable extends Drawable implements ContactDrawableIn
 
         shader.setLocalMatrix(mMatrix);
         mBitmapPaint.setShader(shader);
-        int oldAlpha = mBitmapPaint.getAlpha();
-        mBitmapPaint.setAlpha((int) (oldAlpha * 1f));
-        canvas.drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2,
-                mBitmapPaint);
-        mBitmapPaint.setAlpha(oldAlpha);
+        canvas.drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2, mBitmapPaint);
 
         // Then draw the border.
-        canvas.drawCircle(bounds.centerX(), bounds.centerY(),
-                bounds.width() / 2f - mBorderWidth / 2, mBorderPaint);
+        final float radius = bounds.width() / 2f - mBorderWidth / 2;
+        canvas.drawCircle(bounds.centerX(), bounds.centerY(), radius, mBorderPaint);
     }
 
     @Override
@@ -122,7 +121,8 @@ public class AccountAvatarDrawable extends Drawable implements ContactDrawableIn
     }
 
     public void setDecodeDimensions(final int decodeWidth, final int decodeHeight) {
-        mCache.setPoolDimensions(decodeWidth, decodeHeight);
+        mDecodeWidth = decodeWidth;
+        mDecodeHeight = decodeHeight;
     }
 
     public void unbind() {
@@ -176,7 +176,17 @@ public class AccountAvatarDrawable extends Drawable implements ContactDrawableIn
     }
 
     @Override
-    public void onDecodeComplete(final Request key, final ReusableBitmap result) {
+    public int getDecodeWidth() {
+        return mDecodeWidth;
+    }
+
+    @Override
+    public int getDecodeHeight() {
+        return mDecodeHeight;
+    }
+
+    @Override
+    public void onDecodeComplete(final RequestKey key, final ReusableBitmap result) {
         final ContactRequest request = (ContactRequest) key;
         // Remove from batch.
         mContactResolver.remove(request, this);

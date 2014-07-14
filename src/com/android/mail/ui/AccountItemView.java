@@ -24,7 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.oldbitmap.BitmapCache;
+import com.android.bitmap.BitmapCache;
 import com.android.mail.R;
 import com.android.mail.bitmap.AccountAvatarDrawable;
 import com.android.mail.bitmap.ContactResolver;
