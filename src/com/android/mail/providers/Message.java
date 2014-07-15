@@ -723,4 +723,8 @@ public class Message implements Parcelable, HtmlMessage {
     public long getId() {
         return id;
     }
+
+    public boolean isDraft() {
+        return draftType != UIProvider.DraftType.NOT_A_DRAFT;
+    }
 }

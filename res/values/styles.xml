@@ -530,7 +530,7 @@
     </style>
 
     <style name="DraftTextAppearance">
-        <item name="android:textColor">@color/drafts</item>
+        <item name="android:textColor">@color/text_color_draft_red</item>
     </style>
 
     <style name="SendingTextAppearance" parent="@style/DraftTextAppearance">
