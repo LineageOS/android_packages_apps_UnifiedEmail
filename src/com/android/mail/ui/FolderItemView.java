@@ -15,10 +15,8 @@
  */
 package com.android.mail.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.graphics.drawable.shapes.Shape;
@@ -42,6 +40,8 @@ public class FolderItemView extends RelativeLayout {
     private final String LOG_TAG = LogTag.getLogTag();
 
     private static final int[] STATE_DRAG_MODE = {R.attr.state_drag_mode};
+
+    private static float[] sUnseenCornerRadii;
 
     private Folder mFolder;
     private TextView mFolderTextView;
@@ -71,16 +71,34 @@ public class FolderItemView extends RelativeLayout {
 
     public FolderItemView(Context context) {
         super(context);
+
+        loadResources(context);
     }
 
     public FolderItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        loadResources(context);
     }
 
     public FolderItemView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        loadResources(context);
         mIsDragMode = false;
+    }
+
+    private void loadResources(Context context) {
+        if (sUnseenCornerRadii == null) {
+            final float cornerRadius =
+                    context.getResources().getDimension(R.dimen.folder_rounded_corner_radius);
+            sUnseenCornerRadii = new float[] {
+                    cornerRadius, cornerRadius, // top left
+                    cornerRadius, cornerRadius, // top right
+                    cornerRadius, cornerRadius, // bottom right
+                    cornerRadius, cornerRadius  // bottom left
+            };
+        }
     }
 
     @Override
@@ -154,13 +172,7 @@ public class FolderItemView extends RelativeLayout {
     private void setUnseenCount(final int color, final int count) {
         mUnseenCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
         if (count > 0) {
-            final float[] radii = new float[] {
-                    1.0f, 1.0f, // top left
-                    1.0f, 1.0f, // top right
-                    1.0f, 1.0f, // bottom right
-                    1.0f, 1.0f  // bottom left
-            };
-            final Shape shape = new RoundRectShape(radii, null, null);
+            final Shape shape = new RoundRectShape(sUnseenCornerRadii, null, null);
             final ShapeDrawable drawable = new ShapeDrawable(shape);
             drawable.getPaint().setColor(color);
             mUnseenCountTextView.setBackgroundDrawable(drawable);
