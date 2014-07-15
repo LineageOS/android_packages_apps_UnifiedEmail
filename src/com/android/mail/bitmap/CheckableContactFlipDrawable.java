@@ -28,16 +28,15 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import com.android.bitmap.BitmapCache;
 import com.android.mail.R;
 
 /**
- * Custom FlipDrawable which has a {@link ContactGridDrawable} on the front,
+ * Custom FlipDrawable which has a {@link ContactDrawable} on the front,
  * and a {@link CheckmarkDrawable} on the back.
  */
-public class ContactCheckableGridDrawable extends FlipDrawable implements AnimatorUpdateListener {
+public class CheckableContactFlipDrawable extends FlipDrawable implements AnimatorUpdateListener {
 
-    private final ContactGridDrawable mContactGridDrawable;
+    private final ContactDrawable mContactDrawable;
     private final CheckmarkDrawable mCheckmarkDrawable;
 
     private final ValueAnimator mCheckmarkScaleAnimator;
@@ -51,11 +50,11 @@ public class ContactCheckableGridDrawable extends FlipDrawable implements Animat
     /** Must be <= 1f since the animation value is used as a percentage. */
     private static final float END_VALUE = 1f;
 
-    public ContactCheckableGridDrawable(final Resources res, final int flipDurationMs) {
-        super(new ContactGridDrawable(res), new CheckmarkDrawable(res), flipDurationMs,
+    public CheckableContactFlipDrawable(final Resources res, final int flipDurationMs) {
+        super(new ContactDrawable(res), new CheckmarkDrawable(res), flipDurationMs,
                 0 /* preFlipDurationMs */, POST_FLIP_DURATION_MS);
 
-        mContactGridDrawable = (ContactGridDrawable) mFront;
+        mContactDrawable = (ContactDrawable) mFront;
         mCheckmarkDrawable = (CheckmarkDrawable) mBack;
 
         // We will create checkmark animations that are synchronized with the flipping animation.
@@ -113,26 +112,8 @@ public class ContactCheckableGridDrawable extends FlipDrawable implements Animat
         }
     }
 
-    public ContactDrawable getOrCreateDrawable(final int i) {
-        return mContactGridDrawable.getOrCreateDrawable(i);
-    }
-
-    public void setBitmapCache(final BitmapCache cache) {
-        mContactGridDrawable.setBitmapCache(cache);
-    }
-
-    public void setContactResolver(final ContactResolver contactResolver) {
-        mContactGridDrawable.setContactResolver(contactResolver);
-    }
-
-    public int getCount() {
-        return mContactGridDrawable.getCount();
-    }
-
-    public void setCount(final int count) {
-        mContactGridDrawable.setCount(count);
-        // Side effect needs to happen here too.
-        setBounds(0, 0, 0, 0);
+    public ContactDrawable getContactDrawable() {
+        return mContactDrawable;
     }
 
     @Override
@@ -181,7 +162,7 @@ public class ContactCheckableGridDrawable extends FlipDrawable implements Animat
                 return;
             }
 
-            canvas.drawRect(getBounds(), mPaint);
+            canvas.drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2, mPaint);
 
             // Scale the checkmark.
             sMatrix.reset();
