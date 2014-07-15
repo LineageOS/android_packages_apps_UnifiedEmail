@@ -27,7 +27,7 @@ public class AccountAvatarDrawable extends Drawable implements ContactDrawableIn
 
     private ContactRequest mContactRequest;
     private ReusableBitmap mBitmap;
-    private float mBorderWidth;
+    private final float mBorderWidth;
     private final Paint mBitmapPaint;
     private final Paint mBorderPaint;
     private final Matrix mMatrix;
@@ -46,13 +46,14 @@ public class AccountAvatarDrawable extends Drawable implements ContactDrawableIn
         mBitmapPaint.setFilterBitmap(true);
         mBitmapPaint.setDither(true);
 
+        mBorderWidth = res.getDimensionPixelSize(R.dimen.avatar_border_width);
+
         mBorderPaint = new Paint();
         mBorderPaint.setColor(Color.TRANSPARENT);
         mBorderPaint.setStyle(Style.STROKE);
         mBorderPaint.setStrokeWidth(mBorderWidth);
         mBorderPaint.setAntiAlias(true);
 
-        mBorderWidth = res.getDimensionPixelSize(R.dimen.avatar_border_width);
         mMatrix = new Matrix();
 
         if (DEFAULT_AVATAR == null) {

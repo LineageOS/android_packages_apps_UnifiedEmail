@@ -67,7 +67,7 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
-import com.android.mail.bitmap.ContactCheckableGridDrawable;
+import com.android.mail.bitmap.CheckableContactFlipDrawable;
 import com.android.mail.bitmap.ContactDrawable;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Conversation;
@@ -80,7 +80,6 @@ import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
-import com.android.mail.ui.DividedImageCanvas;
 import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
@@ -210,7 +209,7 @@ public class ConversationItemView extends View
     private static int sScrollSlop;
     private static CharacterStyle sActivatedTextSpan;
 
-    private final ContactCheckableGridDrawable mSendersImageView;
+    private final CheckableContactFlipDrawable mSendersImageView;
 
     /** The resource id of the color to use to override the background. */
     private int mBackgroundOverrideResId = -1;
@@ -407,7 +406,7 @@ public class ConversationItemView extends View
         ViewCompat.setLayoutDirection(mSnippetTextView, layoutDir);
         ViewUtils.setTextAlignment(mSnippetTextView, View.TEXT_ALIGNMENT_VIEW_START);
 
-        mSendersImageView = new ContactCheckableGridDrawable(res, sCabAnimationDuration);
+        mSendersImageView = new CheckableContactFlipDrawable(res, sCabAnimationDuration);
         mSendersImageView.setCallback(this);
 
         Utils.traceEndSection();
@@ -528,10 +527,7 @@ public class ConversationItemView extends View
             // manager requests.
             if (newlyBound || (mHeader.displayableNames != null && !mHeader
                     .displayableNames.equals(header.displayableNames))) {
-                for (int i = 0; i < mSendersImageView.getCount(); i++) {
-                    mSendersImageView.getOrCreateDrawable(i).unbind();
-                }
-                mSendersImageView.setCount(0);
+                mSendersImageView.getContactDrawable().unbind();
             }
 
             if (newlyBound) {
@@ -554,8 +550,8 @@ public class ConversationItemView extends View
         mAdapter = adapter;
 
         Utils.traceBeginSection("drawables");
-        mSendersImageView.setBitmapCache(mAdapter.getSendersImagesCache());
-        mSendersImageView.setContactResolver(mAdapter.getContactResolver());
+        mSendersImageView.getContactDrawable().setBitmapCache(mAdapter.getSendersImagesCache());
+        mSendersImageView.getContactDrawable().setContactResolver(mAdapter.getContactResolver());
         Utils.traceEndSection();
 
         if (checkboxOrSenderImage == ConversationListIcon.SENDER_IMAGE) {
@@ -857,22 +853,14 @@ public class ConversationItemView extends View
             return;
         }
 
-        Utils.traceBeginSection("load sender images");
-        final int count = mHeader.displayableEmails.size();
-
-        mSendersImageView.setCount(count);
         mSendersImageView
                 .setBounds(0, 0, mCoordinates.contactImagesWidth, mCoordinates.contactImagesHeight);
 
-        for (int i = 0; i < DividedImageCanvas.MAX_DIVISIONS && i < count; i++) {
-            Utils.traceBeginSection("load single sender image");
-            final ContactDrawable drawable = mSendersImageView.getOrCreateDrawable(i);
-            drawable.setDecodeDimensions(mCoordinates.contactImagesWidth,
-                    mCoordinates.contactImagesHeight);
-            drawable.bind(mHeader.displayableNames.get(i),
-                    mHeader.displayableEmails.get(i));
-            Utils.traceEndSection();
-        }
+        Utils.traceBeginSection("load sender image");
+        final ContactDrawable drawable = mSendersImageView.getContactDrawable();
+        drawable.setDecodeDimensions(mCoordinates.contactImagesWidth,
+                mCoordinates.contactImagesHeight);
+        drawable.bind(mHeader.displayableNames.get(0), mHeader.displayableEmails.get(0));
         Utils.traceEndSection();
     }
 
