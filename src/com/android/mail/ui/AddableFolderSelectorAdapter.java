@@ -48,7 +48,7 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
      * @param folderCursor
      * @param excludedTypes folder types that we want to filter out.
      * @param initiallySelected set of folder uris that are previously selected.
-     * @param includeInitiallySelected if we want to ONLY include or exclude initiallySelected,
+     * @param includeOnlyInitiallySelected if we want to ONLY include or exclude initiallySelected,
      *   doesn't do anything if initiallySelected is null.
      * @return
      */
