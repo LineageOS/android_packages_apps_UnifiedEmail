@@ -21,7 +21,8 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="44dp"
+    android:background="@android:color/white"
+    android:minHeight="32dp"
     android:gravity="bottom"
     android:ellipsize="end"
     android:singleLine="true"
@@ -30,4 +31,4 @@
     android:paddingLeft="@dimen/folder_list_heading_padding_side"
     android:paddingRight="@dimen/folder_list_heading_padding_side"
     android:paddingBottom="@dimen/folder_list_heading_padding_bottom"
-    style="?android:attr/listSeparatorTextViewStyle" />
+    android:paddingTop="@dimen/folder_list_heading_padding_top" />

@@ -48,7 +48,7 @@
 
     <!-- Folder List/Drawer colors -->
     <color name="account_item_selected_text_color">@color/mail_app_blue</color>
-    <color name="folder_list_heading_text_color">@color/dark_gray_text_color</color>
+    <color name="folder_list_heading_text_color">@color/light_gray</color>
     <color name="list_background_color">#f5f5f5</color>
     <color name="separator_color">#bebebe</color>
 
