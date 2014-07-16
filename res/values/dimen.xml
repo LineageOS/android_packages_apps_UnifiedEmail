@@ -71,7 +71,8 @@
     <dimen name="folder_selection_margin_start">16dp</dimen>
     <dimen name="folder_selection_margin_end">24dp</dimen>
     <dimen name="folder_list_heading_padding_side">16dp</dimen>
-    <dimen name="folder_list_heading_padding_bottom">3dp</dimen>
+    <dimen name="folder_list_heading_padding_bottom">8dp</dimen>
+    <dimen name="folder_list_heading_padding_top">12dp</dimen>
     <dimen name="folder_list_item_start_margin">16dp</dimen>
     <dimen name="folder_list_item_end_margin">8dp</dimen>
     <!-- Let's try to keep this consistent with color_block_height above, unless there's a good reason not to. -->
