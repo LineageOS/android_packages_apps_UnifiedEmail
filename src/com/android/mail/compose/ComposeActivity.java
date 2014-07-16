@@ -481,10 +481,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.compose);
         final ActionBar actionBar = getActionBar();
-        if (actionBar != null && Utils.isRunningLOrLater()) {
-            // Hide the app icon.  This only happens on L devices, as pre-L the action bar
-            // layout works with app icon
+        if (actionBar != null) {
+            // Hide the app icon.
             actionBar.setIcon(null);
+            actionBar.setDisplayUseLogoEnabled(false);
         }
 
         mInnerSavedState = (savedInstanceState != null) ?
@@ -1436,8 +1436,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     break;
             }
         }
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME,
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP,
+                ActionBar.DISPLAY_HOME_AS_UP);
         actionBar.setHomeButtonEnabled(true);
     }
 
