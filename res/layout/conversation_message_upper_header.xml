@@ -19,7 +19,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/message_header_background_color"
-    android:duplicateParentState="true" >
+    android:duplicateParentState="true"
+    style="@style/ConversationViewMarginStyle" >
 
     <com.android.mail.browse.MessageHeaderContactBadge
         android:id="@+id/photo"

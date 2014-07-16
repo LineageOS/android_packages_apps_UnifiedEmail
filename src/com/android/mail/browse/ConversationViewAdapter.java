@@ -79,9 +79,9 @@ public class ConversationViewAdapter extends BaseAdapter {
     public static final int VIEW_TYPE_MESSAGE_HEADER = 1;
     public static final int VIEW_TYPE_MESSAGE_FOOTER = 2;
     public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 3;
-    public static final int VIEW_TYPE_BORDER = 4;
-    public static final int VIEW_TYPE_AD_HEADER = 5;
-    public static final int VIEW_TYPE_AD_SENDER_HEADER = 6;
+    public static final int VIEW_TYPE_AD_HEADER = 4;
+    public static final int VIEW_TYPE_AD_SENDER_HEADER = 5;
+    public static final int VIEW_TYPE_AD_FOOTER = 6;
     public static final int VIEW_TYPE_COUNT = 7;
 
     private final BidiFormatter mBidiFormatter;
@@ -405,78 +405,6 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
     }
 
-
-    public class BorderItem extends ConversationOverlayItem {
-        private final boolean mContiguous;
-        private boolean mExpanded;
-        private final boolean mFirstBorder;
-        private boolean mLastBorder;
-
-        public BorderItem(boolean contiguous, boolean isExpanded,
-                boolean firstBorder, boolean lastBorder) {
-            mContiguous = contiguous;
-            mExpanded = isExpanded;
-            mFirstBorder = firstBorder;
-            mLastBorder = lastBorder;
-        }
-
-        @Override
-        public int getType() {
-            return VIEW_TYPE_BORDER;
-        }
-
-        @Override
-        public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
-            return inflater.inflate(R.layout.card_border, parent, false);
-        }
-
-        @Override
-        public void bindView(View v, boolean measureOnly) {
-            final BorderView border = (BorderView) v;
-            border.bind(this, measureOnly);
-        }
-
-        @Override
-        public boolean isContiguous() {
-            return mContiguous;
-        }
-
-        @Override
-        public boolean isExpanded() {
-            return mExpanded;
-        }
-
-        public void setExpanded(boolean isExpanded) {
-            mExpanded = isExpanded;
-        }
-
-        @Override
-        public boolean canPushSnapHeader() {
-            return false;
-        }
-
-        public boolean isFirstBorder() {
-            return mFirstBorder;
-        }
-
-        public boolean isLastBorder() {
-            return mLastBorder;
-        }
-
-        public void setIsLastBorder(boolean isLastBorder) {
-            mLastBorder = isLastBorder;
-        }
-
-        public ConversationViewAdapter getAdapter() {
-            return ConversationViewAdapter.this;
-        }
-
-        @Override
-        public void rebindView(View view) {
-            bindView(view, false);
-        }
-    }
-
     public ConversationViewAdapter(ControllableActivity controllableActivity,
             ConversationAccountController accountController,
             LoaderManager loaderManager,
@@ -594,16 +522,6 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public int addSuperCollapsedBlock(int start, int end) {
         return addItem(new SuperCollapsedBlockItem(start, end));
-    }
-
-    public int addBorder(
-            boolean contiguous, boolean expanded, boolean firstBorder, boolean lastBorder) {
-        return addItem(new BorderItem(contiguous, expanded, firstBorder, lastBorder));
-    }
-
-    public BorderItem newBorderItem(boolean contiguous, boolean expanded) {
-        return new BorderItem(
-                contiguous, expanded, false /* firstBorder */, false /* lastBorder */);
     }
 
     public void replaceSuperCollapsedBlock(SuperCollapsedBlockItem blockToRemove,

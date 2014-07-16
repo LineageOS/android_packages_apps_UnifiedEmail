@@ -28,10 +28,8 @@
             android:id="@+id/webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            style="@style/ConversationViewSideMarginStyle"
+            style="@style/ConversationViewPaddingStyle"
             android:scrollbars="none" />
-
-        <include layout="@layout/conversation_side_border_overlay"/>
 
         <!-- scrolling overlay views go here -->
 

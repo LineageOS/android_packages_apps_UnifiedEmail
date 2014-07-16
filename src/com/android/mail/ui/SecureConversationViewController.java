@@ -30,7 +30,6 @@ import android.webkit.WebSettings;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.AttachmentActionHandler;
-import com.android.mail.browse.BorderView;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationViewAdapter;
 import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
@@ -101,9 +100,6 @@ public class SecureConversationViewController implements
         mMessageHeaderView.setBackgroundColor(color);
         mSnapHeaderView.setBackgroundColor(color);
         mMessageFooterView.setBackgroundColor(color);
-
-        ((BorderView) rootView.findViewById(R.id.top_border)).disableCardBottomBorder();
-        ((BorderView) rootView.findViewById(R.id.bottom_border)).disableCardTopBorder();
 
         mProgressController = new ConversationViewProgressController(
                 mCallbacks.getFragment(), mCallbacks.getHandler());
@@ -262,8 +258,7 @@ public class SecureConversationViewController implements
     }
 
     @Override
-    public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight,
-            int topBorderHeight, int bottomBorderHeight) {
+    public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight) {
         // Do nothing.
     }
 
