@@ -319,12 +319,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public String getHelpContext() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Context getActivityContext() {
         return this;
     }
@@ -505,5 +499,10 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public void onWelcomeTourRequested(
             WelcomeTourCompletionListener completionListener) {
         // Unsupported
+    }
+
+    @Override
+    public void showHelp(Account account, int viewMode) {
+        //Unsupported
     }
 }

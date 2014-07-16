@@ -544,20 +544,6 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public String getHelpContext() {
-        final int mode = mViewMode.getMode();
-        final int helpContextResId;
-        switch (mode) {
-            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
-                helpContextResId = R.string.wait_help_context;
-                break;
-            default:
-                helpContextResId = R.string.main_help_context;
-        }
-        return mContext.getString(helpContextResId);
-    }
-
-    @Override
     public final ConversationCursor getConversationListCursor() {
         return mConversationListCursor;
     }
@@ -645,8 +631,8 @@ public abstract class AbstractActivityController implements ActivityController,
             final int mask = ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE
                     | ActionBar.DISPLAY_SHOW_HOME;
             actionBar.setDisplayOptions(mask, mask);
+            mActionBarView.setViewModeController(mViewMode);
         }
-        mActionBarView.setViewModeController(mViewMode);
     }
 
     /**
@@ -1296,7 +1282,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mRecentFolderList.initialize(mActivity);
         mVeiledMatcher.initialize(this);
 
-        mDrawerToggle = new ActionBarDrawerToggle((Activity) mActivity, mDrawerContainer,
+        mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerContainer,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
         mDrawerContainer.setDrawerListener(mDrawerListener);
         mDrawerContainer.setDrawerShadow(
@@ -1545,9 +1531,7 @@ public abstract class AbstractActivityController implements ActivityController,
         } else if (id == R.id.folder_options) {
             Utils.showFolderSettings(mActivity.getActivityContext(), mAccount, mFolder);
         } else if (id == R.id.help_info_menu_item) {
-            Utils.showHelp(mActivity.getActivityContext(), mAccount, getHelpContext());
-        } else if (id == R.id.feedback_menu_item) {
-            Utils.sendFeedback(mActivity, mAccount, false);
+            mActivity.showHelp(mAccount, mViewMode.getMode());
         } else if (id == R.id.manage_folders_item) {
             Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
         } else if (id == R.id.move_to || id == R.id.change_folders) {

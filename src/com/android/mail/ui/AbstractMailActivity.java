@@ -34,8 +34,7 @@ import android.os.StrictMode;
  * <p>In the Gmail codebase, this was called GmailBaseActivity</p>
  *
  */
-public abstract class AbstractMailActivity extends Activity
-        implements HelpCallback, RestrictedActivity {
+public abstract class AbstractMailActivity extends Activity implements RestrictedActivity {
 
     private final UiHandler mUiHandler = new UiHandler();
 
@@ -81,17 +80,6 @@ public abstract class AbstractMailActivity extends Activity
         super.onResume();
 
         mUiHandler.setEnabled(true);
-    }
-
-    /**
-     * Get the contextual help parameter for this activity. This can be overridden
-     * to allow the extending activities to return different help context strings.
-     * The default implementation is to return "gm".
-     * @return The help context of this activity.
-     */
-    @Override
-    public String getHelpContext() {
-        return "Mail";
     }
 
     @Override
