@@ -213,6 +213,10 @@
         <item name="android:layout_alignParentStart">true</item>
     </style>
 
+    <style name="FloatingActionBarStyle">
+        <item name="android:layout_marginEnd">@dimen/floating_action_bar_margin</item>
+    </style>
+
     <style name="FolderSelectionItemStyle" parent="AbstractFolderSelectionItemStyle">
         <item name="android:layout_marginStart">@dimen/folder_selection_margin_start</item>
         <item name="android:layout_marginEnd">@dimen/folder_selection_margin_end</item>

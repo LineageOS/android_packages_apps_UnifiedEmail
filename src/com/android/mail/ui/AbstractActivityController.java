@@ -140,7 +140,7 @@ import java.util.TimerTask;
  * </p>
  */
 public abstract class AbstractActivityController implements ActivityController,
-        EmptyFolderDialogFragment.EmptyFolderDialogFragmentListener {
+        EmptyFolderDialogFragment.EmptyFolderDialogFragmentListener, View.OnClickListener {
     // Keys for serialization of various information in Bundles.
     /** Tag for {@link #mAccount} */
     private static final String SAVED_ACCOUNT = "saved-account";
@@ -1271,6 +1271,9 @@ public abstract class AbstractActivityController implements ActivityController,
         mRecentFolderList.initialize(mActivity);
         mVeiledMatcher.initialize(this);
 
+        final View composeButton = mActivity.findViewById(R.id.compose_button);
+        composeButton.setOnClickListener(this);
+
         mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerContainer,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
         mDrawerContainer.setDrawerListener(mDrawerListener);
@@ -1329,6 +1332,16 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * This controller listens for clicks on items in the floating action bar.
+     *
+     * @param view the item that was clicked in the floating action bar
+     */
+    @Override
+    public void onClick(View view) {
+        ComposeActivity.compose(mActivity.getActivityContext(), getAccount());
     }
 
     /**

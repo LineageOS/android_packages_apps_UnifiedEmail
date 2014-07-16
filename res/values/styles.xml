@@ -182,6 +182,10 @@
     </style>
     <!-- End browse list item styles -->
 
+    <style name="FloatingActionBarStyle">
+        <item name="android:layout_marginRight">@dimen/floating_action_bar_margin</item>
+    </style>
+
     <!-- Undo bar styles -->
     <style name="AbstractUndoTextStyle">
         <item name="android:textSize">12sp</item>
