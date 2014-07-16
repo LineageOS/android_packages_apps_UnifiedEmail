@@ -223,11 +223,13 @@ public final class MailPrefs extends VersionedPrefs {
      * Should be one of the {@link RemovalActions}.
      */
     public String getRemovalAction(final boolean supportsArchive) {
-        final String defaultAction = supportsArchive
-                ? RemovalActions.ARCHIVE_AND_DELETE : RemovalActions.DELETE;
+        if (!supportsArchive) {
+            return RemovalActions.DELETE;
+        }
 
         final SharedPreferences sharedPreferences = getSharedPreferences();
-        return sharedPreferences.getString(PreferenceKeys.REMOVAL_ACTION, defaultAction);
+        return sharedPreferences.getString(PreferenceKeys.REMOVAL_ACTION,
+                RemovalActions.ARCHIVE_AND_DELETE);
     }
 
     /**
