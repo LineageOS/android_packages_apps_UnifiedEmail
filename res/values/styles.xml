@@ -513,7 +513,6 @@
 
     <style name="NotificationSendersUnreadTextAppearance">
         <item name="android:textSize">@dimen/senders_font_size</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="NotificationSendersReadTextAppearance">
