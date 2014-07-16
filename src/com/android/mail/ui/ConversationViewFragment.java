@@ -275,7 +275,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         mAdapter = new ConversationViewAdapter(mActivity, this,
                 getLoaderManager(), this, this, getContactInfoSource(), this,
-                this, mAddressCache, dateBuilder, mBidiFormatter);
+                getListController(), this, mAddressCache, dateBuilder, mBidiFormatter);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         // set up snap header (the adapter usually does this with the other ones)
@@ -1572,7 +1572,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mConversation = conv;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
-            headerView.setSubject(conv.subject);
         }
     }
 

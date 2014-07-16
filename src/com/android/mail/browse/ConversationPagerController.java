@@ -219,7 +219,7 @@ public class ConversationPagerController {
         final int padding = c.getResources().getDimensionPixelOffset(
                 R.dimen.conversation_page_gutter);
         final Drawable gutterDrawable = new PageMarginDrawable(divider, padding, 0, padding, 0,
-                c.getResources().getColor(R.color.conversation_view_border_color));
+                c.getResources().getColor(R.color.conversation_view_background_color));
         mPager.setPageMargin(gutterDrawable.getIntrinsicWidth() + 2 * padding);
         mPager.setPageMarginDrawable(gutterDrawable);
     }

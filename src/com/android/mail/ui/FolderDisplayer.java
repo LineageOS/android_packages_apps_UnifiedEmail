@@ -32,7 +32,6 @@ import java.util.NavigableSet;
 /**
  * Used to generate folder display information given a raw folders string.
  * (The raw folders string can be obtained from {@link Conversation#getRawFolders()}.)
- *
  */
 public class FolderDisplayer {
     public static final String LOG_TAG = LogTag.getLogTag();
