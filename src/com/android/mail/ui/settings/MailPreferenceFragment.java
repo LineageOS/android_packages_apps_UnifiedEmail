@@ -48,5 +48,4 @@ public class MailPreferenceFragment extends PreferenceFragment {
             accounts.setVisible(false);
         }
     }
-
 }

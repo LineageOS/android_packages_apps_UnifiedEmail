@@ -182,6 +182,7 @@ public class UIProvider {
             .put(AccountColumns.ENABLE_MESSAGE_TRANSFORMS, Integer.class)
             .put(AccountColumns.SYNC_AUTHORITY, String.class)
             .put(AccountColumns.QUICK_RESPONSE_URI, String.class)
+            .put(AccountColumns.SETTINGS_FRAGMENT_CLASS, String.class)
             .put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, String.class)
             .put(AccountColumns.SettingsColumns.SHOW_IMAGES, Integer.class)
             .put(AccountColumns.SettingsColumns.WARM_WELCOME_STATUS, Integer.class)
@@ -501,6 +502,10 @@ public class UIProvider {
          * URI for querying this account's quick responses
          */
         public static final String QUICK_RESPONSE_URI = "quickResponseUri";
+        /**
+         * Fragment class name for account settings
+         */
+        public static final String SETTINGS_FRAGMENT_CLASS = "settingsFragmentClass";
 
         public static final class SettingsColumns {
             /**
