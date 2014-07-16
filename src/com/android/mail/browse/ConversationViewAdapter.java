@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.v4.text.BidiFormatter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,10 +40,14 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationUpdater;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.VeiledAddressMatcher;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +64,8 @@ import java.util.Map;
  *
  */
 public class ConversationViewAdapter extends BaseAdapter {
+
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private final Context mContext;
     private final FormattedDateBuilder mDateBuilder;
@@ -77,14 +84,27 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final List<ConversationOverlayItem> mItems;
     private final VeiledAddressMatcher mMatcher;
 
+    @Retention(RetentionPolicy.CLASS)
+    @IntDef({
+            VIEW_TYPE_CONVERSATION_HEADER,
+            VIEW_TYPE_CONVERSATION_FOOTER,
+            VIEW_TYPE_MESSAGE_HEADER,
+            VIEW_TYPE_MESSAGE_FOOTER,
+            VIEW_TYPE_SUPER_COLLAPSED_BLOCK,
+            VIEW_TYPE_AD_HEADER,
+            VIEW_TYPE_AD_SENDER_HEADER,
+            VIEW_TYPE_AD_FOOTER
+    })
+    public @interface ConversationViewType {}
     public static final int VIEW_TYPE_CONVERSATION_HEADER = 0;
-    public static final int VIEW_TYPE_MESSAGE_HEADER = 1;
-    public static final int VIEW_TYPE_MESSAGE_FOOTER = 2;
-    public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 3;
-    public static final int VIEW_TYPE_AD_HEADER = 4;
-    public static final int VIEW_TYPE_AD_SENDER_HEADER = 5;
-    public static final int VIEW_TYPE_AD_FOOTER = 6;
-    public static final int VIEW_TYPE_COUNT = 7;
+    public static final int VIEW_TYPE_CONVERSATION_FOOTER = 1;
+    public static final int VIEW_TYPE_MESSAGE_HEADER = 2;
+    public static final int VIEW_TYPE_MESSAGE_FOOTER = 3;
+    public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 4;
+    public static final int VIEW_TYPE_AD_HEADER = 5;
+    public static final int VIEW_TYPE_AD_SENDER_HEADER = 6;
+    public static final int VIEW_TYPE_AD_FOOTER = 7;
+    public static final int VIEW_TYPE_COUNT = 8;
 
     private final BidiFormatter mBidiFormatter;
 
@@ -96,7 +116,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
-        public int getType() {
+        public @ConversationViewType int getType() {
             return VIEW_TYPE_CONVERSATION_HEADER;
         }
 
@@ -130,6 +150,45 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         public ConversationViewAdapter getAdapter() {
             return ConversationViewAdapter.this;
+        }
+    }
+
+    public class ConversationFooterItem extends ConversationOverlayItem {
+        private MessageHeaderItem mLastMessageHeaderItem;
+
+        public ConversationFooterItem(MessageHeaderItem lastMessageHeaderItem) {
+            setLastMessageHeaderItem(lastMessageHeaderItem);
+        }
+
+        @Override
+        public @ConversationViewType int getType() {
+            return VIEW_TYPE_CONVERSATION_FOOTER;
+        }
+
+        @Override
+        public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
+            final ConversationFooterView view = (ConversationFooterView)
+                    inflater.inflate(R.layout.conversation_footer, parent, false);
+            view.setAccountController(mAccountController);
+            return view;
+        }
+
+        @Override
+        public void bindView(View v, boolean measureOnly) {
+            ((ConversationFooterView) v).bind(this);
+        }
+
+        @Override
+        public boolean isContiguous() {
+            return true;
+        }
+
+        public MessageHeaderItem getLastMessageHeaderItem() {
+            return mLastMessageHeaderItem;
+        }
+
+        public void setLastMessageHeaderItem(MessageHeaderItem lastMessageHeaderItem) {
+            mLastMessageHeaderItem = lastMessageHeaderItem;
         }
     }
 
@@ -168,7 +227,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
-        public int getType() {
+        public @ConversationViewType int getType() {
             return VIEW_TYPE_MESSAGE_HEADER;
         }
 
@@ -291,7 +350,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
-        public int getType() {
+        public @ConversationViewType int getType() {
             return VIEW_TYPE_MESSAGE_FOOTER;
         }
 
@@ -370,7 +429,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
-        public int getType() {
+        public @ConversationViewType int getType() {
             return VIEW_TYPE_SUPER_COLLAPSED_BLOCK;
         }
 
@@ -450,7 +509,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public @ConversationViewType int getItemViewType(int position) {
         return mItems.get(position).getType();
     }
 
@@ -512,6 +571,10 @@ public class ConversationViewAdapter extends BaseAdapter {
         return addItem(new ConversationHeaderItem(conv));
     }
 
+    public int addConversationFooter(MessageHeaderItem headerItem) {
+        return addItem(new ConversationFooterItem(headerItem));
+    }
+
     public int addMessageHeader(ConversationMessage msg, boolean expanded, boolean showImages) {
         return addItem(new MessageHeaderItem(this, mDateBuilder, msg, expanded, showImages));
     }
@@ -560,6 +623,24 @@ public class ConversationViewAdapter extends BaseAdapter {
                 affectedPositions.add(i);
             }
         }
+    }
+
+    /**
+     * Remove and return the {@link ConversationFooterItem} from the adapter.
+     */
+    public ConversationFooterItem removeFooterItem() {
+        final int count = mItems.size();
+        if (count < 4) {
+            LogUtils.wtf(LOG_TAG, "not enough items in the adapter. count: %s", count);
+            return null;
+        }
+        final ConversationFooterItem item = (ConversationFooterItem) mItems.remove(count - 1);
+        if (item == null) {
+            LogUtils.wtf(LOG_TAG, "removed wrong overlay item: %s", item);
+            return null;
+        }
+
+        return item;
     }
 
     public BidiFormatter getBidiFormatter() {

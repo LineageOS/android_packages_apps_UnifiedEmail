@@ -54,6 +54,7 @@ import com.android.mail.browse.ConversationContainer.OverlayPosition;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
+import com.android.mail.browse.ConversationViewAdapter.ConversationFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
@@ -363,7 +364,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mProgressController = new ConversationViewProgressController(this, getHandler());
         mProgressController.instantiateProgressIndicators(rootView);
 
-        mWebView = (ConversationWebView) mConversationContainer.findViewById(R.id.webview);
+        mWebView = (ConversationWebView)
+                mConversationContainer.findViewById(R.id.conversation_webview);
 
         mWebView.addJavascriptInterface(mJsBridge, "mail");
         // On JB or newer, we use the 'webkitAnimationStart' DOM event to signal load complete
@@ -720,9 +722,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         boolean prevSafeForImages = alwaysShowImages;
 
-        // Store the previous expanded state so that the border between
-        // the previous and current message can be properly initialized.
-        int previousExpandedState = ExpansionState.NONE;
         while (messageCursor.moveToPosition(++pos)) {
             final ConversationMessage msg = messageCursor.getMessage();
 
@@ -771,7 +770,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 // This line puts the from address in the address cache so that
                 // we get the sender image for it if it's in a super-collapsed block.
                 getAddress(msg.getFrom());
-                previousExpandedState = expandedState;
                 continue;
             }
 
@@ -779,10 +777,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             if (collapsedStart >= 0) {
                 if (pos - collapsedStart == 1) {
                     // Special-case for a single collapsed message: no need to super-collapse it.
-                    // Since it is super-collapsed, there is no previous message to be
-                    // collapsed and the border above it is the first border.
-                    renderMessage(prevCollapsedMsg, false /* previousCollapsed */,
-                            false /* expanded */, prevSafeForImages, true /* firstBorder */);
+                    renderMessage(prevCollapsedMsg, false /* expanded */, prevSafeForImages);
                 } else {
                     renderSuperCollapsedBlock(collapsedStart, pos - 1);
                 }
@@ -790,22 +785,32 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 collapsedStart = -1;
             }
 
-            renderMessage(msg, ExpansionState.isCollapsed(previousExpandedState),
-                    ExpansionState.isExpanded(expandedState), safeForImages,
-                    pos == 0 /* firstBorder */);
-
-            previousExpandedState = expandedState;
+            renderMessage(msg, ExpansionState.isExpanded(expandedState), safeForImages);
         }
+
+        final MessageHeaderItem lastHeaderItem = getLastMessageHeaderItem();
+        final int convFooterPos = mAdapter.addConversationFooter(lastHeaderItem);
+        final int convFooterPx = measureOverlayHeight(convFooterPos);
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
         final boolean applyTransforms = shouldApplyTransforms();
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
-        return mTemplates.endConversation(mBaseUri, mConversation.getBaseUri(mBaseUri),
+        return mTemplates.endConversation(convFooterPx, mBaseUri,
+                mConversation.getBaseUri(mBaseUri),
                 mWebView.getViewportWidth(), mWebView.getWidthInDp(mSideMarginPx),
                 enableContentReadySignal, isOverviewMode(mAccount), applyTransforms,
                 applyTransforms);
+    }
+
+    private MessageHeaderItem getLastMessageHeaderItem() {
+        final int count = mAdapter.getCount();
+        if (count < 3) {
+            LogUtils.wtf(LOG_TAG, "not enough items in the adapter. count: %s", count);
+            return null;
+        }
+        return (MessageHeaderItem) mAdapter.getItem(count - 2);
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
@@ -814,13 +819,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mTemplates.appendSuperCollapsedHtml(start, mWebView.screenPxToWebPx(blockPx));
     }
 
-    private void renderMessage(ConversationMessage msg, boolean previousCollapsed,
-            boolean expanded, boolean safeForImages, boolean firstBorder) {
-        renderMessage(msg, previousCollapsed, expanded, safeForImages);
-    }
-
-    private void renderMessage(ConversationMessage msg, boolean previousCollapsed,
-            boolean expanded, boolean safeForImages) {
+    private void renderMessage(ConversationMessage msg, boolean expanded, boolean safeForImages) {
 
         final int headerPos = mAdapter.addMessageHeader(msg, expanded,
                 mViewState.getShouldShowImages(msg));
@@ -1498,17 +1497,21 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private void processNewOutgoingMessage(ConversationMessage msg) {
+        // Temporarily remove the ConversationFooterItem and its view.
+        // It will get re-added right after the new message is added.
+        final ConversationFooterItem footerItem = mAdapter.removeFooterItem();
+        mConversationContainer.removeViewAtAdapterIndex(footerItem.getPosition());
         mTemplates.reset();
         // this method will add some items to mAdapter, but we deliberately want to avoid notifying
         // adapter listeners (i.e. ConversationContainer) until onWebContentGeometryChange is next
         // called, to prevent N+1 headers rendering with N message bodies.
-
-        // We can just call previousCollapsed false here since the border
-        // above the message we're about to render should always show
-        // (which it also will since the message being render is expanded).
-        renderMessage(msg, false /* previousCollapsed */, true /* expanded */,
-                msg.alwaysShowImages);
+        renderMessage(msg, true /* expanded */, msg.alwaysShowImages);
         mTempBodiesHtml = mTemplates.emit();
+
+        if (footerItem != null) {
+            footerItem.setLastMessageHeaderItem(getLastMessageHeaderItem());
+            mAdapter.addItem(footerItem);
+        }
 
         mViewState.setExpansionState(msg, ExpansionState.EXPANDED);
         // FIXME: should the provider set this as initial state?
