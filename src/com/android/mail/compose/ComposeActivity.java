@@ -50,6 +50,7 @@ import android.provider.BaseColumns;
 import android.support.v4.app.RemoteInput;
 import android.text.Editable;
 import android.text.Html;
+import android.text.SpanWatcher;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -3135,7 +3136,22 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static SpannableString removeComposingSpans(Spanned body) {
         final SpannableString messageBody = new SpannableString(body);
         BaseInputConnection.removeComposingSpans(messageBody);
+
+        // Remove watcher spans while we're at it, so any off-UI thread manipulation of these
+        // spans doesn't trigger unexpected side-effects. This copy is essentially 100% detached
+        // from the EditText.
+        //
+        // (must remove SpanWatchers first to avoid triggering them as we remove other spans)
+        removeSpansOfType(messageBody, SpanWatcher.class);
+        removeSpansOfType(messageBody, TextWatcher.class);
+
         return messageBody;
+    }
+
+    private static void removeSpansOfType(SpannableString str, Class<?> cls) {
+        for (Object span : str.getSpans(0, str.length(), cls)) {
+            str.removeSpan(span);
+        }
     }
 
     private static int getDraftType(int mode) {
