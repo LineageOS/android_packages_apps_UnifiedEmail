@@ -70,7 +70,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private int mMode = -1;
     /** Empty placeholder for communicating to the consumer of the drawer observer. */
-    private final DataSetObservable mDrawerObservers = new MailObservable("Drawer");
+    private final DataSetObservable mFolderOrAccountObservers =
+            new MailObservable("FolderOrAccount");
 
     private final AccountController mAccountController = new AccountController() {
         @Override
@@ -109,13 +110,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         }
 
         @Override
-        public void changeAccount(Account account) {
-            // Never gets called, so do nothing here.
-            LogUtils.wtf(LOG_TAG,
-                    "FolderSelectionActivity.changeAccount() called when NOT expected.");
-        }
-
-        @Override
         public void switchToDefaultInboxOrChangeAccount(Account account) {
             // Never gets called, so do nothing here.
             LogUtils.wtf(LOG_TAG,"FolderSelectionActivity.switchToDefaultInboxOrChangeAccount() " +
@@ -123,13 +117,13 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         }
 
         @Override
-        public void registerDrawerClosedObserver(final DataSetObserver observer) {
-            mDrawerObservers.registerObserver(observer);
+        public void registerFolderOrAccountChangedObserver(final DataSetObserver observer) {
+            mFolderOrAccountObservers.registerObserver(observer);
         }
 
         @Override
-        public void unregisterDrawerClosedObserver(final DataSetObserver observer) {
-            mDrawerObservers.unregisterObserver(observer);
+        public void unregisterFolderOrAccountChangedObserver(final DataSetObserver observer) {
+            mFolderOrAccountObservers.unregisterObserver(observer);
         }
 
         /**
@@ -138,7 +132,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         @Override
         public void closeDrawer(final boolean hasNewFolderOrAccount,
                 Account account, Folder folder) {
-            mDrawerObservers.notifyChanged();
+            mFolderOrAccountObservers.notifyChanged();
         }
 
         @Override
