@@ -91,7 +91,10 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String
                 LONG_PRESS_TO_SELECT_TIP_SHOWN = "long-press-to-select-tip-shown";
 
+        /** @deprecated attachment previews have been removed; avoid future key name conflicts */
         public static final String EXPERIMENT_AP_PARALLAX_SPEED_ALTERNATIVE = "ap-parallax-speed";
+
+        /** @deprecated attachment previews have been removed; avoid future key name conflicts */
         public static final String EXPERIMENT_AP_PARALLAX_DIRECTION_ALTERNATIVE
                 = "ap-parallax-direction";
 
@@ -416,30 +419,6 @@ public final class MailPrefs extends VersionedPrefs {
     public boolean getShowSenderImages() {
         final SharedPreferences sharedPreferences = getSharedPreferences();
         return sharedPreferences.getBoolean(PreferenceKeys.SHOW_SENDER_IMAGES, true);
-    }
-
-    public void setParallaxSpeedAlternative(final boolean alternative) {
-        getEditor().putBoolean(PreferenceKeys.EXPERIMENT_AP_PARALLAX_SPEED_ALTERNATIVE, alternative)
-                .apply();
-        notifyBackupPreferenceChanged();
-    }
-
-    public boolean getParallaxSpeedAlternative() {
-        final SharedPreferences sharedPreferences = getSharedPreferences();
-        return sharedPreferences
-                .getBoolean(PreferenceKeys.EXPERIMENT_AP_PARALLAX_SPEED_ALTERNATIVE, false);
-    }
-
-    public void setParallaxDirectionAlternative(final boolean alternative) {
-        getEditor().putBoolean(PreferenceKeys.EXPERIMENT_AP_PARALLAX_DIRECTION_ALTERNATIVE,
-                alternative).apply();
-        notifyBackupPreferenceChanged();
-    }
-
-    public boolean getParallaxDirectionAlternative() {
-        final SharedPreferences sharedPreferences = getSharedPreferences();
-        return sharedPreferences
-                .getBoolean(PreferenceKeys.EXPERIMENT_AP_PARALLAX_DIRECTION_ALTERNATIVE, false);
     }
 
     public int getNumOfDismissesForAutoSyncOff() {

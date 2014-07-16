@@ -880,10 +880,6 @@
         <item name="android:paddingLeft">@dimen/conv_list_star_padding_start</item>
     </style>
 
-    <style name="AttachmentPreviewOverflowStyle">
-        <item name="android:layout_marginRight">@dimen/ap_margin_side</item>
-    </style>
-
     <style name="ConversationListWideStyle">
         <item name="android:layout_marginLeft">@dimen/conv_list_wide_padding_start</item>
         <item name="android:layout_marginRight">@dimen/conv_list_wide_padding_end</item>

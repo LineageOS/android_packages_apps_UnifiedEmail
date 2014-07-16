@@ -39,6 +39,7 @@ public final class Analytics {
 
     public static final int CD_INDEX_SENDER_IMAGES_ENABLED = 3;
 
+    /** @deprecated Attachment Previews entirely removed from Conversation List */
     public static final int CD_INDEX_ATTACHMENT_PREVIEWS_ENABLED = 4;
 
     public static final int CD_INDEX_INBOX_TYPE = 5;

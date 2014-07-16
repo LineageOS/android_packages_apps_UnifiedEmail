@@ -102,21 +102,6 @@
     <dimen name="tile_letter_font_size_small">16dp</dimen>
     <dimen name="tile_divider_width">1dp</dimen>
 
-    <dimen name="attachment_preview_height_tall">124dip</dimen>
-    <dimen name="attachment_preview_height_short">28dip</dimen>
-    <!-- Margin of 8dp with 12dp cancelled out -->
-    <dimen name="attachment_preview_margin_top">-4dip</dimen>
-    <!-- Margin of 8dp with 16dp cancelled out -->
-    <dimen name="attachment_preview_margin_top_spacious">-8dip</dimen>
-    <!-- Margin of 12dp with 10dp cancelled out -->
-    <dimen name="attachment_preview_margin_top_wide">2dip</dimen>
-    <dimen name="attachment_preview_margin_side">16dip</dimen>
-    <dimen name="attachment_preview_margin_bottom">4dp</dimen>
-    <dimen name="attachment_preview_margin_bottom_wide">8dp</dimen>
-
-    <dimen name="ap_overflow_count_diameter">20dp</dimen>
-    <dimen name="ap_margin_side">4dp</dimen>
-
     <dimen name="folder_minimum_width">48dip</dimen>
 
     <dimen name="dismiss_button_padding_start">20dip</dimen>

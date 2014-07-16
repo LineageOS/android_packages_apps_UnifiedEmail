@@ -190,13 +190,4 @@
 
     </LinearLayout>
 
-    <include layout="@layout/conversation_attachment_previews"/>
-
-    <View
-        android:id="@+id/attachment_previews_bottom_margin"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/attachment_preview_margin_bottom"
-        android:layout_marginBottom="12dp"
-        android:visibility="gone" />
-
 </LinearLayout>

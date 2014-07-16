@@ -111,17 +111,6 @@
     <!-- Number of menu items to hide from the ActionBar by subtracting from actionbar_max_items in non-cab mode -->
     <integer name="actionbar_hidden_non_cab_items_no_physical_button">1</integer>
 
-    <!-- Duration of progress bar animation for attachment previews -->
-    <integer name="ap_progress_animation_duration">4000</integer>
-    <!-- Duration of fade in/out animation for attachment previews -->
-    <integer name="ap_fade_animation_duration">500</integer>
-    <!-- Duration of placeholder pulse animation for attachment previews -->
-    <integer name="ap_placeholder_animation_duration">1000</integer>
-    <!-- Delay before showing progress bar animations for attachment previews that are loading -->
-    <integer name="ap_progress_animation_delay">2000</integer>
-    <!-- Max overflow count to show for attachment previews -->
-    <integer name="ap_overflow_max_count">99</integer>
-
     <!-- Duration of the animations for entering/exiting CAB mode -->
     <integer name="conv_item_view_cab_anim_duration">250</integer>
 
