@@ -22,7 +22,7 @@
     android:visibility="visible"
     android:orientation="vertical">
 
-    <View android:id="@+id/top_border"
+    <View android:id="@+id/message_header_border"
           android:layout_width="match_parent"
           android:layout_height="1dp"
           android:background="@color/conversation_view_border_color"/>

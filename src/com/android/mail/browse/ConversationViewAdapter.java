@@ -643,6 +643,18 @@ public class ConversationViewAdapter extends BaseAdapter {
         return item;
     }
 
+    /**
+     * Returns true if the item before this one is of type
+     * {@link #VIEW_TYPE_SUPER_COLLAPSED_BLOCK}.
+     */
+    public boolean isPreviousItemSuperCollapsed(ConversationOverlayItem item) {
+        // super-collapsed will be the item just before the header
+        final int position = item.getPosition() - 1;
+        final int count = mItems.size();
+        return !(position < 0 || position >= count)
+                && mItems.get(position).getType() == VIEW_TYPE_SUPER_COLLAPSED_BLOCK;
+    }
+
     public BidiFormatter getBidiFormatter() {
         return mBidiFormatter;
     }
