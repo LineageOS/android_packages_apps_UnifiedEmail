@@ -538,6 +538,10 @@
     <string name="cancel">Cancel</string>
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
     <string name="clear">Clear</string>
+    <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
+    <string name="next">Next</string>
+    <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
+    <string name="previous">Previous</string>
 
     <!-- Sync status errors. Please do not change the order [CHAR LIMIT=100] -->
     <string-array name="sync_status">
