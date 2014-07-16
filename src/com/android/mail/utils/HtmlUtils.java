@@ -78,25 +78,27 @@ public class HtmlUtils {
         protected final SpannableStringBuilder mBuilder = new SpannableStringBuilder();
         private final LinkedList<TagWrapper> mSeenTags = Lists.newLinkedList();
 
-        // [copied verbatim from private version in HtmlTree.java]
-        //
-        // White space characters that are collapsed as a single space.
-        // Note that characters such as the non-breaking whitespace
-        // and full-width spaces are not equivalent to the normal spaces.
-        private static final String HTML_SPACE_EQUIVALENTS = " \n\r\t\f";
+        private final HtmlTree.DefaultPlainTextConverter mTextConverter =
+                new HtmlTree.DefaultPlainTextConverter();
+        private int mTextConverterIndex = 0;
 
         @Override
         public void addNode(HtmlDocument.Node n, int nodeNum, int endNum) {
-            if (n instanceof HtmlDocument.Text) {
-                // If it's just string, let's append it
-                // FIXME: implement proper space/newline/<pre> handling like
-                // HtmlTree.PlainTextPrinter has.
-                final String text = ((HtmlDocument.Text) n).getText();
-                appendNormalText(text);
-            } else if (n instanceof HtmlDocument.Tag) {
+            // Feed it into the plain text converter
+            mTextConverter.addNode(n, nodeNum, endNum);
+            if (n instanceof HtmlDocument.Tag) {
                 handleStart((HtmlDocument.Tag) n);
             } else if (n instanceof HtmlDocument.EndTag) {
                 handleEnd((HtmlDocument.EndTag) n);
+            }
+            appendPlainTextFromConverter();
+        }
+
+        private void appendPlainTextFromConverter() {
+            String textString = mTextConverter.getObject();
+            if (textString.length() > mTextConverterIndex) {
+                mBuilder.append(textString.substring(mTextConverterIndex));
+                mTextConverterIndex = textString.length();
             }
         }
 
@@ -104,22 +106,6 @@ public class HtmlUtils {
          * Helper function to handle start tag
          */
         protected void handleStart(HtmlDocument.Tag tag) {
-            // Special case these tags since they only affect the number of newlines
-            HTML.Element element = tag.getElement();
-            if (HTML4.BR_ELEMENT.equals(element)) {
-                mBuilder.append("\n");
-            } else if (HTML4.P_ELEMENT.equals(element)) {
-                if (mBuilder.length() > 0) {
-                    // Paragraphs must have 2 new lines before itself (to "fake" margin)
-                    appendTwoNewLinesIfApplicable();
-                }
-            } else if (HTML4.DIV_ELEMENT.equals(element)) {
-                if (mBuilder.length() > 0) {
-                    // div should be on a newline
-                    appendOneNewLineIfApplicable();
-                }
-            }
-
             if (!tag.isSelfTerminating()) {
                 // Add to the stack of tags needing closing tag
                 mSeenTags.push(new TagWrapper(tag, mBuilder.length()));
@@ -140,7 +126,7 @@ public class HtmlUtils {
                 return;
             }
 
-            final Object marker;
+            Object marker = null;
             if (HTML4.B_ELEMENT.equals(element)) {
                 // BOLD
                 marker = new StyleSpan(Typeface.BOLD);
@@ -165,26 +151,11 @@ public class HtmlUtils {
                 // FONT SIZE/COLOR/FACE, since this can insert more than one span
                 // we special case it and return
                 handleFont(lastSeen);
-                return;
-            } else {
-                // These tags do not add new Spanned into the mBuilder
-                if (HTML4.P_ELEMENT.equals(element)) {
-                    // paragraphs should add 2 newlines after itself.
-                    // TODO (bug): currently always append 2 new lines at end of text because the
-                    // body is wrapped in a <p> tag. We should only append if there are more texts
-                    // after.
-                    appendTwoNewLinesIfApplicable();
-                } else if (HTML4.DIV_ELEMENT.equals(element)) {
-                    // div should add a newline before itself if it's not a newline
-                    appendOneNewLineIfApplicable();
-                }
-
-                return;
             }
 
             final int start = lastSeen.startIndex;
             final int end = mBuilder.length();
-            if (start != end) {
+            if (marker != null && start != end) {
                 mBuilder.setSpan(marker, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
@@ -227,19 +198,6 @@ public class HtmlUtils {
             }
         }
 
-        private void appendOneNewLineIfApplicable() {
-            if (mBuilder.length() == 0 || mBuilder.charAt(mBuilder.length() - 1) != '\n') {
-                mBuilder.append("\n");
-            }
-        }
-
-        private void appendTwoNewLinesIfApplicable() {
-            appendOneNewLineIfApplicable();
-            if (mBuilder.length() <= 1 || mBuilder.charAt(mBuilder.length() - 2) != '\n') {
-                mBuilder.append("\n");
-            }
-        }
-
         @Override
         public int getPlainTextLength() {
             return mBuilder.length();
@@ -248,22 +206,6 @@ public class HtmlUtils {
         @Override
         public Spanned getObject() {
             return mBuilder;
-        }
-
-        protected void appendNormalText(String text) {
-            // adapted from HtmlTree.PlainTextPrinter#appendNormalText(String)
-
-            if (text.length() == 0) {
-                return;
-            }
-
-            // Strip beginning and ending whitespace.
-            text = CharMatcher.anyOf(HTML_SPACE_EQUIVALENTS).trimFrom(text);
-
-            // Collapse whitespace within the text.
-            text = CharMatcher.anyOf(HTML_SPACE_EQUIVALENTS).collapseFrom(text, ' ');
-
-            mBuilder.append(text);
         }
 
         private static class TagWrapper {
