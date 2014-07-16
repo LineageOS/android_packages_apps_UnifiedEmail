@@ -412,6 +412,11 @@ public abstract class AbstractActivityController implements ActivityController,
     private static final int LOADER_CONVERSATION_LIST = 4;
 
     /**
+     * The loader that determines whether the Warm welcome tour should be displayed for the user.
+     */
+    public static final int LOADER_WELCOME_TOUR = 5;
+
+    /**
      * Guaranteed to be the last loader ID used by the activity. Loaders are owned by Activity or
      * fragments, and within an activity, loader IDs need to be unique. A hack to ensure that the
      * {@link FolderWatcher} can create its folder loaders without clashing with the IDs of those
