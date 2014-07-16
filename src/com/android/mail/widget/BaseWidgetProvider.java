@@ -245,12 +245,14 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
                             mContext.getContentResolver().query(folderUri,
                                     UIProvider.FOLDERS_PROJECTION, null, null, null);
 
-                    try {
-                        if (folderCursor.moveToFirst()) {
-                            folder = new Folder(folderCursor);
+                    if (folderCursor != null) {
+                        try {
+                            if (folderCursor.moveToFirst()) {
+                                folder = new Folder(folderCursor);
+                            }
+                        } finally {
+                            folderCursor.close();
                         }
-                    } finally {
-                        folderCursor.close();
                     }
                 }
 
