@@ -23,7 +23,6 @@ import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -253,6 +252,8 @@ public class Utils {
     private static int sMaxUnreadCount = -1;
     private static final CharacterStyle ACTION_BAR_UNREAD_STYLE = new StyleSpan(Typeface.BOLD);
     private static String sUnreadText;
+    private static String sUnseenText;
+    private static String sLargeUnseenText;
     private static int sDefaultFolderBackgroundColor = -1;
     private static int sUseFolderListFragmentTransition = -1;
 
@@ -376,7 +377,7 @@ public class Utils {
             if (sUnreadText == null) {
                 sUnreadText = resources.getString(R.string.widget_large_unread_count);
             }
-            // Localize "999+" according to the device language
+            // Localize "99+" according to the device language
             unreadCountString = String.format(sUnreadText, sMaxUnreadCount);
         } else if (unreadCount <= 0) {
             unreadCountString = "";
@@ -385,6 +386,33 @@ public class Utils {
             unreadCountString = String.format("%d", unreadCount);
         }
         return unreadCountString;
+    }
+
+    /**
+     * Get the correct display string for the unseen count of a folder.
+     */
+    public static String getUnseenCountString(Context context, int unseenCount) {
+        final String unseenCountString;
+        final Resources resources = context.getResources();
+        if (sMaxUnreadCount == -1) {
+            sMaxUnreadCount = resources.getInteger(R.integer.maxUnreadCount);
+        }
+        if (unseenCount > sMaxUnreadCount) {
+            if (sLargeUnseenText == null) {
+                sLargeUnseenText = resources.getString(R.string.large_unseen_count);
+            }
+            // Localize "99+" according to the device language
+            unseenCountString = String.format(sLargeUnseenText, sMaxUnreadCount);
+        } else if (unseenCount <= 0) {
+            unseenCountString = "";
+        } else {
+            if (sUnseenText == null) {
+                sUnseenText = resources.getString(R.string.unseen_count);
+            }
+            // Localize unseen count according to the device language
+            unseenCountString = String.format(sUnseenText, unseenCount);
+        }
+        return unseenCountString;
     }
 
     /**

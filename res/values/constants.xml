@@ -37,7 +37,7 @@
     <integer name="conversation_list_weight">1</integer>
     <integer name="conversation_view_weight">1</integer>
     <!-- Max unread count to show for a folder -->
-    <integer name="maxUnreadCount">999</integer>
+    <integer name="maxUnreadCount">99</integer>
     <integer name="swipeScrollSlop">2</integer>
     <integer name="leaveBehindSwipeScrollSlop">25</integer>
     <integer name="widget_refresh_delay_ms">4000</integer>
