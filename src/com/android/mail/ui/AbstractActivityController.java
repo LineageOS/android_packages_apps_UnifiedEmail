@@ -339,9 +339,31 @@ public abstract class AbstractActivityController implements ActivityController,
      * {@link #LOADER_ACCOUNT_CURSOR}. The current account is guaranteed to be in the list,
      * and would avoid two updates when a single setting on the current account changes.
      */
-    private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
+    private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 1;
+
+    // Loader constants: Conversations
+
+    /** The conversation cursor over the current conversation list. This loader provides
+     * a cursor over conversation entries from a folder to display a conversation
+     * list.
+     * This loader is started when the user switches folders (in {@link #updateFolder(Folder)},
+     * or when the controller is told that a folder/account change is imminent
+     * (in {@link #preloadConvList(Account, Folder)}. The loader is maintained for the life of
+     * the current folder. When the user switches folders, the old loader is destroyed and a new
+     * one is created.
+     *
+     * When the conversation list changes, we notify {@link #mConversationListObservable}.
+     */
+    private static final int LOADER_CONVERSATION_LIST = 10;
+
+    // Loader constants: misc
+    /**
+     * The loader that determines whether the Warm welcome tour should be displayed for the user.
+     */
+    public static final int LOADER_WELCOME_TOUR = 20;
 
     // Loader constants: Folders
+
     /** The current folder. This loader watches for updates to the current folder in a manner
      * analogous to the {@link #LOADER_ACCOUNT_UPDATE_CURSOR}. Updates to the current folder
      * might be due to server-side changes (unread count), or local changes (sync window or sync
@@ -351,7 +373,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * loader returns, the current folder is updated and consumers, if any, are notified.
      * When the current folder changes, we notify {@link #mFolderObservable}
      */
-    private static final int LOADER_FOLDER_CURSOR = 2;
+    private static final int LOADER_FOLDER_CURSOR = 30;
+
     /**
      * The list of recent folders. Recent folders are shown in the DrawerFragment. The recent
      * folders are tied to the current account being viewed. When the account is changed,
@@ -364,7 +387,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * Recent folders are needed for the life of the current account.
      * When the recent folders change, we notify {@link #mRecentFolderObservers}.
      */
-    private static final int LOADER_RECENT_FOLDERS = 3;
+    private static final int LOADER_RECENT_FOLDERS = 31;
     /**
      * The primary inbox for the current account. The mechanism to load the default inbox for the
      * current account is (sadly) different from loading other folders. The method
@@ -374,7 +397,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * over the current folder.
      * When we have a valid cursor, we destroy this loader, This convoluted flow is historical.
      */
-    private static final int LOADER_ACCOUNT_INBOX = 5;
+    private static final int LOADER_ACCOUNT_INBOX = 32;
+
     /**
      * The fake folder of search results for a term. When we search for a term,
      * a new activity is created with {@link Intent#ACTION_SEARCH}. For this new activity,
@@ -382,7 +406,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * We destroy the loader when we obtain a valid cursor since subsequent searches will create
      * a new activity.
      */
-    private static final int LOADER_SEARCH = 6;
+    private static final int LOADER_SEARCH = 33;
     /**
      * The initial folder at app start. When the application is launched from an intent that
      * specifies the initial folder (notifications/widgets/shortcuts),
@@ -395,26 +419,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * or tapping on a specific conversation in the widget. In these cases, the conversation is
      * saved in {@link #mConversationToShow} and is retrieved when the loader returns.
      */
-    public static final int LOADER_FIRST_FOLDER = 8;
-
-    // Loader constants: Conversations
-    /** The conversation cursor over the current conversation list. This loader provides
-     * a cursor over conversation entries from a folder to display a conversation
-     * list.
-     * This loader is started when the user switches folders (in {@link #updateFolder(Folder)},
-     * or when the controller is told that a folder/account change is imminent
-     * (in {@link #preloadConvList(Account, Folder)}. The loader is maintained for the life of
-     * the current folder. When the user switches folders, the old loader is destroyed and a new
-     * one is created.
-     *
-     * When the conversation list changes, we notify {@link #mConversationListObservable}.
-     */
-    private static final int LOADER_CONVERSATION_LIST = 4;
-
-    /**
-     * The loader that determines whether the Warm welcome tour should be displayed for the user.
-     */
-    public static final int LOADER_WELCOME_TOUR = 5;
+    public static final int LOADER_FIRST_FOLDER = 34;
 
     /**
      * Guaranteed to be the last loader ID used by the activity. Loaders are owned by Activity or
@@ -425,7 +430,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * loaders, consider consolidating the loaders in a central location: a UI-less fragment
      * perhaps.
      */
-    public static final int LAST_LOADER_ID = 100;
+    public static final int LAST_LOADER_ID = 35;
+
     /**
      * Guaranteed to be the last loader ID used by the Fragment. Loaders are owned by Activity or
      * fragments, and within an activity, loader IDs need to be unique. Currently,
