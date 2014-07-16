@@ -27,7 +27,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.PreferenceScreen;
 import android.provider.SearchRecentSuggestions;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,10 +37,8 @@ import com.android.mail.preferences.MailPrefs;
 import com.android.mail.preferences.MailPrefs.PreferenceKeys;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
-import com.android.mail.providers.UIProvider.SnapHeaderValue;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.R;
-import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
@@ -52,7 +49,6 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
 
     // Keys used to reference pref widgets which don't map directly to preference entries
     static final String AUTO_ADVANCE_WIDGET = "auto-advance-widget";
-    static final String SNAP_HEADER_MODE_WIDGET = "snap-header-mode-widget";
 
     static final String CALLED_FROM_TEST = "called-from-test";
 
@@ -68,12 +64,6 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
             AutoAdvance.NEWER,
             AutoAdvance.OLDER,
             AutoAdvance.LIST
-    };
-    private ListPreference mSnapHeader;
-    private static final int[] SNAP_HEADER_VALUES = {
-            SnapHeaderValue.ALWAYS,
-            SnapHeaderValue.PORTRAIT_ONLY,
-            SnapHeaderValue.NEVER
     };
 
     @Override
@@ -92,16 +82,7 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
 
         addPreferencesFromResource(R.xml.general_preferences);
 
-        // Disabling snap headers is just for phones and unit tests
-        final Bundle args = getArguments();
-        final boolean calledFromTest = args != null && args.getBoolean(CALLED_FROM_TEST, false);
-        if (!calledFromTest && Utils.useTabletUI(getActivity().getResources())) {
-            final PreferenceScreen ps = getPreferenceScreen();
-            ps.removePreference(findPreference(SNAP_HEADER_MODE_WIDGET));
-        }
-
         mAutoAdvance = (ListPreference) findPreference(AUTO_ADVANCE_WIDGET);
-        mSnapHeader = (ListPreference) findPreference(SNAP_HEADER_MODE_WIDGET);
     }
 
     @Override
@@ -146,10 +127,6 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
             final int prefsAutoAdvanceMode =
                     AUTO_ADVANCE_VALUES[mAutoAdvance.findIndexOfValue((String) newValue)];
             mMailPrefs.setAutoAdvanceMode(prefsAutoAdvanceMode);
-        } else if (SNAP_HEADER_MODE_WIDGET.equals(key)) {
-            final int prefsSnapHeaderMode =
-                    SNAP_HEADER_VALUES[mSnapHeader.findIndexOfValue((String) newValue)];
-            mMailPrefs.setSnapHeaderMode(prefsSnapHeaderMode);
         } else if (!PreferenceKeys.CONVERSATION_LIST_SWIPE.equals(key) &&
                 !PreferenceKeys.SHOW_SENDER_IMAGES.equals(key) &&
                 !PreferenceKeys.DEFAULT_REPLY_ALL.equals(key) &&
@@ -227,12 +204,6 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
                 mMailPrefs.getAutoAdvanceMode(), AutoAdvance.DEFAULT);
         mAutoAdvance.setValueIndex(autoAdvanceModeIndex);
 
-        if (mSnapHeader != null) {
-            final int snapHeaderModeIndex = prefValueToWidgetIndex(SNAP_HEADER_VALUES,
-                    mMailPrefs.getSnapHeaderMode(), mMailPrefs.getSnapHeaderDefault());
-            mSnapHeader.setValueIndex(snapHeaderModeIndex);
-        }
-
         final String removalAction = mMailPrefs.getRemovalAction(supportsArchive());
         updateListSwipeTitle(removalAction);
 
@@ -243,7 +214,6 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
                 PreferenceKeys.DEFAULT_REPLY_ALL,
                 PreferenceKeys.CONVERSATION_OVERVIEW_MODE,
                 AUTO_ADVANCE_WIDGET,
-                SNAP_HEADER_MODE_WIDGET,
                 PreferenceKeys.CONFIRM_DELETE,
                 PreferenceKeys.CONFIRM_ARCHIVE,
                 PreferenceKeys.CONFIRM_SEND

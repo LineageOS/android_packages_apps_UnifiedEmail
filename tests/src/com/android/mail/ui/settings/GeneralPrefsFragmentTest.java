@@ -28,7 +28,6 @@ import android.test.suitebuilder.annotation.MediumTest;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
-import com.android.mail.providers.UIProvider.SnapHeaderValue;
 
 public class GeneralPrefsFragmentTest
         extends ActivityInstrumentationTestCase2<MailPreferenceActivity> {
@@ -76,22 +75,6 @@ public class GeneralPrefsFragmentTest
 
         fragment.onPreferenceChange(autoAdvancePref, UIProvider.AUTO_ADVANCE_MODE_NEWER);
         assertEquals(mailPrefs.getAutoAdvanceMode(), AutoAdvance.NEWER);
-    }
-
-    @UiThreadTest
-    @MediumTest
-    public void testChangeSnapHeader() throws Throwable {
-        final MailPreferenceActivity activity = getActivity();
-        final GeneralPrefsFragment fragment = activity.getGeneralPrefsFragment();
-        final MailPrefs mailPrefs = fragment.mMailPrefs;
-        final ListPreference snapPref = (ListPreference) fragment
-                .findPreference(GeneralPrefsFragment.SNAP_HEADER_MODE_WIDGET);
-
-        fragment.onPreferenceChange(snapPref, "never");
-        assertEquals(mailPrefs.getSnapHeaderMode(), SnapHeaderValue.NEVER);
-
-        fragment.onPreferenceChange(snapPref, "always");
-        assertEquals(mailPrefs.getSnapHeaderMode(), SnapHeaderValue.ALWAYS);
     }
 
 }
