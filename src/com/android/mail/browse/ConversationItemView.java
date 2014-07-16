@@ -152,6 +152,7 @@ public class ConversationItemView extends View
     private static int sCabAnimationDuration;
     private static int sBadgePaddingExtraWidth;
     private static int sBadgeRoundedCornerRadius;
+    private static int sFolderRoundedCornerRadius;
 
     // Static paints.
     private static final TextPaint sPaint = new TextPaint();
@@ -322,7 +323,7 @@ public class ConversationItemView extends View
             // Extra credit: maybe cache results across items as long as font size doesn't change.
 
             final int totalWidth = measureFolders(availableSpace, cellSize);
-            int xLeft = (isRtl) ? 0 : right - Math.min(availableSpace, totalWidth);
+            int xLeft = (isRtl) ? left : right - Math.min(availableSpace, totalWidth);
             final boolean overflow = totalWidth > availableSpace;
 
             // Second pass to draw folders.
@@ -355,8 +356,9 @@ public class ConversationItemView extends View
                 // Draw the box.
                 sFoldersPaint.setColor(bgColor);
                 sFoldersPaint.setStyle(Paint.Style.FILL);
-                canvas.drawRect(xLeft, y, xLeft + width - sFoldersStartPadding,
-                        y + height, sFoldersPaint);
+                canvas.drawRoundRect(xLeft, y, xLeft + width - sFoldersStartPadding,
+                        y + height, sFolderRoundedCornerRadius, sFolderRoundedCornerRadius,
+                        sFoldersPaint);
 
                 // Draw the text.
                 final int padding = cellSize / 2;
@@ -490,6 +492,8 @@ public class ConversationItemView extends View
             sBadgePaddingExtraWidth = res.getDimensionPixelSize(R.dimen.badge_padding_extra_width);
             sBadgeRoundedCornerRadius =
                     res.getDimensionPixelSize(R.dimen.badge_rounded_corner_radius);
+            sFolderRoundedCornerRadius =
+                    res.getDimensionPixelOffset(R.dimen.folder_rounded_corner_radius);
         }
     }
 
@@ -1105,7 +1109,13 @@ public class ConversationItemView extends View
                     displayedStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        final int snippetWidth = mCoordinates.snippetWidth;
+        // measure the width of the folders which overlap the snippet view
+        final int availableFolderSpace = mCoordinates.foldersRight - mCoordinates.foldersLeft;
+        final int folderWidth = mHeader.folderDisplayer.measureFolders(availableFolderSpace,
+                mCoordinates.getFolderCellWidth());
+
+        // size the snippet view by subtracting the folder width from the maximum snippet width
+        final int snippetWidth = mCoordinates.maxSnippetWidth - folderWidth;
         final int snippetHeight = mCoordinates.snippetHeight;
         mSnippetTextView.setLayoutParams(new ViewGroup.LayoutParams(snippetWidth, snippetHeight));
         mSnippetTextView.setMaxLines(mCoordinates.snippetLineCount);
@@ -1147,14 +1157,6 @@ public class ConversationItemView extends View
         // For activated elements in tablet in conversation mode, we show an activated color, since
         // the background is dark blue for activated versus gray for non-activated.
         return mTabletDevice && !mListCollapsible;
-    }
-
-    private boolean canFitFragment(int width, int line, int fixedWidth) {
-        if (line == mCoordinates.sendersLineCount) {
-            return width + fixedWidth <= mSendersWidth;
-        } else {
-            return width <= mSendersWidth;
-        }
     }
 
     private void calculateCoordinates() {
@@ -1557,7 +1559,12 @@ public class ConversationItemView extends View
     }
 
     private void drawSnippet(Canvas canvas) {
-        canvas.translate(mCoordinates.snippetX, mCoordinates.snippetY);
+        // if folders exist, their width will be the max width - actual width
+        final int folderWidth = mCoordinates.maxSnippetWidth - mSnippetTextView.getWidth();
+
+        // in RTL layouts we move the snippet to the right so it doesn't overlap the folders
+        final int x = mCoordinates.snippetX + (ViewUtils.isViewRtl(this) ? folderWidth : 0);
+        canvas.translate(x, mCoordinates.snippetY);
         mSnippetTextView.draw(canvas);
     }
 
