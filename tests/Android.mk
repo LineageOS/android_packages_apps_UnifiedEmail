@@ -25,7 +25,7 @@ LOCAL_MODULE_TAGS := tests
 
 # LOCAL_JAVA_LIBRARIES := android.test.runner
 
-LOCAL_SDK_VERSION := 14
+LOCAL_SDK_VERSION := current
 LOCAL_PACKAGE_NAME := UnifiedEmailTests
 LOCAL_INSTRUMENTATION_FOR := UnifiedEmail
 

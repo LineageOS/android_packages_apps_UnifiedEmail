@@ -31,6 +31,10 @@ public class PreferenceMigratorHolder {
     }
 
     public static BasePreferenceMigrator createPreferenceMigrator() {
-        return sCreator.createPreferenceMigrator();
+        if (sCreator != null) {
+            return sCreator.createPreferenceMigrator();
+        } else {
+            return null;
+        }
     }
 }
