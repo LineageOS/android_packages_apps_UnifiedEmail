@@ -19,7 +19,7 @@ chips_dir := ../../../frameworks/opt/chips/res
 
 #Include res dir from photoviewer
 photo_dir := ../../../frameworks/opt/photoviewer/res ../../../frameworks/opt/photoviewer/activity/res
-gridlayout_dir := ../../../frameworks/support/v7/gridlayout/res
+gridlayout_dir := ../../../prebuilts/sdk/current/support/v7/gridlayout/res
 bitmap_dir := ../../../frameworks/opt/bitmap/res
 datetimepicker_dir := ../../../frameworks/opt/datetimepicker/res
 res_dirs := res $(chips_dir) $(photo_dir) $(gridlayout_dir) $(bitmap_dir) $(datetimepicker_dir)
