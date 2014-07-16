@@ -62,8 +62,8 @@
     <dimen name="super_collapsed_height">30sp</dimen>
     <dimen name="super_collapsed_text_size">14sp</dimen>
     <dimen name="notification_view_height">36dip</dimen>
-    <dimen name="message_header_contact_photo_width">40dp</dimen>
-    <dimen name="message_header_contact_photo_height">40dp</dimen>
+    <dimen name="contact_image_width">40dp</dimen>
+    <dimen name="contact_image_height">40dp</dimen>
     <dimen name="message_header_contact_photo_margin">16dp</dimen>
     <dimen name="message_header_inner_side_padding">16dp</dimen>
     <dimen name="attachment_toast_yoffset">-100dip</dimen>
@@ -100,7 +100,6 @@
     <dimen name="tile_divider_width">1dp</dimen>
 
     <dimen name="attachment_preview_height_tall">124dip</dimen>
-    <dimen name="attachment_preview_height_tall_wide">168dip</dimen>
     <dimen name="attachment_preview_height_short">28dip</dimen>
     <!-- Margin of 8dp with 12dp cancelled out -->
     <dimen name="attachment_preview_margin_top">-4dip</dimen>
@@ -156,6 +155,7 @@
     <dimen name="compose_recipient_heading_margin_end">4dip</dimen>
 
     <dimen name="widget_senders_padding_end">16dip</dimen>
+    <dimen name="widget_attachment_padding_end">8dp</dimen>
 
     <dimen name="search_results_padding">8dip</dimen>
 
@@ -163,14 +163,13 @@
     <dimen name="conv_list_padding">16dip</dimen>
     <dimen name="conv_list_card_border_padding">8dip</dimen>
     <dimen name="conv_list_no_border_padding">0dip</dimen>
-    <dimen name="conv_list_contact_image_padding_end">12dip</dimen>
+    <dimen name="conv_list_contact_image_padding_end">16dp</dimen>
     <dimen name="conv_list_reply_state_padding_end">8dip</dimen>
     <dimen name="conv_list_personal_indicator_padding_start">-2dip</dimen>
     <dimen name="conv_list_personal_indicator_padding_end">2dip</dimen>
     <dimen name="conv_list_info_icon_padding_start">4dip</dimen>
     <dimen name="conv_list_date_padding_start">8dip</dimen>
     <dimen name="conv_list_paperclip_padding_start">6dip</dimen>
-    <dimen name="conv_list_star_padding_end">-9dip</dimen>
 
     <dimen name="conv_list_wide_padding_start">20dip</dimen>
     <dimen name="conv_list_wide_padding_end">32dip</dimen>

@@ -38,20 +38,14 @@ import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.utils.FolderUri;
 
 public class WidgetConversationListItemViewBuilder {
-    // Static font sizes
-    private static int DATE_FONT_SIZE;
-    private static int SUBJECT_FONT_SIZE;
-
     // Static colors
-    private static int SUBJECT_TEXT_COLOR_READ;
-    private static int SUBJECT_TEXT_COLOR_UNREAD;
+    private static int SUBJECT_TEXT_COLOR;
+    private static int SNIPPET_TEXT_COLOR;
     private static int DATE_TEXT_COLOR_READ;
     private static int DATE_TEXT_COLOR_UNREAD;
 
     // Static bitmap
     private static Bitmap ATTACHMENT;
-
-    private final Context mContext;
 
     private WidgetFolderDisplayer mFolderDisplayer;
 
@@ -117,16 +111,11 @@ public class WidgetConversationListItemViewBuilder {
      * Get font sizes and bitmaps from Resources
      */
     public WidgetConversationListItemViewBuilder(Context context) {
-        mContext = context;
-        Resources res = context.getResources();
-
-        // Initialize font sizes
-        DATE_FONT_SIZE = res.getDimensionPixelSize(R.dimen.widget_date_font_size);
-        SUBJECT_FONT_SIZE = res.getDimensionPixelSize(R.dimen.widget_subject_font_size);
+        final Resources res = context.getResources();
 
         // Initialize colors
-        SUBJECT_TEXT_COLOR_READ = res.getColor(R.color.subject_text_color_read);
-        SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
+        SUBJECT_TEXT_COLOR = res.getColor(R.color.subject_text_color);
+        SNIPPET_TEXT_COLOR = res.getColor(R.color.snippet_text_color);
         DATE_TEXT_COLOR_READ = res.getColor(R.color.date_text_color_read);
         DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
 
@@ -151,34 +140,39 @@ public class WidgetConversationListItemViewBuilder {
     /*
      * Return the full View
      */
-    public RemoteViews getStyledView(final CharSequence date, final Conversation conversation,
-            final FolderUri folderUri, final int ignoreFolderType,
+    public RemoteViews getStyledView(final Context context, final CharSequence date,
+            final Conversation conversation, final FolderUri folderUri, final int ignoreFolderType,
             final SpannableStringBuilder senders, final String subject) {
 
         final boolean isUnread = !conversation.read;
         final String snippet = conversation.getSnippet();
         final boolean hasAttachments = conversation.hasAttachments;
+        final Resources res = context.getResources();
+        final int dateFontSize = res.getDimensionPixelSize(R.dimen.widget_date_font_size);
+        final int subjectFontSize = res.getDimensionPixelSize(R.dimen.widget_subject_font_size);
 
         // Add style to date
         final int dateColor = isUnread ? DATE_TEXT_COLOR_UNREAD : DATE_TEXT_COLOR_READ;
-        final CharSequence styledDate = addStyle(date, DATE_FONT_SIZE, dateColor);
+        final CharSequence styledDate = addStyle(date, dateFontSize, dateColor);
 
         // Add style to subject
-        final int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
         final BidiFormatter bidiFormatter = BidiFormatter.getInstance();
         final String filteredSubject =
                 TextUtils.isEmpty(subject) ? "" : bidiFormatter.unicodeWrap(subject);
-        final SpannableStringBuilder subjectAndSnippet = new SpannableStringBuilder(
-                Conversation.getSubjectAndSnippetForDisplay(
-                        mContext, null /* badgeText */, filteredSubject,
-                        bidiFormatter.unicodeWrap(snippet)));
+        final SpannableStringBuilder subjectBuilder = new SpannableStringBuilder(
+                Conversation.getSubjectForDisplay(context, null /* badgeText */, filteredSubject));
         if (isUnread) {
-            subjectAndSnippet.setSpan(new StyleSpan(Typeface.BOLD), 0, filteredSubject.length(),
+            subjectBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, filteredSubject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        subjectAndSnippet.setSpan(new ForegroundColorSpan(subjectColor), 0, subjectAndSnippet
-                .length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        final CharSequence styledSubject = addStyle(subjectAndSnippet, SUBJECT_FONT_SIZE, 0);
+        subjectBuilder.setSpan(new ForegroundColorSpan(SUBJECT_TEXT_COLOR), 0,
+                subjectBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        final CharSequence styledSubject = addStyle(subjectBuilder, subjectFontSize, 0);
+
+        final SpannableStringBuilder snippetBuilder = new SpannableStringBuilder(snippet);
+        snippetBuilder.setSpan(new ForegroundColorSpan(SNIPPET_TEXT_COLOR), 0,
+                snippetBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        final CharSequence styledSnippet = addStyle(snippetBuilder, subjectFontSize, 0);
 
         // Paper clip for attachment
         Bitmap paperclipBitmap = null;
@@ -188,10 +182,11 @@ public class WidgetConversationListItemViewBuilder {
 
         // Inflate and fill out the remote view
         final RemoteViews remoteViews = new RemoteViews(
-                mContext.getPackageName(), R.layout.widget_conversation_list_item);
+                context.getPackageName(), R.layout.widget_conversation_list_item);
         remoteViews.setTextViewText(R.id.widget_senders, senders);
         remoteViews.setTextViewText(R.id.widget_date, styledDate);
         remoteViews.setTextViewText(R.id.widget_subject, styledSubject);
+        remoteViews.setTextViewText(R.id.widget_snippet, styledSnippet);
         if (paperclipBitmap != null) {
             remoteViews.setViewVisibility(R.id.widget_attachment, View.VISIBLE);
             remoteViews.setImageViewBitmap(R.id.widget_attachment, paperclipBitmap);
@@ -205,8 +200,8 @@ public class WidgetConversationListItemViewBuilder {
             remoteViews.setViewVisibility(R.id.widget_unread_background, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_read_background, View.VISIBLE);
         }
-        if (mContext.getResources().getBoolean(R.bool.display_folder_colors_in_widget)) {
-            mFolderDisplayer = new WidgetFolderDisplayer(mContext);
+        if (context.getResources().getBoolean(R.bool.display_folder_colors_in_widget)) {
+            mFolderDisplayer = new WidgetFolderDisplayer(context);
             mFolderDisplayer.loadConversationFolders(conversation, folderUri, ignoreFolderType);
             mFolderDisplayer.displayFolders(remoteViews);
         }

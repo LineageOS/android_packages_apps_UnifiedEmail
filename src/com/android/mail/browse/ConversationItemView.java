@@ -39,7 +39,7 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
-import android.support.v4.text.BidiFormatter;
+import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
@@ -102,6 +102,7 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class ConversationItemView extends View
         implements SwipeableItemView, ToggleableItem, InvalidateCallback, OnScrollListener,
@@ -141,8 +142,7 @@ public class ConversationItemView extends View
     private static String sElidedPaddingToken;
 
     // Static colors.
-    private static int sSendersTextColorRead;
-    private static int sSendersTextColorUnread;
+    private static int sSendersTextColor;
     private static int sDateTextColorRead;
     private static int sDateTextColorUnread;
     private static int sStarTouchSlop;
@@ -202,9 +202,9 @@ public class ConversationItemView extends View
     private float mAnimatedHeightFraction = 1.0f;
     private final String mAccount;
     private ControllableActivity mActivity;
-    private final TextView mSubjectTextView;
     private final TextView mSendersTextView;
-    private final TextView mBadgeTextView;
+    private final TextView mSubjectTextView;
+    private final TextView mSnippetTextView;
     private int mGadgetMode;
     private boolean mAttachmentPreviewsEnabled;
     private boolean mParallaxSpeedAlternative;
@@ -215,8 +215,7 @@ public class ConversationItemView extends View
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static TextAppearanceSpan sBadgeTextSpan;
     private static BackgroundColorSpan sBadgeBackgroundSpan;
-    private static ForegroundColorSpan sSnippetTextUnreadSpan;
-    private static ForegroundColorSpan sSnippetTextReadSpan;
+    private static ForegroundColorSpan sSnippetTextSpan;
     private static int sScrollSlop;
     private static CharacterStyle sActivatedTextSpan;
 
@@ -399,15 +398,22 @@ public class ConversationItemView extends View
 
         getItemViewResources(mContext);
 
+        final int layoutDir = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault());
+
         mSendersTextView = new TextView(mContext);
         mSendersTextView.setIncludeFontPadding(false);
 
         mSubjectTextView = new TextView(mContext);
         mSubjectTextView.setEllipsize(TextUtils.TruncateAt.END);
         mSubjectTextView.setIncludeFontPadding(false);
+        ViewCompat.setLayoutDirection(mSubjectTextView, layoutDir);
+        ViewUtils.setTextAlignment(mSubjectTextView, View.TEXT_ALIGNMENT_VIEW_START);
 
-        mBadgeTextView = new TextView(mContext);
-        mBadgeTextView.setIncludeFontPadding(false);
+        mSnippetTextView = new TextView(mContext);
+        mSnippetTextView.setEllipsize(TextUtils.TruncateAt.END);
+        mSnippetTextView.setIncludeFontPadding(false);
+        ViewCompat.setLayoutDirection(mSnippetTextView, layoutDir);
+        ViewUtils.setTextAlignment(mSnippetTextView, View.TEXT_ALIGNMENT_VIEW_START);
 
         mAttachmentsView = new AttachmentGridDrawable(res, PLACEHOLDER, PROGRESS_BAR);
         mAttachmentsView.setCallback(this);
@@ -459,9 +465,8 @@ public class ConversationItemView extends View
 
             // Initialize colors.
             sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(
-                    res.getColor(R.color.senders_text_color_read)));
-            sSendersTextColorRead = res.getColor(R.color.senders_text_color_read);
-            sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
+                    res.getColor(R.color.senders_text_color)));
+            sSendersTextColor = res.getColor(R.color.senders_text_color);
             sSubjectTextUnreadSpan = new TextAppearanceSpan(context,
                     R.style.SubjectAppearanceUnreadStyle);
             sBadgeTextSpan = new TextAppearanceSpan(context, R.style.BadgeTextStyle);
@@ -469,10 +474,7 @@ public class ConversationItemView extends View
                     res.getColor(R.color.badge_background_color));
             sSubjectTextReadSpan = new TextAppearanceSpan(
                     context, R.style.SubjectAppearanceReadStyle);
-            sSnippetTextUnreadSpan =
-                    new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_unread));
-            sSnippetTextReadSpan =
-                    new ForegroundColorSpan(res.getColor(R.color.snippet_text_color_read));
+            sSnippetTextSpan = new ForegroundColorSpan(res.getColor(R.color.snippet_text_color));
             sDateTextColorRead = res.getColor(R.color.date_text_color_read);
             sDateTextColorUnread = res.getColor(R.color.date_text_color_unread);
             sStarTouchSlop = res.getDimensionPixelSize(R.dimen.star_touch_slop);
@@ -777,7 +779,7 @@ public class ConversationItemView extends View
         Utils.traceBeginSection("subject");
         createSubject(mHeader.unread);
 
-        createBadge();
+        createSnippet();
 
         if (!mHeader.isLayoutValid()) {
             setContentDescription();
@@ -1060,17 +1062,10 @@ public class ConversationItemView extends View
     }
 
     private void createSubject(final boolean isUnread) {
-        // Need to check if we're in wide mode because the badge
-        // does not get added if we're in wide mode.
-        final BidiFormatter bidiFormatter = mAdapter.getBidiFormatter();
-        final String badgeText = mCoordinates.isWideMode() || mHeader.badgeText == null ? "" :
-                bidiFormatter.unicodeWrap(mHeader.badgeText);
-        final String subject = bidiFormatter.unicodeWrap(
-                filterTag(getContext(), mHeader.conversation.subject));
-        final String snippet = bidiFormatter.unicodeWrap(mHeader.conversation.getSnippet());
+        final String badgeText = mHeader.badgeText == null ? "" : mHeader.badgeText;
+        final String subject = filterTag(getContext(), mHeader.conversation.subject);
         final Spannable displayedStringBuilder = new SpannableString(
-                Conversation.getSubjectAndSnippetForDisplay(
-                        mContext, badgeText, subject, snippet));
+                Conversation.getSubjectForDisplay(mContext, badgeText, subject));
 
         // since spans affect text metrics, add spans to the string before measure/layout or fancy
         // ellipsizing
@@ -1083,14 +1078,6 @@ public class ConversationItemView extends View
             displayedStringBuilder.setSpan(TextAppearanceSpan.wrap(
                     isUnread ? sSubjectTextUnreadSpan : sSubjectTextReadSpan),
                     badgeTextLength, subjectTextLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        if (!TextUtils.isEmpty(snippet)) {
-            final int startOffset = subjectTextLength;
-            // Start after the end of the subject text; since the subject may be
-            // "" or null, this could start at the 0th character in the subjectText string
-            displayedStringBuilder.setSpan(ForegroundColorSpan.wrap(
-                    isUnread ? sSnippetTextUnreadSpan : sSnippetTextReadSpan), startOffset,
-                    displayedStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (isActivated() && showActivatedText()) {
             displayedStringBuilder.setSpan(sActivatedTextSpan, badgeTextLength,
@@ -1107,23 +1094,25 @@ public class ConversationItemView extends View
         mSubjectTextView.setText(displayedStringBuilder);
     }
 
-    private void createBadge() {
-        // Do not create badge if in wide mode or badge text is empty.
-        final String badgeText = mHeader.badgeText;
-        if (!mCoordinates.isWideMode() || TextUtils.isEmpty(badgeText)) {
-            return;
+    private void createSnippet() {
+        final String snippet = mHeader.conversation.getSnippet();
+        final Spannable displayedStringBuilder = new SpannableString(snippet);
+
+        if (!TextUtils.isEmpty(snippet)) {
+            // Start after the end of the subject text; since the subject may be
+            // "" or null, this could start at the 0th character in the subjectText string
+            displayedStringBuilder.setSpan(ForegroundColorSpan.wrap(sSnippetTextSpan), 0,
+                    displayedStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        final Spannable displayedBadgeString = new SpannableString(badgeText);
-        formatBadgeText(displayedBadgeString, badgeText);
+        final int snippetWidth = mCoordinates.snippetWidth;
+        final int snippetHeight = mCoordinates.snippetHeight;
+        mSnippetTextView.setLayoutParams(new ViewGroup.LayoutParams(snippetWidth, snippetHeight));
+        mSnippetTextView.setMaxLines(mCoordinates.snippetLineCount);
+        mSnippetTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCoordinates.snippetFontSize);
+        layoutViewExactly(mSnippetTextView, snippetWidth, snippetHeight);
 
-        final int badgeWidth = mCoordinates.badgeWidth;
-        final int badgeHeight = mCoordinates.badgeHeight;
-        mBadgeTextView.setLayoutParams(new ViewGroup.LayoutParams(badgeWidth, badgeHeight));
-        mBadgeTextView.setMaxLines(mCoordinates.badgeLineCount);
-        layoutViewExactly(mBadgeTextView, badgeWidth, badgeHeight);
-
-        mBadgeTextView.setText(displayedBadgeString);
+        mSnippetTextView.setText(displayedStringBuilder);
     }
 
     private int formatBadgeText(Spannable displayedStringBuilder, String badgeText) {
@@ -1202,36 +1191,29 @@ public class ConversationItemView extends View
         mPaperclipX = (isRtl) ? mDateX + mDateWidth + mCoordinates.datePaddingStart :
                 mDateX - ATTACHMENT.getWidth() - mCoordinates.datePaddingStart;
 
-        if (mCoordinates.isWideMode()) {
-            // In wide mode, the end of the senders should align with
-            // the start of the subject and is based on a max width.
-            mSendersWidth = mCoordinates.sendersWidth;
-            mSendersX = mCoordinates.sendersX;
+        // In normal mode, the senders x and width is based
+        // on where the date/attachment icon start.
+        final int dateAttachmentStart;
+        // Have this end near the paperclip or date, not the folders.
+        if (mHeader.paperclip != null) {
+            // If there is a paperclip, the date/attachment start is at the start
+            // of the paperclip minus the paperclip padding.
+            // In RTL, it is at the end of the paperclip plus the paperclip padding.
+            dateAttachmentStart = (isRtl) ?
+                    mPaperclipX + ATTACHMENT.getWidth() + mCoordinates.paperclipPaddingStart
+                    : mPaperclipX - mCoordinates.paperclipPaddingStart;
         } else {
-            // In normal mode, the senders x and width is based
-            // on where the date/attachment icon start.
-            final int dateAttachmentStart;
-            // Have this end near the paperclip or date, not the folders.
-            if (mHeader.paperclip != null) {
-                // If there is a paperclip, the date/attachment start is at the start
-                // of the paperclip minus the paperclip padding.
-                // In RTL, it is at the end of the paperclip plus the paperclip padding.
-                dateAttachmentStart = (isRtl) ?
-                        mPaperclipX + ATTACHMENT.getWidth() + mCoordinates.paperclipPaddingStart
-                        : mPaperclipX - mCoordinates.paperclipPaddingStart;
-            } else {
-                // If no paperclip, just use the start of the date minus the date padding start.
-                // In RTL mode, this is just the paperclipX.
-                dateAttachmentStart = (isRtl) ?
-                        mPaperclipX : mDateX - mCoordinates.datePaddingStart;
-            }
-            // Senders width is the dateAttachmentStart - sendersX.
-            // In RTL, it is sendersWidth + sendersX - dateAttachmentStart.
-            mSendersWidth = (isRtl) ?
-                    mCoordinates.sendersWidth + mCoordinates.sendersX - dateAttachmentStart
-                    : dateAttachmentStart - mCoordinates.sendersX;
-            mSendersX = (isRtl) ? dateAttachmentStart : mCoordinates.sendersX;
+            // If no paperclip, just use the start of the date minus the date padding start.
+            // In RTL mode, this is just the paperclipX.
+            dateAttachmentStart = (isRtl) ?
+                    mPaperclipX : mDateX - mCoordinates.datePaddingStart;
         }
+        // Senders width is the dateAttachmentStart - sendersX.
+        // In RTL, it is sendersWidth + sendersX - dateAttachmentStart.
+        mSendersWidth = (isRtl) ?
+                mCoordinates.sendersWidth + mCoordinates.sendersX - dateAttachmentStart
+                : dateAttachmentStart - mCoordinates.sendersX;
+        mSendersX = (isRtl) ? dateAttachmentStart : mCoordinates.sendersX;
 
         // Second pass to layout each fragment.
         sPaint.setTextSize(mCoordinates.sendersFontSize);
@@ -1422,7 +1404,7 @@ public class ConversationItemView extends View
         if (mHeader.sendersDisplayLayout != null) {
             sPaint.setTextSize(mCoordinates.sendersFontSize);
             sPaint.setTypeface(SendersView.getTypeface(isUnread));
-            sPaint.setColor(isUnread ? sSendersTextColorUnread : sSendersTextColorRead);
+            sPaint.setColor(sSendersTextColor);
             canvas.translate(mSendersX, mCoordinates.sendersY
                     + mHeader.sendersDisplayLayout.getTopPadding());
             mHeader.sendersDisplayLayout.draw(canvas);
@@ -1438,11 +1420,9 @@ public class ConversationItemView extends View
         drawSubject(canvas);
         canvas.restore();
 
-        if (mCoordinates.isWideMode()) {
-            canvas.save();
-            drawBadge(canvas);
-            canvas.restore();
-        }
+        canvas.save();
+        drawSnippet(canvas);
+        canvas.restore();
 
         // Folders.
         if (mConfig.areFoldersVisible()) {
@@ -1489,8 +1469,7 @@ public class ConversationItemView extends View
         sPaint.setTextSize(mCoordinates.dateFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
         sPaint.setColor(isUnread ? sDateTextColorUnread : sDateTextColorRead);
-        drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateYBaseline,
-                sPaint);
+        drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateYBaseline, sPaint);
 
         // Paper clip icon.
         if (mHeader.paperclip != null) {
@@ -1577,9 +1556,9 @@ public class ConversationItemView extends View
         mSubjectTextView.draw(canvas);
     }
 
-    private void drawBadge(Canvas canvas) {
-        canvas.translate(mCoordinates.badgeLeft, mCoordinates.badgeTop);
-        mBadgeTextView.draw(canvas);
+    private void drawSnippet(Canvas canvas) {
+        canvas.translate(mCoordinates.snippetX, mCoordinates.snippetY);
+        mSnippetTextView.draw(canvas);
     }
 
     private void drawSenders(Canvas canvas) {
@@ -1736,20 +1715,11 @@ public class ConversationItemView extends View
         }
 
         if (mStarEnabled) {
-            if (mCoordinates.isWideMode()) {
-                // Just check that we're to start of the star's touch area
-                if (isTouchInStarTargetX(isRtl, x)) {
-                    return false;
-                }
-            } else {
-                // We're on a single pane device with the more condensed layout
+            // We allow touches all the way to the right edge, so no x check is necessary
 
-                // We allow touches all the way to the right edge, so no x check is necessary
-
-                // We need to be above the star's touch area, which ends at the top of the subject
-                // text
-                return y < mCoordinates.subjectY;
-            }
+            // We need to be above the star's touch area, which ends at the top of the subject
+            // text
+            return y < mCoordinates.subjectY;
         }
 
         // With no star below the info icon, we allow touches anywhere from the top edge to the
@@ -1758,8 +1728,7 @@ public class ConversationItemView extends View
     }
 
     private boolean isTouchInStar(float x, float y) {
-        if (mHeader.infoIcon != null
-                && !mCoordinates.isWideMode()) {
+        if (mHeader.infoIcon != null) {
             // We have an info icon, and it's above the star
             // We allow touches everywhere below the top of the subject text
             if (y < mCoordinates.subjectY) {
