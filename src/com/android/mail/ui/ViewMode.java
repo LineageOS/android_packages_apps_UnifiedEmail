@@ -68,10 +68,6 @@ public class ViewMode {
      */
     public static final int AD = 6;
     /**
-     * Mode when display the warm welcome flow.
-     */
-    public static final int WARM_WELCOME_FLOW = 7;
-    /**
      * Uncertain mode. The mode has not been initialized.
      */
     public static final int UNKNOWN = 0;
@@ -179,13 +175,6 @@ public class ViewMode {
      */
     public void enterAdMode() {
         setModeInternal(AD);
-    }
-
-    /**
-     * Requests a transition of the mode to show the welcome tour.
-     */
-    public void enterWarmWelcomeMode() {
-        setModeInternal(WARM_WELCOME_FLOW);
     }
 
     /**

@@ -108,7 +108,6 @@ import com.android.mail.utils.MailObservable;
 import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.VeiledAddressMatcher;
-import com.android.mail.welcome.WelcomeTourCompletionListener;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -142,8 +141,7 @@ import java.util.TimerTask;
  * </p>
  */
 public abstract class AbstractActivityController implements ActivityController,
-        EmptyFolderDialogFragment.EmptyFolderDialogFragmentListener,
-        WelcomeTourCompletionListener {
+        EmptyFolderDialogFragment.EmptyFolderDialogFragmentListener {
     // Keys for serialization of various information in Bundles.
     /** Tag for {@link #mAccount} */
     private static final String SAVED_ACCOUNT = "saved-account";
@@ -986,17 +984,6 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void setFolderWatcher(FolderWatcher watcher) {
         mFolderWatcher = watcher;
-    }
-
-    /**
-     * Renders the welcome tour if required.
-     */
-    protected void transitionToWelcomeTour(
-            WelcomeTourCompletionListener completionListener) {
-        if (mViewMode.getMode() != ViewMode.WARM_WELCOME_FLOW) {
-            mViewMode.enterWarmWelcomeMode();
-            mActivity.onWelcomeTourRequested(completionListener);
-        }
     }
 
     /**
@@ -3793,6 +3780,7 @@ public abstract class AbstractActivityController implements ActivityController,
                                 mAccountObservers.notifyChanged();
                             }
                             perhapsEnterWaitMode();
+                            perhapsStartWelcomeTour();
                         } else {
                             LogUtils.e(LOG_TAG, "Got update for account: %s with current account:"
                                     + " %s", updatedAccount.uri, mAccount.uri);
@@ -3808,6 +3796,23 @@ public abstract class AbstractActivityController implements ActivityController,
         @Override
         public void onLoaderReset(Loader<ObjectCursor<Account>> loader) {
             // Do nothing. In onLoadFinished() we copy the relevant data from the cursor.
+        }
+    }
+
+    /**
+     * Loads the preference that tells whether the welcome tour should be displayed,
+     * and calls the callback with this value.
+     * For this to function, the account must have been synced.
+     */
+    private void perhapsStartWelcomeTour() {
+        if (mAccount != null && mAccount.isAccountReady()) {
+            LoaderManager.LoaderCallbacks<Boolean> welcomeLoaderCallbacks =
+                    mActivity.getWelcomeCallbacks();
+            if (welcomeLoaderCallbacks != null) {
+                // The callback is responsible for showing the tour when appropriate.
+                mActivity.getLoaderManager().initLoader(LOADER_WELCOME_TOUR, Bundle.EMPTY,
+                        welcomeLoaderCallbacks);
+            }
         }
     }
 

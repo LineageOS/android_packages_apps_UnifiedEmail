@@ -373,12 +373,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.remove(waitFragment);
         fragmentTransaction.commitAllowingStateLoss();
-        transitionToWelcomeTour(this);
         super.hideWaitForInitialization();
-        onWelcomeTourComplete();
-    }
-
-    public void onWelcomeTourComplete() {
         if (mViewMode.isWaitingForSync()) {
             // We should come out of wait mode and display the account inbox.
             loadAccountInbox();

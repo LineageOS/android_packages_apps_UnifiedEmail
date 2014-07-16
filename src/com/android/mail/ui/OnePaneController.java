@@ -254,12 +254,14 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     protected void hideWaitForInitialization() {
-        transitionToWelcomeTour(this);
+        transitionToInbox();
         super.hideWaitForInitialization();
     }
 
-    @Override
-    public void onWelcomeTourComplete() {
+    /**
+     * Switch to the Inbox by creating a new conversation list context that loads the inbox.
+     */
+    private void transitionToInbox() {
         // The inbox could have changed, in which case we should load it again.
         if (mInbox == null || !isDefaultInbox(mInbox.folderUri, mAccount)) {
             loadAccountInbox();

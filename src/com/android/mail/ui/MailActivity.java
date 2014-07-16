@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,7 +43,6 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
-import com.android.mail.welcome.WelcomeTourCompletionListener;
 import com.android.oldbitmap.AltBitmapCache;
 import com.android.oldbitmap.BitmapCache;
 
@@ -476,9 +476,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         Utils.showHelp(this, account, getString(helpContext));
     }
 
-    @Override
-    public void onWelcomeTourRequested(
-            WelcomeTourCompletionListener completionListener) {
-        // Do nothing.
+    /**
+     * Returns the loader callback that can create a
+     * {@link AbstractActivityController#LOADER_WELCOME_TOUR} which determines whether the welcome
+     * tour should be displayed.
+     *
+     * The base implementation returns {@code null} and subclasses should return an actual
+     * implementation if they want to be invoked at appropriate time.
+     */
+    public LoaderManager.LoaderCallbacks<Boolean> getWelcomeCallbacks() {
+        return null;
     }
 }
