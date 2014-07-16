@@ -122,6 +122,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.settings.MailPreferenceActivity"
+                  android:label="@string/activity_preferences"
+                  android:exported="false">
+        </activity>
+
         <provider
                 android:authorities="com.android.mail.accountcache"
                 android:label="@string/account_cache_provider"

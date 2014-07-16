@@ -41,6 +41,7 @@ import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.SnapHeaderValue;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.R;
+import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
@@ -53,6 +54,8 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
     static final String AUTO_ADVANCE_WIDGET = "auto-advance-widget";
     static final String SNAP_HEADER_MODE_WIDGET = "snap-header-mode-widget";
 
+    static final String CALLED_FROM_TEST = "called-from-test";
+
     // Category for removal actions
     protected static final String REMOVAL_ACTIONS_GROUP = "removal-actions-group";
 
@@ -61,31 +64,17 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
     private AlertDialog mClearSearchHistoryDialog;
 
     private ListPreference mAutoAdvance;
-    @VisibleForTesting
-    static final int[] AUTO_ADVANCE_VALUES = {
+    private static final int[] AUTO_ADVANCE_VALUES = {
             AutoAdvance.NEWER,
             AutoAdvance.OLDER,
             AutoAdvance.LIST
     };
     private ListPreference mSnapHeader;
-    @VisibleForTesting
-    static final int[] SNAP_HEADER_VALUES = {
+    private static final int[] SNAP_HEADER_VALUES = {
             SnapHeaderValue.ALWAYS,
             SnapHeaderValue.PORTRAIT_ONLY,
             SnapHeaderValue.NEVER
     };
-
-    private final boolean mCalledFromTest;
-
-    public GeneralPrefsFragment() {
-        super();
-        mCalledFromTest = false;
-    }
-
-    @VisibleForTesting
-    GeneralPrefsFragment(boolean fromTest) {
-        mCalledFromTest = fromTest;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,9 +92,10 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
 
         addPreferencesFromResource(R.xml.general_preferences);
 
-        // Disabling snap headers is just for phones
-        if (!mCalledFromTest
-                && com.android.mail.utils.Utils.useTabletUI(getActivity().getResources())) {
+        // Disabling snap headers is just for phones and unit tests
+        final Bundle args = getArguments();
+        final boolean calledFromTest = args != null && args.getBoolean(CALLED_FROM_TEST, false);
+        if (!calledFromTest && Utils.useTabletUI(getActivity().getResources())) {
             final PreferenceScreen ps = getPreferenceScreen();
             ps.removePreference(findPreference(SNAP_HEADER_MODE_WIDGET));
         }
