@@ -29,6 +29,7 @@ import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 
 import com.android.mail.analytics.AnalyticsTimer;
+import com.google.android.mail.common.base.CharMatcher;
 import com.google.android.mail.common.html.parser.HtmlDocument;
 import com.google.android.mail.common.html.parser.HtmlTree;
 import com.google.common.collect.Lists;
@@ -73,15 +74,21 @@ public class HtmlUtils {
         protected final SpannableStringBuilder mBuilder = new SpannableStringBuilder();
         private final LinkedList<TagWrapper> mSeenTags = Lists.newLinkedList();
 
+        // [copied verbatim from private version in HtmlTree.java]
+        //
+        // White space characters that are collapsed as a single space.
+        // Note that characters such as the non-breaking whitespace
+        // and full-width spaces are not equivalent to the normal spaces.
+        private static final String HTML_SPACE_EQUIVALENTS = " \n\r\t\f";
+
         @Override
         public void addNode(HtmlDocument.Node n, int nodeNum, int endNum) {
             if (n instanceof HtmlDocument.Text) {
                 // If it's just string, let's append it
-                String text = ((HtmlDocument.Text) n).getText();
-                // First we eliminate any \n since they don't mean anything in html but can
-                // mis-translate into actual new lines during the parsing process
-                text = text.replaceAll("\n", "");
-                mBuilder.append(text);
+                // FIXME: implement proper space/newline/<pre> handling like
+                // HtmlTree.PlainTextPrinter has.
+                final String text = ((HtmlDocument.Text) n).getText();
+                appendNormalText(text);
             } else if (n instanceof HtmlDocument.Tag) {
                 handleStart((HtmlDocument.Tag) n);
             } else if (n instanceof HtmlDocument.EndTag) {
@@ -252,6 +259,22 @@ public class HtmlUtils {
         @Override
         public Spanned getObject() {
             return mBuilder;
+        }
+
+        protected void appendNormalText(String text) {
+            // adapted from HtmlTree.PlainTextPrinter#appendNormalText(String)
+
+            if (text.length() == 0) {
+                return;
+            }
+
+            // Strip beginning and ending whitespace.
+            text = CharMatcher.anyOf(HTML_SPACE_EQUIVALENTS).trimFrom(text);
+
+            // Collapse whitespace within the text.
+            text = CharMatcher.anyOf(HTML_SPACE_EQUIVALENTS).collapseFrom(text, ' ');
+
+            mBuilder.append(text);
         }
 
         private static class TagWrapper {
