@@ -101,7 +101,7 @@ public class Settings implements Parcelable {
     public final Uri setupIntentUri;
     public final String veiledAddressPattern;
     public final int showImages;
-    public final int warmWelcomeStatus;
+    public final int welcomeTourShownVersion;
 
     /**
      * The {@link Uri} to use when moving a conversation to the inbox. May
@@ -136,7 +136,7 @@ public class Settings implements Parcelable {
         veiledAddressPattern = null;
         moveToInbox = Uri.EMPTY;
         showImages = ShowImages.ASK_FIRST;
-        warmWelcomeStatus = -1;
+        welcomeTourShownVersion = -1;
     }
 
     public Settings(Parcel inParcel) {
@@ -160,7 +160,7 @@ public class Settings implements Parcelable {
         veiledAddressPattern = inParcel.readString();
         moveToInbox = Utils.getValidUri(inParcel.readString());
         showImages = inParcel.readInt();
-        warmWelcomeStatus = inParcel.readInt();
+        welcomeTourShownVersion = inParcel.readInt();
     }
 
     public Settings(Cursor cursor) {
@@ -194,8 +194,8 @@ public class Settings implements Parcelable {
         moveToInbox = Utils.getValidUri(
                 cursor.getString(cursor.getColumnIndex(SettingsColumns.MOVE_TO_INBOX)));
         showImages = cursor.getInt(cursor.getColumnIndex(SettingsColumns.SHOW_IMAGES));
-        warmWelcomeStatus = cursor.getInt(
-                cursor.getColumnIndex(SettingsColumns.WARM_WELCOME_STATUS));
+        welcomeTourShownVersion = cursor.getInt(
+                cursor.getColumnIndex(SettingsColumns.WELCOME_TOUR_SHOWN_VERSION));
     }
 
     private Settings(JSONObject json) {
@@ -225,8 +225,8 @@ public class Settings implements Parcelable {
         veiledAddressPattern = json.optString(SettingsColumns.VEILED_ADDRESS_PATTERN, null);
         moveToInbox = Utils.getValidUri(json.optString(SettingsColumns.MOVE_TO_INBOX));
         showImages = json.optInt(SettingsColumns.SHOW_IMAGES, sDefault.showImages);
-        warmWelcomeStatus =
-                json.optInt(SettingsColumns.WARM_WELCOME_STATUS, sDefault.warmWelcomeStatus);
+        welcomeTourShownVersion = json.optInt(
+                SettingsColumns.WELCOME_TOUR_SHOWN_VERSION, sDefault.welcomeTourShownVersion);
     }
 
     /**
@@ -272,7 +272,7 @@ public class Settings implements Parcelable {
             json.put(SettingsColumns.MOVE_TO_INBOX,
                     getNonNull(moveToInbox, sDefault.moveToInbox));
             json.put(SettingsColumns.SHOW_IMAGES, showImages);
-            json.put(SettingsColumns.WARM_WELCOME_STATUS, warmWelcomeStatus);
+            json.put(SettingsColumns.WELCOME_TOUR_SHOWN_VERSION, welcomeTourShownVersion);
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not serialize settings");
         }
@@ -289,32 +289,27 @@ public class Settings implements Parcelable {
             map = new HashMap<String, Object>();
         }
 
-        map.put(UIProvider.AccountColumns.SettingsColumns.SIGNATURE, signature);
-        map.put(UIProvider.AccountColumns.SettingsColumns.AUTO_ADVANCE, getAutoAdvanceSetting());
-        map.put(UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS, snapHeaders);
-        map.put(UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
-        map.put(UIProvider.AccountColumns.SettingsColumns.CONV_LIST_ICON, convListIcon);
-        map.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE, confirmDelete ? 1 : 0);
-        map.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, confirmArchive ? 1 : 0);
-        map.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_SEND, confirmSend ? 1 : 0);
-        map.put(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX, defaultInbox);
-        map.put(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, defaultInboxName);
-        map.put(UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
-                forceReplyFromDefault ? 1 : 0);
-        map.put(UIProvider.AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE, maxAttachmentSize);
-        map.put(UIProvider.AccountColumns.SettingsColumns.SWIPE, swipe);
-        map.put(UIProvider.AccountColumns.SettingsColumns.IMPORTANCE_MARKERS_ENABLED,
-                importanceMarkersEnabled ? 1 : 0);
-        map.put(UIProvider.AccountColumns.SettingsColumns.SHOW_CHEVRONS_ENABLED,
-                showChevronsEnabled ? 1 : 0);
-        map.put(UIProvider.AccountColumns.SettingsColumns.SETUP_INTENT_URI, setupIntentUri);
-        map.put(UIProvider.AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
-                conversationViewMode);
-        map.put(UIProvider.AccountColumns.SettingsColumns.VEILED_ADDRESS_PATTERN,
-                veiledAddressPattern);
-        map.put(UIProvider.AccountColumns.SettingsColumns.MOVE_TO_INBOX, moveToInbox);
-        map.put(UIProvider.AccountColumns.SettingsColumns.SHOW_IMAGES, showImages);
-        map.put(UIProvider.AccountColumns.SettingsColumns.WARM_WELCOME_STATUS, warmWelcomeStatus);
+        map.put(SettingsColumns.SIGNATURE, signature);
+        map.put(SettingsColumns.AUTO_ADVANCE, getAutoAdvanceSetting());
+        map.put(SettingsColumns.SNAP_HEADERS, snapHeaders);
+        map.put(SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
+        map.put(SettingsColumns.CONV_LIST_ICON, convListIcon);
+        map.put(SettingsColumns.CONFIRM_DELETE, confirmDelete ? 1 : 0);
+        map.put(SettingsColumns.CONFIRM_ARCHIVE, confirmArchive ? 1 : 0);
+        map.put(SettingsColumns.CONFIRM_SEND, confirmSend ? 1 : 0);
+        map.put(SettingsColumns.DEFAULT_INBOX, defaultInbox);
+        map.put(SettingsColumns.DEFAULT_INBOX_NAME, defaultInboxName);
+        map.put(SettingsColumns.FORCE_REPLY_FROM_DEFAULT, forceReplyFromDefault ? 1 : 0);
+        map.put(SettingsColumns.MAX_ATTACHMENT_SIZE, maxAttachmentSize);
+        map.put(SettingsColumns.SWIPE, swipe);
+        map.put(SettingsColumns.IMPORTANCE_MARKERS_ENABLED, importanceMarkersEnabled ? 1 : 0);
+        map.put(SettingsColumns.SHOW_CHEVRONS_ENABLED, showChevronsEnabled ? 1 : 0);
+        map.put(SettingsColumns.SETUP_INTENT_URI, setupIntentUri);
+        map.put(SettingsColumns.CONVERSATION_VIEW_MODE, conversationViewMode);
+        map.put(SettingsColumns.VEILED_ADDRESS_PATTERN, veiledAddressPattern);
+        map.put(SettingsColumns.MOVE_TO_INBOX, moveToInbox);
+        map.put(SettingsColumns.SHOW_IMAGES, showImages);
+        map.put(SettingsColumns.WELCOME_TOUR_SHOWN_VERSION, welcomeTourShownVersion);
 
         return map;
     }
@@ -361,7 +356,7 @@ public class Settings implements Parcelable {
         dest.writeString(veiledAddressPattern);
         dest.writeString(getNonNull(moveToInbox, sDefault.moveToInbox).toString());
         dest.writeInt(showImages);
-        dest.writeInt(warmWelcomeStatus);
+        dest.writeInt(welcomeTourShownVersion);
     }
 
     /**
@@ -470,7 +465,7 @@ public class Settings implements Parcelable {
                 && conversationViewMode == that.conversationViewMode
                 && TextUtils.equals(veiledAddressPattern, that.veiledAddressPattern))
                 && Objects.equal(moveToInbox, that.moveToInbox)
-                && warmWelcomeStatus == that.warmWelcomeStatus;
+                && welcomeTourShownVersion == that.welcomeTourShownVersion;
     }
 
     @Override
@@ -481,7 +476,8 @@ public class Settings implements Parcelable {
                     snapHeaders, replyBehavior, convListIcon, confirmDelete, confirmArchive,
                     confirmSend, defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
                     importanceMarkersEnabled, showChevronsEnabled, setupIntentUri,
-                    conversationViewMode, veiledAddressPattern, moveToInbox, warmWelcomeStatus);
+                    conversationViewMode, veiledAddressPattern, moveToInbox,
+                    welcomeTourShownVersion);
         }
         return mHashCode;
     }
