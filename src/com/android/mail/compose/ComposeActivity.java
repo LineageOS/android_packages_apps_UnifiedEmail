@@ -267,8 +267,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         SEND_SAVE_TASK_HANDLER = new Handler(handlerThread.getLooper());
     }
 
-    private boolean mUseNewChips = false;
-
     private RecipientEditTextView mTo;
     private RecipientEditTextView mCc;
     private RecipientEditTextView mBcc;
@@ -487,21 +485,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         checkValidAccounts();
     }
 
-    private boolean shouldUseNewChips() {
-        // Get the Android ID from this device
-        String androidId = android.provider.Settings.Secure
-                .getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-
-        // If we don't have a valid android id, just use account name hash code
-        if (TextUtils.isEmpty(androidId)) {
-            LogUtils.d(LOG_TAG, "Fallback to email address");
-            androidId = mAccount.getEmailAddress();
-        }
-
-        // randomly cut our userbase in half
-        return (androidId.hashCode() % 2) == 1;
-    }
-
     private void finishCreate() {
         final Bundle savedState = mInnerSavedState;
         findViews();
@@ -547,7 +530,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return;
         }
 
-        mUseNewChips = shouldUseNewChips();
         initRecipients();
 
         // Clear the notification and mark the conversation as seen, if necessary
@@ -2199,16 +2181,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void setupRecipients(RecipientEditTextView view) {
-        // todo - remove this experiment
-        if (LogUtils.isLoggable("NewChips", LogUtils.DEBUG) || mUseNewChips) {
-            final DropdownChipLayouter layouter = getDropdownChipLayouter();
-            if (layouter != null) {
-                view.setDropdownChipLayouter(layouter);
-            }
-            view.setAdapter(getRecipientAdapter());
-        } else {
-            view.setAdapter(new RecipientAdapter(this, mAccount));
+        final DropdownChipLayouter layouter = getDropdownChipLayouter();
+        if (layouter != null) {
+            view.setDropdownChipLayouter(layouter);
         }
+        view.setAdapter(getRecipientAdapter());
         view.setRecipientEntryItemClickedListener(this);
         if (mValidator == null) {
             final String accountName = mAccount.getEmailAddress();
@@ -2397,9 +2374,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onRecipientEntryItemClicked(int charactersTyped, int position) {
         // Send analytics of characters typed and position in dropdown selected.
-        final String category = mUseNewChips ? "suggest_click_new" : "suggest_click_old";
         Analytics.getInstance().sendEvent(
-                category, Integer.toString(charactersTyped), Integer.toString(position), 0);
+                "suggest_click", Integer.toString(charactersTyped), Integer.toString(position), 0);
     }
 
     @VisibleForTesting
