@@ -33,7 +33,7 @@
         android:paddingLeft="@dimen/conversation_message_content_margin_side"
         android:paddingRight="@dimen/conversation_message_content_margin_side"
         android:text="@string/view_entire_message"
-        android:textColor="@color/conv_header_text_link_blue"
+        android:textColor="@color/conversation_view_text_color_link_blue"
         android:textSize="14sp"
         android:visibility="gone" />
 

@@ -19,31 +19,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/message_header_background_color"
-    android:duplicateParentState="true"
-    style="@style/ConversationViewMarginStyle" >
+    android:duplicateParentState="true" >
 
     <com.android.mail.browse.MessageHeaderContactBadge
         android:id="@+id/photo"
         android:layout_width="@dimen/message_header_contact_photo_width"
         android:layout_height="@dimen/message_header_contact_photo_height"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="@dimen/message_header_contact_photo_margin"
+        android:layout_marginBottom="@dimen/message_header_contact_photo_margin"
+        android:background="?android:attr/selectableItemBackground"
         android:scaleType="centerCrop"
         android:contentDescription="@string/contact_info_string"
-        style="@style/MessageHeaderContactImageStyle" />
+        style="@style/ConversationViewMarginStyle" />
     <!-- draft should match photo in dimensions -->
     <ImageView
         android:id="@+id/draft"
         android:layout_width="@dimen/message_header_contact_photo_width"
         android:layout_height="@dimen/message_header_contact_photo_height"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="@dimen/message_header_contact_photo_margin"
+        android:layout_marginBottom="@dimen/message_header_contact_photo_margin"
         android:visibility="gone"
         android:scaleType="center"
         android:src="@drawable/ic_draft"
-        style="@style/MessageHeaderContactImageStyle" />
+        style="@style/ConversationViewMarginStyle" />
     <include layout="@layout/conversation_message_upper_header_text" />
     <include layout="@layout/conversation_message_upper_header_actions" />
 

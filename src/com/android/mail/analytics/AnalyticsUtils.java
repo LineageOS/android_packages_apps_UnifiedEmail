@@ -123,9 +123,9 @@ public class AnalyticsUtils {
             s = "forward";
         } else if (id == R.id.edit_draft) {
             s = "edit_draft";
-        } else if (id == R.id.details_collapsed_content) {
+        } else if (id == R.id.send_date) {
             s = "expand_message_details";
-        } else if (id == R.id.details_expanded_content) {
+        } else if (id == R.id.details_expanded_content || id == R.id.hide_details) {
             s = "collapse_message_details";
         } else if (id == R.id.upper_header) {
             s = "message_upper_header";

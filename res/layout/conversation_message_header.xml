@@ -34,8 +34,7 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:background="@color/message_header_background_color"
-                  android:orientation="vertical"
-                  style="@style/ConversationViewMarginStyle"/>
+                  android:orientation="vertical" />
 
     <View android:id="@+id/snap_header_bottom_border"
           android:layout_width="match_parent"

@@ -23,8 +23,7 @@
     </style>
 
     <style name="MessageDetailsHeaderStyle">
-        <item name="android:paddingStart">@dimen/message_details_header_padding_start_collapsed
-        </item>
+        <item name="android:paddingStart">@dimen/message_details_header_padding_start_expanded</item>
         <item name="android:paddingEnd">@dimen/message_details_header_padding_end</item>
     </style>
 
@@ -33,8 +32,7 @@
     </style>
 
     <style name="MessageHeaderShowPicsStyle" parent="AbstractMessageHeaderShowPicsStyle">
-        <item name="android:paddingStart">@dimen/message_details_header_padding_start_collapsed
-        </item>
+        <item name="android:paddingStart">@dimen/message_details_header_padding_start_expanded</item>
         <item name="android:paddingEnd">@dimen/message_show_pics_header_padding_end</item>
         <item name="android:drawableStart">@drawable/ic_show_images_holo_light</item>
     </style>
@@ -69,7 +67,6 @@
 
     <style name="ConversationViewMarginStyle">
         <item name="android:layout_marginStart">@dimen/conversation_view_margin_side</item>
-        <item name="android:layout_marginEnd">@dimen/conversation_view_margin_side</item>
     </style>
 
     <style name="NewMessageButtonStyle" parent="AbstractNewMessageButtonStyle">
@@ -98,10 +95,6 @@
         <item name="android:layout_marginStart">@dimen/teaser_text_padding</item>
     </style>
 
-    <style name="DetailsExpanderStyle">
-        <item name="android:layout_marginStart">@dimen/message_header_inner_side_padding</item>
-    </style>
-
     <style name="MessageHeaderDetailsHeadingStyle" parent="MessageHeaderSmallStyle">
         <item name="android:layout_marginEnd">@dimen/message_header_inner_side_padding</item>
     </style>
@@ -109,10 +102,6 @@
     <style name="AttachmentMarginStyle">
         <item name="android:layout_marginStart">@dimen/attachment_margin_side</item>
         <item name="android:layout_marginEnd">@dimen/attachment_margin_side</item>
-    </style>
-
-    <style name="MessageHeaderContactImageStyle">
-        <item name="android:layout_marginStart">@dimen/message_header_padding_start</item>
     </style>
 
     <style name="AttachmentIconStyle">
@@ -130,10 +119,6 @@
 
     <style name="UnseenCountWithMarginEndStyle" parent="UnseenCount">
         <item name="android:layout_marginEnd">@dimen/folder_list_item_end_margin</item>
-    </style>
-
-    <style name="RecipientSummaryStyle" parent="MessageHeaderSmallStyle">
-        <item name="android:layout_marginEnd">@dimen/recipient_summary_margin</item>
     </style>
 
     <style name="AttachmentTextContainer">
@@ -237,8 +222,9 @@
         <item name="android:layout_alignParentStart">true</item>
     </style>
 
-    <style name="MessageHeaderUpperDateStyle" parent="AbstractMessageHeaderUpperDateStyle">
+    <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderSmallStyle">
         <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginStart">@dimen/attachment_icon_padding</item>
     </style>
 
     <style name="FolderParentIconStyle">
