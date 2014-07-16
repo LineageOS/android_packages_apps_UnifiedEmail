@@ -34,6 +34,8 @@ public class AnalyticsTimer {
     public static final String OPEN_CONV_VIEW_FROM_LIST = "open_conv_from_list";
     public static final String COLD_START_LAUNCHER = "cold_start_to_list";
     public static final String SEARCH_TO_LIST = "search_to_list";
+    public static final String COMPOSE_HTML_TO_SPAN = "compose_html_to_span";
+    public static final String COMPOSE_SPAN_TO_HTML = "compose_span_to_html";
 
     private final Map<String, Long> mStartTimes = Maps.newConcurrentMap();
 

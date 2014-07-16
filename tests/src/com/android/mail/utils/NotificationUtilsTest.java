@@ -38,9 +38,9 @@ public class NotificationUtilsTest extends AndroidTestCase {
 
         // Get the html "tree" for this message body
         final HtmlTree htmlTree = Utils.getHtmlTree(html);
-        htmlTree.setPlainTextConverterFactory(new HtmlTree.PlainTextConverterFactory() {
+        htmlTree.setConverterFactory(new HtmlTree.ConverterFactory() {
             @Override
-            public HtmlTree.PlainTextConverter createInstance() {
+            public HtmlTree.Converter<String> createInstance() {
                 return new MailMessagePlainTextConverter();
             }
         });
@@ -65,9 +65,9 @@ public class NotificationUtilsTest extends AndroidTestCase {
 
         // Get the html "tree" for this message body
         final HtmlTree htmlTree = Utils.getHtmlTree(html);
-        htmlTree.setPlainTextConverterFactory(new HtmlTree.PlainTextConverterFactory() {
+        htmlTree.setConverterFactory(new HtmlTree.ConverterFactory() {
             @Override
-            public HtmlTree.PlainTextConverter createInstance() {
+            public HtmlTree.Converter<String> createInstance() {
                 return new MailMessagePlainTextConverter();
             }
         });
