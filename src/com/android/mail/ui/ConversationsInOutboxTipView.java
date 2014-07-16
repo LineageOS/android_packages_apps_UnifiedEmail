@@ -101,7 +101,7 @@ public class ConversationsInOutboxTipView extends FrameLayout
 
     public void bind(final Account account, final FolderSelector folderSelector) {
         mAccount = account;
-        mAccountPreferences = AccountPreferences.get(getContext(), account.getAccountId());
+        mAccountPreferences = AccountPreferences.get(getContext(), account);
         mFolderSelector = folderSelector;
     }
 

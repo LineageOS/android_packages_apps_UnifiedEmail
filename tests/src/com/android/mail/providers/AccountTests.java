@@ -41,7 +41,7 @@ public class AccountTests extends AndroidTestCase {
         dest.writeString("settingIntentUri");
         dest.writeInt(0);
 
-        final Account before = new Account(dest, null);
+        final Account before = Account.builder().buildFrom(dest, null);
         final Intent intent = new Intent();
         intent.putExtra(Utils.EXTRA_ACCOUNT, before);
 

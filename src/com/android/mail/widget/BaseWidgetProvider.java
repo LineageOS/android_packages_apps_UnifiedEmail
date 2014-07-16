@@ -278,7 +278,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
                     UIProvider.ACCOUNTS_PROJECTION, null, null, null);
             if (accountCursor != null) {
                 if (accountCursor.moveToFirst()) {
-                    account = new Account(accountCursor);
+                    account = Account.builder().buildFrom(accountCursor);
                 }
             }
         } finally {
