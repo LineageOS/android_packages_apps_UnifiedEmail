@@ -84,12 +84,10 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
                         mAdapter.clearSections();
                         // TODO(mindyp) : bring this back in UR8 when Email providers
                         // will have divided folder sections.
-                        final String[] headers = context.getResources().getStringArray(
-                                R.array.moveto_folder_sections);
                         // Currently, the number of adapters are assumed to match the
                         // number of headers in the string array.
                         mAdapter.addSection(new SystemFolderSelectorAdapter(context, data,
-                                R.layout.single_folders_view, headers[0], mCurrentFolder));
+                                R.layout.single_folders_view, mCurrentFolder));
 
                         // TODO(mindyp): we currently do not support frequently moved to
                         // folders, at headers[1]; need to define what that means.*/
@@ -98,7 +96,7 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
                         mAdapter.addSection(
                                 new UserFolderHierarchicalFolderSelectorAdapter(context,
                                 AddableFolderSelectorAdapter.filterFolders(data),
-                                R.layout.single_folders_view, headers[2], mCurrentFolder));
+                                R.layout.single_folders_view, mCurrentFolder));
 
                         dialog.getListView().setAdapter(mAdapter);
                     }

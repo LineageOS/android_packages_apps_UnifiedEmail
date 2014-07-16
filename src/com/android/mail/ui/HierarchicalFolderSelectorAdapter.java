@@ -40,23 +40,20 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
 
     @VisibleForTesting
     public HierarchicalFolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> initiallySelected, int layout, String header) {
-        super(context, folders, initiallySelected, layout, header);
+            Set<String> initiallySelected, int layout) {
+        super(context, folders, initiallySelected, layout);
         mContext = context;
     }
 
-    public HierarchicalFolderSelectorAdapter(Context context, Cursor folders, int layout,
-            String header, Folder excludedFolder) {
-        super(context, folders, layout, header, excludedFolder);
+    public HierarchicalFolderSelectorAdapter(Context context, Cursor folders,
+            int layout, Folder excludedFolder) {
+        super(context, folders, layout, excludedFolder);
         mContext = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final View view = super.getView(position, convertView, parent);
-        if (isHeader(position)) {
-            return view;
-        }
         final FolderRow row = (FolderRow) getItem(position);
         final Folder folder = row.getFolder();
         final CompoundButton checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
@@ -118,7 +115,7 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
                         directParentName));
             } else if (!TextUtils.isEmpty(topParentName)) {
                 display.append(mContext.getResources().getString(R.string.hierarchical_folder_top,
-                        topParentName, directParentName));
+                        topParentName));
             }
             display.setSpan(new ForegroundColorSpan(R.color.hierarchical_folder_parent_color), 0,
                     display.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
