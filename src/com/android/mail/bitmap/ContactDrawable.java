@@ -27,9 +27,9 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 
-import com.android.oldbitmap.BitmapCache;
-import com.android.oldbitmap.DecodeTask.Request;
-import com.android.oldbitmap.ReusableBitmap;
+import com.android.bitmap.BitmapCache;
+import com.android.bitmap.RequestKey;
+import com.android.bitmap.ReusableBitmap;
 import com.android.mail.R;
 import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
 
@@ -65,6 +65,9 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
 
     /** This should match the total number of colors defined in colors.xml for letter_tile_color */
     private static final int NUM_OF_TILE_COLORS = 12;
+
+    private int mDecodeWidth;
+    private int mDecodeHeight;
 
     public ContactDrawable(final Resources res, final BitmapCache cache,
             final ContactResolver contactResolver) {
@@ -179,7 +182,8 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
     }
 
     public void setDecodeDimensions(final int decodeWidth, final int decodeHeight) {
-        mCache.setPoolDimensions(decodeWidth, decodeHeight);
+        mDecodeWidth = decodeWidth;
+        mDecodeHeight = decodeHeight;
     }
 
     public void setScale(final int scale) {
@@ -236,7 +240,18 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
         mContactResolver.add(mContactRequest, this);
     }
 
-    public void onDecodeComplete(final Request key, final ReusableBitmap result) {
+    @Override
+    public int getDecodeWidth() {
+        return mDecodeWidth;
+    }
+
+    @Override
+    public int getDecodeHeight() {
+        return mDecodeHeight;
+    }
+
+    @Override
+    public void onDecodeComplete(final RequestKey key, final ReusableBitmap result) {
         final ContactRequest request = (ContactRequest) key;
         // Remove from batch.
         mContactResolver.remove(request, this);

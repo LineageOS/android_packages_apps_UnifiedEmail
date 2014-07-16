@@ -40,8 +40,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.oldbitmap.AltBitmapCache;
-import com.android.oldbitmap.BitmapCache;
+import com.android.bitmap.BitmapCache;
+import com.android.bitmap.UnrefedBitmapCache;
 import com.android.mail.R;
 import com.android.mail.adapter.DrawerItem;
 import com.android.mail.analytics.Analytics;
@@ -392,7 +392,7 @@ public class FolderListFragment extends ListFragment implements
         final int avatarSize = getActivity().getResources().getDimensionPixelSize(
                 R.dimen.account_avatar_dimension);
 
-        mImagesCache = new AltBitmapCache(Utils.isLowRamDevice(getActivity()) ?
+        mImagesCache = new UnrefedBitmapCache(Utils.isLowRamDevice(getActivity()) ?
                 0 : avatarSize * avatarSize * IMAGE_CACHE_COUNT,
                 AVATAR_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION,
                 AVATAR_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY);

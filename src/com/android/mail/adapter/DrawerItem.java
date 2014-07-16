@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.android.mail.adapter;
 
 import android.view.LayoutInflater;
@@ -22,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.oldbitmap.BitmapCache;
+import com.android.bitmap.BitmapCache;
 import com.android.mail.R;
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.providers.Account;

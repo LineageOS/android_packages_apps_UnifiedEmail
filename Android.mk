@@ -20,8 +20,9 @@ chips_dir := ../../../frameworks/opt/chips/res
 #Include res dir from photoviewer
 photo_dir := ../../../frameworks/opt/photoviewer/res ../../../frameworks/opt/photoviewer/activity/res
 gridlayout_dir := ../../../frameworks/support/v7/gridlayout/res
+bitmap_dir := ../../../frameworks/opt/bitmap/res
 datetimepicker_dir := ../../../frameworks/opt/datetimepicker/res
-res_dirs := res $(chips_dir) $(photo_dir) $(gridlayout_dir) $(datetimepicker_dir)
+res_dirs := res $(chips_dir) $(photo_dir) $(gridlayout_dir) $(bitmap_dir) $(datetimepicker_dir)
 
 ##################################################
 # Build APK
@@ -37,6 +38,7 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-common
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v7-gridlayout
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
+LOCAL_STATIC_JAVA_LIBRARIES += android-opt-bitmap
 LOCAL_STATIC_JAVA_LIBRARIES += android-opt-datetimepicker
 LOCAL_STATIC_JAVA_LIBRARIES += owasp-html-sanitizer
 
@@ -46,7 +48,7 @@ LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs)) \
         $(call all-logtags-files-under, $(src_dirs))
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 LOCAL_AAPT_FLAGS := --auto-add-overlay
-LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo:android.support.v7.gridlayout:com.android.datetimepicker
+LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo:android.support.v7.gridlayout:com.android.bitmap:com.android.datetimepicker
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 

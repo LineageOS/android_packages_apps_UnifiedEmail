@@ -22,16 +22,16 @@ import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Handler;
 
+import com.android.bitmap.BitmapCache;
+import com.android.bitmap.DecodeTask;
+import com.android.bitmap.RequestKey;
+import com.android.bitmap.ReusableBitmap;
 import com.android.ex.photo.util.Trace;
 import com.android.mail.ContactInfo;
 import com.android.mail.SenderInfoLoader;
 import com.android.mail.bitmap.ContactRequest.ContactRequestHolder;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.oldbitmap.BitmapCache;
-import com.android.oldbitmap.DecodeTask;
-import com.android.oldbitmap.DecodeTask.Request;
-import com.android.oldbitmap.ReusableBitmap;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.HashSet;
@@ -65,7 +65,9 @@ public class ContactResolver implements Runnable {
     private static final Executor EXECUTOR = SMALL_POOL_EXECUTOR;
 
     public interface ContactDrawableInterface {
-        public void onDecodeComplete(final Request key, final ReusableBitmap result);
+        public void onDecodeComplete(final RequestKey key, final ReusableBitmap result);
+        public int getDecodeWidth();
+        public int getDecodeHeight();
     }
 
     public ContactResolver(final ContentResolver resolver, final BitmapCache cache) {
@@ -214,14 +216,15 @@ public class ContactResolver implements Runnable {
 
                 // Start decode.
                 LogUtils.d(TAG, "ContactResolver ++ found   %s", email);
-                final ReusableBitmap result;
-                final int width = mCache.getDecodeWidth();
-                final int height = mCache.getDecodeHeight();
                 // Synchronously decode the photo bytes. We are already in a background
                 // thread, and we want decodes to finish in order. The decodes are blazing
                 // fast so we don't need to kick off multiple threads.
-                result = new DecodeTask(request.contactRequest, width, height, width, height, null,
-                        mCache).decode();
+                final DecodeTask.DecodeOptions opts = new DecodeTask.DecodeOptions(
+                        request.destination.getDecodeWidth(),
+                        request.destination.getDecodeHeight(), 1 / 2f,
+                        DecodeTask.DecodeOptions.STRATEGY_ROUND_NEAREST);
+                final ReusableBitmap result = new DecodeTask(request.contactRequest, opts, null,
+                        null, mCache).decode();
                 request.contactRequest.bytes = null;
 
                 // Decode success.

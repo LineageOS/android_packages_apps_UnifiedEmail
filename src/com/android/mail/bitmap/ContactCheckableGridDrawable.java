@@ -28,9 +28,8 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import com.android.oldbitmap.BitmapCache;
-import com.android.mail.R.color;
-import com.android.mail.R.drawable;
+import com.android.bitmap.BitmapCache;
+import com.android.mail.R;
 
 /**
  * Custom FlipDrawable which has a {@link ContactGridDrawable} on the front,
@@ -166,8 +165,8 @@ public class ContactCheckableGridDrawable extends FlipDrawable implements Animat
 
         public CheckmarkDrawable(final Resources res) {
             if (CHECKMARK == null) {
-                CHECKMARK = BitmapFactory.decodeResource(res, drawable.ic_avatar_check);
-                sBackgroundColor = res.getColor(color.checkmark_tile_background_color);
+                CHECKMARK = BitmapFactory.decodeResource(res, R.drawable.ic_avatar_check);
+                sBackgroundColor = res.getColor(R.color.checkmark_tile_background_color);
             }
             mPaint = new Paint();
             mPaint.setAntiAlias(true);

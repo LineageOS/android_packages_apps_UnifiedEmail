@@ -19,11 +19,11 @@ package com.android.mail.ui;
 
 import android.content.ContentResolver;
 
+import com.android.bitmap.BitmapCache;
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
-import com.android.oldbitmap.BitmapCache;
 
 /**
  * A controllable activity is an Activity that has a Controller attached. This activity must be
