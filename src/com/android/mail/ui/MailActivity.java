@@ -165,7 +165,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             // Hide the app icon.
-            actionBar.setIcon(null);
+            actionBar.setIcon(android.R.color.transparent);
             actionBar.setDisplayUseLogoEnabled(false);
         }
 
