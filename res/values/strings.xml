@@ -701,13 +701,7 @@
     <!-- General preference: Label of the setting for the direction to move to
          when deleting the current message.
          Options contain "newer message","older message", etc. [CHAR LIMIT=32] -->
-    <string name="auto_advance_label">Auto-advance</string>
-
-    <!-- General preference: Description of the setting for the direction to move to
-         when deleting the current message.
-         Options contain "newer message","older message", etc. [CHAR LIMIT=64] -->
-    <string name="auto_advance_summary">Choose which screen to show after you
-         delete a message</string>
+    <string name="preference_advance_to_title">Auto-advance</string>
 
     <!-- Title of the dialog that appears the first time they perform an action that would cause
          auto advance logic to fire [CHAR LIMIT=70] -->
@@ -1158,9 +1152,6 @@
         <item>portrait</item>
         <item>never</item>
     </string-array>
-
-    <!--  Settings screen, auto advance title  [CHAR LIMIT=200]-->
-    <string name="preference_advance_to_title">Auto-advance</string>
 
     <!-- Settings screen, title of "Clear search history" menu item -->
     <string name="clear_history_title">Clear search history</string>
