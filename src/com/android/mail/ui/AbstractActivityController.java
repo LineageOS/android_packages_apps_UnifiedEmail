@@ -1937,7 +1937,8 @@ public abstract class AbstractActivityController implements ActivityController,
 
                         // Save the user's setting
                         final ContentValues values = new ContentValues(1);
-                        values.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, autoAdvanceValue);
+                        values.put(
+                                AccountColumns.SettingsColumns.AUTO_ADVANCE, autoAdvanceValueInt);
 
                         final ContentResolver resolver = mContext.getContentResolver();
                         resolver.update(mAccount.updateSettingsUri, values, null, null);
