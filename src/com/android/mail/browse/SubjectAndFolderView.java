@@ -25,7 +25,6 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.DynamicDrawableSpan;
@@ -142,11 +141,7 @@ public class SubjectAndFolderView extends TextView
     }
 
     public void setSubject(String subject) {
-        if (TextUtils.isEmpty(subject)) {
-            mSubject = getResources().getString(R.string.no_subject);
-        } else {
-            mSubject = subject;
-        }
+        mSubject = Conversation.getSubjectForDisplay(getContext(), null /* badgeText */, subject);
 
         if (!mVisibleFolders) {
             setText(mSubject);
