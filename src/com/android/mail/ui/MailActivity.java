@@ -492,7 +492,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
      * The base implementation returns {@code null} and subclasses should return an actual
      * implementation if they want to be invoked at appropriate time.
      */
-    public LoaderManager.LoaderCallbacks<Boolean> getWelcomeCallbacks() {
+    public LoaderManager.LoaderCallbacks<?> getWelcomeCallbacks() {
         return null;
     }
 }
