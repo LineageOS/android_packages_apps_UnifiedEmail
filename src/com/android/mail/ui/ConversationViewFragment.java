@@ -742,7 +742,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 }
             } else {
                 // new messages that are not expanded default to being eligible for super-collapse
-                expandedState = (!msg.read || msg.starred || messageCursor.isLast()) ?
+                expandedState = (!msg.read || messageCursor.isLast()) ?
                         ExpansionState.EXPANDED : ExpansionState.SUPER_COLLAPSED;
             }
             mViewState.setShouldShowImages(msg, prevState.getShouldShowImages(msg));
