@@ -30,12 +30,13 @@ import android.text.style.UnderlineSpan;
 
 import com.android.mail.analytics.AnalyticsTimer;
 import com.google.android.mail.common.base.CharMatcher;
+import com.google.android.mail.common.html.parser.HTML;
+import com.google.android.mail.common.html.parser.HTML4;
 import com.google.android.mail.common.html.parser.HtmlDocument;
 import com.google.android.mail.common.html.parser.HtmlTree;
 import com.google.common.collect.Lists;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class HtmlUtils {
 
@@ -70,7 +71,6 @@ public class HtmlUtils {
      *   - div
      */
     public static class SpannedConverter implements HtmlTree.Converter<Spanned> {
-
         protected final SpannableStringBuilder mBuilder = new SpannableStringBuilder();
         private final LinkedList<TagWrapper> mSeenTags = Lists.newLinkedList();
 
@@ -101,15 +101,15 @@ public class HtmlUtils {
          */
         protected void handleStart(HtmlDocument.Tag tag) {
             // Special case these tags since they only affect the number of newlines
-            final String tagName = tag.getName().toLowerCase();
-            if (tagName.equals("br")) {
+            HTML.Element element = tag.getElement();
+            if (HTML4.BR_ELEMENT.equals(element)) {
                 mBuilder.append("\n");
-            } else if (tagName.equals("p")) {
+            } else if (HTML4.P_ELEMENT.equals(element)) {
                 if (mBuilder.length() > 0) {
                     // Paragraphs must have 2 new lines before itself (to "fake" margin)
                     appendTwoNewLinesIfApplicable();
                 }
-            } else if (tagName.equals("div")) {
+            } else if (HTML4.DIV_ELEMENT.equals(element)) {
                 if (mBuilder.length() > 0) {
                     // div should be on a newline
                     appendOneNewLineIfApplicable();
@@ -118,8 +118,7 @@ public class HtmlUtils {
 
             if (!tag.isSelfTerminating()) {
                 // Add to the stack of tags needing closing tag
-                mSeenTags.push(new TagWrapper(tag.getName().toLowerCase(), mBuilder.length(),
-                        tag.getAttributes()));
+                mSeenTags.push(new TagWrapper(tag, mBuilder.length()));
             }
         }
 
@@ -127,9 +126,10 @@ public class HtmlUtils {
          * Helper function to handle end tag
          */
         protected void handleEnd(HtmlDocument.EndTag tag) {
-            final String tagName = tag.getName().toLowerCase();
             TagWrapper lastSeen;
-            while ((lastSeen = mSeenTags.poll()) != null && !lastSeen.tagName.equals(tagName)) { }
+            HTML.Element element = tag.getElement();
+            while ((lastSeen = mSeenTags.poll()) != null && lastSeen.tag.getElement() != null &&
+                    !lastSeen.tag.getElement().equals(element)) { }
 
             // Misformatted html, just ignore this tag
             if (lastSeen == null) {
@@ -137,40 +137,40 @@ public class HtmlUtils {
             }
 
             final Object marker;
-            if (tagName.equals("b")) {
+            if (HTML4.B_ELEMENT.equals(element)) {
                 // BOLD
                 marker = new StyleSpan(Typeface.BOLD);
-            } else if (tagName.equals("i")) {
+            } else if (HTML4.I_ELEMENT.equals(element)) {
                 // ITALIC
                 marker = new StyleSpan(Typeface.ITALIC);
-            } else if (tagName.equals("u")) {
+            } else if (HTML4.U_ELEMENT.equals(element)) {
                 // UNDERLINE
                 marker = new UnderlineSpan();
-            } else if (tagName.equals("a")) {
+            } else if (HTML4.A_ELEMENT.equals(element)) {
                 // A HREF
-                String href = getAttributeValue(lastSeen.tagAttributes, "href");
+                HtmlDocument.TagAttribute attr = lastSeen.tag.getAttribute(HTML4.HREF_ATTRIBUTE);
                 // Ignore this tag if it doesn't have a link
-                if (href == null) {
+                if (attr == null) {
                     return;
                 }
-                marker = new URLSpan(href);
-            } else if (tagName.equals("blockquote")) {
+                marker = new URLSpan(attr.getValue());
+            } else if (HTML4.BLOCKQUOTE_ELEMENT.equals(element)) {
                 // BLOCKQUOTE
                 marker = new QuoteSpan();
-            } else if (tagName.equals("font")) {
+            } else if (HTML4.FONT_ELEMENT.equals(element)) {
                 // FONT SIZE/COLOR/FACE, since this can insert more than one span
                 // we special case it and return
                 handleFont(lastSeen);
                 return;
             } else {
                 // These tags do not add new Spanned into the mBuilder
-                if (tagName.equals("p")) {
+                if (HTML4.P_ELEMENT.equals(element)) {
                     // paragraphs should add 2 newlines after itself.
                     // TODO (bug): currently always append 2 new lines at end of text because the
                     // body is wrapped in a <p> tag. We should only append if there are more texts
                     // after.
                     appendTwoNewLinesIfApplicable();
-                } else if (tagName.equals("div")) {
+                } else if (HTML4.DIV_ELEMENT.equals(element)) {
                     // div should add a newline before itself if it's not a newline
                     appendOneNewLineIfApplicable();
                 }
@@ -193,9 +193,9 @@ public class HtmlUtils {
             final int end = mBuilder.length();
 
             // check font color
-            String color = getAttributeValue(wrapper.tagAttributes, "color");
-            if (color != null) {
-                int c = Color.parseColor(color);
+            HtmlDocument.TagAttribute attr = wrapper.tag.getAttribute(HTML4.COLOR_ATTRIBUTE);
+            if (attr != null) {
+                int c = Color.parseColor(attr.getValue());
                 if (c != -1) {
                     mBuilder.setSpan(new ForegroundColorSpan(c | 0xFF000000), start, end,
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -203,9 +203,9 @@ public class HtmlUtils {
             }
 
             // check font size
-            String size = getAttributeValue(wrapper.tagAttributes, "size");
-            if (size != null) {
-                int i = Integer.parseInt(size);
+            attr = wrapper.tag.getAttribute(HTML4.SIZE_ATTRIBUTE);
+            if (attr != null) {
+                int i = Integer.parseInt(attr.getValue());
                 if (i != -1) {
                     // default text size for pinto SEEMS to be 2, let's just use this
                     mBuilder.setSpan(new RelativeSizeSpan(i / 2f), start, end,
@@ -214,28 +214,14 @@ public class HtmlUtils {
             }
 
             // check font typeface
-            String face = getAttributeValue(wrapper.tagAttributes, "face");
-            if (face != null) {
-                String[] families = face.split(",");
+            attr = wrapper.tag.getAttribute(HTML4.FACE_ATTRIBUTE);
+            if (attr != null) {
+                String[] families = attr.getValue().split(",");
                 for (String family : families) {
                     mBuilder.setSpan(new TypefaceSpan(family.trim()), start, end,
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
-        }
-
-        /**
-         * Helper function to get the value of an attribute from a list of attributes.
-         */
-        private String getAttributeValue(List<HtmlDocument.TagAttribute> attributes, String key) {
-            String value = null;
-            for (HtmlDocument.TagAttribute attr : attributes) {
-                if (attr.getName().equalsIgnoreCase(key)) {
-                    value = attr.getValue();
-                    break;
-                }
-            }
-            return value;
         }
 
         private void appendOneNewLineIfApplicable() {
@@ -278,15 +264,12 @@ public class HtmlUtils {
         }
 
         private static class TagWrapper {
-            final String tagName;
+            final HtmlDocument.Tag tag;
             final int startIndex;
-            final List<HtmlDocument.TagAttribute> tagAttributes;
 
-            TagWrapper(String tagName, int startIndex,
-                    List<HtmlDocument.TagAttribute> tagAttributes) {
-                this.tagName = tagName;
+            TagWrapper(HtmlDocument.Tag tag, int startIndex) {
+                this.tag = tag;
                 this.startIndex = startIndex;
-                this.tagAttributes = tagAttributes;
             }
         }
     }
