@@ -25,7 +25,8 @@
         android:layout_height="match_parent"
         android:paddingTop="10dp"
         android:paddingBottom="20dp"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:background="@android:color/white" >
 
     <ProgressBar
         android:id="@+id/progress"
@@ -39,7 +40,7 @@
         android:layout_gravity="center_vertical"
         android:text="@string/wait_for_sync_title"
         android:textColor="@color/dark_gray_text_color"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>
 
 
