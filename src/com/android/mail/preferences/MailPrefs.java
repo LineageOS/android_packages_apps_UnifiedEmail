@@ -111,6 +111,8 @@ public final class MailPrefs extends VersionedPrefs {
 
         public static final String SNAP_HEADER_MODE = "snap-header-mode";
 
+        public static final String RECENT_ACCOUNTS = "recent-accounts";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
@@ -500,5 +502,13 @@ public final class MailPrefs extends VersionedPrefs {
 
     public int getSnapHeaderDefault() {
         return mSnapHeaderDefault;
+    }
+
+    public Set<String> getRecentAccounts() {
+        return getSharedPreferences().getStringSet(PreferenceKeys.RECENT_ACCOUNTS, null);
+    }
+
+    public void setRecentAccounts(Set<String> recentAccounts) {
+        getEditor().putStringSet(PreferenceKeys.RECENT_ACCOUNTS, recentAccounts).apply();
     }
 }

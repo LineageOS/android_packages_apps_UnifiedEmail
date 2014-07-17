@@ -21,7 +21,7 @@ import android.app.LoaderManager;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.BaseAdapter;
+import android.support.annotation.NonNull;
 
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
@@ -54,18 +54,23 @@ public class FolderWatcher {
      * The adapter that consumes this data. We use this only to notify the consumer that new data
      * is available.
      */
-    private BaseAdapter mConsumer;
+    private UnreadCountChangedListener mConsumer;
 
     private final static String LOG_TAG = LogUtils.TAG;
+
+    public static interface UnreadCountChangedListener {
+        void onUnreadCountChange();
+    }
 
     /**
      * Create a {@link FolderWatcher}.
      * @param activity Upstream activity
-     * @param consumer If non-null, a consumer to be notified when the unread count changes
+     * @param listener A listener to be notified when the unread count changes
      */
-    public FolderWatcher(RestrictedActivity activity, BaseAdapter consumer) {
+    public FolderWatcher(
+            RestrictedActivity activity, @NonNull UnreadCountChangedListener listener) {
         mActivity = activity;
-        mConsumer = consumer;
+        mConsumer = listener;
     }
 
     /**
@@ -228,7 +233,7 @@ public class FolderWatcher {
             mInboxMap.put(uri, f);
             // Once we have updated data, we notify the parent class that something new appeared.
             if (unreadCountChanged) {
-                mConsumer.notifyDataSetChanged();
+                mConsumer.onUnreadCountChange();
             }
         }
 
