@@ -486,6 +486,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     /**
      * Returns the loader callback that can create a
+     * {@link AbstractActivityController#LOADER_WELCOME_TOUR_ACCOUNTS} followed by a
      * {@link AbstractActivityController#LOADER_WELCOME_TOUR} which determines whether the welcome
      * tour should be displayed.
      *

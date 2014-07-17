@@ -23,7 +23,7 @@ import android.util.SparseArray;
 /**
  * A cursor-backed type that can return an object for each row of the cursor. This class is most
  * useful when:
- * 1. The cursor is returned in conjuction with an AsyncTaskLoader and created off the UI thread.
+ * 1. The cursor is returned in conjunction with an AsyncTaskLoader and created off the UI thread.
  * 2. A single row in the cursor specifies everything for an object.
  */
 public class ObjectCursor <T> extends CursorWrapper {
