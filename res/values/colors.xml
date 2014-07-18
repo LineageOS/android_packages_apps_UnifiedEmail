@@ -92,22 +92,20 @@
 
     <color name="notification_template_icon_low_bg">#0cffffff</color>
 
-    <!-- Make sure to also update LetterTileProvider#NUM_OF_TILE_COLORS when adding or removing colors -->
+
     <array name="letter_tile_colors">
-        <item>#f2b31b</item>
-        <item>#f8971c</item>
-        <item>#f0592b</item>
-        <item>#db4436</item>
-        <item>#d5197e</item>
-        <item>#8f3e97</item>
-        <item>#65499d</item>
-        <item>#547dbe</item>
-        <item>#38a4dc</item>
-        <item>#0b9c57</item>
-        <item>#8bc248</item>
-        <item>#666666</item>
+        <item>#90a4ae</item>
+        <item>#7baaf7</item>
+        <item>#4dd0e1</item>
+        <item>#4db6ac</item>
+        <item>#aed581</item>
+        <item>#fdd835</item>
+        <item>#f2a600</item>
+        <item>#ff8a65</item>
+        <item>#f48fb1</item>
+        <item>#7986cb</item>
     </array>
-    <color name="letter_tile_default_color">#d66161</color>
+    <color name="letter_tile_default_color">#f48fb1</color>
     <color name="letter_tile_font_color">#ffffff</color>
     <color name="tile_divider_color">#ffffff</color>
     <!-- Color.GRAY -->
