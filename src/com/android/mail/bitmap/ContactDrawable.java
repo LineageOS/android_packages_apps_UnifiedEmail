@@ -56,6 +56,7 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
 
     /** Letter tile */
     private static TypedArray sColors;
+    private static int sColorCount;
     private static int sDefaultColor;
     private static int sTileLetterFontSize;
     private static int sTileFontColor;
@@ -64,9 +65,6 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
     private static final Paint sPaint = new Paint();
     private static final Rect sRect = new Rect();
     private static final char[] sFirstChar = new char[1];
-
-    /** This should match the total number of colors defined in colors.xml for letter_tile_color */
-    private static final int NUM_OF_TILE_COLORS = 12;
 
     private final float mBorderWidth;
     private final Paint mBitmapPaint;
@@ -98,6 +96,7 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
 
         if (sColors == null) {
             sColors = res.obtainTypedArray(R.array.letter_tile_colors);
+            sColorCount = sColors.length();
             sDefaultColor = res.getColor(R.color.letter_tile_default_color);
             sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
             sTileFontColor = res.getColor(R.color.letter_tile_font_color);
@@ -207,7 +206,7 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
         // String.hashCode() implementation is not supposed to change across java versions, so
         // this should guarantee the same email address always maps to the same color.
         // The email should already have been normalized by the ContactRequest.
-        final int color = Math.abs(email.hashCode()) % NUM_OF_TILE_COLORS;
+        final int color = Math.abs(email.hashCode()) % sColorCount;
         return sColors.getColor(color, sDefaultColor);
     }
 
