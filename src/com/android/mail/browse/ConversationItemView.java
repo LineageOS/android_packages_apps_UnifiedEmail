@@ -396,12 +396,14 @@ public class ConversationItemView extends View
 
         mSubjectTextView = new TextView(mContext);
         mSubjectTextView.setEllipsize(TextUtils.TruncateAt.END);
+        mSubjectTextView.setSingleLine(); // allow partial words to be elided
         mSubjectTextView.setIncludeFontPadding(false);
         ViewCompat.setLayoutDirection(mSubjectTextView, layoutDir);
         ViewUtils.setTextAlignment(mSubjectTextView, View.TEXT_ALIGNMENT_VIEW_START);
 
         mSnippetTextView = new TextView(mContext);
         mSnippetTextView.setEllipsize(TextUtils.TruncateAt.END);
+        mSnippetTextView.setSingleLine(); // allow partial words to be elided
         mSnippetTextView.setIncludeFontPadding(false);
         ViewCompat.setLayoutDirection(mSnippetTextView, layoutDir);
         ViewUtils.setTextAlignment(mSnippetTextView, View.TEXT_ALIGNMENT_VIEW_START);
@@ -917,7 +919,6 @@ public class ConversationItemView extends View
         final int subjectWidth = mCoordinates.subjectWidth;
         final int subjectHeight = mCoordinates.subjectHeight;
         mSubjectTextView.setLayoutParams(new ViewGroup.LayoutParams(subjectWidth, subjectHeight));
-        mSubjectTextView.setMaxLines(mCoordinates.subjectLineCount);
         mSubjectTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCoordinates.subjectFontSize);
         layoutViewExactly(mSubjectTextView, subjectWidth, subjectHeight);
 
@@ -944,7 +945,6 @@ public class ConversationItemView extends View
         final int snippetWidth = mCoordinates.maxSnippetWidth - folderWidth;
         final int snippetHeight = mCoordinates.snippetHeight;
         mSnippetTextView.setLayoutParams(new ViewGroup.LayoutParams(snippetWidth, snippetHeight));
-        mSnippetTextView.setMaxLines(mCoordinates.snippetLineCount);
         mSnippetTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCoordinates.snippetFontSize);
         layoutViewExactly(mSnippetTextView, snippetWidth, snippetHeight);
 
