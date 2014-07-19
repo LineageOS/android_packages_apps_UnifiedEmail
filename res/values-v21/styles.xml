@@ -18,12 +18,13 @@
 <resources>
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
         <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
-        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Material.Light.ListView</item>
     </style>
 
-    <style name="OverflowButtonStyle"
-           parent="@android:style/Widget.Material.Light.ActionButton.Overflow" />
+    <style name="OverflowButtonStyle" parent="@android:style/Widget.Material.Light.ActionButton.Overflow" >
+        <item name="android:src">@drawable/ic_overflow_24dp</item>
+    </style>
 
     <style name="PlainSpinnerDropdown" parent="@android:style/Widget.Material.Light.Spinner">
         <item name="android:background">@null</item>
@@ -64,7 +65,7 @@
     </style>
 
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Material.Light.DialogWhenLarge">
-        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
     </style>
 
     <style name="ComposeThemeBase" parent="@style/UnifiedEmailTheme" />

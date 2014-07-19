@@ -19,6 +19,6 @@
     <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title" />
 
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Material.Light.Dialog.MinWidth">
-        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
     </style>
 </resources>

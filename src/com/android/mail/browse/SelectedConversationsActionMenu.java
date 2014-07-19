@@ -423,14 +423,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         } else {
             archive.setVisible(showArchive);
         }
-        // We may want to reshow the archive menu item, but only if the account supports archiving
-        if (!showArchive && accountSupportsArchive) {
-            if (!showRemoveFolder &&
-                    Utils.shouldShowDisabledArchiveIcon(mActivity.getActivityContext())) {
-                archive.setEnabled(false);
-                archive.setVisible(true);
-            }
-        }
         final MenuItem spam = menu.findItem(R.id.report_spam);
         spam.setVisible(!showMarkNotSpam
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM)
@@ -556,31 +548,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         if (mAccountObserver != null) {
             mAccountObserver.unregisterAndDestroy();
             mAccountObserver = null;
-        }
-    }
-
-    /**
-     * Disable the selected conversations menu item associated with a command
-     * id.
-     */
-    public void disableCommand(int id) {
-        enableMenuItem(id, false);
-    }
-
-    /**
-     * Enable the selected conversations menu item associated with a command
-     * id.
-     */
-    public void enableCommand(int id) {
-        enableMenuItem(id, true);
-    }
-
-    private void enableMenuItem(int id, boolean enable) {
-        if (mActivated) {
-            MenuItem item = mMenu.findItem(id);
-            if (item != null) {
-                item.setEnabled(enable);
-            }
         }
     }
 }

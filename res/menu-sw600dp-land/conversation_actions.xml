@@ -40,7 +40,7 @@
         android:id="@+id/archive"
         android:title="@string/archive"
         android:showAsAction="never"
-        android:icon="@drawable/archive"
+        android:icon="@drawable/ic_archive_wht_24dp"
         android:alphabeticShortcut="@string/trigger_y_char" />
     <item
         android:id="@+id/remove_folder"
@@ -54,20 +54,20 @@
         android:id="@+id/delete"
         android:title="@string/delete"
         android:showAsAction="never"
-        android:icon="@drawable/trash" />
+        android:icon="@drawable/ic_delete_wht_24dp" />
     <!-- Depends on the user viewing a draft label, and the above menu item not being shown -->
     <item
         android:id="@+id/discard_drafts"
         android:title="@string/discard_drafts"
         android:showAsAction="never"
-        android:icon="@drawable/trash"
+        android:icon="@drawable/ic_delete_wht_24dp"
         android:visible="false" />
 
     <item
         android:id="@+id/inside_conversation_unread"
         android:title="@string/mark_unread"
         android:showAsAction="never"
-        android:icon="@drawable/ic_menu_mark_unread_holo_light" />
+        android:icon="@drawable/ic_markunread_wht_24dp" />
 
     <item
         android:id="@+id/move_to"
