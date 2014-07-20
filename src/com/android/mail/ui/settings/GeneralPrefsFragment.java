@@ -234,7 +234,7 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
             mSnapHeader.setValueIndex(snapHeaderModeIndex);
         }
 
-        final String removalAction = mMailPrefs.getRemovalAction(true);
+        final String removalAction = mMailPrefs.getRemovalAction(supportsArchive());
         updateListSwipeTitle(removalAction);
 
         listenForPreferenceChange(
@@ -249,6 +249,10 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
                 PreferenceKeys.CONFIRM_ARCHIVE,
                 PreferenceKeys.CONFIRM_SEND
         );
+    }
+
+    protected boolean supportsArchive() {
+        return true;
     }
 
     /**
