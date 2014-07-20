@@ -17,6 +17,7 @@
 
 package com.android.mail.browse;
 
+import android.support.v4.text.BidiFormatter;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
@@ -31,7 +32,7 @@ public class MessageHeaderViewTest extends AndroidTestCase {
         String[] to = makeRecipientArray("TO", 60);
         String[] cc = makeRecipientArray("CC", 60);
         String summary = MessageHeaderView.getRecipientSummaryText(getContext(), "", "", to, cc,
-                null, new HashMap<String, Address>(), null).toString();
+                null, new HashMap<String, Address>(), null, BidiFormatter.getInstance()).toString();
 
         assertTrue(summary.contains("TO00"));
         assertTrue(summary.contains("TO49"));
@@ -44,7 +45,7 @@ public class MessageHeaderViewTest extends AndroidTestCase {
         String[] cc = makeRecipientArray("CC", 10);
         String[] bcc = makeRecipientArray("BB", 60);
         String summary = MessageHeaderView.getRecipientSummaryText(getContext(), "", "", to, cc,
-                bcc, new HashMap<String, Address>(), null).toString();
+                bcc, new HashMap<String, Address>(), null, BidiFormatter.getInstance()).toString();
 
         assertTrue(summary.contains("TO00"));
         assertTrue(summary.contains("TO19"));

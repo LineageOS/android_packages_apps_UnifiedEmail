@@ -19,11 +19,8 @@ package com.android.mail;
 import android.content.Context;
 import android.text.format.DateUtils;
 
-import com.android.mail.R;
-
 import java.util.Calendar;
 import java.util.Formatter;
-import java.util.GregorianCalendar;
 
 /**
  * Convenience class to efficiently make multiple short date strings. Instantiating and reusing
@@ -80,8 +77,7 @@ public class FormattedDateBuilder {
         } else if (isCurrentYear(when)) {
             return DateUtils.getRelativeDateTimeString(mContext, when, DateUtils.DAY_IN_MILLIS,
                     2 * DateUtils.WEEK_IN_MILLIS,
-                    DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE |
-                    DateUtils.FORMAT_ABBREV_MONTH);
+                    DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_MONTH);
         } else {
             return formatDateTime(when, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE);
         }
@@ -97,18 +93,10 @@ public class FormattedDateBuilder {
      */
     public CharSequence formatFullDateTime(long when) {
         sb.setLength(0);
-        if (isYesterday(when)) {
-            DateUtils.formatDateRange(mContext, dateFormatter, when, when,
-                    DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE |
-                    DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL);
-            return mContext.getString(R.string.date_message_received_yesterday, sb.toString());
-        } else {
-            DateUtils.formatDateRange(mContext, dateFormatter, when, when,
-                    DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE |
-                    DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR |
-                    DateUtils.FORMAT_ABBREV_ALL);
-            return sb.toString();
-        }
+        DateUtils.formatDateRange(mContext, dateFormatter, when, when,
+                DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE |
+                DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL);
+        return sb.toString();
     }
 
     /**
@@ -130,16 +118,6 @@ public class FormattedDateBuilder {
         final Calendar whenCal = Calendar.getInstance();
         whenCal.setTimeInMillis(when);
         return (nowCal.get(Calendar.YEAR) == whenCal.get(Calendar.YEAR));
-    }
-
-    private boolean isYesterday(long when) {
-        final Calendar nowCal = Calendar.getInstance();
-        final Calendar whenCal = Calendar.getInstance();
-        whenCal.setTimeInMillis(when);
-        // Decrement the "now" calendar back one day, and see if both are now the same day.
-        nowCal.add(Calendar.DAY_OF_YEAR, -1);
-        return (whenCal.get(Calendar.DAY_OF_YEAR) == nowCal.get(Calendar.DAY_OF_YEAR) &&
-                whenCal.get(Calendar.YEAR) == nowCal.get(Calendar.YEAR));
     }
 
     private CharSequence formatDateTime(long when, int flags) {

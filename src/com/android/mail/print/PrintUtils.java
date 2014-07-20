@@ -190,7 +190,7 @@ public class PrintUtils {
                     .append(DIV_END);
         } else {
             buildEmailDiv(res, recipients, to, DIV_START, DIV_END,
-                    isDraft ? R.string.draft_to_heading : R.string.to_heading);
+                    isDraft ? R.string.draft_to_heading : R.string.to_heading_no_space);
         }
 
         // cc
@@ -213,7 +213,7 @@ public class PrintUtils {
             String divStart, String divEnd, int headingId) {
         if (emailList != null) {
             recipients.append(divStart).append(res.getString(headingId))
-                    .append(emailList).append(divEnd);
+                    .append('\u0020').append(emailList).append(divEnd);
         }
     }
 
