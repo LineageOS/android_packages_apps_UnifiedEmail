@@ -154,9 +154,7 @@ public class WidgetConversationListItemViewBuilder {
         final CharSequence styledDate = addStyle(date, dateFontSize, dateColor);
 
         subject = Conversation.getSubjectForDisplay(context, null /* badgeText */, subject);
-
-        final SpannableStringBuilder subjectBuilder = new SpannableStringBuilder(
-                Conversation.getSubjectForDisplay(context, null /* badgeText */, subject));
+        final SpannableStringBuilder subjectBuilder = new SpannableStringBuilder(subject);
         if (isUnread) {
             subjectBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

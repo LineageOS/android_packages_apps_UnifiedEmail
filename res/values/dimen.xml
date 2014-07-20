@@ -44,7 +44,7 @@
     <dimen name="conversation_folder_padding">1dp</dimen>
     <dimen name="conversation_folder_padding_extra_width">8dp</dimen>
     <dimen name="conversation_folder_padding_after">8dp</dimen>
-    <dimen name="conversation_folder_rounded_corner_radius">1dp</dimen>
+    <dimen name="folder_rounded_corner_radius">1dp</dimen>
     <dimen name="conversation_folder_margin_top">6dp</dimen>
     <dimen name="message_details_header_padding_start">16dip</dimen>
     <dimen name="message_details_header_padding_start_expanded">72dip</dimen>
@@ -172,6 +172,7 @@
     <dimen name="conv_list_info_icon_padding_start">4dip</dimen>
     <dimen name="conv_list_date_padding_start">8dip</dimen>
     <dimen name="conv_list_paperclip_padding_start">6dip</dimen>
+    <dimen name="conv_list_star_padding_start">8dp</dimen>
 
     <dimen name="conv_list_wide_padding_start">20dip</dimen>
     <dimen name="conv_list_wide_padding_end">32dip</dimen>

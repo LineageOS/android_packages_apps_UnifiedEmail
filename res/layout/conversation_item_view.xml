@@ -145,57 +145,58 @@
 
                 <TextView
                     android:id="@+id/subject"
-                    android:layout_width="0dip"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:background="@color/mail_app_blue"
+                    android:ellipsize="end"
                     android:includeFontPadding="false"
                     android:lines="1"
                     android:text="@string/long_string"
                     android:textSize="14sp"
                     style="@style/ConversationListSubjectStyle"/>
 
+                <!-- snippet overlaps folders completely in the layout;
+                     code will later remove the overlap -->
                 <TextView
                     android:id="@+id/snippet"
-                    android:layout_width="0dip"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:background="@color/dark_gray_text_color"
+                    android:ellipsize="end"
                     android:includeFontPadding="false"
                     android:lines="1"
                     android:text="@string/long_string"
                     android:textSize="14sp"
-                    style="@style/ConversationListSnippetStyle"/>
+                    style="@style/ConversationListSnippetAndFoldersStyle"/>
+
+                <!-- folders overlap snippet completely in the layout;
+                     code will later remove the overlap -->
+                <TextView
+                    android:id="@+id/folders"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:includeFontPadding="false"
+                    android:lines="1"
+                    android:text="@string/long_string"
+                    android:textSize="14sp"
+                    style="@style/ConversationListSnippetAndFoldersStyle"/>
 
             </RelativeLayout>
 
         </LinearLayout>
 
     </LinearLayout>
-    <!-- There are 12dp bottom margins here for when there are no folders -->
 
-    <include
-        layout="@layout/conversation_attachment_previews"/>
+    <include layout="@layout/conversation_attachment_previews"/>
 
-    <!-- Margin between attachment previews and folders. 12dp bottom margins match above -->
     <View
         android:id="@+id/attachment_previews_bottom_margin"
         android:layout_width="0dp"
         android:layout_height="@dimen/attachment_preview_margin_bottom"
         android:layout_marginBottom="12dp"
         android:visibility="gone" />
-
-    <!-- Folders should be ~5dp below the subject *baseline*, so we cancel out part of the 12dp bottom margin above -->
-    <TextView
-        android:id="@+id/folders"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-10dp"
-        android:fontFamily="sans-serif-light"
-        android:includeFontPadding="false"
-        android:text="@string/long_string"
-        android:textSize="11sp"
-        android:lines="1"
-        android:minHeight="@dimen/conv_list_padding" />
 
 </LinearLayout>
