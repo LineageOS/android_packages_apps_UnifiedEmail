@@ -431,8 +431,8 @@ public class WidgetService extends RemoteViewsService {
                 }
 
                 // Load up our remote view.
-                RemoteViews remoteViews = mWidgetConversationListItemViewBuilder.getStyledView(date,
-                        conversation, new FolderUri(mFolderUri), ignoreFolderType,
+                RemoteViews remoteViews = mWidgetConversationListItemViewBuilder.getStyledView(
+                        mContext, date, conversation, new FolderUri(mFolderUri), ignoreFolderType,
                         senderBuilder,
                         ConversationItemView.filterTag(mContext, conversation.subject));
 

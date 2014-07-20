@@ -49,4 +49,14 @@ public class ViewUtils {
     public static int getPaddingEnd(View view) {
         return Utils.isRunningJBMR1OrLater() ? view.getPaddingEnd() : view.getPaddingRight();
     }
+
+    /**
+     * Sets the text alignment of the view. Prior to API 17, will no-op.
+     */
+    @SuppressLint("NewApi")
+    public static void setTextAlignment(View view, int textAlignment) {
+        if (Utils.isRunningJBMR1OrLater()) {
+            view.setTextAlignment(textAlignment);
+        }
+    }
 }

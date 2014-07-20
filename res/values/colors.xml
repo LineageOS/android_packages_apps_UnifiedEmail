@@ -22,12 +22,9 @@
     <!-- if you want to make something blue, please try to use THIS blue -->
     <color name="mail_app_blue">@android:color/holo_blue_light</color>
     <!-- Conversation List Item Colors -->
-    <color name="subject_text_color_unread">@color/dark_gray_text_color</color>
-    <color name="snippet_text_color_unread">#777777</color>
-    <color name="senders_text_color_unread">@color/dark_gray_text_color</color>
-    <color name="subject_text_color_read">@color/subject_text_color_unread</color>
-    <color name="snippet_text_color_read">@color/snippet_text_color_unread</color>
-    <color name="senders_text_color_read">@color/senders_text_color_unread</color>
+    <color name="senders_text_color">#212121</color>
+    <color name="subject_text_color">#212121</color>
+    <color name="snippet_text_color">#757575</color>
     <color name="date_text_color_unread">#4285F4</color>
     <color name="date_text_color_read">#757575</color>
     <color name="message_info_text_color">@color/gray_text_color</color>

@@ -23,8 +23,8 @@
 
     <com.android.mail.browse.MessageHeaderContactBadge
         android:id="@+id/photo"
-        android:layout_width="@dimen/message_header_contact_photo_width"
-        android:layout_height="@dimen/message_header_contact_photo_height"
+        android:layout_width="@dimen/contact_image_width"
+        android:layout_height="@dimen/contact_image_height"
         android:layout_marginTop="@dimen/message_header_contact_photo_margin"
         android:layout_marginBottom="@dimen/message_header_contact_photo_margin"
         android:background="?android:attr/selectableItemBackground"
@@ -42,8 +42,8 @@
     <!-- draft should match photo in dimensions -->
     <ImageView
         android:id="@+id/draft"
-        android:layout_width="@dimen/message_header_contact_photo_width"
-        android:layout_height="@dimen/message_header_contact_photo_height"
+        android:layout_width="@dimen/contact_image_width"
+        android:layout_height="@dimen/contact_image_height"
         android:layout_marginTop="@dimen/message_header_contact_photo_margin"
         android:layout_marginBottom="@dimen/message_header_contact_photo_margin"
         android:visibility="gone"

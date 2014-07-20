@@ -241,12 +241,9 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         mMyName = context.getString(R.string.me_object_pronoun);
 
         final Resources res = getResources();
-        mContactPhotoWidth = res.getDimensionPixelSize(
-                R.dimen.message_header_contact_photo_width);
-        mContactPhotoHeight = res.getDimensionPixelSize(
-                R.dimen.message_header_contact_photo_height);
-        mTitleContainerMarginEnd = res.getDimensionPixelSize(
-                R.dimen.conversation_view_margin_side);
+        mContactPhotoWidth = res.getDimensionPixelSize(R.dimen.contact_image_width);
+        mContactPhotoHeight = res.getDimensionPixelSize(R.dimen.contact_image_height);
+        mTitleContainerMarginEnd = res.getDimensionPixelSize(R.dimen.conversation_view_margin_side);
     }
 
     @Override
