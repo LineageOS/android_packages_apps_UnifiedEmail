@@ -275,8 +275,9 @@ public abstract class AbstractActivityController implements ActivityController,
     private final DataSetObservable mAllAccountObservers = new MailObservable("AllAccounts");
     /** Listeners that are interested in changes to the current folder. */
     private final DataSetObservable mFolderObservable = new MailObservable("CurrentFolder");
-    /** Listeners that are interested in changes to the drawer state. */
-    private final DataSetObservable mDrawerObservers = new MailObservable("Drawer");
+    /** Listeners that are interested in changes to the Folder or Account selection */
+    private final DataSetObservable mFolderOrAccountObservers =
+            new MailObservable("FolderOrAccount");
 
     /**
      * Selected conversations, if any.
@@ -690,7 +691,6 @@ public abstract class AbstractActivityController implements ActivityController,
         changeAccount(account);
     }
 
-    @Override
     public void changeAccount(Account account) {
         LogUtils.d(LOG_TAG, "AAC.changeAccount(%s)", account);
         // Is the account or account settings different from the existing account?
@@ -777,13 +777,13 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void registerDrawerClosedObserver(final DataSetObserver observer) {
-        mDrawerObservers.registerObserver(observer);
+    public void registerFolderOrAccountChangedObserver(final DataSetObserver observer) {
+        mFolderOrAccountObservers.registerObserver(observer);
     }
 
     @Override
-    public void unregisterDrawerClosedObserver(final DataSetObserver observer) {
-        mDrawerObservers.unregisterObserver(observer);
+    public void unregisterFolderOrAccountChangedObserver(final DataSetObserver observer) {
+        mFolderOrAccountObservers.unregisterObserver(observer);
     }
 
     /**
@@ -795,7 +795,9 @@ public abstract class AbstractActivityController implements ActivityController,
     public void closeDrawer(final boolean hasNewFolderOrAccount, Account nextAccount,
             Folder nextFolder) {
         if (!isDrawerEnabled()) {
-            mDrawerObservers.notifyChanged();
+            if (hasNewFolderOrAccount) {
+                mFolderOrAccountObservers.notifyChanged();
+            }
             return;
         }
         // If there are no new folders or accounts to switch to, just close the drawer
@@ -822,7 +824,9 @@ public abstract class AbstractActivityController implements ActivityController,
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
             // Drawer is already closed, notify observers that is the case.
-            mDrawerObservers.notifyChanged();
+            if (hasNewFolderOrAccount) {
+                mFolderOrAccountObservers.notifyChanged();
+            }
         }
     }
 
@@ -4451,7 +4455,7 @@ public abstract class AbstractActivityController implements ActivityController,
             if (conversationList != null) {
                 conversationList.clear();
             }
-            mDrawerObservers.notifyChanged();
+            mFolderOrAccountObservers.notifyChanged();
         }
 
         /**

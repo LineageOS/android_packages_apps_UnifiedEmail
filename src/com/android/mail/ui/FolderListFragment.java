@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -175,6 +176,8 @@ public class FolderListFragment extends ListFragment implements
     private FolderObserver mFolderObserver = null;
     /** Listen for account changes. */
     private AccountObserver mAccountObserver = null;
+    /** Listen to changes to selected folder or account */
+    private FolderOrAccountListener mFolderOrAccountListener = null;
     /** Listen to changes to list of all accounts */
     private AllAccountObserver mAllAccountsObserver = null;
     /**
@@ -362,6 +365,9 @@ public class FolderListFragment extends ListFragment implements
             };
             mAllAccountsObserver.initialize(accountController);
 
+            mFolderOrAccountListener = new FolderOrAccountListener();
+            mAccountController.registerFolderOrAccountChangedObserver(mFolderOrAccountListener);
+
             final DrawerController dc = mActivity.getDrawerController();
             if (dc != null) {
                 dc.registerDrawerListener(mDrawerListener);
@@ -536,6 +542,10 @@ public class FolderListFragment extends ListFragment implements
         if (mAllAccountsObserver != null) {
             mAllAccountsObserver.unregisterAndDestroy();
             mAllAccountsObserver = null;
+        }
+        if (mFolderOrAccountListener != null && mAccountController != null) {
+            mAccountController.unregisterFolderOrAccountChangedObserver(mFolderOrAccountListener);
+            mFolderOrAccountListener = null;
         }
         super.onDestroyView();
 
@@ -1577,6 +1587,17 @@ public class FolderListFragment extends ListFragment implements
                 mPendingFooterClick.doFooterAction();
                 mPendingFooterClick = null;
             }
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {}
+
+    }
+
+    private class FolderOrAccountListener extends DataSetObserver {
+
+        @Override
+        public void onChanged() {
             // First, check if there's a folder to change to
             if (mNextFolder != null) {
                 mFolderChanger.onFolderSelected(mNextFolder);
@@ -1588,9 +1609,5 @@ public class FolderListFragment extends ListFragment implements
                 mNextAccount = null;
             }
         }
-
-        @Override
-        public void onDrawerStateChanged(int newState) {}
-
     }
 }
