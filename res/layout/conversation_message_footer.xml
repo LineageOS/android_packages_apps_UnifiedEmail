@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    style="@style/ConversationViewSideMarginStyle" >
+    style="@style/ConversationViewPaddingStyle" >
 
     <TextView
         android:id="@+id/view_entire_message_prompt"

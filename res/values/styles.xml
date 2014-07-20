@@ -575,16 +575,14 @@
         <item name="android:paddingRight">@dimen/send_mail_as_padding</item>
     </style>
 
-    <style name="ConversationViewSideMarginStyle">
-        <item name="android:layout_marginLeft">@dimen/conversation_view_margin_side</item>
-        <item name="android:layout_marginRight">@dimen/conversation_view_margin_side</item>
+    <style name="ConversationViewPaddingStyle">
+        <item name="android:paddingLeft">@dimen/conversation_view_margin_side</item>
+        <item name="android:paddingRight">@dimen/conversation_view_margin_side</item>
     </style>
 
-    <style name="ConversationViewSideMarginMinusGradientStyle">
-        <item name="android:layout_marginLeft">@dimen/conversation_view_margin_side_minus_gradient
-        </item>
-        <item name="android:layout_marginRight">@dimen/conversation_view_margin_side_minus_gradient
-        </item>
+    <style name="ConversationViewMarginStyle">
+        <item name="android:layout_marginLeft">@dimen/conversation_view_margin_side</item>
+        <item name="android:layout_marginRight">@dimen/conversation_view_margin_side</item>
     </style>
 
     <style name="FolderListItemStartStyle">

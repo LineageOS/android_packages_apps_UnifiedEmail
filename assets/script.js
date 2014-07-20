@@ -679,8 +679,7 @@ function setSpacerHeight(spacer, spacerHeight) {
     measurePositions();
 }
 
-function setMessageBodyVisible(messageDomId, isVisible, spacerHeight,
-        topBorderHeight, bottomBorderHeight) {
+function setMessageBodyVisible(messageDomId, isVisible, spacerHeight) {
     var i, len;
     var visibility = isVisible ? "block" : "none";
     var messageDiv = document.querySelector("#" + messageDomId);
@@ -688,26 +687,6 @@ function setMessageBodyVisible(messageDomId, isVisible, spacerHeight,
     if (!messageDiv || collapsibleDivs.length == 0) {
         console.log("can't set body visibility for message with id: " + messageDomId);
         return;
-    }
-
-    // if the top border has changed, update the height of its spacer
-    if (topBorderHeight > 0) {
-        var border = messageDiv.previousElementSibling;
-        if (!border) {
-            console.log("can't set spacer for top border");
-            return;
-        }
-        border.style.height = topBorderHeight + "px";
-    }
-
-    // if the bottom border has changed, update the height of its spacer
-    if (bottomBorderHeight > 0) {
-        var border = messageDiv.nextElementSibling;
-        if (!border) {
-            console.log("can't set spacer for bottom border");
-            return;
-        }
-        border.style.height = bottomBorderHeight + "px";
     }
 
     messageDiv.classList.toggle("expanded");
