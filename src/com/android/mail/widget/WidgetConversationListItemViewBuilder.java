@@ -21,10 +21,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.support.v4.text.BidiFormatter;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -142,7 +140,7 @@ public class WidgetConversationListItemViewBuilder {
      */
     public RemoteViews getStyledView(final Context context, final CharSequence date,
             final Conversation conversation, final FolderUri folderUri, final int ignoreFolderType,
-            final SpannableStringBuilder senders, final String subject) {
+            final SpannableStringBuilder senders, String subject) {
 
         final boolean isUnread = !conversation.read;
         final String snippet = conversation.getSnippet();
@@ -155,14 +153,12 @@ public class WidgetConversationListItemViewBuilder {
         final int dateColor = isUnread ? DATE_TEXT_COLOR_UNREAD : DATE_TEXT_COLOR_READ;
         final CharSequence styledDate = addStyle(date, dateFontSize, dateColor);
 
-        // Add style to subject
-        final BidiFormatter bidiFormatter = BidiFormatter.getInstance();
-        final String filteredSubject =
-                TextUtils.isEmpty(subject) ? "" : bidiFormatter.unicodeWrap(subject);
+        subject = Conversation.getSubjectForDisplay(context, null /* badgeText */, subject);
+
         final SpannableStringBuilder subjectBuilder = new SpannableStringBuilder(
-                Conversation.getSubjectForDisplay(context, null /* badgeText */, filteredSubject));
+                Conversation.getSubjectForDisplay(context, null /* badgeText */, subject));
         if (isUnread) {
-            subjectBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, filteredSubject.length(),
+            subjectBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         subjectBuilder.setSpan(new ForegroundColorSpan(SUBJECT_TEXT_COLOR), 0,
