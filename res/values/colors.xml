@@ -89,14 +89,18 @@
 
     <!-- Make sure to also update LetterTileProvider#NUM_OF_TILE_COLORS when adding or removing colors -->
     <array name="letter_tile_colors">
-        <item>#f16364</item>
-        <item>#f58559</item>
-        <item>#f9a43e</item>
-        <item>#e4c62e</item>
-        <item>#67bf74</item>
-        <item>#59a2be</item>
-        <item>#2093cd</item>
-        <item>#ad62a7</item>
+        <item>#f2b31b</item>
+        <item>#f8971c</item>
+        <item>#f0592b</item>
+        <item>#db4436</item>
+        <item>#d5197e</item>
+        <item>#8f3e97</item>
+        <item>#65499d</item>
+        <item>#547dbe</item>
+        <item>#38a4dc</item>
+        <item>#0b9c57</item>
+        <item>#8bc248</item>
+        <item>#666666</item>
     </array>
     <color name="letter_tile_default_color">#d66161</color>
     <color name="letter_tile_font_color">#ffffff</color>
