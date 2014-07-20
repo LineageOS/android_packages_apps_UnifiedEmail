@@ -17,21 +17,26 @@
 
 package com.android.mail.ui.settings;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.test.suitebuilder.annotation.MediumTest;
-import android.test.suitebuilder.annotation.Suppress;
 
-// TODO: Insert the unified prefs class here once it's written
-@Suppress
+import com.android.mail.preferences.MailPrefs;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AutoAdvance;
+import com.android.mail.providers.UIProvider.SnapHeaderValue;
+
 public class GeneralPrefsFragmentTest
-        extends ActivityInstrumentationTestCase2<Activity> {
+        extends ActivityInstrumentationTestCase2<MailPreferenceActivity> {
+
+    private static final String PREFS_NAME_TEST = "UnifiedEmailTest";
 
     public GeneralPrefsFragmentTest() {
-        super(Activity.class);
+        super(MailPreferenceActivity.class);
     }
 
     @Override
@@ -39,62 +44,54 @@ public class GeneralPrefsFragmentTest
         super.setUp();
 
         final Intent i = new Intent();
-        i.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.mail.ui.settings.");
+        i.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                "com.android.mail.ui.settings.GeneralPrefsFragment");
+        final Bundle b = new Bundle(1);
+        b.putBoolean(GeneralPrefsFragment.CALLED_FROM_TEST, true);
+        i.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS, b);
         setActivityIntent(i);
-        getActivity();
+        final MailPreferenceActivity activity = getActivity();
+        getInstrumentation().waitForIdleSync();
+        getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                activity.getFragmentManager().executePendingTransactions();
+            }
+        });
+        final GeneralPrefsFragment fragment = activity.getGeneralPrefsFragment();
+        fragment.mMailPrefs = new MailPrefs(activity, PREFS_NAME_TEST);
     }
 
     @UiThreadTest
     @MediumTest
     public void testChangeAutoAdvance() throws Throwable {
-        // A weak proxy test that a click on auto-advance will actually persist the proper value.
-        // A better test would simulate a dialog, dialog click, and check that the value is
-        // both displayed and persisted.
-        /*
-        final Activity activity = getActivity();
-        final MailPrefs mailPrefs = MailPrefs.get(activity);
-
-        activity.getFragmentManager().executePendingTransactions();
-
+        final MailPreferenceActivity activity = getActivity();
         final GeneralPrefsFragment fragment = activity.getGeneralPrefsFragment();
+        final MailPrefs mailPrefs = fragment.mMailPrefs;
         final ListPreference autoAdvancePref = (ListPreference) fragment
                 .findPreference(GeneralPrefsFragment.AUTO_ADVANCE_WIDGET);
 
         fragment.onPreferenceChange(autoAdvancePref, UIProvider.AUTO_ADVANCE_MODE_OLDER);
-
-        assertEquals(AutoAdvance.OLDER, mailPrefs.getAutoAdvanceMode());
+        assertEquals(mailPrefs.getAutoAdvanceMode(), AutoAdvance.OLDER);
 
         fragment.onPreferenceChange(autoAdvancePref, UIProvider.AUTO_ADVANCE_MODE_NEWER);
-
-        assertEquals(AutoAdvance.NEWER, mailPrefs.getAutoAdvanceMode());
-        */
+        assertEquals(mailPrefs.getAutoAdvanceMode(), AutoAdvance.NEWER);
     }
 
     @UiThreadTest
     @MediumTest
     public void testChangeSnapHeader() throws Throwable {
-        /*
-        final Activity activity = getActivity();
-        final MailPrefs mailPrefs = MailPrefs.get(activity);
-
-        activity.getFragmentManager().executePendingTransactions();
-
+        final MailPreferenceActivity activity = getActivity();
         final GeneralPrefsFragment fragment = activity.getGeneralPrefsFragment();
+        final MailPrefs mailPrefs = fragment.mMailPrefs;
         final ListPreference snapPref = (ListPreference) fragment
                 .findPreference(GeneralPrefsFragment.SNAP_HEADER_MODE_WIDGET);
 
-        final int neverValue = GeneralPrefsFragment.prefValueToWidgetIndex(
-                GeneralPrefsFragment.SNAP_HEADER_VALUES, SnapHeaderValue.NEVER, -1);
-        snapPref.setValueIndex(neverValue);
+        fragment.onPreferenceChange(snapPref, "never");
+        assertEquals(mailPrefs.getSnapHeaderMode(), SnapHeaderValue.NEVER);
 
-        assertEquals(SnapHeaderValue.NEVER, mailPrefs.getSnapHeaderMode());
-
-        final int alwaysValue = GeneralPrefsFragment.prefValueToWidgetIndex(
-                GeneralPrefsFragment.SNAP_HEADER_VALUES, SnapHeaderValue.ALWAYS, -1);
-        snapPref.setValueIndex(alwaysValue);
-
-        assertEquals(SnapHeaderValue.ALWAYS, mailPrefs.getSnapHeaderMode());
-        */
+        fragment.onPreferenceChange(snapPref, "always");
+        assertEquals(mailPrefs.getSnapHeaderMode(), SnapHeaderValue.ALWAYS);
     }
 
 }
