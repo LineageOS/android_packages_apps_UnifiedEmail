@@ -29,6 +29,8 @@ import java.util.List;
 
 public class MailPreferenceActivity extends PreferenceActivity {
 
+    public static final String PREFERENCE_FRAGMENT_ID = "preference_fragment_id";
+
     private WeakReference<GeneralPrefsFragment> mGeneralPrefsFragmentRef;
 
     @Override
