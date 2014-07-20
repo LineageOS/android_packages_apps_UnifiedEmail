@@ -609,8 +609,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             return;
         }
         // Remove the back button but continue showing an icon.
-        final int mask = ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME;
-        mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME, mask);
+        final int mask = ActionBar.DISPLAY_HOME_AS_UP;
+        mActionBar.setDisplayOptions(0, mask);
         mActivity.getActionBar().setHomeButtonEnabled(false);
     }
 
@@ -619,7 +619,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             return;
         }
         // Show home as up, and show an icon.
-        final int mask = ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME;
+        final int mask = ActionBar.DISPLAY_HOME_AS_UP;
         mActionBar.setDisplayOptions(mask, mask);
         mActivity.getActionBar().setHomeButtonEnabled(true);
     }

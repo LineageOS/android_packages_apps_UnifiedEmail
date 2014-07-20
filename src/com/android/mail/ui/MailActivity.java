@@ -163,10 +163,10 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         }
 
         final ActionBar actionBar = getActionBar();
-        if (actionBar != null && Utils.isRunningLOrLater()) {
-            // Hide the app icon.  This only happens on L devices, as pre-L the action bar
-            // layout works with app icon
+        if (actionBar != null) {
+            // Hide the app icon.
             actionBar.setIcon(null);
+            actionBar.setDisplayUseLogoEnabled(false);
         }
 
         resetSenderImageCache();
