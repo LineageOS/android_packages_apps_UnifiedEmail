@@ -36,6 +36,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityManager;
 
+import com.android.bitmap.BitmapCache;
+import com.android.bitmap.UnrefedBitmapCache;
 import com.android.mail.R;
 import com.android.mail.analytics.AnalyticsTimer;
 import com.android.mail.bitmap.ContactResolver;
@@ -44,8 +46,6 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
-import com.android.oldbitmap.AltBitmapCache;
-import com.android.oldbitmap.BitmapCache;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -470,7 +470,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     private BitmapCache createNewSenderImageCache() {
-        return new AltBitmapCache(Utils.isLowRamDevice(this) ?
+        return new UnrefedBitmapCache(Utils.isLowRamDevice(this) ?
                 0 : SENDERS_IMAGES_CACHE_TARGET_SIZE_BYTES,
                 SENDERS_IMAGES_PREVIEWS_CACHE_NON_POOLED_FRACTION,
                 SENDERS_IMAGES_PREVIEWS_CACHE_NULL_CAPACITY);

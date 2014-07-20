@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 
+import com.android.bitmap.BitmapCache;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.bitmap.ContactResolver;
@@ -52,7 +53,6 @@ import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.android.oldbitmap.BitmapCache;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
