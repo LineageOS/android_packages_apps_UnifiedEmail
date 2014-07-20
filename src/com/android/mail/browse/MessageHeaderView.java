@@ -44,6 +44,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -260,6 +261,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         mHideDetailsView = findViewById(R.id.hide_details);
         mSnippetView = (TextView) findViewById(R.id.email_snippet);
         mPhotoView = (MessageHeaderContactBadge) findViewById(R.id.photo);
+        mPhotoView.setQuickContactBadge(
+                (QuickContactBadge) findViewById(R.id.invisible_quick_contact));
         mReplyButton = findViewById(R.id.reply);
         mReplyAllButton = findViewById(R.id.reply_all);
         mForwardButton = findViewById(R.id.forward);

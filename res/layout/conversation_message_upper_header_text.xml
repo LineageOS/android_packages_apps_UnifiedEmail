@@ -80,7 +80,7 @@
         android:id="@+id/email_snippet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/message_header_margin_bottom"
+        android:layout_marginBottom="16dp"
         android:layout_below="@id/sender_name"
         style="@style/MessageHeaderSnippetStyle" />
 </RelativeLayout>
