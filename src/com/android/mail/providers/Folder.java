@@ -19,6 +19,8 @@ package com.android.mail.providers;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Parcel;
@@ -644,7 +646,14 @@ public class Folder implements Parcelable, Comparable<Folder> {
         }
         final int icon = folder.iconResId;
         if (icon > 0) {
-            iconView.setImageResource(icon);
+            final Drawable iconDrawable = iconView.getResources().getDrawable(icon);
+            if (iconDrawable != null &&
+                    folder.supportsCapability(UIProvider.FolderCapabilities.TINT_ICON)) {
+                // Default multiply by white
+                iconDrawable.mutate().setColorFilter(folder.getBackgroundColor(0xFFFFFF),
+                        PorterDuff.Mode.MULTIPLY);
+            }
+            iconView.setImageDrawable(iconDrawable);
         } else {
             LogUtils.e(LogUtils.TAG, "No icon returned for folder %s", folder);
         }

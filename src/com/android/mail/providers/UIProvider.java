@@ -802,6 +802,7 @@ public class UIProvider {
         // FEEL FREE TO USE 0x0004 - was previous CAN_HOLD_MAIL but that was true for all
         // folders so we removed that value
         public static final int CAN_ACCEPT_MOVED_MESSAGES = 0x0008;
+
          /**
          * For accounts that support archive, this will indicate that this folder supports
          * the archive functionality.
@@ -835,14 +836,17 @@ public class UIProvider {
          * Indicates that a folder supports settings (sync lookback, etc.)
          */
         public static final int SUPPORTS_SETTINGS = 0x0200;
+
         /**
          * All the messages in this folder are important.
          */
         public static final int ONLY_IMPORTANT = 0x0400;
+
         /**
          * Deletions in this folder can't be undone (could include archive if desirable)
          */
         public static final int DELETE_ACTION_FINAL = 0x0800;
+
         /**
          * This folder is virtual, i.e. contains conversations potentially pulled from other
          * folders, potentially even from different accounts.  Examples might be a "starred"
@@ -880,6 +884,12 @@ public class UIProvider {
          * display recipients rather than the standard list of senders.
          */
         public static final int SHOW_RECIPIENTS = 0x20000;
+
+        /**
+         * We only want the icons of certain folders to be tinted with their
+         * {@link FolderColumns#BG_COLOR}, this indicates when we want that to happen.
+         */
+        public static final int TINT_ICON = 0x40000;
     }
 
     public static final class FolderColumns implements BaseColumns {
