@@ -38,6 +38,7 @@ import com.android.mail.browse.SuperCollapsedBlock.OnClickListener;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ControllableActivity;
+import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.utils.VeiledAddressMatcher;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -68,6 +69,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final MessageFooterCallbacks mFooterCallbacks;
     private final ContactInfoSource mContactInfoSource;
     private final ConversationViewHeaderCallbacks mConversationCallbacks;
+    private final ConversationUpdater mConversationUpdater;
     private final OnClickListener mSuperCollapsedListener;
     private final Map<String, Address> mAddressCache;
     private final LayoutInflater mInflater;
@@ -102,13 +104,15 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final ConversationViewHeader headerView = (ConversationViewHeader) inflater.inflate(
                     R.layout.conversation_view_header, parent, false);
-            headerView.setCallbacks(mConversationCallbacks, mAccountController);
+            headerView.setCallbacks(
+                    mConversationCallbacks, mAccountController, mConversationUpdater);
             headerView.bind(this);
             headerView.setSubject(mConversation.subject);
             if (mAccountController.getAccount().supportsCapability(
                     UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
                 headerView.setFolders(mConversation);
             }
+            headerView.setStarred(mConversation.starred);
 
             return headerView;
         }
@@ -124,6 +128,9 @@ public class ConversationViewAdapter extends BaseAdapter {
             return true;
         }
 
+        public ConversationViewAdapter getAdapter() {
+            return ConversationViewAdapter.this;
+        }
     }
 
     public static class MessageHeaderItem extends ConversationOverlayItem {
@@ -412,8 +419,11 @@ public class ConversationViewAdapter extends BaseAdapter {
             MessageFooterCallbacks footerCallbacks,
             ContactInfoSource contactInfoSource,
             ConversationViewHeaderCallbacks convCallbacks,
-            SuperCollapsedBlock.OnClickListener scbListener, Map<String, Address> addressCache,
-            FormattedDateBuilder dateBuilder, BidiFormatter bidiFormatter) {
+            ConversationUpdater conversationUpdater,
+            OnClickListener scbListener,
+            Map<String, Address> addressCache,
+            FormattedDateBuilder dateBuilder,
+            BidiFormatter bidiFormatter) {
         mContext = controllableActivity.getActivityContext();
         mDateBuilder = dateBuilder;
         mAccountController = accountController;
@@ -423,6 +433,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         mFooterCallbacks = footerCallbacks;
         mContactInfoSource = contactInfoSource;
         mConversationCallbacks = convCallbacks;
+        mConversationUpdater = conversationUpdater;
         mSuperCollapsedListener = scbListener;
         mAddressCache = addressCache;
         mInflater = LayoutInflater.from(mContext);

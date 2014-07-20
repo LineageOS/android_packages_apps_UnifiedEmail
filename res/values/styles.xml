@@ -207,16 +207,16 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="AbstractConversationSubjectStyle">
+    <style name="ConversationSubjectStyle">
         <item name="android:textColor">@color/conv_header_text_dark</item>
         <item name="android:textIsSelectable">true</item>
         <item name="android:textSize">@dimen/conversation_header_font_size</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ConversationSubjectStyle" parent="AbstractConversationSubjectStyle">
-        <item name="android:paddingLeft">@dimen/conversation_header_side_padding</item>
-        <item name="android:paddingRight">@dimen/conversation_header_side_padding</item>
+    <style name="ConversationHeaderMarginStyle">
+        <item name="android:layout_marginLeft">@dimen/conversation_header_margin_side</item>
+        <item name="android:layout_marginRight">@dimen/conversation_header_margin_side</item>
+        <item name="android:paddingLeft">@dimen/conversation_header_padding_side</item>
     </style>
 
     <!-- Conversation view message header styles -->
@@ -562,10 +562,6 @@
         <item name="android:paddingLeft">@dimen/message_header_inner_side_padding</item>
     </style>
 
-    <style name="ConversationHeaderFolderStyle">
-        <item name="android:paddingLeft">@dimen/conversation_header_side_padding</item>
-    </style>
-
     <style name="CheckedTextStyle">
         <item name="android:paddingLeft">@dimen/checked_text_padding</item>
         <item name="android:paddingRight">@dimen/checked_text_padding</item>
@@ -635,11 +631,6 @@
 
     <style name="AttachmentIconStyle">
         <item name="android:layout_marginLeft">@dimen/attachment_icon_padding</item>
-    </style>
-
-    <style name="ConversationHeaderSideMarginStyle">
-        <item name="android:layout_marginLeft">@dimen/conversation_header_margin_side</item>
-        <item name="android:layout_marginRight">@dimen/conversation_header_margin_side</item>
     </style>
 
     <style name="UndoNotificationStyle">

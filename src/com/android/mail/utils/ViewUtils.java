@@ -31,7 +31,7 @@ public class ViewUtils {
      * accurate until then.
      */
     public static boolean isViewRtl(View view) {
-        return ViewCompat.getLayoutDirection(view) == View.LAYOUT_DIRECTION_RTL;
+        return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
     }
 
     /**
