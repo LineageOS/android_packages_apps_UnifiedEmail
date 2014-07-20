@@ -53,31 +53,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     private boolean mEnableSwipe = false;
 
     public static final String LOG_TAG = LogTag.getLogTag();
-    /**
-     * Set to false to prevent the FLING scroll state from pausing the photo manager loaders.
-     */
-    private final static boolean SCROLL_PAUSE_ENABLE = true;
-
-    /**
-     * Set to true to enable parallax effect for attachment previews as the scroll position varies.
-     * This effect triggers invalidations on scroll (!) and requires more memory for attachment
-     * preview bitmaps.
-     */
-    public static final boolean ENABLE_ATTACHMENT_PARALLAX = true;
-
-    /**
-     * Set to true to queue finished decodes in an aggregator so that we display decoded attachment
-     * previews in an ordered fashion. This artificially delays updating the UI with decoded images,
-     * since they may have to wait on another image to finish decoding first.
-     */
-    public static final boolean ENABLE_ATTACHMENT_DECODE_AGGREGATOR = true;
-
-    /**
-     * The amount of extra vertical space to decode in attachment previews so we have image data to
-     * pan within. 1.0 implies no parallax effect.
-     */
-    public static final float ATTACHMENT_PARALLAX_MULTIPLIER_NORMAL = 1.5f;
-    public static final float ATTACHMENT_PARALLAX_MULTIPLIER_ALTERNATIVE = 2.0f;
 
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;
@@ -392,15 +367,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     @Override
     public final void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
             int totalItemCount) {
-        if (ENABLE_ATTACHMENT_PARALLAX) {
-            for (int i = 0, len = getChildCount(); i < len; i++) {
-                final View child = getChildAt(i);
-                if (child instanceof OnScrollListener) {
-                    ((OnScrollListener) child).onScroll(view, firstVisibleItem, visibleItemCount,
-                            totalItemCount);
-                }
-            }
-        }
     }
 
     @Override
@@ -414,13 +380,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
                 activity.onAnimationEnd(null /* adapter */);
             } else {
                 LogUtils.wtf(LOG_TAG, "unexpected context=%s", c);
-            }
-        }
-
-        if (SCROLL_PAUSE_ENABLE) {
-            AnimatedAdapter adapter = getAnimatedAdapter();
-            if (adapter != null) {
-                adapter.onScrollStateChanged(scrollState);
             }
         }
     }
