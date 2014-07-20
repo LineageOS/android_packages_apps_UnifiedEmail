@@ -1132,7 +1132,11 @@ public class NotificationUtils {
                     summaryNotificationId, photoFetcher);
             notificationTicker = result.notificationTicker;
 
-            wearableExtender.setBackground(result.contactIconInfo.wearableBg);
+            if (result.contactIconInfo != null) {
+                wearableExtender.setBackground(result.contactIconInfo.wearableBg);
+            } else {
+                wearableExtender.setBackground(getDefaultWearableBg(context));
+            }
         }
 
         // Build the notification ticker
