@@ -53,8 +53,6 @@ public class AccountPreferences extends VersionedPrefs {
          */
         public static final String LAST_SEEN_OUTBOX_COUNT = "last-seen-outbox-count";
 
-        public static final String OPT_LIMIT = "opt-limit";
-
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                         .add(NOTIFICATIONS_ENABLED).build();
@@ -143,13 +141,5 @@ public class AccountPreferences extends VersionedPrefs {
 
     public void setLastSeenOutboxCount(final int count) {
         getEditor().putInt(PreferenceKeys.LAST_SEEN_OUTBOX_COUNT, count).apply();
-    }
-
-    public void setOptLimit(long limit) {
-        getEditor().putLong(PreferenceKeys.OPT_LIMIT, limit).apply();
-    }
-
-    public long getOptLimit(long defaultValue) {
-        return getSharedPreferences().getLong(PreferenceKeys.OPT_LIMIT, defaultValue);
     }
 }
