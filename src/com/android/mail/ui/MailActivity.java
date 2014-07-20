@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
@@ -159,6 +160,13 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         if (i != null && i.getCategories() != null &&
                 i.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
             AnalyticsTimer.getInstance().trackStart(AnalyticsTimer.COLD_START_LAUNCHER);
+        }
+
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null && Utils.isRunningLOrLater()) {
+            // Hide the app icon.  This only happens on L devices, as pre-L the action bar
+            // layout works with app icon
+            actionBar.setIcon(null);
         }
 
         resetSenderImageCache();
