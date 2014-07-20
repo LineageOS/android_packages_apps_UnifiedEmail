@@ -38,7 +38,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.QuickContactBadge;
@@ -57,7 +56,6 @@ import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
@@ -106,8 +104,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     private TextView mDateView;
     private TextView mSnippetView;
     private QuickContactBadge mPhotoView;
-    private ImageView mStarView;
-    private ViewGroup mTitleContainerView;
     private ViewGroup mExtraContentView;
     private ViewGroup mCollapsedDetailsView;
     private ViewGroup mExpandedDetailsView;
@@ -149,19 +145,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
     private Map<String, Address> mAddressCache;
 
     private boolean mShowImagePrompt;
-
-    /**
-     * Take the initial visibility of the star view to mean its collapsed
-     * visibility. Star is always visible when expanded, but sometimes, like on
-     * phones, there isn't enough room to warrant showing star when collapsed.
-     */
-    private boolean mCollapsedStarVisible;
-    private boolean mStarShown;
-
-    /**
-     * End margin of the text when collapsed. When expanded, the margin is 0.
-     */
-    private int mTitleContainerCollapsedMarginEnd;
 
     private PopupMenu mPopup;
 
@@ -269,8 +252,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         mReplyButton = findViewById(R.id.reply);
         mReplyAllButton = findViewById(R.id.reply_all);
         mForwardButton = findViewById(R.id.forward);
-        mStarView = (ImageView) findViewById(R.id.star);
-        mTitleContainerView = (ViewGroup) findViewById(R.id.title_container);
         mOverflowButton = findViewById(R.id.overflow);
         mDraftIcon = findViewById(R.id.draft);
         mEditDraftButton = findViewById(R.id.edit_draft);
@@ -278,14 +259,9 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         mAttachmentIcon = findViewById(R.id.attachment);
         mExtraContentView = (ViewGroup) findViewById(R.id.header_extra_content);
 
-        mCollapsedStarVisible = mStarView.getVisibility() == VISIBLE;
-        final Resources resources = getResources();
-        mTitleContainerCollapsedMarginEnd = resources.getDimensionPixelSize(
-                R.dimen.message_header_title_container_margin_end_collapsed);
-
         setExpanded(true);
 
-        registerMessageClickTargets(R.id.reply, R.id.reply_all, R.id.forward, R.id.star,
+        registerMessageClickTargets(R.id.reply, R.id.reply_all, R.id.forward,
                 R.id.edit_draft, R.id.overflow, R.id.upper_header);
 
         mUpperHeaderView.setOnCreateContextMenuListener(mEmailCopyMenu);
@@ -464,21 +440,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         }
         mSender = getAddress(from);
 
-        mStarView.setSelected(mMessage.starred);
-        mStarView.setContentDescription(getResources().getString(
-                mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
-        mStarShown = true;
-
-        final Conversation conversation = mMessage.getConversation();
-        if (conversation != null) {
-            for (Folder folder : conversation.getRawFolders()) {
-                if (folder.isTrash()) {
-                    mStarShown = false;
-                    break;
-                }
-            }
-        }
-
         updateChildVisibility();
 
         final String snippet;
@@ -644,11 +605,9 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             setChildVisibility(GONE, mSnapHeaderBottomBorder);
 
             setChildVisibility(GONE, mReplyButton, mReplyAllButton, mForwardButton,
-                    mOverflowButton, mDraftIcon, mEditDraftButton, mStarView,
+                    mOverflowButton, mDraftIcon, mEditDraftButton,
                     mAttachmentIcon, mUpperDateView, mSnippetView);
             setChildVisibility(VISIBLE, mPhotoView, mSenderEmailView, mDateView);
-
-            setChildMarginEnd(mTitleContainerView, 0);
         } else if (isExpanded()) {
             int normalVis, draftVis;
 
@@ -669,12 +628,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             setChildVisibility(draftVis, mDraftIcon, mEditDraftButton);
             setChildVisibility(VISIBLE, mSenderEmailView, mDateView);
             setChildVisibility(GONE, mAttachmentIcon, mUpperDateView, mSnippetView);
-            setChildVisibility(mStarShown ? VISIBLE : GONE, mStarView);
-
-            setChildMarginEnd(mTitleContainerView, 0);
-
         } else {
-
             setMessageDetailsVisibility(GONE);
             setChildVisibility(GONE, mSnapHeaderBottomBorder);
             setChildVisibility(VISIBLE, mSnippetView, mUpperDateView);
@@ -684,10 +638,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
             setChildVisibility(mMessage.hasAttachments ? VISIBLE : GONE,
                     mAttachmentIcon);
-
-            setChildVisibility(mCollapsedStarVisible && mStarShown ? VISIBLE : GONE, mStarView);
-
-            setChildMarginEnd(mTitleContainerView, mTitleContainerCollapsedMarginEnd);
 
             if (mIsDraft) {
 
@@ -930,10 +880,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             final String text = getContext().getString(R.string.report_rendering_improvement_desc);
             ComposeActivity.reportRenderingFeedback(getContext(), getAccount(), mMessage,
                     text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
-        } else if (id == R.id.star) {
-            final boolean newValue = !v.isSelected();
-            v.setSelected(newValue);
-            mMessage.star(newValue);
         } else if (id == R.id.edit_draft) {
             ComposeActivity.editDraft(getContext(), getAccount(), mMessage);
         } else if (id == R.id.overflow) {
