@@ -29,7 +29,7 @@ public class HierarchicalFolderTruncationTests extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mAdapter = new HierarchicalFolderSelectorAdapter(mContext, null, null, 1, null);
+        mAdapter = new HierarchicalFolderSelectorAdapter(mContext, null, null, 1);
     }
 
     public void testEmpty() {

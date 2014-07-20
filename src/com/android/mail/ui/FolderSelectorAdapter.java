@@ -89,22 +89,19 @@ public class FolderSelectorAdapter extends BaseAdapter {
     protected final List<FolderRow> mFolderRows = Lists.newArrayList();
     private final LayoutInflater mInflater;
     private final int mLayout;
-    private final String mHeader;
     private Folder mExcludedFolder;
 
     public FolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> selected, int layout, String header) {
+            Set<String> selected, int layout) {
         mInflater = LayoutInflater.from(context);
         mLayout = layout;
-        mHeader = header;
         createFolderRows(folders, selected);
     }
 
-    public FolderSelectorAdapter(Context context, Cursor folders, int layout, String header,
-            Folder excludedFolder) {
+    public FolderSelectorAdapter(Context context, Cursor folders,
+            int layout, Folder excludedFolder) {
         mInflater = LayoutInflater.from(context);
         mLayout = layout;
-        mHeader = header;
         mExcludedFolder = excludedFolder;
         createFolderRows(folders, null);
     }
@@ -286,57 +283,32 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mFolderRows.size() + (hasHeader() ? 1 : 0);
+        return mFolderRows.size();
     }
 
     @Override
     public Object getItem(int position) {
-        if (isHeader(position)) {
-            return mHeader;
-        }
-        return mFolderRows.get(correctPosition(position));
+        return mFolderRows.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        if (isHeader(position)) {
-            return -1;
-        }
         return position;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (isHeader(position)) {
-            return SeparatedFolderListAdapter.TYPE_SECTION_HEADER;
-        } else {
-            return SeparatedFolderListAdapter.TYPE_ITEM;
-        }
+        return SeparatedFolderListAdapter.TYPE_ITEM;
     }
 
     @Override
     public int getViewTypeCount() {
-        return 2;
-    }
-
-    /**
-     * Returns true if this position represents the header.
-     */
-    protected final boolean isHeader(int position) {
-        return position == 0 && hasHeader();
+        return 1;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // The header is at the top
-        if (isHeader(position)) {
-            final TextView view = convertView != null ? (TextView) convertView :
-                (TextView) mInflater.inflate(R.layout.folder_header, parent, false);
-            view.setText(mHeader);
-            return view;
-        }
         final View view;
-
         if (convertView == null) {
             view = mInflater.inflate(mLayout, parent, false);
         } else {
@@ -359,21 +331,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
             display.setText(folderDisplay);
         }
         final View colorBlock = view.findViewById(R.id.color_block);
-        final ImageView iconView = (ImageView) view.findViewById(R.id.folder_icon);
         Folder.setFolderBlockColor(folder, colorBlock);
-        Folder.setIcon(folder, iconView);
         return view;
-    }
-
-    private boolean hasHeader() {
-        return mHeader != null;
-    }
-
-    /**
-     * Since this adapter may contain 2 types of data, make sure that we offset
-     * the position being asked for correctly.
-     */
-    public int correctPosition(int position) {
-        return hasHeader() ? position-1 : position;
     }
 }
