@@ -2322,8 +2322,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             onAppUpPressed();
         } else if (id == R.id.help_info_menu_item) {
             Utils.showHelp(this, mAccount, getString(R.string.compose_help_context));
-        } else if (id == R.id.feedback_menu_item) {
-            Utils.sendFeedback(this, mAccount, false);
         } else {
             handled = false;
         }

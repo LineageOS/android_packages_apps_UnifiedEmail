@@ -1293,12 +1293,6 @@ public class FolderListFragment extends ListFragment implements
                 mFooterItems.add(new HelpItem());
             }
 
-            // if a feedback Uri exists, show the Feedback drawer item
-            if (mCurrentAccount != null &&
-                    !Utils.isEmpty(mCurrentAccount.sendFeedbackIntentUri)) {
-                mFooterItems.add(new FeedbackItem());
-            }
-
             if (!mFooterItems.isEmpty()) {
                 mFooterItems.get(0).setShowTopBorder(true);
             }
@@ -1547,14 +1541,14 @@ public class FolderListFragment extends ListFragment implements
 
     private class HelpItem extends FooterItem {
         protected HelpItem() {
-            super(R.drawable.ic_menu_help, R.string.help_and_info);
+            super(R.drawable.ic_menu_help, R.string.help_and_feedback);
         }
 
         @Override
         void doFooterAction() {
             Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
                     R.id.help_info_menu_item, getEventLabel(), 0);
-            Utils.showHelp(getActivity(), mCurrentAccount, mActivity.getHelpContext());
+            mActivity.showHelp(mCurrentAccount, ViewMode.CONVERSATION_LIST);
         }
     }
 

@@ -34,9 +34,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityManager;
 
+import com.android.mail.R;
 import com.android.mail.analytics.AnalyticsTimer;
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.compose.ComposeActivity;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
@@ -467,8 +469,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public String getHelpContext() {
-        return mController.getHelpContext();
+    public void showHelp(Account account, int viewMode) {
+        int helpContext = ViewMode.isConversationMode(viewMode)
+                ? R.string.conversation_view_help_context
+                : R.string.conversation_list_help_context;
+        Utils.showHelp(this, account, getString(helpContext));
     }
 
     @Override

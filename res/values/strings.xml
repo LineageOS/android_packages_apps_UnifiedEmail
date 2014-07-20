@@ -1041,6 +1041,9 @@
     <!-- Menu item that displays the help page. [CHAR LIMIT=50]-->
     <string name="help_and_info">Help</string>
 
+    <!-- Menu item that displays the help page. [CHAR LIMIT=50]-->
+    <string name="help_and_feedback">Help &amp; feedback</string>
+
     <!-- URI to display the help content; this must be overlayed -->
     <string name="help_uri" translatable="false"></string>
 

@@ -91,7 +91,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private SearchView mSearchWidget;
     private MenuItem mSettingsItem;
     private MenuItem mHelpItem;
-    private MenuItem mSendFeedbackItem;
     private MenuItem mFolderSettingsItem;
     private MenuItem mEmptyTrashItem;
     private MenuItem mEmptySpamItem;
@@ -224,7 +223,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
         mFolderSettingsItem = menu.findItem(R.id.folder_options);
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
         mEmptyTrashItem = menu.findItem(R.id.empty_trash);
@@ -397,38 +395,21 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // that are possible.
         LogUtils.d(LOG_TAG, "ActionBarView.onPrepareOptionsMenu().");
 
-        final boolean showHelpandFeedback = !getResources()
-                .getBoolean(R.bool.show_help_and_feedback_in_drawer);
-
-        if (mSettingsItem != null) {
-            mSettingsItem.setVisible(showHelpandFeedback);
-        }
-        if (mHelpItem != null) {
-            mHelpItem.setVisible(showHelpandFeedback
-                    && mAccount != null
-                    && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
-        }
-        if (mSendFeedbackItem != null) {
-            mSendFeedbackItem.setVisible(showHelpandFeedback
-                    && mAccount != null
-                    && mAccount.supportsCapability(AccountCapabilities.SEND_FEEDBACK));
-        }
         if (mController.shouldHideMenuItems()) {
-            // Shortcut: hide all remaining menu items if the drawer is shown
+            // Shortcut: hide all menu items if the drawer is shown
             final int size = menu.size();
 
             for (int i = 0; i < size; i++) {
                 final MenuItem item = menu.getItem(i);
                 final int id = item.getItemId();
-                if (id != R.id.settings
-                        && id != R.id.feedback_menu_item
-                        && id != R.id.help_info_menu_item) {
-                    item.setVisible(false);
-                }
+                item.setVisible(false);
             }
             return false;
         }
         validateVolatileMenuOptionVisibility();
+
+        // Only show help in menu if it's not shown in drawer already, unless there's no drawer.
+        boolean showHelpAndSettingsInMenu = !mController.isDrawerEnabled();
 
         switch (getMode()) {
             case ViewMode.CONVERSATION:
@@ -447,6 +428,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                         - (ViewConfiguration.get(getContext()).hasPermanentMenuKey()
                                 ? 0 : hiddenItems);
                 reorderMenu(getContext(), mAccount, menu, totalItems);
+                // Always enable help/settings in conversation mode.
+                showHelpAndSettingsInMenu = true;
                 break;
             case ViewMode.CONVERSATION_LIST:
                 // Show search if the account supports it
@@ -456,7 +439,18 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 // Hide compose and search
                 Utils.setMenuItemVisibility(menu, R.id.compose, false);
                 Utils.setMenuItemVisibility(menu, R.id.search, false);
+                // No drawer at this moment.
+                showHelpAndSettingsInMenu = true;
                 break;
+        }
+
+        if (mSettingsItem != null) {
+            mSettingsItem.setVisible(showHelpAndSettingsInMenu);
+        }
+        if (mHelpItem != null) {
+            mHelpItem.setVisible(showHelpAndSettingsInMenu
+                    && mAccount != null
+                    && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
         }
 
         return false;
