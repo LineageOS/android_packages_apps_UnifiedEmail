@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_toStartOf="@id/upper_date"
         android:layout_toLeftOf="@id/upper_date"
-        android:src="@drawable/ic_attachment_holo_light"
+        android:src="@drawable/ic_attach_file_20dp"
         style="@style/AttachmentIconStyle" />
     <TextView
         android:id="@+id/sender_name"
