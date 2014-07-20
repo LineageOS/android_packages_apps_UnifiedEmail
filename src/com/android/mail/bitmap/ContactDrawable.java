@@ -64,7 +64,7 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
     private static final char[] sFirstChar = new char[1];
 
     /** This should match the total number of colors defined in colors.xml for letter_tile_color */
-    private static final int NUM_OF_TILE_COLORS = 8;
+    private static final int NUM_OF_TILE_COLORS = 12;
 
     public ContactDrawable(final Resources res, final BitmapCache cache,
             final ContactResolver contactResolver) {

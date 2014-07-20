@@ -187,7 +187,7 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
         mInProgress = true;
     }
 
-    public String endConversation(String docBaseUri, String conversationBaseUri,
+    public String endConversation(int convFooterPx, String docBaseUri, String conversationBaseUri,
             int viewportWidth, int webviewWidth, boolean enableContentReadySignal,
             boolean normalizeMessageWidths, boolean enableMungeTables, boolean enableMungeImages) {
         if (!mInProgress) {
@@ -200,7 +200,8 @@ public class HtmlConversationTemplates extends AbstractHtmlTemplates {
                 == ViewCompat.LAYOUT_DIRECTION_RTL;
         final String showElided = (isRtl ? RIGHT_TO_LEFT_TRIANGLE : LEFT_TO_RIGHT_TRIANGLE) +
                 mContext.getString(R.string.show_elided);
-        append(sConversationLower, contentReadyClass, mContext.getString(R.string.hide_elided),
+        append(sConversationLower, convFooterPx, contentReadyClass,
+                mContext.getString(R.string.hide_elided),
                 showElided, docBaseUri, conversationBaseUri, viewportWidth, webviewWidth,
                 enableContentReadySignal, normalizeMessageWidths,
                 enableMungeTables, enableMungeImages, Utils.isRunningKitkatOrLater());

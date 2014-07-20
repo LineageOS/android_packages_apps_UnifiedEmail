@@ -754,9 +754,7 @@ function appendMessageHtml() {
     var msg = document.createElement("div");
     msg.innerHTML = window.mail.getTempMessageBodies();
     var body = msg.children[0];  // toss the outer div, it was just to render innerHTML into
-    var border = msg.children[1]; // get the border spacer as well
-    document.body.appendChild(body);
-    document.body.appendChild(border);
+    document.body.insertBefore(body, document.getElementById("conversation-footer"));
     processNewMessageBody(body.querySelector(".mail-message-content"));
     measurePositions();
 }
