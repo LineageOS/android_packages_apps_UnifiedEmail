@@ -496,12 +496,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public void onWelcomeTourRequested(
-            WelcomeTourCompletionListener completionListener) {
-        // Unsupported
-    }
-
-    @Override
     public void showHelp(Account account, int viewMode) {
         //Unsupported
     }
