@@ -66,7 +66,7 @@
     <string name="discard_drafts" msgid="5881484193628472105">"Zahodiť koncepty"</string>
     <string name="refresh" msgid="1533748989749277511">"Obnoviť"</string>
     <string name="reply" msgid="8337757482824207118">"Odpovedať"</string>
-    <string name="reply_all" msgid="5366796103758360957">"Odp. všetkým"</string>
+    <string name="reply_all" msgid="5366796103758360957">"Odpovedať všetkým"</string>
     <string name="resume_draft" msgid="1272723181782570649">"Upraviť"</string>
     <string name="forward" msgid="4397585145490426320">"Poslať ďalej"</string>
     <string name="menu_compose" msgid="4575025207594709432">"Napísať správu"</string>
@@ -119,7 +119,7 @@
     <string name="choosertitle_sharevia" msgid="3539537264873337959">"Zdieľať prostredníctvom"</string>
     <string name="contextmenu_openlink" msgid="6952228183947135362">"Otvoriť v prehliadači"</string>
     <string name="contextmenu_copy" msgid="2584243784216385180">"Kopírovať"</string>
-    <string name="contextmenu_copylink" msgid="8659897702269320063">"Kopírovať adresu URL odkazu"</string>
+    <string name="contextmenu_copylink" msgid="8659897702269320063">"Kopírovať webovú adresu odkazu"</string>
     <string name="contextmenu_view_image" msgid="1031172763893491000">"Zobraziť obrázok"</string>
     <string name="contextmenu_dial_dot" msgid="8881095692316726628">"Vytočiť..."</string>
     <string name="contextmenu_sms_dot" msgid="5319737001771622657">"SMS…"</string>
@@ -182,7 +182,7 @@
     <item quantity="other" msgid="4276111931404654219">"Konverzácie boli ignorované (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"Konverzácie boli nahlásené ako spam (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
+    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; konverzácia bola nahlásená ako spam"</item>
     <item quantity="other" msgid="5900913789259199137">"Konverzácie boli nahlásené ako spam (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
   <plurals name="conversation_not_spam">
@@ -374,7 +374,7 @@
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Obrázok odosielateľa"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"Zobraziť vedľa mena v zozname konverzácií"</string>
     <string name="empty_trash" msgid="3385937024924728399">"Vyprázdniť kôš"</string>
-    <string name="empty_spam" msgid="2911988289997281371">"Vyprázdniť priečinok s nevyžiadanou poštou"</string>
+    <string name="empty_spam" msgid="2911988289997281371">"Vyprázdniť priečinok so spamom"</string>
     <string name="empty_trash_dialog_title" msgid="2104898489663621508">"Vyprázdniť kôš"</string>
     <string name="empty_spam_dialog_title" msgid="1130319045917820569">"Vyprázdniť priečinok s nevyžiadanou poštou?"</string>
   <plurals name="empty_folder_dialog_message">
@@ -478,7 +478,7 @@
     <string name="clear_history_title" msgid="5536216295725760357">"Vymazať históriu vyhľadávania"</string>
     <string name="search_history_cleared" msgid="1461946302763342640">"História vyhľadávania bola vymazaná."</string>
     <string name="clear_history_dialog_title" msgid="3503603389704365385">"Vymazať históriu vyhľadávania?"</string>
-    <string name="clear_history_dialog_message" msgid="5202922561632407778">"Všetky vyhľadávania, ktoré ste predtým uskutočnili, budú odstránené."</string>
+    <string name="clear_history_dialog_message" msgid="5202922561632407778">"Všetky vyhľadávania, ktoré ste predtým uskutočnili, budú odstránené"</string>
     <string name="manage_accounts_menu_item" msgid="4734660452395086786">"Spravovať účty"</string>
     <string name="general_preferences_title" msgid="4212138728220418162">"Všeobecné nastavenia"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"Nastavenia"</string>

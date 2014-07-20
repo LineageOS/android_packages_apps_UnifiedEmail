@@ -66,7 +66,7 @@
     <string name="discard_drafts" msgid="5881484193628472105">"Buang draf"</string>
     <string name="refresh" msgid="1533748989749277511">"Segarkan"</string>
     <string name="reply" msgid="8337757482824207118">"Balas"</string>
-    <string name="reply_all" msgid="5366796103758360957">"Balas semua"</string>
+    <string name="reply_all" msgid="5366796103758360957">"Balas ke semua"</string>
     <string name="resume_draft" msgid="1272723181782570649">"Edit"</string>
     <string name="forward" msgid="4397585145490426320">"Teruskan"</string>
     <string name="menu_compose" msgid="4575025207594709432">"Tulis"</string>

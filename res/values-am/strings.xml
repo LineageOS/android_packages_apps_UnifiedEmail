@@ -182,7 +182,7 @@
     <item quantity="other" msgid="4276111931404654219">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ድምፀ-ከል ተደርጎበታል።"</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; እንደ አይፈለጌ መልዕክት ሪፖርት ተደርጓል።"</item>
+    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; አይፈለጌ መልዕክት ተብለው ሪፖርት ተደርገዋል።"</item>
     <item quantity="other" msgid="5900913789259199137">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; እንደ አይፈለጌ መልዕክት ሪፖርት ተደርጓል።"</item>
   </plurals>
   <plurals name="conversation_not_spam">
@@ -435,7 +435,7 @@
     <string name="vacation_responder_on" msgid="4913238379320882449">"በርቷል፣ ከ<xliff:g id="DATE">%1$s</xliff:g> ጀምሮ"</string>
     <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"በርቷል፣ ከ<xliff:g id="START_DATE">%1$s</xliff:g> ጀምሮ እስከ <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="6233629618520852439">"ርዕሰ ጉዳይ ወይም መልዕክት ያክሉ"</string>
-    <string name="view_entire_message" msgid="823281796655014454">"ሙሉ መልእክቱን ይመልከቱ"</string>
+    <string name="view_entire_message" msgid="823281796655014454">"መልዕክት በሙሉ ይመልከቱ"</string>
     <string name="eml_loader_error_toast" msgid="6577383216635400167">"ይህን ፋይል መክፈት አይቻልም"</string>
     <string name="help_and_info" msgid="3708286489943154681">"እገዛ"</string>
     <string name="help_and_feedback" msgid="7211458338163287670">"እገዛ እና ግብረመልስ"</string>
@@ -472,7 +472,7 @@
   </string-array>
   <string-array name="prefEntries_snapHeader">
     <item msgid="6906986566816683587">"ሁልጊዜ አሳይ"</item>
-    <item msgid="113299655708990672">"በቁምሁነታ ብቻ አሳይ"</item>
+    <item msgid="113299655708990672">"በቁም ሁነታ ብቻ አሳይ"</item>
     <item msgid="4403750311175924065">"አታሳይ"</item>
   </string-array>
     <string name="clear_history_title" msgid="5536216295725760357">"የፍለጋ ታሪክ አጽዳ"</string>

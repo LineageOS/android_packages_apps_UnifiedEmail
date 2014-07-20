@@ -182,7 +182,7 @@
     <item quantity="other" msgid="4276111931404654219">"已忽略 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话。"</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话举报为垃圾邮件。"</item>
+    <item quantity="one" msgid="6986172030710967687">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为垃圾邮件。"</item>
     <item quantity="other" msgid="5900913789259199137">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话举报为垃圾邮件。"</item>
   </plurals>
   <plurals name="conversation_not_spam">
@@ -272,10 +272,8 @@
     <string name="non_synced_folder_description" msgid="3044618511909304701">"要查看会话，请同步此文件夹。"</string>
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"同步文件夹"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
-    <!-- no translation found for large_unseen_count (3055042669246912518) -->
-    <skip />
-    <!-- no translation found for unseen_count (5509898665569695288) -->
-    <skip />
+    <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+封新邮件"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g>封新邮件"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g>封未读邮件"</item>
   </plurals>
@@ -284,7 +282,7 @@
     <string name="loading_conversation" msgid="7931600025861500397">"正在加载..."</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"选择帐户"</string>
     <string name="activity_folder_selection" msgid="8375243281001234750">"选择文件夹"</string>
-    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"电子邮件文件夹"</string>
+    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"“电子邮件”文件夹"</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"更改文件夹"</string>
     <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"移至"</string>
     <string name="search_hint" msgid="4916671414132334289">"搜索邮件"</string>
@@ -474,7 +472,7 @@
   </string-array>
   <string-array name="prefEntries_snapHeader">
     <item msgid="6906986566816683587">"一律显示"</item>
-    <item msgid="113299655708990672">"仅在纵向模式下显示"</item>
+    <item msgid="113299655708990672">"仅纵向显示"</item>
     <item msgid="4403750311175924065">"不显示"</item>
   </string-array>
     <string name="clear_history_title" msgid="5536216295725760357">"清除搜索记录"</string>

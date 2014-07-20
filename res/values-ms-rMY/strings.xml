@@ -472,7 +472,7 @@
   </string-array>
   <string-array name="prefEntries_snapHeader">
     <item msgid="6906986566816683587">"Sentiasa tunjukkan"</item>
-    <item msgid="113299655708990672">"Hanya tunjukkan dalam potret"</item>
+    <item msgid="113299655708990672">"Tunjukkan hanya dalam potret"</item>
     <item msgid="4403750311175924065">"Jangan tunjukkan"</item>
   </string-array>
     <string name="clear_history_title" msgid="5536216295725760357">"Bersihkan sejarah carian"</string>

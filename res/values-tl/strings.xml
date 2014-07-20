@@ -66,7 +66,7 @@
     <string name="discard_drafts" msgid="5881484193628472105">"I-discard ang mga draft"</string>
     <string name="refresh" msgid="1533748989749277511">"I-refresh"</string>
     <string name="reply" msgid="8337757482824207118">"Tumugon"</string>
-    <string name="reply_all" msgid="5366796103758360957">"Tugon lahat"</string>
+    <string name="reply_all" msgid="5366796103758360957">"Tumugon sa lahat"</string>
     <string name="resume_draft" msgid="1272723181782570649">"I-edit"</string>
     <string name="forward" msgid="4397585145490426320">"Ipasa"</string>
     <string name="menu_compose" msgid="4575025207594709432">"Bumuo"</string>
@@ -182,7 +182,7 @@
     <item quantity="other" msgid="4276111931404654219">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ang na-mute."</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ang iniulat bilang spam."</item>
+    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ang inulat bilang spam."</item>
     <item quantity="other" msgid="5900913789259199137">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ang iniulat bilang spam."</item>
   </plurals>
   <plurals name="conversation_not_spam">
