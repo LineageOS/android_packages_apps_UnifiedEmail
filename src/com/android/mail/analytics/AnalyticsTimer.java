@@ -74,11 +74,26 @@ public class AnalyticsTimer {
      */
     public void logDuration(String id, boolean isDestructive, String category, String name,
             String label) {
-        Long value = isDestructive ? mStartTimes.remove(id) : mStartTimes.get(id);
-        if (value != null) {
-            Analytics.getInstance().sendTiming(category, SystemClock.uptimeMillis() - value, name,
-                    label);
+        try {
+            logDurationAndReturn(id, isDestructive, category, name, label);
+        } catch (IllegalStateException e) { }
+    }
+
+
+    /**
+     * Same as logDuration except with the logged time returned (or exception thrown)
+     * @return logged time in millis
+     * @throws java.lang.IllegalStateException
+     */
+    public long logDurationAndReturn(String id, boolean isDestructive, String category, String name,
+            String label) throws IllegalStateException {
+        final Long value = isDestructive ? mStartTimes.remove(id) : mStartTimes.get(id);
+        if (value == null) {
+            throw new IllegalStateException("Trying to log id that doesn't exist: " + id);
         }
+        final long time = SystemClock.uptimeMillis() - value;
+        Analytics.getInstance().sendTiming(category, time, name, label);
+        return time;
     }
 
     /**
