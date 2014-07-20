@@ -566,15 +566,21 @@
          button that will allow the user to configure sync for the folder [CHAR LIMIT=35] -->
     <string name="tap_to_configure_folder_sync">Sync Folder</string>
 
-    <!-- Displayed in widget when unread count > 100. [CHAR LIMIT=4] -->
+    <!-- Displayed in widget when unread count > 99. [CHAR LIMIT=4] -->
     <string name="widget_large_unread_count">%d+</string>
+
+    <!-- Displayed when there are >99 unseen messages, see:unseen_count [CHAR LIMIT=3] -->
+    <string name="large_unseen_count"><xliff:g id="count" example="99">%d</xliff:g>+ new</string>
+
+    <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
+    <string name="unseen_count"><xliff:g id="count" example="4">%d</xliff:g> new</string>
 
     <plurals name="actionbar_unread_messages">
         <!-- String for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
         <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> unread</item>
     </plurals>
 
-    <!-- Displayed in the actionbar when unread count > 999. [CHAR LIMIT=30] -->
+    <!-- Displayed in the actionbar when unread count > 99. [CHAR LIMIT=30] -->
     <string name="actionbar_large_unread_count"><xliff:g id="count">%1$d</xliff:g>+ unread</string>
 
     <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
