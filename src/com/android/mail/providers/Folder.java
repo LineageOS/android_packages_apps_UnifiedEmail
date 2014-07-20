@@ -162,8 +162,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public String bgColor;
     public String fgColor;
 
-    public int bgColorInt;
-    public int fgColorInt;
+    private int bgColorInt;
+    private int fgColorInt;
 
     /**
      * The content provider URI to request additional conversations
