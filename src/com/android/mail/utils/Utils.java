@@ -119,7 +119,7 @@ public class Utils {
     private static final String SMART_HELP_LINK_PARAMETER_NAME = "p";
 
     private static final String SMART_LINK_APP_VERSION = "version";
-    private static int sVersionCode = -1;
+    private static String sVersionCode = null;
 
     private static final int SCALED_SCREENSHOT_MAX_HEIGHT_WIDTH = 600;
 
@@ -173,6 +173,37 @@ public class Utils {
         webSettings.setSaveFormData(false);
         webSettings.setJavaScriptEnabled(false);
         webSettings.setSupportZoom(false);
+    }
+
+    /**
+     * Sets custom user agent to WebView so we don't get GAIA interstitials b/13990689.
+     *
+     * @param webView The WebView to customize.
+     */
+    public static void setCustomUserAgent(WebView webView, Context context) {
+        final WebSettings settings = webView.getSettings();
+        final String version = getVersionCode(context);
+        final String originalUserAgent = settings.getUserAgentString();
+        final String userAgent = context.getResources().getString(
+                R.string.user_agent_format, originalUserAgent, version);
+        settings.setUserAgentString(userAgent);
+    }
+
+    /**
+     * Returns the version code for the package, or null if it cannot be retrieved.
+     */
+    public static String getVersionCode(Context context) {
+        if (sVersionCode == null) {
+            try {
+                sVersionCode = String.valueOf(context.getPackageManager()
+                        .getPackageInfo(context.getPackageName(), 0 /* flags */)
+                        .versionCode);
+            } catch (NameNotFoundException e) {
+                LogUtils.e(Utils.LOG_TAG, "Error finding package %s",
+                        context.getApplicationInfo().packageName);
+            }
+        }
+        return sVersionCode;
     }
 
     /**
@@ -973,18 +1004,8 @@ public class Utils {
     }
 
     public static Uri appendVersionQueryParameter(final Context context, final Uri uri) {
-        int appVersion = 0;
-
-        try {
-            final PackageInfo packageInfo =
-                    context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            appVersion = packageInfo.versionCode;
-        } catch (final NameNotFoundException e) {
-            LogUtils.wtf(LOG_TAG, e, "Couldn't find our own PackageInfo");
-        }
-
         return uri.buildUpon().appendQueryParameter(APP_VERSION_QUERY_PARAMETER,
-                Integer.toString(appVersion)).build();
+                getVersionCode(context)).build();
     }
 
     /**
