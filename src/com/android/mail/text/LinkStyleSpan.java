@@ -31,9 +31,21 @@ import android.view.View;
  * can only be implemented by framework Spans.
  */
 public class LinkStyleSpan extends ClickableSpan {
+
+    /**
+     * The onclick listener invoked when the link is clicked.
+     */
+    final View.OnClickListener mOnClickListener;
+
+    public LinkStyleSpan(View.OnClickListener onClickListener) {
+        mOnClickListener = onClickListener;
+    }
+
     @Override
     public void onClick(View widget) {
-        // do nothing
+        if (mOnClickListener != null) {
+            mOnClickListener.onClick(widget);
+        }
     }
 
     /**

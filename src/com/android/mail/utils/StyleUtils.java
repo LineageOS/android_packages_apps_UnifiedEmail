@@ -19,8 +19,6 @@ package com.android.mail.utils;
 
 import android.text.Spannable;
 import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.TextView;
@@ -51,11 +49,11 @@ public class StyleUtils {
     }
 
     /**
-     * Removes any {@link android.text.style.URLSpan}s from the text view
-     * and replaces them with a non-underline version {@link LinkStyleSpan}
-     * that does nothing when clicked.
+     * Removes any {@link android.text.style.URLSpan}s from the text view and replaces them with a
+     * non-underline version {@link LinkStyleSpan} which calls the supplied listener when clicked.
      */
-    public static void stripUnderlinesAndUrl(TextView textView) {
+    public static void stripUnderlinesAndLinkUrls(TextView textView,
+                                                  View.OnClickListener onClickListener) {
         final Spannable spannable = (Spannable) textView.getText();
         final URLSpan[] urls = textView.getUrls();
 
@@ -63,7 +61,16 @@ public class StyleUtils {
             final int start = spannable.getSpanStart(span);
             final int end = spannable.getSpanEnd(span);
             spannable.removeSpan(span);
-            spannable.setSpan(new LinkStyleSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new LinkStyleSpan(onClickListener), start, end,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+    }
+
+    /**
+     * Removes any {@link android.text.style.URLSpan}s from the text view and replaces them with a
+     * non-underline version {@link LinkStyleSpan} that does nothing when clicked.
+     */
+    public static void stripUnderlinesAndUrl(TextView textView) {
+        stripUnderlinesAndLinkUrls(textView, null /* onClickListener */);
     }
 }
