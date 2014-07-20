@@ -41,9 +41,9 @@ import com.android.mail.utils.LogUtils;
  * This class is an enumeration of a few element types: Account, a folder, a recent folder,
  * or a header (a resource string). A {@link DrawerItem} can only be one type and can never
  * switch types. Items are created using methods like
- * {@link DrawerItem#ofAccount(com.android.mail.ui.ControllableActivity,
- com.android.mail.providers.Account, int, boolean)},
- * {@link DrawerItem#ofWaitView(com.android.mail.ui.ControllableActivity)}, etc.
+ * {@link DrawerItem#ofAccount(ControllableActivity, Account, int, boolean, BitmapCache,
+ * ContactResolver)},
+ * {@link DrawerItem#ofWaitView(ControllableActivity)}, etc.
  *
  * Once created, the item can create a view using
  * {@link #getView(android.view.View, android.view.ViewGroup)}.
@@ -390,7 +390,6 @@ public class DrawerItem {
                     (FolderItemView) mInflater.inflate(R.layout.folder_item, parent, false);
         }
         folderItemView.bind(mFolder, mActivity);
-        Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
         folderItemView.setIcon(mFolder);
         return folderItemView;
     }
