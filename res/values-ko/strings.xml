@@ -374,7 +374,7 @@
     <string name="preference_sender_image_title" msgid="7890813537985591865">"발신자 이미지"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"대화 목록에서 이름 옆에 표시"</string>
     <string name="empty_trash" msgid="3385937024924728399">"휴지통 비우기"</string>
-    <string name="empty_spam" msgid="2911988289997281371">"스팸 비우기"</string>
+    <string name="empty_spam" msgid="2911988289997281371">"스팸함 비우기"</string>
     <string name="empty_trash_dialog_title" msgid="2104898489663621508">"휴지통을 비우시겠습니까?"</string>
     <string name="empty_spam_dialog_title" msgid="1130319045917820569">"스팸을 비우시겠습니까?"</string>
   <plurals name="empty_folder_dialog_message">

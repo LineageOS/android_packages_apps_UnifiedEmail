@@ -472,7 +472,7 @@
   </string-array>
   <string-array name="prefEntries_snapHeader">
     <item msgid="6906986566816683587">"हमेशा दिखाएं"</item>
-    <item msgid="113299655708990672">"केवल पोट्रेट में दिखाएं"</item>
+    <item msgid="113299655708990672">"केवल पोर्ट्रेट में दिखाएं"</item>
     <item msgid="4403750311175924065">"न दिखाएं"</item>
   </string-array>
     <string name="clear_history_title" msgid="5536216295725760357">"खोज इतिहास साफ़ करें"</string>
