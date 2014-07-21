@@ -18,465 +18,467 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="to" msgid="4392614766835725698">"Vastaanott."</string>
-    <string name="cc" msgid="7017720927911078193">"Kopio"</string>
-    <string name="bcc" msgid="3098643138241111579">"Piilokopio"</string>
-    <string name="subject_hint" msgid="7253964583324677128">"Aihe"</string>
-    <string name="body_hint" msgid="4279864165439577668">"Kirjoita sähköposti"</string>
-    <string name="add_file_attachment" msgid="2203398371671979481">"Liitä tiedosto"</string>
-    <string name="add_photo_attachment" msgid="3738882100645552858">"Liitä kuva"</string>
-    <string name="save_draft" msgid="5555744208032445632">"Tallenna luonnos"</string>
-    <string name="discard" msgid="1714960202994370243">"Hylkää"</string>
-    <string name="compose" msgid="1473559896062432878">"Viestin kirj."</string>
+    <string name="to" msgid="3971614275716830581">"Vastaanott."</string>
+    <string name="cc" msgid="8768828862207919684">"Kopio"</string>
+    <string name="bcc" msgid="519303553518479171">"Piilokopio"</string>
+    <string name="subject_hint" msgid="2136470287303571827">"Aihe"</string>
+    <string name="body_hint" msgid="6478994981747057817">"Kirjoita sähköposti"</string>
+    <string name="add_file_attachment" msgid="2604880054248593993">"Liitä tiedosto"</string>
+    <string name="add_photo_attachment" msgid="7163589794940909528">"Liitä kuva"</string>
+    <string name="save_draft" msgid="2669523480789672118">"Tallenna luonnos"</string>
+    <string name="discard" msgid="4905982179911608430">"Hylkää"</string>
+    <string name="compose" msgid="2602861958391035523">"Viestin kirj."</string>
   <string-array name="compose_modes">
-    <item msgid="8631190144210933782">"Vastaa"</item>
-    <item msgid="4085029907540221568">"Vastaa kaikille"</item>
-    <item msgid="857480048798815437">"Lähetä edelleen"</item>
+    <item msgid="9000553538766397816">"Vastaa"</item>
+    <item msgid="2767793214788399009">"Vastaa kaikille"</item>
+    <item msgid="2758162027982270607">"Lähetä edelleen"</item>
   </string-array>
-    <string name="reply_attribution" msgid="717207316577386788">"<xliff:g id="PERSON">%s</xliff:g> kirjoitti <xliff:g id="DATE">%s</xliff:g>:"</string>
-    <string name="forward_attribution" msgid="1498936339458535158">"---------- Edelleenlähetetty viesti ----------&lt;br&gt;Lähettäjä: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Päivämäärä: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Aihe: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Vastaanottaja: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
-    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- Edelleenlähetetty viesti ----------"</string>
-    <string name="cc_attribution" msgid="374493748526504562">"Kopio: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
-    <string name="select_attachment_type" msgid="4711524151968942082">"Valitse liitetiedoston tyyppi"</string>
-    <string name="too_large_to_attach_single" msgid="2996733972478212136">"Et voi liittää tiedostoja, joiden koko on yli <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
-    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"Vähintään yhtä tiedostoa ei liitetty. Raja <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
-    <string name="too_large_to_attach_additional" msgid="3366607594339390249">"Tiedostoa ei liitetty. Raja (<xliff:g id="MAXSIZE">%1$s</xliff:g> ) saavutettu."</string>
-    <string name="generic_attachment_problem" msgid="8775959340559458709">"Tiedostoa ei voi liittää."</string>
-    <string name="recipient_needed" msgid="999037027358925655">"Lisää vähintään yksi vastaanottaja."</string>
-    <string name="recipient_error_dialog_title" msgid="6051694305498669180">"Vastaanottajavirhe"</string>
-    <string name="confirm_send_title" msgid="5663602035452564062">"Lähetetäänkö viesti?"</string>
-    <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"Viestin aiherivillä ei ole tekstiä."</string>
-    <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Viestin runko-osassa ei ole tekstiä."</string>
-    <string name="confirm_send_message" msgid="3221546155385562874">"Lähetetäänkö viesti?"</string>
-    <string name="message_discarded" msgid="5079975378884765445">"Viesti hylätty."</string>
-    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <string name="custom_from_account_label" msgid="5069652141632649722">"Lähetysosoite:"</string>
-    <string name="send" msgid="8242003661397555986">"Lähetä"</string>
-    <string name="mark_read" msgid="8438349154394313195">"Merkitse luetuksi"</string>
-    <string name="mark_unread" msgid="6231373939351125713">"Merkitse lukemattomaksi"</string>
-    <string name="mute" msgid="1995954983688603977">"Ohita"</string>
-    <string name="add_star" msgid="2866003744391266498">"Lisää tähti"</string>
-    <string name="remove_star" msgid="4372327933122106128">"Poista tähti"</string>
-    <string name="remove_folder" msgid="4906542720439865413">"Poista kansiosta <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
-    <string name="archive" msgid="847250094775910499">"Arkisto"</string>
-    <string name="report_spam" msgid="6467567747975393907">"Ilmoita roskapostista"</string>
-    <string name="mark_not_spam" msgid="694891665407228160">"Merkitse ei-roskapostiksi"</string>
-    <string name="report_phishing" msgid="5714205737453138338">"Ilmoita tietojenkalastelusta"</string>
-    <string name="delete" msgid="844871204175957681">"Poista"</string>
-    <string name="discard_drafts" msgid="6862272443470085375">"Hylkää luonnokset"</string>
-    <string name="refresh" msgid="490989798005710951">"Päivitä"</string>
-    <string name="reply" msgid="2032052598496088561">"Vastaa"</string>
-    <string name="reply_all" msgid="7257248094625487557">"Vastaa kaikille"</string>
-    <string name="resume_draft" msgid="6450150180834092146">"Muokkaa"</string>
-    <string name="forward" msgid="6822914459902983767">"Lähetä edelleen"</string>
-    <string name="menu_compose" msgid="6274193058224230645">"Viestin kirjoitus"</string>
-    <string name="menu_change_folders" msgid="1542713666608888717">"Vaihda kansiota"</string>
-    <string name="menu_move_to" msgid="9138296669516358542">"Siirrä kansioon"</string>
-    <string name="menu_move_to_inbox" msgid="3201472943201077389">"Siirrä postilaatikkoon"</string>
-    <string name="menu_manage_folders" msgid="6755623004628177492">"Kansion asetukset"</string>
-    <string name="menu_show_original" msgid="4227060689700765828">"Palauta autom. koko"</string>
-    <string name="menu_folder_options" msgid="8897520487430647932">"Kansion asetukset..."</string>
-    <string name="menu_settings" msgid="6007027046949837282">"Asetukset"</string>
-    <string name="menu_search" msgid="5297197523031943248">"Haku"</string>
-    <string name="drawer_title" msgid="5888199203222498840">"Navigointi"</string>
-    <string name="mark_important" msgid="6904096897104265870">"Merkitse tärkeäksi"</string>
-    <string name="mark_not_important" msgid="4550967327747977068">"Merkitse ei-tärkeäksi"</string>
-    <string name="add_cc_label" msgid="504861315425773180">"Lisää kopio/piilokopio"</string>
-    <string name="add_bcc_label" msgid="7432027645493843336">"Lisää piilokopio"</string>
-    <string name="quoted_text" msgid="7250749398672037355">"Lisää lainattu teksti"</string>
-    <string name="quoted_text_label" msgid="541007446961960617">"Lainattu teksti"</string>
-    <string name="respond_inline" msgid="6797117334768201180">"Vastaa inline-muodossa"</string>
-    <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> t"</string>
-    <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> Kt"</string>
-    <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> Mt"</string>
-    <string name="attachment_image" msgid="3832985223906528449">"Kuva"</string>
-    <string name="attachment_video" msgid="7526134752988603154">"Video"</string>
-    <string name="attachment_audio" msgid="135527133955622936">"Ääni"</string>
-    <string name="attachment_text" msgid="5544874374971562759">"Teksti"</string>
-    <string name="attachment_application_msword" msgid="2326909450865637910">"Asiakirja"</string>
-    <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"Esitys"</string>
-    <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Laskentataulukko"</string>
-    <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF-tiedosto"</string>
-    <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>-tiedosto"</string>
-    <string name="preview_attachment" msgid="6934911143603455393">"Esikatselu"</string>
-    <string name="save_attachment" msgid="5360128849867863132">"Tallenna"</string>
-    <string name="cancel_attachment" msgid="4651201258272223650">"Peruuta"</string>
-    <string name="open_attachment" msgid="975940478986626705">"Avaa"</string>
-    <string name="install_attachment" msgid="2803531650273683382">"Asenna"</string>
-    <string name="download_again" msgid="7418568915429156518">"Lataa uudelleen"</string>
-    <string name="more_info_attachment" msgid="717244337981816703">"Tiedot"</string>
-    <string name="no_application_found" msgid="1945184804521392093">"Tämän liitetiedoston katseluun sopivaa sovellusta ei ole asennettu."</string>
-    <string name="fetching_attachment" msgid="2599763030649526179">"Noudetaan liitetiedostoa"</string>
-    <string name="please_wait" msgid="8797634225088247121">"Odota…"</string>
-    <string name="saved" msgid="6660844285730790469">"Tallennettu, <xliff:g id="SIZE">%s</xliff:g>"</string>
-    <string name="download_failed" msgid="442019281547315527">"Lataus epäonn. Yritä uudelleen koskett."</string>
-    <string name="attachments_header" msgid="6459475590011460229">"Liitteet"</string>
-    <string name="menu_photo_save_all" msgid="4295226099481995348">"Tallenna kaikki"</string>
-    <string name="menu_photo_share" msgid="2214772815165829079">"Jaa"</string>
-    <string name="menu_photo_share_all" msgid="4577299400844129078">"Jaa kaikki"</string>
-    <string name="menu_photo_print" msgid="1751063711206436775">"Tulosta"</string>
-    <string name="saving" msgid="925514721138014677">"Tallennetaan..."</string>
-    <string name="choosertitle_sharevia" msgid="6142681649048665134">"Jaa sovelluksessa"</string>
-    <string name="contextmenu_openlink" msgid="2176176524824953775">"Avaa selaimessa"</string>
-    <string name="contextmenu_copy" msgid="4604170699444153037">"Kopioi"</string>
-    <string name="contextmenu_copylink" msgid="3580131515400610839">"Kopioi linkin URL-osoite"</string>
-    <string name="contextmenu_view_image" msgid="8855189263365643422">"Näytä kuva"</string>
-    <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Soita..."</string>
-    <string name="contextmenu_sms_dot" msgid="6481040539501081547">"Tekstiviesti..."</string>
-    <string name="contextmenu_add_contact" msgid="8395100913366045250">"Lisää kontakti"</string>
-    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Lähetä sähköposti"</string>
-    <string name="contextmenu_map" msgid="7721544518698532954">"Kartta"</string>
-    <string name="contextmenu_sharelink" msgid="6213520416250245200">"Jaa linkki"</string>
-    <string name="contextmenu_help" msgid="4651718679842414097">"Ohje"</string>
-    <string name="contextmenu_feedback" msgid="4429118420169571473">"Lähetä palautetta"</string>
-    <!-- no translation found for num_selected (5723323585692387843) -->
+    <string name="reply_attribution" msgid="1114972798797833259">"<xliff:g id="PERSON">%s</xliff:g> kirjoitti <xliff:g id="DATE">%s</xliff:g>:"</string>
+    <string name="forward_attribution" msgid="597850048345475752">"---------- Edelleenlähetetty viesti ----------&lt;br&gt;Lähettäjä: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Päivämäärä: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Aihe: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Vastaanottaja: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="1828826576779486239">"---------- Edelleenlähetetty viesti ----------"</string>
+    <string name="cc_attribution" msgid="2928584226469388899">"Kopio: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
+    <string name="select_attachment_type" msgid="353236686616663062">"Valitse liitetiedoston tyyppi"</string>
+    <string name="too_large_to_attach_single" msgid="2669897137966512530">"Et voi liittää tiedostoja, joiden koko on yli <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"Vähintään yhtä tiedostoa ei liitetty. Raja <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_additional" msgid="4964155563465970480">"Tiedostoa ei liitetty. Raja (<xliff:g id="MAXSIZE">%1$s</xliff:g> ) saavutettu."</string>
+    <string name="generic_attachment_problem" msgid="4683974765387240723">"Tiedostoa ei voi liittää."</string>
+    <string name="recipient_needed" msgid="319816879398937214">"Lisää vähintään yksi vastaanottaja."</string>
+    <string name="recipient_error_dialog_title" msgid="760741480291963706">"Vastaanottajavirhe"</string>
+    <string name="confirm_send_title" msgid="4664971589247101530">"Lähetetäänkö viesti?"</string>
+    <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"Viestin aiherivillä ei ole tekstiä."</string>
+    <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"Viestin runko-osassa ei ole tekstiä."</string>
+    <string name="confirm_send_message" msgid="6211518590166222735">"Lähetetäänkö viesti?"</string>
+    <string name="message_discarded" msgid="6792661321962262024">"Viesti hylätty."</string>
+    <string name="signature" msgid="3172144541947408374">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
+    <string name="custom_from_account_label" msgid="5042317430007736322">"Lähetysosoite:"</string>
+    <string name="send" msgid="4269810089682120826">"Lähetä"</string>
+    <string name="mark_read" msgid="579388143288052493">"Merkitse luetuksi"</string>
+    <string name="mark_unread" msgid="6245060538061533191">"Merkitse lukemattomaksi"</string>
+    <string name="mute" msgid="9164839998562321569">"Ohita"</string>
+    <string name="add_star" msgid="3275117671153616270">"Lisää tähti"</string>
+    <string name="remove_star" msgid="9126690774161840733">"Poista tähti"</string>
+    <string name="remove_folder" msgid="2379905457788576297">"Poista kansiosta <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+    <string name="archive" msgid="5978663590021719939">"Arkisto"</string>
+    <string name="report_spam" msgid="4106897677959987340">"Ilmoita roskapostista"</string>
+    <string name="mark_not_spam" msgid="8617774236231366651">"Merkitse ei-roskapostiksi"</string>
+    <string name="report_phishing" msgid="8454666464488413739">"Ilmoita tietojenkalastelusta"</string>
+    <string name="delete" msgid="6784262386780496958">"Poista"</string>
+    <string name="discard_drafts" msgid="5881484193628472105">"Hylkää luonnokset"</string>
+    <string name="refresh" msgid="1533748989749277511">"Päivitä"</string>
+    <string name="reply" msgid="8337757482824207118">"Vastaa"</string>
+    <string name="reply_all" msgid="5366796103758360957">"Vastaa kaikille"</string>
+    <string name="resume_draft" msgid="1272723181782570649">"Muokkaa"</string>
+    <string name="forward" msgid="4397585145490426320">"Lähetä edelleen"</string>
+    <string name="menu_compose" msgid="4575025207594709432">"Viestin kirjoitus"</string>
+    <string name="menu_change_folders" msgid="2194946192901276625">"Vaihda kansiota"</string>
+    <string name="menu_move_to" msgid="7948877550284452830">"Siirrä kansioon"</string>
+    <string name="menu_move_to_inbox" msgid="258554178236001444">"Siirrä postilaatikkoon"</string>
+    <string name="menu_manage_folders" msgid="8486398523679534519">"Kansion asetukset"</string>
+    <string name="menu_show_original" msgid="2330398228979616661">"Palauta autom. koko"</string>
+    <string name="menu_folder_options" msgid="4759618069999684241">"Kansion asetukset..."</string>
+    <string name="menu_settings" msgid="7993485401501778040">"Asetukset"</string>
+    <string name="menu_search" msgid="1949652467806052768">"Haku"</string>
+    <string name="drawer_title" msgid="3766219846644975778">"Navigointi"</string>
+    <string name="mark_important" msgid="8781680450177768820">"Merkitse tärkeäksi"</string>
+    <string name="mark_not_important" msgid="3342258155408116917">"Merkitse ei-tärkeäksi"</string>
+    <string name="add_cc_label" msgid="2249679001141195213">"Lisää kopio/piilokopio"</string>
+    <string name="add_bcc_label" msgid="963745641238037813">"Lisää piilokopio"</string>
+    <string name="quoted_text" msgid="977782904293216533">"Lisää lainattu teksti"</string>
+    <string name="quoted_text_label" msgid="2296807722849923934">"Lainattu teksti"</string>
+    <string name="respond_inline" msgid="6609746292081928078">"Vastaa inline-muodossa"</string>
+    <string name="bytes" msgid="651011686747499628">"<xliff:g id="COUNT">%s</xliff:g> t"</string>
+    <string name="kilobytes" msgid="1523463964465770347">"<xliff:g id="COUNT">%s</xliff:g> Kt"</string>
+    <string name="megabytes" msgid="4309397368708773323">"<xliff:g id="COUNT">%s</xliff:g> Mt"</string>
+    <string name="attachment_image" msgid="6375306026208274564">"Kuva"</string>
+    <string name="attachment_video" msgid="7119476472603939848">"Video"</string>
+    <string name="attachment_audio" msgid="7097658089301809284">"Ääni"</string>
+    <string name="attachment_text" msgid="3485853714965922173">"Teksti"</string>
+    <string name="attachment_application_msword" msgid="2110108876623152162">"Asiakirja"</string>
+    <string name="attachment_application_vnd_ms_powerpoint" msgid="425353008963359230">"Esitys"</string>
+    <string name="attachment_application_vnd_ms_excel" msgid="5585781311136609103">"Laskentataulukko"</string>
+    <string name="attachment_application_pdf" msgid="4207340200944655970">"PDF-tiedosto"</string>
+    <string name="attachment_unknown" msgid="3360536730101083926">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>-tiedosto"</string>
+    <string name="preview_attachment" msgid="6265457626086113833">"Esikatselu"</string>
+    <string name="save_attachment" msgid="375685179032130033">"Tallenna"</string>
+    <string name="cancel_attachment" msgid="6900093625792891122">"Peruuta"</string>
+    <string name="open_attachment" msgid="6100396056314739761">"Avaa"</string>
+    <string name="install_attachment" msgid="8119470822958087928">"Asenna"</string>
+    <string name="download_again" msgid="8195787340878328119">"Lataa uudelleen"</string>
+    <string name="more_info_attachment" msgid="2899691682394864507">"Tiedot"</string>
+    <string name="no_application_found" msgid="7309485680354949680">"Tämän liitetiedoston katseluun sopivaa sovellusta ei ole asennettu."</string>
+    <string name="fetching_attachment" msgid="2286628490159574159">"Noudetaan liitetiedostoa"</string>
+    <string name="please_wait" msgid="3953824147776128899">"Odota…"</string>
+    <string name="saved" msgid="161536102236967534">"Tallennettu, <xliff:g id="SIZE">%s</xliff:g>"</string>
+    <string name="download_failed" msgid="3878373998269062395">"Lataus epäonn. Yritä uudelleen koskett."</string>
+    <string name="attachments_header" msgid="6752739514995620140">"Liitteet"</string>
+    <string name="menu_photo_save_all" msgid="2742869476474613396">"Tallenna kaikki"</string>
+    <string name="menu_photo_share" msgid="6410980274832639330">"Jaa"</string>
+    <string name="menu_photo_share_all" msgid="3049053252719665320">"Jaa kaikki"</string>
+    <string name="menu_photo_print" msgid="3084679038179342333">"Tulosta"</string>
+    <string name="saving" msgid="6274238733828387433">"Tallennetaan..."</string>
+    <string name="choosertitle_sharevia" msgid="3539537264873337959">"Jaa sovelluksessa"</string>
+    <string name="contextmenu_openlink" msgid="6952228183947135362">"Avaa selaimessa"</string>
+    <string name="contextmenu_copy" msgid="2584243784216385180">"Kopioi"</string>
+    <string name="contextmenu_copylink" msgid="8659897702269320063">"Kopioi linkin URL-osoite"</string>
+    <string name="contextmenu_view_image" msgid="1031172763893491000">"Näytä kuva"</string>
+    <string name="contextmenu_dial_dot" msgid="8881095692316726628">"Soita..."</string>
+    <string name="contextmenu_sms_dot" msgid="5319737001771622657">"Tekstiviesti..."</string>
+    <string name="contextmenu_add_contact" msgid="2310064151427072475">"Lisää kontakti"</string>
+    <string name="contextmenu_send_mail" msgid="3834654593200105396">"Lähetä sähköposti"</string>
+    <string name="contextmenu_map" msgid="5118951927399465521">"Kartta"</string>
+    <string name="contextmenu_sharelink" msgid="8670940060477758709">"Jaa linkki"</string>
+    <string name="contextmenu_help" msgid="4209674157707873384">"Ohje"</string>
+    <string name="contextmenu_feedback" msgid="8319100902136337085">"Lähetä palautetta"</string>
+    <!-- no translation found for num_selected (7990204488812654380) -->
     <skip />
   <plurals name="move_conversation">
-    <item quantity="one" msgid="3657821200245019288">"Siirrä keskustelu"</item>
-    <item quantity="other" msgid="1685896770174368261">"Siirrä <xliff:g id="ID_1">%1$d</xliff:g> keskustelua"</item>
+    <item quantity="one" msgid="237882018518207244">"Siirrä keskustelu"</item>
+    <item quantity="other" msgid="6639576653114141743">"Siirrä <xliff:g id="ID_1">%1$d</xliff:g> keskustelua"</item>
   </plurals>
-    <string name="content_description" msgid="169080965055367954">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> aiheesta <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> päiväys <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
-    <string name="content_description_today" msgid="7796658700638720091">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> aiheesta <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> kello <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
-    <string name="read_string" msgid="219566857950091332">"keskustelu on luettu"</string>
-    <string name="unread_string" msgid="588180203444398297">"keskustelua ei ole luettu"</string>
-    <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="badge_and_subject" msgid="8920967904126321854">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g>"</string>
+    <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> aiheesta <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> päiväys <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> aiheesta <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> kello <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
+    <string name="read_string" msgid="5495929677508576520">"keskustelu on luettu"</string>
+    <string name="unread_string" msgid="7342558841698083381">"keskustelua ei ole luettu"</string>
+    <string name="filtered_tag" msgid="721666921386074505">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="badge_and_subject" msgid="3979372269373936750">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g>"</string>
   <plurals name="draft">
-    <item quantity="one" msgid="333591132893648383">"Luonnos"</item>
-    <item quantity="other" msgid="6961049507579977505">"Luonnokset"</item>
+    <item quantity="one" msgid="6717535677167943402">"Luonnos"</item>
+    <item quantity="other" msgid="1335781147509740039">"Luonnokset"</item>
   </plurals>
-    <string name="sending" msgid="8214361929125649771">"Lähetetään…"</string>
-    <string name="message_retrying" msgid="64661613119987741">"Yritetään uudelleen…"</string>
-    <string name="message_failed" msgid="4820279576299009735">"Epäonnistui"</string>
-    <string name="send_failed" msgid="750908595144529579">"Viestiä ei lähetetty."</string>
-    <string name="me_object_pronoun" msgid="6957328068206184521">"minä"</string>
-    <string name="me_subject_pronoun" msgid="271527705272088475">"minä"</string>
-    <string name="inbox_folders_heading" msgid="3960094746248976565">"Postilaatikko"</string>
+    <string name="sending" msgid="5600034886763930499">"Lähetetään…"</string>
+    <string name="message_retrying" msgid="5335188121407261331">"Yritetään uudelleen…"</string>
+    <string name="message_failed" msgid="7887650587384601790">"Epäonnistui"</string>
+    <string name="send_failed" msgid="2186285547449865010">"Viestiä ei lähetetty."</string>
+    <string name="me_object_pronoun" msgid="4674452244417913816">"minä"</string>
+    <string name="me_subject_pronoun" msgid="7479328865714008288">"minä"</string>
   <plurals name="confirm_delete_conversation">
-    <item quantity="one" msgid="3731948757247905508">"Poistetaanko tämä keskustelu?"</item>
-    <item quantity="other" msgid="930334208937121234">"Poistetaanko nämä <xliff:g id="COUNT">%1$d</xliff:g> keskustelua?"</item>
+    <item quantity="one" msgid="7605755011865575440">"Poistetaanko tämä keskustelu?"</item>
+    <item quantity="other" msgid="1585660381208712562">"Poistetaanko nämä <xliff:g id="COUNT">%1$d</xliff:g> keskustelua?"</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
-    <item quantity="one" msgid="2990537295519552069">"Arkistoidaanko tämä keskustelu?"</item>
-    <item quantity="other" msgid="4713469868399246772">"Arkistoidaanko nämä <xliff:g id="COUNT">%1$d</xliff:g> keskustelua?"</item>
+    <item quantity="one" msgid="9105551557653306945">"Arkistoidaanko tämä keskustelu?"</item>
+    <item quantity="other" msgid="2001972798185641108">"Arkistoidaanko nämä <xliff:g id="COUNT">%1$d</xliff:g> keskustelua?"</item>
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one" msgid="3560777326142175666">"Hylätäänkö tämä viesti?"</item>
-    <item quantity="other" msgid="4909853098394068722">"Hylätäänkö nämä <xliff:g id="COUNT">%1$d</xliff:g> viestiä?"</item>
+    <item quantity="one" msgid="2030421499893210789">"Hylätäänkö tämä viesti?"</item>
+    <item quantity="other" msgid="782234447471532005">"Hylätäänkö nämä <xliff:g id="COUNT">%1$d</xliff:g> viestiä?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="1149834186404614612">"Hylätäänkö tämä viesti?"</string>
-    <string name="loading_conversations" msgid="2649440958602369555">"Ladataan…"</string>
-    <string name="empty_inbox" msgid="7623182658180140245">"Valmista tuli! Hyvää päivän jatkoa."</string>
-    <string name="empty_search" msgid="7123710829748939105">"Hups! Ei hakua <xliff:g id="SEARCH_QUERY">%1$s</xliff:g> vastaavia tuloksia."</string>
-    <string name="empty_spam_folder" msgid="7915096608607243274">"Ei roskapostia."</string>
-    <string name="empty_trash_folder" msgid="2205589798674653912">"Roskakori on tyhjä. Eläköön kierrätys!"</string>
-    <string name="empty_folder" msgid="107806583742395757">"Ei postia."</string>
-    <string name="getting_messages" msgid="563711962781090231">"Viestejäsi noudetaan"</string>
-    <string name="undo" msgid="6070869718469782251">"Kumoa"</string>
+    <string name="confirm_discard_text" msgid="5172680524418848519">"Hylätäänkö tämä viesti?"</string>
+    <string name="loading_conversations" msgid="7255732786298655246">"Ladataan…"</string>
+    <string name="empty_inbox" msgid="5901734942362315228">"Valmista tuli! Hyvää päivän jatkoa."</string>
+    <string name="empty_search" msgid="8564899353449880818">"Hups! Ei hakua <xliff:g id="SEARCH_QUERY">%1$s</xliff:g> vastaavia tuloksia."</string>
+    <string name="empty_spam_folder" msgid="3288985543286122800">"Ei roskapostia."</string>
+    <string name="empty_trash_folder" msgid="378119063015945020">"Roskakori on tyhjä. Eläköön kierrätys!"</string>
+    <string name="empty_folder" msgid="3227552635613553855">"Ei postia."</string>
+    <string name="getting_messages" msgid="8403333791332403244">"Viestejäsi noudetaan"</string>
+    <string name="undo" msgid="8256285267701059609">"Kumoa"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="8315328190288744398">"Poistetaan tähti <xliff:g id="COUNT">%1$d</xliff:g> keskustelusta."</item>
-    <item quantity="other" msgid="2222365088907519938">"Poistetaan tähti <xliff:g id="COUNT">%1$d</xliff:g> keskustelusta."</item>
+    <item quantity="one" msgid="839233699150563831">"Poistetaan tähti <xliff:g id="COUNT">%1$d</xliff:g> keskustelusta."</item>
+    <item quantity="other" msgid="7677305734833709789">"Poistetaan tähti <xliff:g id="COUNT">%1$d</xliff:g> keskustelusta."</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ohitettu."</item>
-    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ohitettu."</item>
+    <item quantity="one" msgid="3339638225564408438">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ohitettu."</item>
+    <item quantity="other" msgid="4276111931404654219">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ohitettu."</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty roskapostiksi."</item>
-    <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty roskapostiksi."</item>
+    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty roskapostiksi."</item>
+    <item quantity="other" msgid="5900913789259199137">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty roskapostiksi."</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty muuksi kuin roskapostiksi."</item>
-    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty muuksi kuin roskapostiksi."</item>
+    <item quantity="one" msgid="2294904093653094150">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty muuksi kuin roskapostiksi."</item>
+    <item quantity="other" msgid="4966164423991098144">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty muuksi kuin roskapostiksi."</item>
   </plurals>
   <plurals name="conversation_not_important">
-    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty ei-tärkeäksi."</item>
-    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty ei-tärkeäksi."</item>
+    <item quantity="one" msgid="3824809189993339030">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty ei-tärkeäksi."</item>
+    <item quantity="other" msgid="1215472798075869124">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty ei-tärkeäksi."</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty tietojenkalasteluksi."</item>
-    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty tietojenkalasteluksi."</item>
+    <item quantity="one" msgid="4330095881258771201">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty tietojenkalasteluksi."</item>
+    <item quantity="other" msgid="9218674052779504277">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty tietojenkalasteluksi."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkistoitu."</item>
-    <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkistoitu."</item>
+    <item quantity="one" msgid="4127890884907503696">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkistoitu."</item>
+    <item quantity="other" msgid="7789480176789922968">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkistoitu."</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; poistettu."</item>
-    <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; poistettu."</item>
+    <item quantity="one" msgid="5591889079235938982">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; poistettu."</item>
+    <item quantity="other" msgid="7060256058737892078">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; poistettu."</item>
   </plurals>
-    <string name="deleted" msgid="2757349161107268029">"Poistettu"</string>
-    <string name="archived" msgid="7533995360704366325">"Arkistoitu"</string>
-    <string name="folder_removed" msgid="1047474677580149436">"Poistettu kansiosta <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+    <string name="deleted" msgid="7378013910782008375">"Poistettu"</string>
+    <string name="archived" msgid="6283673603512713022">"Arkistoitu"</string>
+    <string name="folder_removed" msgid="5656281444688183676">"Poistettu kansiosta <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_folder_changed">
-    <item quantity="one" msgid="4930161390461457462">"Kansiota muutettu."</item>
-    <item quantity="other" msgid="8918589141287976985">"Kansioita muutettu."</item>
+    <item quantity="one" msgid="6463727361987396734">"Kansiota muutettu."</item>
+    <item quantity="other" msgid="8815390494333090939">"Kansioita muutettu."</item>
   </plurals>
-    <string name="conversation_folder_moved" msgid="297469098857964678">"Siirretty kansioon <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
-    <string name="search_results_header" msgid="4669917471897026269">"Tulokset"</string>
-    <string name="search_unsupported" msgid="4654227193354052607">"Hakua ei voi käyttää tällä tilillä."</string>
-    <string name="add_label" msgid="6060201715848652940">"Lisää kansio"</string>
-    <string name="new_incoming_messages_one" msgid="827152289636155810">"Näytä uusi viesti lähettäjältä <xliff:g id="SENDER">%s</xliff:g>."</string>
+    <string name="conversation_folder_moved" msgid="6475872337373081683">"Siirretty kansioon <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+    <string name="search_results_header" msgid="1529438451150580188">"Tulokset"</string>
+    <string name="search_unsupported" msgid="2873920566477359177">"Hakua ei voi käyttää tällä tilillä."</string>
+    <string name="add_label" msgid="3285338046038610902">"Lisää kansio"</string>
+    <string name="new_incoming_messages_one" msgid="5933087567495998661">"Näytä uusi viesti lähettäjältä <xliff:g id="SENDER">%s</xliff:g>."</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="1018949581192786598">"Näytä <xliff:g id="COUNT">%1$d</xliff:g> uutta viestiä."</item>
+    <item quantity="other" msgid="4394042684501388790">"Näytä <xliff:g id="COUNT">%1$d</xliff:g> uutta viestiä."</item>
   </plurals>
-    <string name="date_and_view_details" msgid="855883928446828805">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Näytä tiedot&lt;/a&gt;"</string>
-    <string name="hide_details" msgid="7022374044607095589">"Piilota tiedot"</string>
-    <string name="to_message_header" msgid="7406436821725529743">"vast.ott. <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
-    <string name="contact_info_string" msgid="6911322458329265644">"Näytä henkilön <xliff:g id="NAME">%1$s</xliff:g> yhteystiedot"</string>
-    <string name="contact_info_string_default" msgid="596531738469809159">"Näytä yhteystiedot"</string>
+    <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Näytä tiedot&lt;/a&gt;"</string>
+    <string name="hide_details" msgid="8018801050702453314">"Piilota tiedot"</string>
+    <string name="to_message_header" msgid="3954385178027011919">"vast.ott. <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <string name="contact_info_string" msgid="6484930184867405276">"Näytä henkilön <xliff:g id="NAME">%1$s</xliff:g> yhteystiedot"</string>
+    <string name="contact_info_string_default" msgid="6204228921864816351">"Näytä yhteystiedot"</string>
   <plurals name="show_messages_read">
-    <item quantity="other" msgid="7439716291751085801">"<xliff:g id="COUNT">%1$d</xliff:g> vanhempaa viestiä"</item>
+    <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> vanhempaa viestiä"</item>
   </plurals>
-    <string name="from_heading" msgid="8950294114718418954">"Lähettäjä:"</string>
-    <string name="replyto_heading" msgid="2081358811894701297">"Vastausos.:"</string>
-    <string name="to_heading" msgid="1142876841308812954">"Vast.ott.: "</string>
-    <string name="to_heading_no_space" msgid="350137729589860168">"Vast.ott:"</string>
-    <string name="cc_heading" msgid="8116221732072085180">"Kopio:"</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"Piilokopio:"</string>
-    <string name="date_heading" msgid="2414358582984879303">"Pvm.:"</string>
-    <string name="show_images" msgid="1875700481186331432">"Näytä kuvat"</string>
-    <string name="always_show_images" msgid="5966408990164581801">"Näytä aina tämän lähettäjän kuvat"</string>
-    <string name="always_show_images_toast" msgid="6218061921546973716">"Kuvat tältä lähettäjältä näytetään automaattisesti."</string>
-    <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
-    <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> toimialueelta <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
-    <string name="message_saved" msgid="7073947895562277576">"Viesti tallennettu luonnokseksi."</string>
-    <string name="sending_message" msgid="1498583163419122128">"Lähetetään viestiä…"</string>
-    <string name="invalid_recipient" msgid="2161317422860961623">"Osoite <xliff:g id="WRONGEMAIL">%s</xliff:g> ei kelpaa."</string>
-    <string name="show_elided" msgid="6693371179492345444">"Näytä lainattu teksti"</string>
-    <string name="hide_elided" msgid="8907305605854960737">"▼ Piilota lainattu teksti"</string>
-    <string name="message_invite_title" msgid="6757287288611722175">"Kalenterikutsu"</string>
-    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Näytä Kalenterissa"</string>
-    <string name="message_invite_label_attending" msgid="7378806613557157546">"Osallistutko?"</string>
-    <string name="message_invite_accept" msgid="869753811259793266">"Kyllä"</string>
-    <string name="message_invite_tentative" msgid="3898050756490962079">"Ehkä"</string>
-    <string name="message_invite_decline" msgid="4524135969656266758">"Ei"</string>
-    <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="send_anyway" msgid="426079691638238572">"Lähetä silti"</string>
-    <string name="ok" msgid="8339355733816891026">"OK"</string>
-    <string name="done" msgid="3079981801778027540">"Valmis"</string>
-    <string name="cancel" msgid="8762981157252199115">"Peruuta"</string>
-    <string name="clear" msgid="3184687982186479442">"Tyhjennä"</string>
+    <string name="from_heading" msgid="48290556829713090">"Lähettäjä:"</string>
+    <string name="replyto_heading" msgid="8275255318292059079">"Vastausos.:"</string>
+    <string name="to_heading" msgid="3495203282540398336">"Vast.ott.: "</string>
+    <string name="to_heading_no_space" msgid="679167047628308670">"Vast.ott:"</string>
+    <string name="cc_heading" msgid="5603892257866345823">"Kopio:"</string>
+    <string name="bcc_heading" msgid="1482186590756218269">"Piilokopio:"</string>
+    <string name="date_heading" msgid="4213063948406397168">"Pvm.:"</string>
+    <string name="show_images" msgid="436044894053204084">"Näytä kuvat"</string>
+    <string name="always_show_images" msgid="556087529413707819">"Näytä aina tämän lähettäjän kuvat"</string>
+    <string name="always_show_images_toast" msgid="3763157294047555051">"Kuvat tältä lähettäjältä näytetään automaattisesti."</string>
+    <string name="address_display_format" msgid="2098008376913966177">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
+    <string name="address_display_format_with_via_domain" msgid="8108294635074750048">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> toimialueelta <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
+    <string name="message_saved" msgid="3291655042310241793">"Viesti tallennettu luonnokseksi."</string>
+    <string name="sending_message" msgid="2487846954946637084">"Lähetetään viestiä…"</string>
+    <string name="invalid_recipient" msgid="9157434699389936584">"Osoite <xliff:g id="WRONGEMAIL">%s</xliff:g> ei kelpaa."</string>
+    <string name="show_elided" msgid="3456154624105704327">"Näytä lainattu teksti"</string>
+    <string name="hide_elided" msgid="5768235486834692733">"▼ Piilota lainattu teksti"</string>
+    <string name="message_invite_title" msgid="5985161025144867256">"Kalenterikutsu"</string>
+    <string name="message_invite_calendar_view" msgid="9181966650840809197">"Näytä Kalenterissa"</string>
+    <string name="message_invite_label_attending" msgid="4194264767870003397">"Osallistutko?"</string>
+    <string name="message_invite_accept" msgid="8002758842580134835">"Kyllä"</string>
+    <string name="message_invite_tentative" msgid="3199418731566655887">"Ehkä"</string>
+    <string name="message_invite_decline" msgid="6331040872447290777">"Ei"</string>
+    <string name="enumeration_comma" msgid="2848850136844740850">", "</string>
+    <string name="send_anyway" msgid="2727576121007079643">"Lähetä silti"</string>
+    <string name="ok" msgid="6178802457914802336">"OK"</string>
+    <string name="done" msgid="344354738335270292">"Valmis"</string>
+    <string name="cancel" msgid="4831678293149626190">"Peruuta"</string>
+    <string name="clear" msgid="765949970989448022">"Tyhjennä"</string>
+    <string name="next" msgid="2662478712866255138">"Seuraava"</string>
+    <string name="previous" msgid="8985379053279804274">"Edellinen"</string>
   <string-array name="sync_status">
-    <item msgid="2446076619901049026">"Onnistui"</item>
-    <item msgid="7109065688039971961">"Ei yhteyttä."</item>
-    <item msgid="8437496123716232060">"Kirjautuminen ei onnistu."</item>
-    <item msgid="1651266301325684887">"Suojausvirhe."</item>
-    <item msgid="1461520171154288533">"Synkronointi epäonnistui."</item>
-    <item msgid="4779810016424303449">"Sisäinen virhe"</item>
-    <item msgid="600403120960920559">"Palvelinvirhe"</item>
+    <item msgid="4600303222943450797">"Onnistui"</item>
+    <item msgid="2972425114100316260">"Ei yhteyttä."</item>
+    <item msgid="8594593386776437871">"Kirjautuminen ei onnistu."</item>
+    <item msgid="1375193906551623606">"Suojausvirhe."</item>
+    <item msgid="195177374927979967">"Synkronointi epäonnistui."</item>
+    <item msgid="8026148967150231130">"Sisäinen virhe"</item>
+    <item msgid="5442620760791553027">"Palvelinvirhe"</item>
   </string-array>
-    <string name="tap_to_configure" msgid="1181356242354390930">"Kosketa ja määritä asetukset"</string>
-    <string name="non_synced_folder_description" msgid="6059194125558004080">"Synkronoi tämä kansio, jos haluat tarkastella keskusteluja."</string>
-    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synkronoi kansio"</string>
-    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <string name="tap_to_configure" msgid="137172348280050643">"Kosketa ja määritä asetukset"</string>
+    <string name="non_synced_folder_description" msgid="3044618511909304701">"Synkronoi tämä kansio, jos haluat tarkastella keskusteluja."</string>
+    <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"Synkronoi kansio"</string>
+    <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
+    <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ uut"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> uut"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="6210217540181960613">"<xliff:g id="COUNT">%1$d</xliff:g> lukematonta"</item>
+    <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g> lukematonta"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"Yli <xliff:g id="COUNT">%1$d</xliff:g> lukematonta"</string>
-    <string name="view_more_conversations" msgid="3151067626309674344">"Näytä lisää keskusteluita"</string>
-    <string name="loading_conversation" msgid="489160038366067983">"Ladataan…"</string>
-    <string name="activity_mailbox_selection" msgid="6876105223659297603">"Valitse tili"</string>
-    <string name="activity_folder_selection" msgid="5161845867397316052">"Valitse kansio"</string>
-    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"Sähköpostikansio"</string>
-    <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"Vaihda kansiota"</string>
-    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"Siirrä kohteeseen"</string>
-    <string name="search_hint" msgid="3625734263059221350">"Haku viesteistä"</string>
-    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <string name="actionbar_large_unread_count" msgid="753635978542372792">"Yli <xliff:g id="COUNT">%1$d</xliff:g> lukematonta"</string>
+    <string name="view_more_conversations" msgid="8377920000247101901">"Näytä lisää keskusteluita"</string>
+    <string name="loading_conversation" msgid="7931600025861500397">"Ladataan…"</string>
+    <string name="activity_mailbox_selection" msgid="7489813868539767701">"Valitse tili"</string>
+    <string name="activity_folder_selection" msgid="8375243281001234750">"Valitse kansio"</string>
+    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"Sähköpostikansio"</string>
+    <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"Vaihda kansiota"</string>
+    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"Siirrä kohteeseen"</string>
+    <string name="search_hint" msgid="4916671414132334289">"Haku viesteistä"</string>
+    <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
-    <string name="network_error" msgid="2125579009654728299">"Ei yhteyttä"</string>
-    <string name="retry" msgid="4515885444824418022">"Yritä uudelleen"</string>
-    <string name="load_more" msgid="420892447103014683">"Lataa lisää"</string>
-    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <string name="network_error" msgid="5931164247644972255">"Ei yhteyttä"</string>
+    <string name="retry" msgid="916102442074217293">"Yritä uudelleen"</string>
+    <string name="load_more" msgid="8702691358453560575">"Lataa lisää"</string>
+    <!-- no translation found for load_attachment (3894318473827290350) -->
     <skip />
-    <string name="shortcut_name_title" msgid="8220482314700618391">"Nimeä kansion pikakuvake"</string>
-    <string name="wait_for_sync_title" msgid="2767841242539238015">"Odotetaan synkronointia"</string>
-    <string name="not_synced_title" msgid="794279749170198599">"Tiliä ei ole synkronoitu"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tätä tiliä ei ole määritetty synkronoitavaksi automaattisesti.\nKosketa "<b>"Synkronoi"</b>" synkronoidaksesi sähköpostit kerran tai "<b>"Muuta synkronointiasetuksia"</b>" asettaaksesi tilin synkronoimaan sähköpostit automaattisesti."</string>
-    <string name="manual_sync" msgid="6743983544685622800">"Synkronoi"</string>
-    <string name="change_sync_settings" msgid="5514293926214426577">"Muuta synkronointiasetuksia"</string>
-    <string name="photo_load_failed" msgid="8811324070219403896">"Kuvan lataus epäonnistui"</string>
-    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Ei voi siirtää. Valinta sisältää useita tilejä."</string>
-    <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <string name="ignore_spam_warning" msgid="1554651881128904262">"Ohita. Luotan tähän viestiin."</string>
-    <string name="via_domain" msgid="380109230928079350">"toimialueelta <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
-    <string name="signin" msgid="8958889809095796177">"Kirjaudu sisään"</string>
-    <string name="info" msgid="6009817562073541204">"Tietoja"</string>
-    <string name="report" msgid="5417082746232614958">"Lähetä palautetta"</string>
-    <string name="sync_error" msgid="7368819509040597851">"Synkronointi epäonnistui."</string>
-    <string name="sync_error_message" msgid="5367907194753034375">"Laitteessa ei ole tarpeeksi tallennustilaa synkronointiin."</string>
-    <string name="storage" msgid="3262760336059073446">"Tallentaminen"</string>
-    <string name="senders_split_token" msgid="5895854795157860258">", "</string>
-    <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
-    <string name="all_folders_heading" msgid="2506843494725730618">"Kaikki kansiot"</string>
-    <string name="recent_folders_heading" msgid="8613621794529777406">"Viimeaikaiset kansiot"</string>
-    <string name="message_details_title" msgid="2183394728494962332">"Viestin tiedot"</string>
-    <string name="preference_advance_to_title" msgid="5129119549230481490">"Automaattinen siirtyminen"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"Määritä automaattisen siirtymisen asetus\n(poistamisen jne. jälkeen)"</string>
+    <string name="shortcut_name_title" msgid="1562534040126088628">"Nimeä kansion pikakuvake"</string>
+    <string name="wait_for_sync_title" msgid="4577632826912823075">"Odotetaan synkronointia"</string>
+    <string name="not_synced_title" msgid="3600180500934086346">"Tiliä ei ole synkronoitu"</string>
+    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Tätä tiliä ei ole määritetty synkronoitavaksi automaattisesti.\nKosketa "<b>"Synkronoi"</b>" synkronoidaksesi sähköpostit kerran tai "<b>"Muuta synkronointiasetuksia"</b>" asettaaksesi tilin synkronoimaan sähköpostit automaattisesti."</string>
+    <string name="manual_sync" msgid="2271479734895537848">"Synkronoi"</string>
+    <string name="change_sync_settings" msgid="3615852118397055361">"Muuta synkronointiasetuksia"</string>
+    <string name="photo_load_failed" msgid="577471721679146999">"Kuvan lataus epäonnistui"</string>
+    <string name="cant_move_or_change_labels" msgid="4155490583610926755">"Ei voi siirtää. Valinta sisältää useita tilejä."</string>
+    <string name="multiple_new_message_notification_item" msgid="1386588046275174918"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="2170154732664242904">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="ignore_spam_warning" msgid="8760314545535838430">"Ohita. Luotan tähän viestiin."</string>
+    <string name="via_domain" msgid="537951148511529082">"toimialueelta <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
+    <string name="signin" msgid="4699091478139791244">"Kirjaudu sisään"</string>
+    <string name="info" msgid="1357564480946178121">"Tietoja"</string>
+    <string name="report" msgid="4318141326014579036">"Lähetä palautetta"</string>
+    <string name="sync_error" msgid="1795794969006241678">"Synkronointi epäonnistui."</string>
+    <string name="sync_error_message" msgid="4182644657243736635">"Laitteessa ei ole tarpeeksi tallennustilaa synkronointiin."</string>
+    <string name="storage" msgid="4783683938444150638">"Tallentaminen"</string>
+    <string name="senders_split_token" msgid="6549228851819460081">", "</string>
+    <string name="draft_count_format" msgid="9122583199850209286">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
+    <string name="all_folders_heading" msgid="9023770187629170967">"Kaikki kansiot"</string>
+    <string name="recent_folders_heading" msgid="8943134955788867702">"Viimeaikaiset kansiot"</string>
+    <string name="message_details_title" msgid="60771875776494764">"Viestin tiedot"</string>
+    <string name="preference_advance_to_title" msgid="6385669491239514630">"Automaattinen siirtyminen"</string>
   <string-array name="prefEntries_autoAdvance">
-    <item msgid="3400401085256526376">"Uudemmat"</item>
-    <item msgid="5562093094216840213">"Vanhemmat"</item>
-    <item msgid="3331655314944797957">"Keskusteluluettelo"</item>
+    <item msgid="1505450878799459652">"Uudemmat"</item>
+    <item msgid="8000986144872247139">"Vanhemmat"</item>
+    <item msgid="8015001161633421314">"Keskusteluluettelo"</item>
   </string-array>
   <string-array name="prefSummaries_autoAdvance">
-    <item msgid="6389534341359835440">"Näytä uudempi keskustelu poistamisen jälkeen"</item>
-    <item msgid="732746454445519134">"Näytä vanhempi keskustelu poistamisen jälkeen"</item>
-    <item msgid="2189929276292165301">"Näytä keskusteluluettelo poistamisen jälkeen"</item>
+    <item msgid="8221665977497655719">"Näytä uudempi keskustelu poistamisen jälkeen"</item>
+    <item msgid="1721869262893378141">"Näytä vanhempi keskustelu poistamisen jälkeen"</item>
+    <item msgid="880913657385630195">"Näytä keskusteluluettelo poistamisen jälkeen"</item>
   </string-array>
-    <string name="prefDialogTitle_autoAdvance" msgid="6912968951235868060">"Jatka:"</string>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"Tyhjennä kuvien näyttöluvat"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"Tyhjennetäänkö kuvien näyttöluvat?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"Lopeta upotettujen kuvien näyttäminen aiemmin sallituilta lähettäjiltä."</string>
-    <string name="sender_whitelist_cleared" msgid="917434007919176024">"Kuvia ei näytetä automaattisesti."</string>
-    <string name="preferences_signature_title" msgid="888167074398030574">"Allekirjoitus"</string>
-    <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"Allekirjoitus"</string>
-    <string name="preferences_signature_summary_not_set" msgid="2830886980620445857">"Ei asetettu"</string>
-    <string name="notification_action_reply" msgid="6015299134424685297">"Vastaa"</string>
-    <string name="notification_action_reply_all" msgid="20020468410400912">"Vastaa kaikille"</string>
-    <string name="notification_action_archive" msgid="81978513898440040">"Arkistoi"</string>
-    <string name="notification_action_remove_label" msgid="5852730267411032291">"Poista tunniste"</string>
-    <string name="notification_action_delete" msgid="327773454111551791">"Poista"</string>
-    <string name="notification_action_undo_archive" msgid="7280710366587361219">"Arkistoitu"</string>
-    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"Tunniste on poistettu"</string>
-    <string name="notification_action_undo_delete" msgid="3105611327110905438">"Poistettu"</string>
-    <string name="veiled_address" msgid="1209670815434513191"></string>
-    <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
-    <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
-    <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
-    <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
+    <string name="prefDialogTitle_autoAdvance" msgid="5459235590885640678">"Jatka:"</string>
+    <string name="clear_display_images_whitelist_title" msgid="2012677202404471778">"Tyhjennä kuvien näyttöluvat"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"Tyhjennetäänkö kuvien näyttöluvat?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="3952553078559373729">"Lopeta upotettujen kuvien näyttäminen aiemmin sallituilta lähettäjiltä."</string>
+    <string name="sender_whitelist_cleared" msgid="2490984995927904030">"Kuvia ei näytetä automaattisesti."</string>
+    <string name="preferences_signature_title" msgid="2318034745474929902">"Allekirjoitus"</string>
+    <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"Allekirjoitus"</string>
+    <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"Ei asetettu"</string>
+    <string name="notification_action_reply" msgid="8378725460102575919">"Vastaa"</string>
+    <string name="notification_action_reply_all" msgid="5693469099941000037">"Vastaa kaikille"</string>
+    <string name="notification_action_archive" msgid="2884874164831039047">"Arkistoi"</string>
+    <string name="notification_action_remove_label" msgid="3714785653186750981">"Poista tunniste"</string>
+    <string name="notification_action_delete" msgid="3201627482564624132">"Poista"</string>
+    <string name="notification_action_undo_archive" msgid="600186958134073582">"Arkistoitu"</string>
+    <string name="notification_action_undo_remove_label" msgid="8341924850540100690">"Tunniste on poistettu"</string>
+    <string name="notification_action_undo_delete" msgid="6915612337413587103">"Poistettu"</string>
+    <string name="veiled_address" msgid="2670378260196977266"></string>
+    <string name="veiled_alternate_text" msgid="6343564357099807582"></string>
+    <string name="veiled_alternate_text_unknown_person" msgid="6728323554307952217"></string>
+    <string name="veiled_summary_unknown_person" msgid="2122359944161241551"></string>
+    <string name="label_notification_ticker" msgid="323232821061341014">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
   <plurals name="new_messages">
-    <item quantity="one" msgid="1039991646835933015">"<xliff:g id="COUNT">%1$d</xliff:g> uusi viesti"</item>
-    <item quantity="other" msgid="6295442146249725952">"<xliff:g id="COUNT">%1$d</xliff:g> uutta viestiä"</item>
+    <item quantity="one" msgid="3446656407520493241">"<xliff:g id="COUNT">%1$d</xliff:g> uusi viesti"</item>
+    <item quantity="other" msgid="3531683811183204615">"<xliff:g id="COUNT">%1$d</xliff:g> uutta viestiä"</item>
   </plurals>
-    <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="silent_ringtone" msgid="5856834572357761687">"Äänetön"</string>
-    <string name="preference_removal_action_title" msgid="6585232628422090835">"Arkistointi- ja poistotoiminnot"</string>
+    <string name="single_new_message_notification_title" msgid="7954710563222504868">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="silent_ringtone" msgid="1570794756474381886">"Äänetön"</string>
+    <string name="preference_removal_action_title" msgid="4703834472477137634">"Arkistointi- ja poistotoiminnot"</string>
   <string-array name="prefEntries_removal_action">
-    <item msgid="1938422987822134657">"Näytä vain arkistointi"</item>
-    <item msgid="5737880287951287278">"Näytä vain poisto"</item>
-    <item msgid="4279948809971752573">"Näytä arkistointi ja poisto"</item>
+    <item msgid="954772302016538814">"Näytä vain arkistointi"</item>
+    <item msgid="7212690302706180254">"Näytä vain poisto"</item>
+    <item msgid="2539051197590685708">"Näytä arkistointi ja poisto"</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="492039800376391677">"Näytä vain arkistointi"</item>
-    <item msgid="8350973578419775975">"Näytä vain poisto"</item>
-    <item msgid="2967059853409454648">"Näytä arkistointi ja poisto"</item>
+    <item msgid="6877416142040695022">"Näytä vain arkistointi"</item>
+    <item msgid="1510017057984222376">"Näytä vain poisto"</item>
+    <item msgid="3196207224108008441">"Näytä arkistointi ja poisto"</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"Arkistointi- ja poistotoiminnot"</string>
-    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"Vastaa kaikille"</string>
-    <string name="preferences_default_reply_all_summary_impl" msgid="9131944420965452592">"Käytä oletuksena vastauksissa"</string>
-    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"Arkistoi liu\'uttamalla"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"Poista liu\'uttamalla"</string>
-    <string name="preference_swipe_description" msgid="5132683510510041028">"Keskusteluluettelossa"</string>
-    <string name="preference_sender_image_title" msgid="2441320893522058724">"Lähettäjän kuva"</string>
-    <string name="preference_sender_image_description" msgid="7126493917536558232">"Näytä nimen vieressä keskusteluluettelossa"</string>
-    <string name="empty_trash" msgid="652435297593538512">"Tyhjennä roskakori"</string>
-    <string name="empty_spam" msgid="6064497180615519589">"Tyhjennä roskaposti"</string>
-    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"Tyhjennetäänkö roskakori?"</string>
-    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"Tyhjennetäänkö roskaposti?"</string>
+    <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"Arkistointi- ja poistotoiminnot"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Vastaa kaikille"</string>
+    <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"Käytä oletuksena vastauksissa"</string>
+    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"Arkistoi liu\'uttamalla"</string>
+    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"Poista liu\'uttamalla"</string>
+    <string name="preference_swipe_description" msgid="3036560323237015010">"Keskusteluluettelossa"</string>
+    <string name="preference_sender_image_title" msgid="7890813537985591865">"Lähettäjän kuva"</string>
+    <string name="preference_sender_image_description" msgid="3586817690132199889">"Näytä nimen vieressä keskusteluluettelossa"</string>
+    <string name="empty_trash" msgid="3385937024924728399">"Tyhjennä roskakori"</string>
+    <string name="empty_spam" msgid="2911988289997281371">"Tyhjennä roskaposti"</string>
+    <string name="empty_trash_dialog_title" msgid="2104898489663621508">"Tyhjennetäänkö roskakori?"</string>
+    <string name="empty_spam_dialog_title" msgid="1130319045917820569">"Tyhjennetäänkö roskaposti?"</string>
   <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="7530191630810420066">"<xliff:g id="COUNT">%1$d</xliff:g> viesti poistetaan pysyvästi."</item>
-    <item quantity="other" msgid="2182899395748020953">"<xliff:g id="COUNT">%1$d</xliff:g> viestiä poistetaan pysyvästi."</item>
+    <item quantity="one" msgid="3315412388217832914">"<xliff:g id="COUNT">%1$d</xliff:g> viesti poistetaan pysyvästi."</item>
+    <item quantity="other" msgid="263840304486020101">"<xliff:g id="COUNT">%1$d</xliff:g> viestiä poistetaan pysyvästi."</item>
   </plurals>
-    <string name="drawer_open" msgid="6074646853178471940">"Avaa navigointipalkki"</string>
-    <string name="drawer_close" msgid="2764774620737876943">"Sulje navigointipalkki"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"Valitse keskustelu koskettamalla lähettäjän kuvaa."</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"Valitse yksi keskustelu koskettamalla sitä pitkään ja valitse sitten lisää keskusteluja koskettamalla niitä."</string>
-    <string name="folder_icon_desc" msgid="1500547397347480618">"Kansiokuvake"</string>
-    <string name="add_account" msgid="2162808366829269770">"Lisää tili"</string>
-    <string name="attached_message" msgid="4267189489654642035">"Liitetty viesti"</string>
-    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"Hylkää vinkki"</string>
-    <string name="auto_sync_off" msgid="7185342309138211107">"Automaattinen synkronointi ei ole käytössä."</string>
-    <string name="tap_to_enable_sync" msgid="3334767826332383085">"Ota käyttöön koskettamalla."</string>
-    <string name="account_sync_off" msgid="5699548271856775808">"Tilin synkronointi ei ole käytössä."</string>
-    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"Ota käyttöön täällä: <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
-    <string name="account_settings_param" msgid="5277032997773498476">"Tilin asetukset"</string>
-    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"<xliff:g id="OUTBOX">%2$s</xliff:g>: <xliff:g id="NUMBER">%1$s</xliff:g> lähettämätöntä viestiä"</string>
-    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"Otetaanko automaattinen synkronointi käyttöön?"</string>
-    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"Gmailiin ja kaikkiin muihin sovelluksiin ja tileihin tekemäsi muutokset synkronoidaan seuraavissa kohteissa: verkko, muut laitteet ja <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
-    <string name="phone" msgid="5171715391553213328">"puhelin"</string>
-    <string name="tablet" msgid="7956969657216748522">"tablet-laite"</string>
-    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"Ota käyttöön"</string>
-    <string name="show_n_more_folders" msgid="337747297817699776">"Näytä <xliff:g id="NUMBER">%1$s</xliff:g> kansiota lisää"</string>
-    <string name="hide_folders" msgid="7473552966537131652">"Piilota kansiot"</string>
-    <string name="print" msgid="7905250801319578415">"Tulosta"</string>
-    <string name="print_all" msgid="1789808179145024065">"Tulosta kaikki"</string>
+    <string name="drawer_open" msgid="2285557278907103851">"Avaa navigointipalkki"</string>
+    <string name="drawer_close" msgid="2065829742127544297">"Sulje navigointipalkki"</string>
+    <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Valitse keskustelu koskettamalla lähettäjän kuvaa."</string>
+    <string name="long_press_to_select_tip" msgid="1660881999120625177">"Valitse yksi keskustelu koskettamalla sitä pitkään ja valitse sitten lisää keskusteluja koskettamalla niitä."</string>
+    <string name="folder_icon_desc" msgid="6272938864914794739">"Kansiokuvake"</string>
+    <string name="add_account" msgid="5905863370226612377">"Lisää tili"</string>
+    <string name="attached_message" msgid="4514369068177801675">"Liitetty viesti"</string>
+    <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Hylkää vinkki"</string>
+    <string name="auto_sync_off" msgid="3664082916022670831">"Automaattinen synkronointi ei ole käytössä."</string>
+    <string name="tap_to_enable_sync" msgid="30588010316606899">"Ota käyttöön koskettamalla."</string>
+    <string name="account_sync_off" msgid="1351286883806741348">"Tilin synkronointi ei ole käytössä."</string>
+    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"Ota käyttöön täällä: <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
+    <string name="account_settings_param" msgid="3649244241101156660">"Tilin asetukset"</string>
+    <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g>: <xliff:g id="NUMBER">%1$s</xliff:g> lähettämätöntä viestiä"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"Otetaanko automaattinen synkronointi käyttöön?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Gmailiin ja kaikkiin muihin sovelluksiin ja tileihin tekemäsi muutokset synkronoidaan seuraavissa kohteissa: verkko, muut laitteet ja <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
+    <string name="phone" msgid="4142617042507912053">"puhelin"</string>
+    <string name="tablet" msgid="4593581125469224791">"tablet-laite"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="7239160845196929866">"Ota käyttöön"</string>
+    <string name="show_n_more_folders" msgid="5769610839632786654">"Näytä <xliff:g id="NUMBER">%1$s</xliff:g> kansiota lisää"</string>
+    <string name="hide_folders" msgid="7618891933409521283">"Piilota kansiot"</string>
+    <string name="print" msgid="7987949243936577207">"Tulosta"</string>
+    <string name="print_all" msgid="4011022762279519941">"Tulosta kaikki"</string>
   <plurals name="num_messages">
-    <item quantity="one" msgid="1997403772739309847">"<xliff:g id="COUNT">%1$d</xliff:g> viesti"</item>
-    <item quantity="other" msgid="3111597053027796035">"<xliff:g id="COUNT">%1$d</xliff:g> viestiä"</item>
+    <item quantity="one" msgid="8071234386915191851">"<xliff:g id="COUNT">%1$d</xliff:g> viesti"</item>
+    <item quantity="other" msgid="962415099931188360">"<xliff:g id="COUNT">%1$d</xliff:g> viestiä"</item>
   </plurals>
-    <string name="date_message_received_print" msgid="456269555541859826">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> klo <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="draft_to_heading" msgid="4507350107532317093">"Luonnos vast.ott:"</string>
-    <string name="draft_heading" msgid="4654861166951306093">"Luonnos"</string>
-    <string name="quoted_text_hidden_print" msgid="8572207101897331252">"Lainattu teksti piilotettu"</string>
+    <string name="date_message_received_print" msgid="4168417403884350040">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> klo <xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="draft_to_heading" msgid="7370121943946205024">"Luonnos vast.ott:"</string>
+    <string name="draft_heading" msgid="7032951343184552800">"Luonnos"</string>
+    <string name="quoted_text_hidden_print" msgid="5256754205675159141">"Lainattu teksti piilotettu"</string>
   <plurals name="num_attachments">
-    <item quantity="one" msgid="3344123914734915029">"<xliff:g id="COUNT">%1$d</xliff:g> liite"</item>
-    <item quantity="other" msgid="3556482119464721042">"<xliff:g id="COUNT">%1$d</xliff:g> liitettä"</item>
+    <item quantity="one" msgid="5494465717267988888">"<xliff:g id="COUNT">%1$d</xliff:g> liite"</item>
+    <item quantity="other" msgid="5422167728480739361">"<xliff:g id="COUNT">%1$d</xliff:g> liitettä"</item>
   </plurals>
-    <string name="no_subject" msgid="7823949839148118599">"(ei aihetta)"</string>
-    <string name="vacation_responder" msgid="145292667520371875">"Lomaviesti"</string>
-    <string name="preferences_vacation_responder_title" msgid="5775829187605350564">"Lomaviesti"</string>
-    <string name="vacation_responder_body_hint_text" msgid="5731550117332146705">"Viesti"</string>
-    <string name="send_to_contacts_text" msgid="2696513899649703420">"Lähetä vain yhteystiedoissani oleville"</string>
-    <string name="send_to_domain_text" msgid="5055332409482662383">"Lähetä vain verkkotunnukseen <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
-    <string name="pick_start_date_title" msgid="915230000170560933">"Alkaa"</string>
-    <string name="pick_end_date_title" msgid="2068598706186320098">"Päättyy (valinnainen)"</string>
-    <string name="date_not_set" msgid="4925325938525330766">"Ei asetettu"</string>
-    <string name="set_end_date_dialog_title" msgid="72028456826019380">"Päättymispäivä (valinnainen)"</string>
-    <string name="custom_date" msgid="7566383722092597487">"Oma"</string>
-    <string name="date_none" msgid="1033448683454519235">"Ei mitään"</string>
-    <string name="discard_changes" msgid="57677638191085556">"Hylätäänkö muutokset?"</string>
-    <string name="vacation_responder_changes_saved" msgid="7996997204497945275">"Lomaviestin muutokset tallennettiin"</string>
-    <string name="vacation_responder_changes_discarded" msgid="5699324320463227712">"Lomaviestin muutokset hylättiin"</string>
-    <string name="vacation_responder_off" msgid="3502054743467746285">"Ei käytössä"</string>
-    <string name="vacation_responder_on" msgid="5242690599331655563">"Käytössä <xliff:g id="DATE">%1$s</xliff:g> alkaen"</string>
-    <string name="vacation_responder_on_with_end_date" msgid="8198920866703798811">"Käytössä <xliff:g id="START_DATE">%1$s</xliff:g> – <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
-    <string name="vacation_responder_empty_subject_and_body_warning" msgid="2344675863430827845">"Lisää aihe tai viesti"</string>
-    <string name="view_entire_message" msgid="1553882732296911563">"Näytä koko viesti"</string>
-    <string name="eml_loader_error_toast" msgid="2107905951183729575">"Tiedoston avaaminen epäonnistui"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"Ohje"</string>
-    <string name="help_and_feedback" msgid="8247702474242002137">"Ohje ja palaute"</string>
-    <string name="feedback" msgid="79365993169715049">"Lähetä palautetta"</string>
-    <string name="copyright" msgid="8707923211554475583">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
-    <string name="version" msgid="5053508951230261148">"Sovelluksen <xliff:g id="APP_NAME">%1$s</xliff:g> versio <xliff:g id="VERSION">%2$s</xliff:g>"</string>
-    <string name="view_app_page" msgid="5320196120982618014"></string>
-    <string name="print_dialog" msgid="8754985880654139587">"Tulosta…"</string>
-    <string name="copyright_information" msgid="1673715390305905781">"Tekijänoikeustiedot"</string>
-    <string name="privacy_policy" msgid="2072093492013385609">"Tietosuojakäytäntö"</string>
-    <string name="open_source_licenses" msgid="6831573769505612579">"Avoimen lähdekoodin käyttöluvat"</string>
-    <string name="reply_choice_yes" msgid="5279400403860280271">"Kyllä"</string>
-    <string name="reply_choice_no" msgid="1626377088683186268">"Ei"</string>
-    <string name="reply_choice_ok" msgid="5138061449166345173">"OK"</string>
-    <string name="reply_choice_hehe" msgid="7883585007161871893">"Hehe"</string>
-    <string name="reply_choice_thanks" msgid="8365439191962120322">"Kiitos"</string>
-    <string name="reply_choice_i_agree" msgid="24980061720212740">"Olen samaa mieltä"</string>
-    <string name="reply_choice_nice" msgid="7472107121354003424">"Kiva"</string>
-    <string name="reply_on_my_way" msgid="8200386879475660650">"Matkalla"</string>
-    <string name="reply_choice_later" msgid="6294535370720117768">"OK, palaan asiaan"</string>
-    <string name="reply_choice_smiling_face" msgid="7319371040013238561">":)"</string>
-    <string name="reply_choice_frowning_face" msgid="1620301664784374038">":("</string>
-    <string name="preference_header_action_confirmations" msgid="1764964041519032154">"Toimintojen vahvistukset"</string>
-    <string name="preference_confirm_before_delete_title" msgid="950789555970278587">"Vahvista ennen poistamista"</string>
-    <string name="preference_confirm_before_archive_title" msgid="237445234989486590">"Vahvista ennen arkistoimista"</string>
-    <string name="preference_confirm_before_send_title" msgid="3718309715757387457">"Vahvista ennen lähettämistä"</string>
-    <string name="preferences_conversation_mode_title" msgid="6712673875809375620">"Sovita viestit automaattisesti"</string>
-    <string name="preferences_conversation_mode_summary" msgid="6310522471722441546">"Kutistaa viestit ruudulle sopiviksi"</string>
-    <string name="preferences_disable_snap_headers_title" msgid="7803887396971658547">"Viestitoiminnot"</string>
+    <string name="no_subject" msgid="5622708348540036959">"(ei aihetta)"</string>
+    <string name="vacation_responder" msgid="5570132559074523806">"Lomaviesti"</string>
+    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"Lomaviesti"</string>
+    <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"Viesti"</string>
+    <string name="send_to_contacts_text" msgid="124432913980620545">"Lähetä vain yhteystiedoissani oleville"</string>
+    <string name="send_to_domain_text" msgid="5064559546745918393">"Lähetä vain verkkotunnukseen <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
+    <string name="pick_start_date_title" msgid="2274665037355224165">"Alkaa"</string>
+    <string name="pick_end_date_title" msgid="733396083649496600">"Päättyy (valinnainen)"</string>
+    <string name="date_not_set" msgid="3251555782945051904">"Ei asetettu"</string>
+    <string name="set_end_date_dialog_title" msgid="7543009262788808443">"Päättymispäivä (valinnainen)"</string>
+    <string name="custom_date" msgid="5794846334232367838">"Oma"</string>
+    <string name="date_none" msgid="1061426502665431412">"Ei mitään"</string>
+    <string name="discard_changes" msgid="5699760550972324746">"Hylätäänkö muutokset?"</string>
+    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"Lomaviestin muutokset tallennettiin"</string>
+    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"Lomaviestin muutokset hylättiin"</string>
+    <string name="vacation_responder_off" msgid="4429909341193366667">"Ei käytössä"</string>
+    <string name="vacation_responder_on" msgid="4913238379320882449">"Käytössä <xliff:g id="DATE">%1$s</xliff:g> alkaen"</string>
+    <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"Käytössä <xliff:g id="START_DATE">%1$s</xliff:g> – <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
+    <string name="vacation_responder_empty_subject_and_body_warning" msgid="6233629618520852439">"Lisää aihe tai viesti"</string>
+    <string name="view_entire_message" msgid="823281796655014454">"Näytä koko viesti"</string>
+    <string name="eml_loader_error_toast" msgid="6577383216635400167">"Tiedoston avaaminen epäonnistui"</string>
+    <string name="help_and_info" msgid="3708286489943154681">"Ohje"</string>
+    <string name="help_and_feedback" msgid="7211458338163287670">"Ohje ja palaute"</string>
+    <string name="feedback" msgid="204247008751740034">"Lähetä palautetta"</string>
+    <string name="copyright" msgid="3121335168340432582">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
+    <string name="version" msgid="1161745345056656547">"Sovelluksen <xliff:g id="APP_NAME">%1$s</xliff:g> versio <xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="view_app_page" msgid="3241990517052398927"></string>
+    <string name="print_dialog" msgid="8895536548487605661">"Tulosta…"</string>
+    <string name="copyright_information" msgid="971422874488783312">"Tekijänoikeustiedot"</string>
+    <string name="privacy_policy" msgid="212094623396418302">"Tietosuojakäytäntö"</string>
+    <string name="open_source_licenses" msgid="8643615555920977752">"Avoimen lähdekoodin käyttöluvat"</string>
+    <string name="reply_choice_yes" msgid="3327633032975373220">"Kyllä"</string>
+    <string name="reply_choice_no" msgid="7068775605915475207">"Ei"</string>
+    <string name="reply_choice_ok" msgid="7881073621845053152">"OK"</string>
+    <string name="reply_choice_hehe" msgid="6054314968043050748">"Hehe"</string>
+    <string name="reply_choice_thanks" msgid="4978961954288364694">"Kiitos"</string>
+    <string name="reply_choice_i_agree" msgid="2496652737796884298">"Olen samaa mieltä"</string>
+    <string name="reply_choice_nice" msgid="4465894941302838676">"Kiva"</string>
+    <string name="reply_on_my_way" msgid="5645003971107444269">"Matkalla"</string>
+    <string name="reply_choice_later" msgid="4629219072859486413">"OK, palaan asiaan"</string>
+    <string name="reply_choice_smiling_face" msgid="1772253938506548631">":)"</string>
+    <string name="reply_choice_frowning_face" msgid="6260338807944002651">":("</string>
+    <string name="preference_header_action_confirmations" msgid="3922674681156121948">"Toimintojen vahvistukset"</string>
+    <string name="preference_confirm_before_delete_title" msgid="7563587174619033835">"Vahvista ennen poistamista"</string>
+    <string name="preference_confirm_before_archive_title" msgid="7318645995655875718">"Vahvista ennen arkistoimista"</string>
+    <string name="preference_confirm_before_send_title" msgid="4136585783513077039">"Vahvista ennen lähettämistä"</string>
+    <string name="preferences_conversation_mode_title" msgid="389352009651720838">"Sovita viestit automaattisesti"</string>
+    <string name="preferences_conversation_mode_summary" msgid="5730999743867653106">"Kutistaa viestit ruudulle sopiviksi"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"Viestitoiminnot"</string>
   <string-array name="prefSummaries_snapHeader">
-    <item msgid="6008949895584107910">"Näytä viestitoiminnot aina näytön yläosassa"</item>
-    <item msgid="1197074110597228768">"Näytä viestitoiminnot näytön yläosassa vain silloin, kun näyttö on käännetty pystysuuntaan"</item>
-    <item msgid="8496844279095098067">"Älä näytä viestitoimintoja viestin otsikon ulkopuolella"</item>
+    <item msgid="43373293784193461">"Näytä viestitoiminnot aina näytön yläosassa"</item>
+    <item msgid="1765271305989996747">"Näytä viestitoiminnot näytön yläosassa vain silloin, kun näyttö on käännetty pystysuuntaan"</item>
+    <item msgid="6311113076575333488">"Älä näytä viestitoimintoja viestin otsikon ulkopuolella"</item>
   </string-array>
   <string-array name="prefEntries_snapHeader">
-    <item msgid="8453672890190461527">"Näytä aina"</item>
-    <item msgid="8546075502478857367">"Näytä vain pystysuunnassa"</item>
-    <item msgid="863690009910739926">"Älä näytä"</item>
+    <item msgid="6906986566816683587">"Näytä aina"</item>
+    <item msgid="113299655708990672">"Näytä vain pystysuunnassa"</item>
+    <item msgid="4403750311175924065">"Älä näytä"</item>
   </string-array>
-    <string name="clear_history_title" msgid="8974919373315137028">"Tyhjennä hakuhistoria"</string>
-    <string name="search_history_cleared" msgid="1524305711478787614">"Hakuhistoria tyhjennetty."</string>
-    <string name="clear_history_dialog_title" msgid="2726420681651913195">"Tyhjennetäänkö hakuhistoria?"</string>
-    <string name="clear_history_dialog_message" msgid="3779277353786135671">"Kaikki aiemmin suorittamasi haut poistetaan."</string>
-    <string name="manage_accounts_menu_item" msgid="1585009985898462502">"Tilien hallinnointi"</string>
-    <string name="general_preferences_title" msgid="8621924870295902645">"Yleiset asetukset"</string>
-    <string name="activity_preferences" msgid="6611815076475600840">"Asetukset"</string>
+    <string name="clear_history_title" msgid="5536216295725760357">"Tyhjennä hakuhistoria"</string>
+    <string name="search_history_cleared" msgid="1461946302763342640">"Hakuhistoria tyhjennetty."</string>
+    <string name="clear_history_dialog_title" msgid="3503603389704365385">"Tyhjennetäänkö hakuhistoria?"</string>
+    <string name="clear_history_dialog_message" msgid="5202922561632407778">"Kaikki aiemmin suorittamasi haut poistetaan."</string>
+    <string name="manage_accounts_menu_item" msgid="4734660452395086786">"Tilien hallinnointi"</string>
+    <string name="general_preferences_title" msgid="4212138728220418162">"Yleiset asetukset"</string>
+    <string name="activity_preferences" msgid="8966077432517613292">"Asetukset"</string>
 </resources>
