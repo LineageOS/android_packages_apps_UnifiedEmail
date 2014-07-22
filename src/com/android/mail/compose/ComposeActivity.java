@@ -3064,7 +3064,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         // bodyHtml already have the composing spans removed.
         final String htmlBody = message.bodyHtml;
-        final String textBody = Utils.convertHtmlToPlainText(htmlBody);
+        final String textBody = message.bodyText;
         // fullbody will contain the actual body plus the quoted text.
         final String fullBody;
         final String quotedString;
@@ -3079,7 +3079,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             fullBody = htmlBody;
             quotedString = null;
         }
-        if (refMessage != null) {
+        // Only take refMessage into account if either one of its html/text is not empty.
+        if (refMessage != null && !(TextUtils.isEmpty(refMessage.bodyHtml) &&
+                TextUtils.isEmpty(refMessage.bodyText))) {
             // The code below might need to be revisited. The quoted text position is different
             // between text/html and text/plain parts and they should be stored seperately and
             // the right version should be used in the UI. text/html should have preference
