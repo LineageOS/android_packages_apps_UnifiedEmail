@@ -136,6 +136,7 @@ public class UIProvider {
             .put(AccountColumns.NAME, String.class)
             .put(AccountColumns.SENDER_NAME, String.class)
             .put(AccountColumns.ACCOUNT_MANAGER_NAME, String.class)
+            .put(AccountColumns.ACCOUNT_ID, String.class)
             .put(AccountColumns.TYPE, String.class)
             .put(AccountColumns.PROVIDER_VERSION, Integer.class)
             .put(AccountColumns.URI, String.class)
@@ -331,8 +332,12 @@ public class UIProvider {
         /**
          * This string column contains the account manager name of this account.
          */
-
         public static final String ACCOUNT_MANAGER_NAME = "accountManagerName";
+
+        /**
+         * This string column contains the account id of this account.
+         */
+        public static final String ACCOUNT_ID = "accountId";
 
         /**
          * This integer contains the type of the account: Google versus non google. This is not
