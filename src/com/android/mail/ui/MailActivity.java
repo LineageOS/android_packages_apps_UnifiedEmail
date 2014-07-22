@@ -35,6 +35,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.Toolbar;
 
 import com.android.bitmap.BitmapCache;
 import com.android.bitmap.UnrefedBitmapCache;
@@ -162,6 +163,23 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
             AnalyticsTimer.getInstance().trackStart(AnalyticsTimer.COLD_START_LAUNCHER);
         }
 
+        resetSenderImageCache();
+        mViewMode = new ViewMode();
+        final boolean tabletUi = Utils.useTabletUI(this.getResources());
+        mController = ControllerFactory.forActivity(this, mViewMode, tabletUi);
+
+        setContentView(mController.getContentViewResource());
+
+        /*
+        Blocked: b/16491458
+        if (Utils.isRunningLOrLater()) {
+            final Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+            if (toolbar != null) {
+                setActionBar(toolbar);
+            }
+        }
+        */
+
         final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             // Hide the app icon.
@@ -169,10 +187,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
             actionBar.setDisplayUseLogoEnabled(false);
         }
 
-        resetSenderImageCache();
-        mViewMode = new ViewMode();
-        final boolean tabletUi = Utils.useTabletUI(this.getResources());
-        mController = ControllerFactory.forActivity(this, mViewMode, tabletUi);
+        // Must be done after setting up action bar
         mController.onCreate(savedState);
 
         mAccessibilityManager =
