@@ -65,14 +65,10 @@ public class AnalyticsUtils {
             s = "refresh";
         } else if (id == R.id.settings) {
             s = "settings";
-        } else if (id == R.id.folder_options) {
-            s = "folder_options";
         } else if (id == R.id.help_info_menu_item) {
             s = "help";
         } else if (id == R.id.feedback_menu_item) {
             s = "feedback";
-        } else if (id == R.id.manage_folders_item) {
-            s = "manage_folders";
         } else if (id == R.id.move_to) {
             s = "move_to";
         } else if (id == R.id.change_folders) {

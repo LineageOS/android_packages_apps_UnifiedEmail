@@ -97,8 +97,6 @@ public final class TwoPaneController extends AbstractActivityController {
         if (action == R.id.settings
                 || action == R.id.compose
                 || action == R.id.help_info_menu_item
-                || action == R.id.manage_folders_item
-                || action == R.id.folder_options
                 || action == R.id.feedback_menu_item) {
             return true;
         }

@@ -164,8 +164,6 @@
     </string>
     <!-- Menu item text to show the original version of an email conversation, before message manipulation [CHAR LIMIT=25] -->
     <string name="menu_show_original">Revert auto-sizing</string>
-    <!-- Menu item: options for this folder. When source text cannot be translated within the char limit, please translate the shorter "Folder options" instead. [CHAR LIMIT = 30] -->
-    <string name="menu_folder_options">Folder settings</string>
     <!-- Menu item: launch the Settings activity -->
     <string name="menu_settings">Settings</string>
     <!-- Menu item: search through the Gmail inbox -->

@@ -47,7 +47,6 @@ import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FolderOperation;
 import com.android.mail.ui.FolderSelectionDialog;
-import com.android.mail.ui.MailActionBarView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -414,14 +413,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     mFolder.name));
         }
         final MenuItem archive = menu.findItem(R.id.archive);
-        final boolean accountSupportsArchive =
-                mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE);
-        boolean showArchive = accountSupportsArchive
-                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
-        if (archive == null) {
-            showArchive = false;
-        } else {
-            archive.setVisible(showArchive);
+        if (archive != null) {
+            archive.setVisible(
+                    mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE) &&
+                    mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
         }
         final MenuItem spam = menu.findItem(R.id.report_spam);
         spam.setVisible(!showMarkNotSpam
@@ -460,9 +455,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         if (discardDrafts != null) {
             discardDrafts.setVisible(showDiscardDrafts);
         }
-
-        MailActionBarView.reorderMenu(mContext, mAccount, menu,
-                mContext.getResources().getInteger(R.integer.actionbar_max_items));
 
         return true;
     }

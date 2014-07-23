@@ -1282,7 +1282,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mFloatingComposeButton = mActivity.findViewById(R.id.compose_button);
         mFloatingComposeButton.setOnClickListener(this);
 
-        mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerContainer,
+        mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerContainer, false,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
         mDrawerContainer.setDrawerListener(mDrawerListener);
         mDrawerContainer.setDrawerShadow(
@@ -1538,12 +1538,8 @@ public abstract class AbstractActivityController implements ActivityController,
             requestFolderRefresh();
         } else if (id == R.id.settings) {
             Utils.showSettings(mActivity.getActivityContext(), mAccount);
-        } else if (id == R.id.folder_options) {
-            Utils.showFolderSettings(mActivity.getActivityContext(), mAccount, mFolder);
         } else if (id == R.id.help_info_menu_item) {
             mActivity.showHelp(mAccount, mViewMode.getMode());
-        } else if (id == R.id.manage_folders_item) {
-            Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
         } else if (id == R.id.move_to || id == R.id.change_folders) {
             final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(mAccount,
                     Conversation.listOf(mCurrentConversation), isBatch, mFolder,

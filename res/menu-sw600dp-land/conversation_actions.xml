@@ -18,34 +18,22 @@
 <!-- Action bar items for the tablet when viewing a conversation in landscape mode. -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- This invisible menu item is used to map CTRL-C to the compose action -->
-    <item
-        android:id="@+id/compose"
-        android:title="@string/menu_compose"
-        android:visible="false"
-        android:alphabeticShortcut="@string/trigger_compose_char" />
-
     <item android:id="@+id/search"
         android:title="@string/menu_search"
         android:showAsAction="always|collapseActionView"
         android:icon="@drawable/ic_menu_search"
         android:actionLayout="@layout/mail_actionbar_searchview" />
 
-    <!-- Depends on AccountCapabilities.ARCHIVE and
-         FolderCapabilities.ARCHIVE. Only one of archive or
-         remove_folder are shown, and they have the same drawable, so
-         show the first one.
-    -->
     <item
         android:id="@+id/archive"
         android:title="@string/archive"
-        android:showAsAction="never"
+        android:showAsAction="always"
         android:icon="@drawable/ic_archive_wht_24dp"
         android:alphabeticShortcut="@string/trigger_y_char" />
     <item
         android:id="@+id/remove_folder"
         android:title="@string/remove_folder"
-        android:showAsAction="never"
+        android:showAsAction="always"
         android:icon="@drawable/ic_remove_label"
         android:alphabeticShortcut="@string/trigger_y_char"
         android:visible="false" />
@@ -53,20 +41,20 @@
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
-        android:showAsAction="never"
+        android:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp" />
     <!-- Depends on the user viewing a draft label, and the above menu item not being shown -->
     <item
         android:id="@+id/discard_drafts"
         android:title="@string/discard_drafts"
-        android:showAsAction="never"
+        android:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp"
         android:visible="false" />
 
     <item
         android:id="@+id/inside_conversation_unread"
         android:title="@string/mark_unread"
-        android:showAsAction="never"
+        android:showAsAction="always"
         android:icon="@drawable/ic_markunread_wht_24dp" />
 
     <item
@@ -130,23 +118,16 @@
         android:showAsAction="never"
         android:visible="false" />
 
+    <!-- These invisible menu items are used to enable keyboard shortcuts -->
+    <item
+        android:id="@+id/compose"
+        android:title="@string/menu_compose"
+        android:visible="false"
+        android:alphabeticShortcut="@string/trigger_compose_char" />
+
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:showAsAction="never"
+        android:visible="false"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
-
-    <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
-    <item android:id="@+id/folder_options"
-        android:title="@string/menu_folder_options"
-        android:showAsAction="never"  />
-
-    <item android:id="@+id/settings"
-        android:title="@string/menu_settings"
-        android:showAsAction="never" />
-
-    <item
-        android:id="@+id/help_info_menu_item"
-        android:title="@string/help_and_feedback"
-        android:showAsAction="never" />
 
 </menu>

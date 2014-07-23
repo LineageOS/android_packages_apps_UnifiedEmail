@@ -19,6 +19,7 @@ package com.android.mail.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.StringDef;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
@@ -29,6 +30,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -137,6 +140,13 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String DISABLED = "disabled";
     }
 
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({
+            RemovalActions.ARCHIVE,
+            RemovalActions.ARCHIVE_AND_DELETE,
+            RemovalActions.DELETE
+    })
+    public @interface RemovalActionTypes {}
     public static final class RemovalActions {
         public static final String ARCHIVE = "archive";
         public static final String DELETE = "delete";
@@ -241,7 +251,7 @@ public final class MailPrefs extends VersionedPrefs {
      * Sets the removal action preference.
      * @param removalAction The preferred {@link RemovalActions}.
      */
-    public void setRemovalAction(final String removalAction) {
+    public void setRemovalAction(final @RemovalActionTypes String removalAction) {
         getEditor().putString(PreferenceKeys.REMOVAL_ACTION, removalAction).apply();
         notifyBackupPreferenceChanged();
     }

@@ -36,7 +36,6 @@ import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
@@ -45,7 +44,6 @@ import android.widget.TextView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
-import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -89,13 +87,10 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private Folder mFolder;
 
     private SearchView mSearchWidget;
-    private MenuItem mSettingsItem;
-    private MenuItem mHelpItem;
-    private MenuItem mFolderSettingsItem;
     private MenuItem mEmptyTrashItem;
     private MenuItem mEmptySpamItem;
     private boolean mUseLegacyTitle;
-    private View mLegacyTitleContainer;
+
     private TextView mLegacyTitle;
     private TextView mLegacySubTitle;
 
@@ -180,22 +175,22 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     private void initializeTitleViews() {
-        mLegacyTitleContainer = findViewById(R.id.legacy_title_container);
-        if (mLegacyTitleContainer != null) {
+        final View legacyTitleContainer = findViewById(R.id.legacy_title_container);
+        if (legacyTitleContainer != null) {
             // Determine if this device is running on MR1.1 or later
             final boolean runningMR11OrLater = actionBarSupportsNewMethods(mActionBar);
             if (runningMR11OrLater || !mController.isDrawerEnabled()) {
                 // We don't need the legacy view, just hide it
-                mLegacyTitleContainer.setVisibility(View.GONE);
+                legacyTitleContainer.setVisibility(View.GONE);
                 mUseLegacyTitle = false;
             } else {
                 mUseLegacyTitle = true;
                 // We need to show the legacy title/subtitle.  Set the click listener
-                mLegacyTitleContainer.setOnClickListener(this);
+                legacyTitleContainer.setOnClickListener(this);
 
-                mLegacyTitle = (TextView)mLegacyTitleContainer.findViewById(R.id.legacy_title);
+                mLegacyTitle = (TextView) legacyTitleContainer.findViewById(R.id.legacy_title);
                 mLegacySubTitle =
-                        (TextView)mLegacyTitleContainer.findViewById(R.id.legacy_subtitle);
+                        (TextView) legacyTitleContainer.findViewById(R.id.legacy_subtitle);
             }
         }
     }
@@ -223,11 +218,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        mFolderSettingsItem = menu.findItem(R.id.folder_options);
-        mHelpItem = menu.findItem(R.id.help_info_menu_item);
         mEmptyTrashItem = menu.findItem(R.id.empty_trash);
         mEmptySpamItem = menu.findItem(R.id.empty_spam);
-        mSettingsItem = menu.findItem(R.id.settings);
         mSearch = menu.findItem(R.id.search);
 
         if (mSearch != null) {
@@ -370,10 +362,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * conditions are properly set to the correct visibility
      */
     public void validateVolatileMenuOptionVisibility() {
-        if (mFolderSettingsItem != null) {
-            mFolderSettingsItem.setVisible(mFolder != null
-                    && mFolder.supportsCapability(FolderCapabilities.SUPPORTS_SETTINGS));
-        }
         if (mEmptyTrashItem != null) {
             mEmptyTrashItem.setVisible(mAccount != null && mFolder != null
                     && mAccount.supportsCapability(AccountCapabilities.EMPTY_TRASH)
@@ -407,9 +395,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
         validateVolatileMenuOptionVisibility();
 
-        // Only show help in menu if it's not shown in drawer already, unless there's no drawer.
-        boolean showHelpAndSettingsInMenu = !mController.isDrawerEnabled();
-
         switch (getMode()) {
             case ViewMode.CONVERSATION:
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
@@ -418,17 +403,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 // to show up during the time between the conversation is selected and the fragment
                 // is added.
                 setConversationModeOptions(menu);
-                // We want to use the user's preferred menu items here
-                final Resources resources = getResources();
-                final int maxItems = resources.getInteger(R.integer.actionbar_max_items);
-                final int hiddenItems = resources.getInteger(
-                        R.integer.actionbar_hidden_non_cab_items_no_physical_button);
-                final int totalItems = maxItems
-                        - (ViewConfiguration.get(getContext()).hasPermanentMenuKey()
-                                ? 0 : hiddenItems);
-                reorderMenu(getContext(), mAccount, menu, totalItems);
-                // Always enable help/settings in conversation mode.
-                showHelpAndSettingsInMenu = true;
                 break;
             case ViewMode.CONVERSATION_LIST:
                 // Show search if the account supports it
@@ -438,127 +412,10 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
                 // Hide compose and search
                 Utils.setMenuItemVisibility(menu, R.id.compose, false);
                 Utils.setMenuItemVisibility(menu, R.id.search, false);
-                // No drawer at this moment.
-                showHelpAndSettingsInMenu = true;
                 break;
         }
 
-        if (mSettingsItem != null) {
-            mSettingsItem.setVisible(showHelpAndSettingsInMenu);
-        }
-        if (mHelpItem != null) {
-            mHelpItem.setVisible(showHelpAndSettingsInMenu
-                    && mAccount != null
-                    && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
-        }
-
         return false;
-    }
-
-    /**
-     * Reorders the specified {@link Menu}, taking into account the user's Archive/Delete
-     * preference.
-     */
-    public static void reorderMenu(final Context context, final Account account, final Menu menu,
-            final int maxItems) {
-        final String removalAction = MailPrefs.get(context).getRemovalAction(
-                account.supportsCapability(AccountCapabilities.ARCHIVE));
-        final boolean showArchive = MailPrefs.RemovalActions.ARCHIVE.equals(removalAction) ||
-                MailPrefs.RemovalActions.ARCHIVE_AND_DELETE.equals(removalAction);
-        final boolean showDelete = MailPrefs.RemovalActions.DELETE.equals(removalAction) ||
-                MailPrefs.RemovalActions.ARCHIVE_AND_DELETE.equals(removalAction);
-
-        // Do a first pass to extract necessary information on what is safe to display
-        boolean archiveVisibleEnabled = false;
-        boolean deleteVisibleEnabled = false;
-        for (int i = 0; i < menu.size(); i++) {
-            final MenuItem menuItem = menu.getItem(i);
-            final int itemId = menuItem.getItemId();
-            final boolean visible = menuItem.isVisible();
-            final boolean enabled = menuItem.isEnabled();
-
-            if (itemId == R.id.archive || itemId == R.id.remove_folder) {
-                archiveVisibleEnabled |= (visible & enabled);
-            } else if (itemId == R.id.delete || itemId == R.id.discard_drafts) {
-                deleteVisibleEnabled |= (visible & enabled);
-            }
-        }
-
-        int actionItems = 0;
-        MenuItem lastActionCandidate = null;
-        int totalVisibleItems = 0;
-        for (int i = 0; i < menu.size(); i++) {
-            final MenuItem menuItem = menu.getItem(i);
-            final int itemId = menuItem.getItemId();
-
-            // We only want to promote it if it's visible and has an icon
-            if (menuItem.isVisible() && menuItem.getIcon() != null) {
-                if (itemId == R.id.archive || itemId == R.id.remove_folder) {
-                    /*
-                     * If this is disabled, and we want to show both archive and delete, we will
-                     * hide archive (rather than showing it disabled), and take up one of our
-                     * spaces. If we only want to show archive, we'll hide it, but not take up
-                     * a space.
-                     */
-                    if (!menuItem.isEnabled() && showArchive) {
-                        menuItem.setVisible(false);
-
-                        if (showDelete) {
-                            actionItems++;
-                        }
-                    } else {
-                        /*
-                         * We show this if the following are all true:
-                         * 1. The user wants to display archive, or delete is not visible
-                         * 2. We have room for it
-                         */
-                        if ((showArchive || !deleteVisibleEnabled) && actionItems < maxItems) {
-                            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-                            actionItems++;
-                        }
-                    }
-                } else if (itemId == R.id.delete || itemId == R.id.discard_drafts) {
-                    /*
-                     * We show this if the following are all true:
-                     * 1. The user wants to display delete, or archive is not visible
-                     * 2. We have room for it
-                     */
-                    if ((showDelete || !archiveVisibleEnabled) && actionItems < maxItems) {
-                        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-                        actionItems++;
-                    }
-                } else if (itemId == R.id.change_folders) {
-                    final boolean showChangeFolder = account
-                            .supportsCapability(AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
-                    menuItem.setVisible(showChangeFolder);
-
-                    if (showChangeFolder && actionItems < maxItems) {
-                        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-                        actionItems++;
-                    }
-                } else if (itemId == R.id.search) {
-                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
-                            | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-                    actionItems++;
-                } else {
-                    if (actionItems < maxItems) {
-                        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-                        actionItems++;
-                    } else {
-                        lastActionCandidate = menuItem;
-                    }
-                }
-                if (menuItem.isVisible()) {
-                    totalVisibleItems++;
-                }
-            }
-        }
-        if ((totalVisibleItems - actionItems == 1) && lastActionCandidate != null) {
-            // We have exactly one item that we haven't promoted to display in the actionBar.
-            // There's no reason to put it in the overflow, because it will fit in the actionBar
-            // if we just don't display the overflow.
-            lastActionCandidate.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
     }
 
     /**
@@ -869,15 +726,13 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     }
 
     private static boolean actionBarSupportsNewMethods(ActionBar bar) {
-        // TODO(pwestbro) switch this to
-        // (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) when we switch to the
-        // latest SDK
-        if (Build.VERSION.SDK_INT > 17) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return true;
         }
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             return false;
         }
+        // API 17 - why is this special?
         boolean supportsNewApi = false;
         try {
             if (bar != null) {
@@ -894,10 +749,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (v.getId() == R.id.legacy_title_container) {
             mController.onUpPressed();
         }
-    }
-
-    public ViewMode getViewModeController() {
-        return mViewModeController;
     }
 
     public void setViewModeController(ViewMode viewModeController) {

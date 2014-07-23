@@ -198,8 +198,6 @@ public class FolderListFragment extends ListFragment implements
 
     private final DrawerStateListener mDrawerListener = new DrawerStateListener();
 
-    private boolean mShowFooter;
-
     private BitmapCache mImagesCache;
     private ContactResolver mContactResolver;
 
@@ -437,11 +435,6 @@ public class FolderListFragment extends ListFragment implements
         } else {
             mInboxPresent = true;
         }
-
-        // only show the footer on drawered layouts, and definitely not in the folder selection
-        // activity
-        mShowFooter = !mIsFolderSelectionActivity
-                && getResources().getBoolean(R.bool.show_help_and_feedback_in_drawer);
 
         return rootView;
     }
@@ -1235,7 +1228,7 @@ public class FolderListFragment extends ListFragment implements
         private void update() {
             // if the parent activity shows a drawer, these items should participate in that drawer
             // (if it shows a *pane* they should *not* participate in that pane)
-            if (!mShowFooter) {
+            if (mIsFolderSelectionActivity) {
                 return;
             }
 

@@ -18,6 +18,12 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:id="@+id/search"
+      android:title="@string/menu_search"
+      android:showAsAction="ifRoom|collapseActionView"
+      android:icon="@drawable/ic_menu_search"
+      android:actionLayout="@layout/mail_actionbar_searchview" />
+
     <!-- This invisible menu item is used to map CTRL-C to the compose action -->
     <item
         android:id="@+id/compose"
@@ -25,26 +31,9 @@
         android:visible="false"
         android:alphabeticShortcut="@string/trigger_compose_char" />
 
-    <item android:id="@+id/search"
-        android:title="@string/menu_search"
-        android:showAsAction="ifRoom|collapseActionView"
-        android:icon="@drawable/ic_menu_search"
-        android:actionLayout="@layout/mail_actionbar_searchview" />
-
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_menu_refresh_holo_light"
+        android:visible="false"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
-
-    <item android:id="@+id/settings"
-        android:title="@string/menu_settings"
-        android:showAsAction="never" />
-
-    <item
-        android:id="@+id/help_info_menu_item"
-        android:icon="@android:drawable/ic_menu_help"
-        android:showAsAction="never"
-        android:title="@string/help_and_feedback" />
 
 </menu>

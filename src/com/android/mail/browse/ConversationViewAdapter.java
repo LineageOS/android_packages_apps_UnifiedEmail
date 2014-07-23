@@ -86,7 +86,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final List<ConversationOverlayItem> mItems;
     private final VeiledAddressMatcher mMatcher;
 
-    @Retention(RetentionPolicy.CLASS)
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             VIEW_TYPE_CONVERSATION_HEADER,
             VIEW_TYPE_CONVERSATION_FOOTER,

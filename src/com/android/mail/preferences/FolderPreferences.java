@@ -15,9 +15,6 @@
  */
 package com.android.mail.preferences;
 
-import com.google.android.mail.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
-
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -30,6 +27,8 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.NotificationActionUtils.NotificationActionType;
+import com.google.android.mail.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

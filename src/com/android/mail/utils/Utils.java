@@ -620,44 +620,6 @@ public class Utils {
     }
 
     /**
-     * Show the settings screen for the supplied account.
-     */
-     public static void showFolderSettings(Context context, Account account, Folder folder) {
-        if (account == null || folder == null) {
-            LogUtils.e(LOG_TAG, "Invalid attempt to show folder settings. account: %s folder: %s",
-                    account, folder);
-            return;
-        }
-        final Intent settingsIntent = new Intent(Intent.ACTION_EDIT,
-                appendVersionQueryParameter(context, account.settingsIntentUri));
-
-        settingsIntent.setPackage(context.getPackageName());
-        settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
-        settingsIntent.putExtra(EditSettingsExtras.EXTRA_FOLDER, folder);
-        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-
-        context.startActivity(settingsIntent);
-    }
-
-    /**
-     * Show the settings screen for managing all folders.
-     */
-     public static void showManageFolder(Context context, Account account) {
-         if (account == null) {
-             LogUtils.e(LOG_TAG, "Invalid attempt to the manage folders screen with null account");
-             return;
-         }
-         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
-
-         settingsIntent.setPackage(context.getPackageName());
-         settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
-         settingsIntent.putExtra(EditSettingsExtras.EXTRA_MANAGE_FOLDERS, true);
-         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-
-         context.startActivity(settingsIntent);
-    }
-
-    /**
      * Show the feedback screen for the supplied account.
      */
     public static void sendFeedback(Activity activity, Account account, boolean reportingProblem) {

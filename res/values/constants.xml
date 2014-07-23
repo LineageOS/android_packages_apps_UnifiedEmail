@@ -99,12 +99,6 @@
 
     <integer name="swipe_senders_length">25</integer>
 
-    <!-- Number of menu items to display in the ActionBar -->
-    <integer name="actionbar_max_items">3</integer>
-
-    <!-- Number of menu items to hide from the ActionBar by subtracting from actionbar_max_items in non-cab mode -->
-    <integer name="actionbar_hidden_non_cab_items_no_physical_button">1</integer>
-
     <!-- Duration of the animations for entering/exiting CAB mode -->
     <integer name="conv_item_view_cab_anim_duration">250</integer>
 
@@ -118,9 +112,6 @@
     <integer name="vacation_responder_subject_length">500</integer>
     <!-- Number of characters allowed for a vacation responder body. -->
     <integer name="vacation_responder_body_length">1024000</integer>
-
-    <!-- Indicates whether the help and feedback items should be displayed in the drawer. -->
-    <bool name="show_help_and_feedback_in_drawer">true</bool>
 
     <!-- Indicates whether help URLs should be opened by a system browser outside the application or with a webview inside the application -->
     <bool name="openHelpWithBrowser">true</bool>

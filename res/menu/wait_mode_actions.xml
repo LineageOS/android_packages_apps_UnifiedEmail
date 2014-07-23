@@ -17,14 +17,10 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Not visible so that it doesn't show but will still work for keyboard shortcuts -->
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:icon="@drawable/ic_menu_refresh_holo_light"
+        android:visible="false"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
-
-    <item
-        android:id="@+id/help_info_menu_item"
-        android:icon="@android:drawable/ic_menu_help"
-        android:title="@string/help_and_feedback" />
 
 </menu>
