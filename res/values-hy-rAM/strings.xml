@@ -182,7 +182,7 @@
     <item quantity="other" msgid="4276111931404654219">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; համրեցված է:"</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; հաղորդված է որպես լցոն:"</item>
+    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; խոսակցություն նշված է որպես լցոն:"</item>
     <item quantity="other" msgid="5900913789259199137">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; զեկուցված է որպես լցոն:"</item>
   </plurals>
   <plurals name="conversation_not_spam">
