@@ -23,6 +23,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -117,8 +118,12 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
+    public @LayoutRes int getContentViewResource() {
+        return R.layout.two_pane_activity;
+    }
+
+    @Override
     public boolean onCreate(Bundle savedState) {
-        mActivity.setContentView(R.layout.two_pane_activity);
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
         mDrawerContainer.setDrawerTitle(Gravity.START,
                 mActivity.getActivityContext().getString(R.string.drawer_title));

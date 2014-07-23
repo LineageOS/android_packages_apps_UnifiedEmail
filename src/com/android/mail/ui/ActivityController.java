@@ -21,6 +21,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -327,4 +328,10 @@ public interface ActivityController extends LayoutListener,
     public boolean shouldHideMenuItems();
 
     DrawerController getDrawerController();
+
+    /**
+     * Called to determine the layout resource to use for the activity's content view.
+     * @return Resource ID
+     */
+    @LayoutRes int getContentViewResource();
 }

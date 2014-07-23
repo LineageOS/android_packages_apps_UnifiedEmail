@@ -23,6 +23,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.widget.ListView;
@@ -126,8 +127,12 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
+    public @LayoutRes int getContentViewResource() {
+        return R.layout.one_pane_activity;
+    }
+
+    @Override
     public boolean onCreate(Bundle savedInstanceState) {
-        mActivity.setContentView(R.layout.one_pane_activity);
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
         mDrawerContainer.setDrawerTitle(Gravity.START,
                 mActivity.getActivityContext().getString(R.string.drawer_title));
