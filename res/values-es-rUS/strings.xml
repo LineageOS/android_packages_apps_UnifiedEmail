@@ -373,7 +373,7 @@
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Imagen del remitente"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"Mostrar al lado del nombre en la lista de conversaciones"</string>
     <string name="empty_trash" msgid="3385937024924728399">"Vaciar papelera"</string>
-    <string name="empty_spam" msgid="2911988289997281371">"Vaciar sección de spam"</string>
+    <string name="empty_spam" msgid="2911988289997281371">"Vaciar Spam"</string>
     <string name="empty_trash_dialog_title" msgid="2104898489663621508">"¿Vaciar papelera?"</string>
     <string name="empty_spam_dialog_title" msgid="1130319045917820569">"¿Vaciar carpeta de spam?"</string>
   <plurals name="empty_folder_dialog_message">
