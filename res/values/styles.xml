@@ -402,6 +402,8 @@
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.DialogWhenLarge">
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:actionModeBackground">@color/action_mode_background</item>
     </style>
 
     <style name="ComposeThemeBase" parent="@android:style/Theme.Holo.Light.DarkActionBar">
@@ -412,6 +414,8 @@
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
         <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:actionModeBackground">@color/action_mode_background</item>
     </style>
 
     <style name="InvisibleShortcutWidgetTheme" parent="@style/ShortcutWidgetTheme">
@@ -422,8 +426,12 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="PlainActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:displayOptions"></item>
+    <style name="PlainActionBarStyle" parent="ActionBarStyle">
+        <item name="android:displayOptions" />
+    </style>
+
+    <style name="ActionBarStyle"  parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+            <item name="android:background">@color/actionbar_color</item>
     </style>
 
     <style name="OverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
@@ -439,10 +447,13 @@
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:actionModeBackground">@color/action_mode_background</item>
     </style>
 
     <style name="PlainUnifiedEmailTheme" parent="@style/UnifiedEmailTheme">
         <item name="android:actionBarStyle">@style/PlainActionBarStyle</item>
+        <item name="android:actionModeBackground">@color/action_mode_background</item>
     </style>
 
     <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme">

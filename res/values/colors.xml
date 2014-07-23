@@ -148,4 +148,12 @@
     <color name="loading_messages_background_color">#eeeeee</color>
 
     <color name="folder_item_text_color_normal">@color/text_color_grey</color>
+
+    <color name="mail_orange">#e7790d</color>
+    <color name="statusbar_orange">#d06d0c</color>
+
+    <color name="actionbar_color">@color/mail_orange</color>
+    <color name="statusbar_color">@color/statusbar_orange</color>
+    <!-- TODO: get real color from UX -->
+    <color name="action_mode_background">#9b9b9b</color>
 </resources>
