@@ -405,7 +405,7 @@
     </style>
 
     <style name="ComposeThemeBase" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_close_wht_24dp</item>
     </style>
     <style name="ComposeTheme" parent="@style/ComposeThemeBase">
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
