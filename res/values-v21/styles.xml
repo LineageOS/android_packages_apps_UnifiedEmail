@@ -89,7 +89,9 @@
         <item name="android:actionModeBackground">@color/action_mode_background</item>
     </style>
 
-    <style name="ComposeThemeBase" parent="@style/UnifiedEmailTheme" />
+    <style name="ComposeThemeBase" parent="@style/UnifiedEmailTheme">
+        <item name="android:homeAsUpIndicator">@drawable/ic_close_wht_24dp</item>
+    </style>
 
     <style name="AbstractVacationResponderDateSpinnerBase"
            parent="android:style/Widget.Material.Light.Spinner" />
