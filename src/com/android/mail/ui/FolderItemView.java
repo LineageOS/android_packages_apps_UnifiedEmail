@@ -18,6 +18,10 @@ package com.android.mail.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
+import android.graphics.drawable.shapes.Shape;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.View;
@@ -150,7 +154,16 @@ public class FolderItemView extends RelativeLayout {
     private void setUnseenCount(final int color, final int count) {
         mUnseenCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
         if (count > 0) {
-            mUnseenCountTextView.setBackgroundColor(color);
+            final float[] radii = new float[] {
+                    1.0f, 1.0f, // top left
+                    1.0f, 1.0f, // top right
+                    1.0f, 1.0f, // bottom right
+                    1.0f, 1.0f  // bottom left
+            };
+            final Shape shape = new RoundRectShape(radii, null, null);
+            final ShapeDrawable drawable = new ShapeDrawable(shape);
+            drawable.getPaint().setColor(color);
+            mUnseenCountTextView.setBackgroundDrawable(drawable);
             mUnseenCountTextView.setText(Utils.getUnseenCountString(getContext(), count));
         }
     }
