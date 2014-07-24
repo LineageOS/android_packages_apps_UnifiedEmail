@@ -44,8 +44,8 @@ public class DrawerFragment extends FolderListFragment {
         // Drawer is always divided: it shows groups for inboxes, recent folders and all other
         // folders.
         mIsDivided = true;
-        // The drawer also switches accounts, so don't hide accounts.
-        mHideAccounts = false;
+        // The drawer shows the footer.
+        mIsFolderSelectionActivity = false;
     }
 
     @Override
