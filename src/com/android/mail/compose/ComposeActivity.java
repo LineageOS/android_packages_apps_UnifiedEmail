@@ -1610,9 +1610,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Bundle extras = intent.getExtras();
         if (extras != null) {
             CharSequence text = extras.getCharSequence(Intent.EXTRA_TEXT);
-            if (text != null) {
-                setBody(text, true /* with signature */);
-            }
+            setBody((text != null) ? text : "", true /* with signature */);
 
             // TODO - support EXTRA_HTML_TEXT
         }
