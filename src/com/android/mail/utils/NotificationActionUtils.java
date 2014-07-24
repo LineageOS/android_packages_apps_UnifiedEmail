@@ -81,8 +81,8 @@ public class NotificationActionUtils {
     public static final SparseLongArray sNotificationTimestamps = new SparseLongArray();
 
     public enum NotificationActionType {
-        ARCHIVE_REMOVE_LABEL("archive", true, R.drawable.ic_menu_archive_holo_dark,
-                R.drawable.ic_menu_remove_label_holo_dark, R.string.notification_action_archive,
+        ARCHIVE_REMOVE_LABEL("archive", true, R.drawable.ic_archive_wht_24dp,
+                R.drawable.ic_remove_label, R.string.notification_action_archive,
                 R.string.notification_action_remove_label, new ActionToggler() {
             @Override
             public boolean shouldDisplayPrimary(final Folder folder,
@@ -90,7 +90,7 @@ public class NotificationActionUtils {
                 return folder == null || folder.isInbox();
             }
         }),
-        DELETE("delete", true, R.drawable.ic_menu_delete_holo_dark,
+        DELETE("delete", true, R.drawable.ic_delete_wht_24dp,
                 R.string.notification_action_delete),
         REPLY("reply", false, R.drawable.ic_reply_holo_dark, R.string.notification_action_reply),
         REPLY_ALL("reply_all", false, R.drawable.ic_reply_all_holo_dark,

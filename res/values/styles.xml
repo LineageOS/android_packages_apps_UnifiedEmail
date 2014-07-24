@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Compose Styles -->
     <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextView">
         <item name="android:minHeight">42dip</item>
@@ -400,7 +400,7 @@
     </style>
 
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.DialogWhenLarge">
-        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
     </style>
 
@@ -408,7 +408,7 @@
         <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
     </style>
     <style name="ComposeTheme" parent="@style/ComposeThemeBase">
-        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
         <item name="android:windowBackground">@android:color/white</item>
@@ -426,14 +426,17 @@
         <item name="android:displayOptions"></item>
     </style>
 
-    <style name="OverflowButtonStyle"
-           parent="@android:style/Widget.Holo.ActionButton.Overflow">
+    <style name="OverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_overflow_24dp</item>
+    </style>
+
+    <style name="ActionBarOverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu_moreoverflow_mtrl_alpha</item>
     </style>
 
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
-        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
     </style>
@@ -506,7 +509,7 @@
     </style>
 
     <style name="SendersAppearanceReadStyle">
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">sans-serif-light</item>
         <item name="android:textColor">@color/senders_text_color</item>
     </style>
 
@@ -516,7 +519,7 @@
     </style>
 
     <style name="SubjectAppearanceReadStyle">
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">sans-serif-light</item>
         <item name="android:textColor">@color/subject_text_color_read</item>
     </style>
 
