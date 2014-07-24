@@ -16,6 +16,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Tik om de rest van het bericht te laden</string>
-  <string name="fetching_message">Bericht ophalen\u2026</string>
+  <string name="load_more_summary">Raak hier om res van boodskap te laai</string>
+  <string name="fetching_message">Laai boodskap\u2026</string>
 </resources>

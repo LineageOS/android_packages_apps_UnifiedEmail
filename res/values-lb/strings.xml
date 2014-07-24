@@ -18,12 +18,16 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="to">Fir</string>
+  <string name="add_file_attachment">Fichier drunhänken</string>
+  <string name="discard">Verwerfen</string>
+  <string name="compose">Schreiwen</string>
   <string-array name="compose_modes">
     <item>Reply</item>
     <item>Reply all</item>
     <item>Weider</item>
   </string-array>
   <string name="forward">Weider</string>
+  <string name="menu_compose">Schreiwen</string>
   <string name="menu_settings">Astellungen</string>
   <string name="save_attachment">Späicheren</string>
   <string name="choosertitle_sharevia">Deelen iwwer</string>
@@ -32,9 +36,12 @@
   <string name="contextmenu_map">Kaart</string>
   <string name="contextmenu_sharelink">Link deelen</string>
   <string name="deleted">Geläscht</string>
+  <string name="message_saved">Message als Brouillon gespäichert.</string>
   <string name="message_invite_tentative">Vläicht</string>
   <string name="clear">Eidel maachen</string>
   <string name="report">Bericht</string>
   <string name="storage">Späicher</string>
+  <string name="notification_action_delete">Läschen</string>
   <string name="notification_action_undo_delete">Geläscht</string>
+  <string name="silent_ringtone">Roueg</string>
 </resources>
