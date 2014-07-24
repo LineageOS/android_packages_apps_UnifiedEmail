@@ -184,7 +184,7 @@ public class UIProvider {
             .put(AccountColumns.SETTINGS_FRAGMENT_CLASS, String.class)
             .put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, String.class)
             .put(AccountColumns.SettingsColumns.SHOW_IMAGES, Integer.class)
-            .put(AccountColumns.SettingsColumns.WARM_WELCOME_STATUS, Integer.class)
+            .put(AccountColumns.SettingsColumns.WELCOME_TOUR_SHOWN_VERSION, Integer.class)
             .build();
 
     public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
@@ -617,9 +617,9 @@ public class UIProvider {
             public static final String SHOW_IMAGES = "show_images";
 
             /**
-             * Status of the warm welcome tour for the app.
+             * The version of the welcome tour that user saw on android device.
              */
-            public static final String WARM_WELCOME_STATUS = "warm_welcome_status";
+            public static final String WELCOME_TOUR_SHOWN_VERSION = "welcome_tour_shown_version";
         }
     }
 
