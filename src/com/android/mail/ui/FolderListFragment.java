@@ -17,8 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -30,9 +28,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -47,7 +42,6 @@ import com.android.mail.adapter.DrawerItem;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.MergedAdapter;
-import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
@@ -108,7 +102,6 @@ public class FolderListFragment extends ListFragment implements
     protected ControllableActivity mActivity;
     /** The underlying list view */
     private ListView mListView;
-    private ViewGroup mFloatyFooter;
     /** URI that points to the list of folders for the current account. */
     private Uri mFolderListUri;
     /**
@@ -206,11 +199,6 @@ public class FolderListFragment extends ListFragment implements
     private final DrawerStateListener mDrawerListener = new DrawerStateListener();
 
     private boolean mShowFooter;
-
-    private boolean mFooterIsAnimating = false;
-
-    private static final Interpolator INTERPOLATOR_SHOW_FLOATY = new DecelerateInterpolator(2.0f);
-    private static final Interpolator INTERPOLATOR_HIDE_FLOATY = new DecelerateInterpolator();
 
     private BitmapCache mImagesCache;
     private ContactResolver mContactResolver;
@@ -333,7 +321,6 @@ public class FolderListFragment extends ListFragment implements
 
         mAccountsAdapter = newAccountsAdapter();
         mFooterAdapter = new FooterAdapter();
-        updateFloatyFooter();
 
         // Is the selected folder fresher than the one we have restored from a bundle?
         if (selectedFolder != null
@@ -430,9 +417,7 @@ public class FolderListFragment extends ListFragment implements
         setInstanceFromBundle(getArguments());
 
         final View rootView = inflateRootView(inflater, container);
-        final ScrollNotifyingListView lv = (ScrollNotifyingListView) rootView.findViewById(
-                android.R.id.list);
-        mListView = lv;
+        mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setEmptyView(null);
         mListView.setDivider(null);
         if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
@@ -457,48 +442,6 @@ public class FolderListFragment extends ListFragment implements
         // activity
         mShowFooter = !mIsFolderSelectionActivity
                 && getResources().getBoolean(R.bool.show_help_and_feedback_in_drawer);
-
-        // TODO: clean this up when things are more certain
-        final boolean floatyFooterEnabled = false;
-                // mShowFooter && getResources().getBoolean(R.bool.show_drawer_floaty_footer);
-        final ViewGroup ff = (ViewGroup) rootView.findViewById(R.id.floaty_footer);
-        ff.setVisibility(floatyFooterEnabled ? View.VISIBLE : View.GONE);
-        if (floatyFooterEnabled) {
-            mFloatyFooter = ff;
-        }
-
-        final ScrollIndicatorsView scrollbars =
-                (ScrollIndicatorsView) rootView.findViewById(R.id.scroll_indicators);
-        scrollbars.setSourceView(lv);
-
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            private int mLastState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                mLastState = scrollState;
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-                    int totalItemCount) {
-                // have the floaty footer react only after some non-zero scroll movement
-                if (mLastState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    // ignore onScrolls that are generated as the list data is updated
-                    return;
-                }
-
-                if (mListView.canScrollVertically(-1)) {
-                    // typically we want scroll motion to hide the floaty footer
-                    hideFloatyFooter();
-                } else {
-                    // except at the top, when we should show it
-                    showFloatyFooter(false /* onlyWhenClosed */);
-                }
-            }
-
-        });
 
         return rootView;
     }
@@ -706,9 +649,6 @@ public class FolderListFragment extends ListFragment implements
             } else if (loader.getId() == ALL_FOLDER_LIST_LOADER_ID) {
                 mFolderAdapter.setAllFolderListCursor(data);
             }
-            // new data means drawer list length may have changed, and the floaty footer visibility
-            // may need to be updated
-            showFloatyFooter(true /* onlyWhenClosed */);
         }
     }
 
@@ -1391,29 +1331,6 @@ public class FolderListFragment extends ListFragment implements
 
     private void updateFooterItems() {
         mFooterAdapter.update();
-        updateFloatyFooter();
-    }
-
-    private void updateFloatyFooter() {
-        if (mFloatyFooter == null) {
-            return;
-        }
-
-        // assuming this isn't often (the caller is debounced), just remake the floaty footer
-        // from scratch
-        final ViewGroup container = (ViewGroup) mFloatyFooter.findViewById(
-                R.id.floaty_footer_items);
-        container.removeAllViews();
-
-        for (int i = 0; i < mFooterAdapter.getCount(); i++) {
-            final View v = mFooterAdapter.getView(i, null /* convertView */, mFloatyFooter);
-            // the floaty version has its own top border, so remove the list version's border
-            if (i == 0) {
-                v.findViewById(R.id.top_border).setVisibility(View.GONE);
-            }
-            v.setOnClickListener((FooterItem) mFooterAdapter.getItem(i));
-            container.addView(v);
-        }
     }
 
     /**
@@ -1438,61 +1355,6 @@ public class FolderListFragment extends ListFragment implements
      */
     protected int getListViewChoiceMode() {
         return mAccountController.getFolderListViewChoiceMode();
-    }
-
-    private void showFloatyFooter(boolean onlyWhenClosed) {
-        // don't ever show if the footer is disabled (in onCreateView)
-        if (mFloatyFooter == null) {
-            return;
-        }
-
-        // don't show when onLoadFinished is the reason to show it, and the drawer is open
-        // (minimize user-visible changes; that case is basically only relevant when closed)
-        final boolean drawerIsOpen = mActivity.getDrawerController().isDrawerOpen();
-        if (onlyWhenClosed && drawerIsOpen) {
-            return;
-        }
-
-        // show the footer, unless if we're already at the very bottom
-        final int vis = getListView().canScrollVertically(+1) ? View.VISIBLE : View.GONE;
-
-        mFloatyFooter.animate().cancel();
-        if (drawerIsOpen && vis == View.VISIBLE) {
-            mFloatyFooter.animate()
-                .translationY(0f)
-                .setDuration(150)
-                .setInterpolator(INTERPOLATOR_SHOW_FLOATY)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        mFloatyFooter.setVisibility(vis);
-                    }
-                });
-        } else {
-            mFloatyFooter.setTranslationY(0f);
-            mFloatyFooter.setVisibility(vis);
-        }
-
-    }
-
-    private void hideFloatyFooter() {
-        if (mFloatyFooter == null || mFloatyFooter.getVisibility() == View.GONE
-                || mFooterIsAnimating) {
-            return;
-        }
-        mFooterIsAnimating = true;
-        mFloatyFooter.animate().cancel();
-        mFloatyFooter.animate()
-            .translationY(mFloatyFooter.getHeight())
-            .setDuration(200)
-            .setInterpolator(INTERPOLATOR_HIDE_FLOATY)
-            .setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mFooterIsAnimating = false;
-                    mFloatyFooter.setVisibility(View.GONE);
-                }
-            });
     }
 
     /**
@@ -1600,7 +1462,6 @@ public class FolderListFragment extends ListFragment implements
 
         @Override
         public void onDrawerClosed(View drawerView) {
-            showFloatyFooter(false /* onlyWhenClosed */);
             if (mPendingFooterClick != null) {
                 mPendingFooterClick.doFooterAction();
                 mPendingFooterClick = null;

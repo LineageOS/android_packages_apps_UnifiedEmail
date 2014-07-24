@@ -24,40 +24,6 @@
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fadingEdge="none"
-        android:scrollbars="none" />
-
-    <LinearLayout
-        android:id="@+id/floaty_footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:background="@drawable/shadow_top" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/separator_color" />
-
-        <LinearLayout
-            android:id="@+id/floaty_footer_items"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/list_background_color">
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <com.android.mail.browse.ScrollIndicatorsView
-        android:id="@+id/scroll_indicators"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:fadingEdge="none" />
 
 </com.android.mail.ui.FolderListLayout>
