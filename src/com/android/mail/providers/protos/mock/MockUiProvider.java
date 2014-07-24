@@ -283,17 +283,13 @@ public final class MockUiProvider extends ContentProvider {
         final String folderUri = getMockAccountFolderUri(accountId, folderId);
 
         Map<String, Object> folderMap = Maps.newHashMap();
-        folderMap.put(BaseColumns._ID, Long.valueOf(folderId));
+        folderMap.put(BaseColumns._ID, folderId);
         folderMap.put(FolderColumns.URI, folderUri);
         folderMap.put(FolderColumns.NAME, "Folder " + name);
-        folderMap.put(FolderColumns.HAS_CHILDREN, new Integer(hasChildren ? 1 : 0));
+        folderMap.put(FolderColumns.HAS_CHILDREN, hasChildren ? 1 : 0);
         folderMap.put(FolderColumns.CONVERSATION_LIST_URI, folderUri + "/getConversations");
         folderMap.put(FolderColumns.CHILD_FOLDERS_LIST_URI, folderUri + "/getChildFolders");
-        folderMap.put(FolderColumns.CAPABILITIES,
-                Long.valueOf(
-                        FolderCapabilities.SYNCABLE |
-                        FolderCapabilities.PARENT |
-                        FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
+        folderMap.put(FolderColumns.CAPABILITIES, FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES);
         folderMap.put(FolderColumns.UNREAD_COUNT, unread);
         folderMap.put(FolderColumns.TOTAL_COUNT, total);
         folderMap.put(FolderColumns.SYNC_STATUS, 0);
