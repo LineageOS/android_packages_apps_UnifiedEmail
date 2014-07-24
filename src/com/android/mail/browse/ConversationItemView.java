@@ -114,6 +114,9 @@ public class ConversationItemView extends View
     private static final String PERF_TAG_CALCULATE_COORDINATES = "CCHV.coordinates";
     private static final String LOG_TAG = LogTag.getLogTag();
 
+    private static final Typeface SANS_SERIF_LIGHT = Typeface.create("sans-serif-light",
+            Typeface.NORMAL);
+
     // Static bitmaps.
     private static Bitmap STAR_OFF;
     private static Bitmap STAR_ON;
@@ -205,7 +208,6 @@ public class ConversationItemView extends View
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static TextAppearanceSpan sBadgeTextSpan;
     private static BackgroundColorSpan sBadgeBackgroundSpan;
-    private static ForegroundColorSpan sSnippetTextSpan;
     private static int sScrollSlop;
     private static CharacterStyle sActivatedTextSpan;
 
@@ -405,6 +407,8 @@ public class ConversationItemView extends View
         mSnippetTextView.setEllipsize(TextUtils.TruncateAt.END);
         mSnippetTextView.setSingleLine(); // allow partial words to be elided
         mSnippetTextView.setIncludeFontPadding(false);
+        mSnippetTextView.setTypeface(SANS_SERIF_LIGHT);
+        mSnippetTextView.setTextColor(getResources().getColor(R.color.snippet_text_color));
         ViewCompat.setLayoutDirection(mSnippetTextView, layoutDir);
         ViewUtils.setTextAlignment(mSnippetTextView, View.TEXT_ALIGNMENT_VIEW_START);
 
@@ -457,12 +461,12 @@ public class ConversationItemView extends View
             sSendersTextColor = res.getColor(R.color.senders_text_color);
             sSubjectTextUnreadSpan = new TextAppearanceSpan(context,
                     R.style.SubjectAppearanceUnreadStyle);
+            sSubjectTextReadSpan = new TextAppearanceSpan(
+                    context, R.style.SubjectAppearanceReadStyle);
+
             sBadgeTextSpan = new TextAppearanceSpan(context, R.style.BadgeTextStyle);
             sBadgeBackgroundSpan = new BackgroundColorSpan(
                     res.getColor(R.color.badge_background_color));
-            sSubjectTextReadSpan = new TextAppearanceSpan(
-                    context, R.style.SubjectAppearanceReadStyle);
-            sSnippetTextSpan = new ForegroundColorSpan(res.getColor(R.color.snippet_text_color));
             sDateTextColorRead = res.getColor(R.color.date_text_color_read);
             sDateTextColorUnread = res.getColor(R.color.date_text_color_unread);
             sStarTouchSlop = res.getDimensionPixelSize(R.dimen.star_touch_slop);
@@ -929,13 +933,6 @@ public class ConversationItemView extends View
         final String snippet = mHeader.conversation.getSnippet();
         final Spannable displayedStringBuilder = new SpannableString(snippet);
 
-        if (!TextUtils.isEmpty(snippet)) {
-            // Start after the end of the subject text; since the subject may be
-            // "" or null, this could start at the 0th character in the subjectText string
-            displayedStringBuilder.setSpan(ForegroundColorSpan.wrap(sSnippetTextSpan), 0,
-                    displayedStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-
         // measure the width of the folders which overlap the snippet view
         final int availableFolderSpace = mCoordinates.foldersRight - mCoordinates.foldersLeft;
         final int folderWidth = mHeader.folderDisplayer.measureFolders(availableFolderSpace,
@@ -1277,7 +1274,7 @@ public class ConversationItemView extends View
 
         // Date.
         sPaint.setTextSize(mCoordinates.dateFontSize);
-        sPaint.setTypeface(Typeface.DEFAULT);
+        sPaint.setTypeface(isUnread ? Typeface.SANS_SERIF : SANS_SERIF_LIGHT);
         sPaint.setColor(isUnread ? sDateTextColorUnread : sDateTextColorRead);
         drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateYBaseline, sPaint);
 
