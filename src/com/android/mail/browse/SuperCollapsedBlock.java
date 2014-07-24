@@ -27,6 +27,8 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
 
+import java.text.NumberFormat;
+
 /**
  * A header block that expands to a list of collapsed message headers. Will notify a listener on tap
  * so the listener can hide the block and reveal the corresponding collapsed message headers.
@@ -42,7 +44,7 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
         void onSuperCollapsedClick(SuperCollapsedBlockItem item);
     }
 
-    private SuperCollapsedBlockItem mModel;
+    private SuperCollapsedBlockItem mSuperCollapsedItem;
     private OnClickListener mClick;
     private TextView mSuperCollapsedText;
 
@@ -67,14 +69,15 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     }
 
     public void bind(SuperCollapsedBlockItem item) {
-        mModel = item;
+        mSuperCollapsedItem = item;
         setCount(item.getEnd() - item.getStart() + 1);
     }
 
     public void setCount(int count) {
-        mSuperCollapsedText.setText(String.valueOf(count));
+        final String strCount = NumberFormat.getIntegerInstance().format(count);
+        mSuperCollapsedText.setText(strCount);
         final Resources res = getResources();
-        final int colorId = mModel.hasDraft() ?
+        final int colorId = mSuperCollapsedItem.hasDraft() ?
                 R.color.text_color_draft_red : R.color.conversation_view_text_color_light;
         mSuperCollapsedText.setTextColor(res.getColor(colorId));
         setContentDescription(
@@ -90,7 +93,7 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    mClick.onSuperCollapsedClick(mModel);
+                    mClick.onSuperCollapsedClick(mSuperCollapsedItem);
                 }
             });
         }
