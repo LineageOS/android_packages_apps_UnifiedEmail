@@ -401,7 +401,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
             for (int i = 0; i < size; i++) {
                 final MenuItem item = menu.getItem(i);
-                final int id = item.getItemId();
                 item.setVisible(false);
             }
             return false;

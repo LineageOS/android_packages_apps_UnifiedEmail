@@ -985,14 +985,6 @@ public class Utils {
         }
     }
 
-    /**
-     * Return whether menus should show the disabled archive menu item or just
-     * remove it when archive is not available.
-     */
-    public static boolean shouldShowDisabledArchiveIcon(Context context) {
-        return context.getResources().getBoolean(R.bool.show_disabled_archive_menu_item);
-    }
-
     public static int getDefaultFolderBackgroundColor(Context context) {
         if (sDefaultFolderBackgroundColor == -1) {
             sDefaultFolderBackgroundColor = context.getResources().getColor(

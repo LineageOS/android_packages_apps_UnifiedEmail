@@ -34,7 +34,7 @@
         android:id="@+id/delete"
         android:title="@string/delete"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/trash" />
+        android:icon="@drawable/ic_delete_wht_24dp" />
 
     <!-- Always available -->
     <item
@@ -46,7 +46,7 @@
     <item android:id="@+id/inside_conversation_unread"
         android:title="@string/mark_read"
         android:showAsAction="never"
-        android:icon="@drawable/ic_menu_mark_unread_holo_light" />
+        android:icon="@drawable/ic_markunread_wht_24dp" />
 
     <item
         android:id="@+id/mark_important"
