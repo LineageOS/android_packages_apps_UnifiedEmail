@@ -112,7 +112,6 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
          */
         menu.clear();
         inflater.inflate(R.menu.general_prefs_fragment_menu, menu);
-        removeManageAccountsIfApplicable(menu);
     }
 
     @Override
