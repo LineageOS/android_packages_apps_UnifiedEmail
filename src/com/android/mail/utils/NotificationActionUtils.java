@@ -354,7 +354,7 @@ public class NotificationActionUtils {
 
         final NotificationAction notificationAction = new NotificationAction(action, account,
                 conversation, message, folder, conversation.id, message.serverId, message.id, when,
-                NotificationAction.SOURCE_LOCAL);
+                NotificationAction.SOURCE_LOCAL, notificationId);
 
         switch (action) {
             case REPLY: {
@@ -423,7 +423,7 @@ public class NotificationActionUtils {
 
         final NotificationAction notificationAction = new NotificationAction(action, account,
                 conversation, message, folder, conversation.id, message.serverId, message.id, when,
-                NotificationAction.SOURCE_REMOTE);
+                NotificationAction.SOURCE_REMOTE, notificationId);
 
         switch (action) {
             case REPLY:
@@ -492,11 +492,13 @@ public class NotificationActionUtils {
         private final long mLocalMessageId;
         private final long mWhen;
         private final int mSource;
+        private final int mNotificationId;
 
         public NotificationAction(final NotificationActionType notificationActionType,
                 final Account account, final Conversation conversation, final Message message,
                 final Folder folder, final long conversationId, final String messageId,
-                final long localMessageId, final long when, final int source) {
+                final long localMessageId, final long when, final int source,
+                final int notificationId) {
             mNotificationActionType = notificationActionType;
             mAccount = account;
             mConversation = conversation;
@@ -507,6 +509,7 @@ public class NotificationActionUtils {
             mLocalMessageId = localMessageId;
             mWhen = when;
             mSource = source;
+            mNotificationId = notificationId;
         }
 
         public NotificationActionType getNotificationActionType() {
@@ -549,6 +552,10 @@ public class NotificationActionUtils {
             return mSource;
         }
 
+        public int getNotificationId() {
+            return mNotificationId;
+        }
+
         public int getActionTextResId() {
             switch (mNotificationActionType) {
                 case ARCHIVE_REMOVE_LABEL:
@@ -582,6 +589,7 @@ public class NotificationActionUtils {
             out.writeLong(mLocalMessageId);
             out.writeLong(mWhen);
             out.writeInt(mSource);
+            out.writeInt(mNotificationId);
         }
 
         public static final Parcelable.ClassLoaderCreator<NotificationAction> CREATOR =
@@ -614,6 +622,7 @@ public class NotificationActionUtils {
             mLocalMessageId = in.readLong();
             mWhen = in.readLong();
             mSource = in.readInt();
+            mNotificationId = in.readInt();
         }
     }
 

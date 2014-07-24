@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.android.mail.analytics.Analytics;
 import com.android.mail.providers.Message;
@@ -120,6 +121,8 @@ public class NotificationActionIntentService extends IntentService {
         if (notificationAction.getSource() == NotificationAction.SOURCE_REMOTE) {
             // Skip undo if the action is bridged from remote node.  This should be similar to the
             // logic after the Undo notification expires in a regular flow.
+            LogUtils.d(LOG_TAG, "Canceling %s", notificationAction.getNotificationId());
+            NotificationManagerCompat.from(context).cancel(notificationAction.getNotificationId());
             NotificationActionUtils.processDestructiveAction(this, notificationAction);
             NotificationActionUtils.resendNotifications(context, notificationAction.getAccount(),
                     notificationAction.getFolder());
