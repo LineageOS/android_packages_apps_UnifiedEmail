@@ -123,11 +123,11 @@ public class SendersView {
             sMessageInfoReadStyleSpan = new TextAppearanceSpan(context,
                     R.style.MessageInfoReadTextAppearance);
             sDraftsStyleSpan = new TextAppearanceSpan(context, R.style.DraftTextAppearance);
-            sUnreadStyleSpan = new TextAppearanceSpan(context, R.style.SendersUnreadTextAppearance);
+            sUnreadStyleSpan = new TextAppearanceSpan(context, R.style.SendersAppearanceUnreadStyle);
             sSendingStyleSpan = new TextAppearanceSpan(context, R.style.SendingTextAppearance);
             sRetryingStyleSpan = new TextAppearanceSpan(context, R.style.RetryingTextAppearance);
             sFailedStyleSpan = new TextAppearanceSpan(context, R.style.FailedTextAppearance);
-            sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersReadTextAppearance);
+            sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersAppearanceReadStyle);
             sMessageCountSpacerString = res.getString(R.string.message_count_spacer);
             sSendingString = res.getString(R.string.sending);
             sRetryingString = res.getString(R.string.message_retrying);
