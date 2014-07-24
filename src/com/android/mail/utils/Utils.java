@@ -29,6 +29,8 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -1217,5 +1219,16 @@ public class Utils {
             // Doing this for other locales might really screw things up, so do US-version only
             return email.toLowerCase(Locale.US);
         }
+    }
+
+    /**
+     * Returns whether the device currently has network connection. This does not guarantee that
+     * the connection is reliable.
+     */
+    public static boolean isConnected(final Context context) {
+        final ConnectivityManager connectivityManager =
+                ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null) && networkInfo.isConnected();
     }
 }
