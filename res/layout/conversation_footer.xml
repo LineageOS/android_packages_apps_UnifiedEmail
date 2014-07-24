@@ -28,6 +28,7 @@
         android:background="@color/conversation_view_border_color"/>
 
     <LinearLayout
+        android:id="@+id/footer_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 

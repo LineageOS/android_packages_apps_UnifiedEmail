@@ -20,6 +20,7 @@
     <color name="text_color_black">#212121</color>
     <color name="accent_blue">#00bfd8</color>
     <color name="text_color_blue">@color/accent_blue</color>
+    <color name="text_color_draft_red">#da4336</color>
     <color name="gray_text_color">#777777</color>
     <color name="dark_gray_text_color">#58585b</color>
     <color name="light_gray_text_color">#b5b5b5</color>
@@ -38,7 +39,6 @@
     <color name="ap_overflow_badge_color">#cceeeeee</color>
     <color name="ap_overflow_text_color">#ff4f4c4c</color>
 
-    <color name="drafts">#ff990000</color>
     <color name="attachment_bg_color">#ffdddddd</color>
     <color name="swiped_bg_color">#ff999999</color>
     <color name="holo_light_background_color">#ffe8e8e8</color>
