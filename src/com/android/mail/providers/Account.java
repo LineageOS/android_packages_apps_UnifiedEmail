@@ -375,7 +375,7 @@ public class Account implements Parcelable {
         } else {
             accountManagerName = amName;
         }
-        accountId = json.getString(UIProvider.AccountColumns.ACCOUNT_ID);
+        accountId = json.optString(UIProvider.AccountColumns.ACCOUNT_ID, accountManagerName);
         providerVersion = json.getInt(AccountColumns.PROVIDER_VERSION);
         uri = Uri.parse(json.optString(AccountColumns.URI));
         capabilities = json.getInt(AccountColumns.CAPABILITIES);
