@@ -24,15 +24,15 @@
     android:orientation="vertical" >
 
     <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/separator_color" />
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="8dp"
+        android:background="@color/separator_color" />
 
     <TextView
         android:id="@+id/header_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
         android:minHeight="32dp"
         android:gravity="bottom"
         android:ellipsize="end"
