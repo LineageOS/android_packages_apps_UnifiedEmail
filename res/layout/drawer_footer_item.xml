@@ -17,9 +17,19 @@
 -->
 
 <!-- Item in the drawer that launches the Help or Feedback activities. -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <View
+        android:id="@+id/top_border"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawer_item_divider_thickness"
+        android:background="@color/separator_color"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
 
     <LinearLayout
         android:layout_height="wrap_content"
@@ -45,13 +55,4 @@
             style="@style/DrawerFooterListItemStyle"/>
     </LinearLayout>
 
-    <!-- This top "border" is deliberately inset into the item to prevent it from interfering    -->
-    <!-- visually with its floaty counterpart. This is also why it isn't just its own list item. -->
-    <View
-        android:id="@+id/top_border"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/separator_color"
-        android:visibility="gone" />
-
-</FrameLayout>
+</LinearLayout>

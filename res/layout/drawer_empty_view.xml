@@ -25,8 +25,7 @@
         android:layout_height="match_parent"
         android:paddingTop="10dp"
         android:paddingBottom="20dp"
-        android:gravity="center_horizontal"
-        android:background="@android:color/white" >
+        android:gravity="center_horizontal" >
 
     <ProgressBar
         android:id="@+id/progress"
