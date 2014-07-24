@@ -850,7 +850,7 @@ public class Account implements Parcelable {
     /**
      * The account id is an unique id to represent this account.
      */
-    public String getAccountId(Context context) {
+    public String getAccountId() {
         LogUtils.d(LogUtils.TAG, "getAccountId = %s for email %s", accountId, accountManagerName);
         return accountId;
     }
