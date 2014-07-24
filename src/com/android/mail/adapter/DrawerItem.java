@@ -60,10 +60,12 @@ public class DrawerItem {
     public static final int VIEW_FOLDER = 0;
     /** A text-label which serves as a header in sectioned lists. */
     public static final int VIEW_HEADER = 1;
+    /** A text-label which serves as a header in sectioned lists. */
+    public static final int VIEW_BLANK_HEADER = 2;
     /** An account object, which allows switching accounts rather than folders. */
-    public static final int VIEW_ACCOUNT = 2;
+    public static final int VIEW_ACCOUNT = 3;
     /** An expandable object for expanding/collapsing more of the list */
-    public static final int VIEW_WAITING_FOR_SYNC = 3;
+    public static final int VIEW_WAITING_FOR_SYNC = 4;
     /** The value (1-indexed) of the last View type.  Useful when returning the number of types. */
     private static final int LAST_FIELD = VIEW_WAITING_FOR_SYNC + 1;
 
@@ -106,6 +108,8 @@ public class DrawerItem {
                 return folderToString();
             case VIEW_HEADER:
                 return headerToString();
+            case VIEW_BLANK_HEADER:
+                return blankHeaderToString();
             case VIEW_ACCOUNT:
                 return accountToString();
             case VIEW_WAITING_FOR_SYNC:
@@ -217,6 +221,15 @@ public class DrawerItem {
         return sb.toString();
     }
 
+    public static DrawerItem ofBlankHeader(ControllableActivity activity) {
+        return new DrawerItem(VIEW_BLANK_HEADER, activity, null, INERT_HEADER, null, 0, false, null,
+                null);
+    }
+
+    private String blankHeaderToString() {
+        return "[DrawerItem VIEW_BLANK_HEADER]";
+    }
+
     /**
      * Create a "waiting for initialization" item.
      *
@@ -244,6 +257,9 @@ public class DrawerItem {
                 break;
             case VIEW_HEADER:
                 result = getHeaderView(convertView, parent);
+                break;
+            case VIEW_BLANK_HEADER:
+                result = getBlankHeaderView(convertView, parent);
                 break;
             case VIEW_ACCOUNT:
                 result = getAccountView(convertView, parent);
@@ -279,10 +295,11 @@ public class DrawerItem {
     /** Calculate whether the item is enabled */
     private boolean calculateEnabled() {
         switch (mType) {
-            case VIEW_HEADER :
+            case VIEW_HEADER:
+            case VIEW_BLANK_HEADER:
                 // Headers are never enabled.
                 return false;
-            case VIEW_FOLDER :
+            case VIEW_FOLDER:
                 // Folders are always enabled.
                 return true;
             case VIEW_ACCOUNT:
@@ -314,7 +331,8 @@ public class DrawerItem {
      */
     public boolean isHighlighted(FolderUri currentFolder, int currentType) {
         switch (mType) {
-            case VIEW_HEADER :
+            case VIEW_HEADER:
+            case VIEW_BLANK_HEADER:
                 // Headers are never highlighted
                 return false;
             case VIEW_FOLDER:
@@ -363,14 +381,32 @@ public class DrawerItem {
      * @return a text header at the given position.
      */
     private View getHeaderView(View convertView, ViewGroup parent) {
-        final TextView headerView;
+        final View headerView;
         if (convertView != null) {
-            headerView = (TextView) convertView;
+            headerView = convertView;
         } else {
-            headerView = (TextView) mInflater.inflate(R.layout.folder_list_header, parent, false);
+            headerView = mInflater.inflate(R.layout.folder_list_header, parent, false);
         }
-        headerView.setText(mResource);
+        final TextView textView = (TextView) headerView.findViewById(R.id.header_text);
+        textView.setText(mResource);
         return headerView;
+    }
+
+    /**
+     * Returns a blank divider
+     *
+     * @param convertView A previous view, perhaps null
+     * @param parent the parent of this view
+     * @return a blank header
+     */
+    private View getBlankHeaderView(View convertView, ViewGroup parent) {
+        final View blankHeaderView;
+        if (convertView != null) {
+            blankHeaderView = convertView;
+        } else {
+            blankHeaderView = mInflater.inflate(R.layout.folder_list_blank_header, parent, false);
+        }
+        return blankHeaderView;
     }
 
     /**
