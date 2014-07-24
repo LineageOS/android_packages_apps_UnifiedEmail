@@ -46,9 +46,10 @@
         android:layout_height="@dimen/contact_image_height"
         android:layout_marginTop="@dimen/message_header_contact_photo_margin"
         android:layout_marginBottom="@dimen/message_header_contact_photo_margin"
-        android:visibility="gone"
+        android:background="@drawable/draft_background_circle"
         android:scaleType="center"
-        android:src="@drawable/ic_draft"
+        android:src="@drawable/ic_drafts_wht_24dp"
+        android:visibility="gone"
         style="@style/ConversationViewMarginStyle" />
     <include layout="@layout/conversation_message_upper_header_text" />
     <include layout="@layout/conversation_message_upper_header_actions" />
