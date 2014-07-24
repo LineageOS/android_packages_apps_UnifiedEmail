@@ -539,7 +539,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
                 break;
             default:
                 if (mIsDraft) {
-                    title = SendersView.getSingularDraftString();
+                    title = SendersView.getSingularDraftString(getContext());
                 } else {
                     title = getBidiFormatter().unicodeWrap(
                             getSenderName(mSender));

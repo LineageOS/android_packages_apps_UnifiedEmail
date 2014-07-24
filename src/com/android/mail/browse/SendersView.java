@@ -404,7 +404,8 @@ public class SendersView {
         return formattedToHeader;
     }
 
-    public static SpannableString getSingularDraftString() {
+    public static SpannableString getSingularDraftString(Context context) {
+        getSenderResources(context, true /* resourceCachingRequired */);
         final SpannableString formattedDraftString = new SpannableString(sDraftSingularString);
         final CharacterStyle readStyle = CharacterStyle.wrap(sDraftsStyleSpan);
         formattedDraftString.setSpan(readStyle, 0, formattedDraftString.length(), 0);
