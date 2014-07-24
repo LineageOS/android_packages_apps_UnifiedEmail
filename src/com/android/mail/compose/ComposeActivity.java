@@ -3814,7 +3814,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     final ArrayList<Account> accounts = new ArrayList<Account>();
                     final ArrayList<Account> initializedAccounts = new ArrayList<Account>();
                     do {
-                        account = new Account(data);
+                        account = Account.builder().buildFrom(data);
                         if (account.isAccountReady()) {
                             initializedAccounts.add(account);
                         }

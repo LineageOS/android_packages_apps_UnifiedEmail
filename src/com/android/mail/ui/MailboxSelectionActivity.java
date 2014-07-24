@@ -239,7 +239,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 // When configuring a widget, if there is only one account, automatically
                 // choose that account.
                 accounts.moveToFirst();
-                selectAccount(new Account(accounts));
+                selectAccount(Account.builder().buildFrom(accounts));
                 // No reason to display the account list
                 displayAccountList = false;
             }
@@ -259,7 +259,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View v = super.getView(position, convertView, parent);
                     TextView accountView = (TextView) v.findViewById(R.id.mailbox_name);
-                    final Account account = new Account((Cursor) getItem(position));
+                    final Account account = Account.builder().buildFrom((Cursor) getItem(position));
                     accountView.setText(account.getDisplayName());
                     return v;
                 }
@@ -270,7 +270,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        selectAccount(new Account((Cursor)mAdapter.getItem(position)));
+        selectAccount(Account.builder().buildFrom((Cursor)mAdapter.getItem(position)));
     }
 
     private void selectAccount(Account account) {
@@ -371,7 +371,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
             ArrayList<Account> accounts = new ArrayList<Account>();
             ArrayList<Account> initializedAccounts = new ArrayList<Account>();
             do {
-                account = new Account(data);
+                account = Account.builder().buildFrom(data);
                 if (account.isAccountReady()) {
                     initializedAccounts.add(account);
                 }

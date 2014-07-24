@@ -99,7 +99,7 @@ public class MailPreferenceActivity extends PreferenceActivity {
         loadHeadersFromResource(R.xml.preference_headers, target);
         if (mAccountsCursor != null && mAccountsCursor.moveToFirst()) {
             do {
-                final Account account = new Account(mAccountsCursor);
+                final Account account = Account.builder().buildFrom(mAccountsCursor);
                 // TODO: This will no longer be needed when the Combined view is moved to Unified
                 if (!account.supportsCapability(AccountCapabilities.VIRTUAL_ACCOUNT)) {
                     final Header header = new Header();
