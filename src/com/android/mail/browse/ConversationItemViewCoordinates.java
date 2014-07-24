@@ -213,7 +213,6 @@ public class ConversationItemViewCoordinates {
     final int subjectY;
     final int subjectWidth;
     final int subjectHeight;
-    final int subjectLineCount;
     final float subjectFontSize;
 
     // Snippet.
@@ -221,7 +220,6 @@ public class ConversationItemViewCoordinates {
     final int snippetY;
     final int maxSnippetWidth;
     final int snippetHeight;
-    final int snippetLineCount;
     final float snippetFontSize;
 
     // Folders.
@@ -375,7 +373,6 @@ public class ConversationItemViewCoordinates {
         subjectY = getY(subject) + subjectTopAdjust;
         subjectWidth = subject.getWidth();
         subjectHeight = subject.getHeight();
-        subjectLineCount = SINGLE_LINE;
         subjectFontSize = subject.getTextSize();
 
         final TextView snippet = (TextView) view.findViewById(R.id.snippet);
@@ -384,7 +381,6 @@ public class ConversationItemViewCoordinates {
         snippetY = getY(snippet) + snippetTopAdjust;
         maxSnippetWidth = snippet.getWidth();
         snippetHeight = snippet.getHeight();
-        snippetLineCount = SINGLE_LINE;
         snippetFontSize = snippet.getTextSize();
 
         if (config.areFoldersVisible()) {
