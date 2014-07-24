@@ -3766,6 +3766,11 @@ public abstract class AbstractActivityController implements ActivityController,
      * For this to function, the account must have been synced.
      */
     private void perhapsStartWelcomeTour() {
+        if (mActivity.wasLatestWelcomeTourShownOnDeviceForAllAccounts()) {
+            // No need to go through the WelcomeStateLoader machinery.
+            return;
+        }
+
         if (mAccount != null && mAccount.isAccountReady()) {
             LoaderManager.LoaderCallbacks<?> welcomeLoaderCallbacks =
                     mActivity.getWelcomeCallbacks();

@@ -511,4 +511,17 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public LoaderManager.LoaderCallbacks<?> getWelcomeCallbacks() {
         return null;
     }
+
+    /**
+     * Returns whether the latest version of the welcome tour was shown on this device.
+     * <p>
+     * The base implementation returns {@code true} and applications that implement a welcome tour
+     * should override this method in order to optimize
+     * {@link AbstractActivityController#perhapsStartWelcomeTour()}.
+     *
+     * @return Whether the latest version of the welcome tour was shown.
+     */
+    public boolean wasLatestWelcomeTourShownOnDeviceForAllAccounts() {
+        return true;
+    }
 }
