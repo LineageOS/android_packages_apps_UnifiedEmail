@@ -477,7 +477,7 @@
     <string name="clear_history_title" msgid="5536216295725760357">"Esborra l\'historial de cerca"</string>
     <string name="search_history_cleared" msgid="1461946302763342640">"S\'ha buidat l\'historial de cerca."</string>
     <string name="clear_history_dialog_title" msgid="3503603389704365385">"Vols esborrar l\'historial de cerca?"</string>
-    <string name="clear_history_dialog_message" msgid="5202922561632407778">"Es trauran totes les cerques que hagis fet."</string>
+    <string name="clear_history_dialog_message" msgid="5202922561632407778">"Se suprimiran totes les cerques que hagis fet."</string>
     <string name="manage_accounts_menu_item" msgid="4734660452395086786">"Gestiona els comptes"</string>
     <string name="general_preferences_title" msgid="4212138728220418162">"Configuració general"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"Configuració"</string>
