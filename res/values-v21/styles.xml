@@ -57,7 +57,7 @@
 
     <style name="CustomActionButtonBase" parent="android:style/Widget.Material.Light.ActionButton" />
 
-    <style name="ComposeFieldLayoutBase" parent="android:Widget.Material.Light.EditText" />
+    <style name="ComposeFieldLayoutBase" />
 
     <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title" />
 

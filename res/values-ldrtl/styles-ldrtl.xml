@@ -244,9 +244,8 @@
         <item name="android:layout_marginEnd">@dimen/message_attachment_bar_padding</item>
     </style>
 
-    <style name="RecipientComposeHeading" parent="@style/AbstractRecipientComposeHeading">
+    <style name="RecipientComposeHeading" parent="@style/ComposeHeading">
         <item name="android:paddingStart">0dip</item>
-        <item name="android:layout_marginEnd">@dimen/compose_recipient_heading_margin_end</item>
     </style>
 
     <style name="WidgetSendersStyle">
@@ -380,14 +379,26 @@
 
     <style name="AbstractComposeArea">
         <item name="android:paddingStart">@dimen/compose_area_start_padding</item>
-    </style>
-
-    <style name="ComposeRowStyle">
         <item name="android:paddingEnd">@dimen/compose_area_end_padding</item>
     </style>
 
     <style name="ComposeAttachmentTileTextEndStyle">
         <item name="android:paddingEnd">@dimen/compose_attachment_tile_text_end_padding</item>
+    </style>
+
+    <style name="ComposeFieldContent">
+        <item name="android:paddingStart">@dimen/compose_content_start_padding</item>
+        <item name="android:paddingEnd">@dimen/compose_content_end_padding</item>
+    </style>
+
+    <style name="ComposeFieldButton" parent="@style/BaseComposeFieldButton">
+        <!--
+            hardcoded values here because the paddings depend on the exact values.
+            The height should correspond to @dimen/compose_header_min_height.
+            This is solely to increase click target of these buttons.
+        -->
+        <item name="android:layout_marginStart">@dimen/compose_header_btn_padding</item>
+        <item name="android:paddingStart">12dp</item>
     </style>
 
     <style name="FolderTeaserMarginStartStyle" parent="FolderTeaserVerticalMarginStyle">

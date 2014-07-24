@@ -23,10 +23,6 @@
         <item name="android:layout_width">@dimen/spinner_frame_width</item>
     </style>
 
-    <style name="ComposeArea" parent="AbstractComposeArea">
-        <item name="android:layout_width">match_parent</item>
-    </style>
-
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.Dialog.MinWidth">
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>

@@ -115,4 +115,7 @@
 
     <!-- Indicates whether help URLs should be opened by a system browser outside the application or with a webview inside the application -->
     <bool name="openHelpWithBrowser">true</bool>
+
+    <!-- Used to force 70% of max width in compose for landscape tablet -->
+    <integer name="compose_padding_weight">0</integer>
 </resources>

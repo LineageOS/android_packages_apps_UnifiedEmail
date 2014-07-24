@@ -31,6 +31,8 @@
     <string name="app_name" translatable="false">Unified Email</string>
 
     <!-- Compose -->
+    <!-- Shown in Compose; the sender of the message [CHAR LIMIT=10] -->
+    <string name="from">From</string>
     <!-- Shown in Compose; the recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="to">To</string>
     <!-- Shown in Compose; the cc recipient(s) of the message [CHAR LIMIT=10] -->
