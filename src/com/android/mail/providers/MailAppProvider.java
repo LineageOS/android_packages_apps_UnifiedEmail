@@ -450,6 +450,7 @@ public abstract class MailAppProvider extends ContentProvider
             final Account account = Account.builder().buildFrom(data);
             final Uri accountUri = account.uri;
             newQueryUriMap.add(accountUri);
+
             // preserve existing order if already present and this is a partial update,
             // otherwise add to the end
             //
