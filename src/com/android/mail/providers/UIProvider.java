@@ -788,9 +788,8 @@ public class UIProvider {
     }
 
     public static final class FolderCapabilities {
-        public static final int SYNCABLE = 0x0001;
-        public static final int PARENT = 0x0002;
-        // FEEL FREE TO USE 0x0004 - was previous CAN_HOLD_MAIL but that was true for all
+        // FEEL FREE TO USE 0x0001, 0x0002, 0x0004
+        // was previously SYNCABLE, PARENT, CAN_HOLD_MAIL
         // folders so we removed that value
         public static final int CAN_ACCEPT_MOVED_MESSAGES = 0x0008;
 
@@ -881,6 +880,13 @@ public class UIProvider {
          * {@link FolderColumns#BG_COLOR}, this indicates when we want that to happen.
          */
         public static final int TINT_ICON = 0x40000;
+
+        /**
+         * We want to only show unseen count and never unread count for some folders. This differs
+         * from {@link Folder#isUnreadCountHidden()} where the expected alternative is to show the
+         * total count of messages. Here we wish to show either unseen or nothing at all.
+         */
+        public static final int UNSEEN_COUNT_ONLY = 0x80000;
     }
 
     public static final class FolderColumns implements BaseColumns {
