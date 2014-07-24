@@ -774,7 +774,7 @@ public class FolderListFragment extends ListFragment implements
             }
         };
         /** No resource used for string header in folder list */
-        private static final int NO_HEADER_RESOURCE = -1;
+        private static final int BLANK_HEADER_RESOURCE = -1;
         /** Cache of most recently used folders */
         private final RecentFolderList mRecentFolders;
         /** True if the list is divided, false otherwise. See the comment on
@@ -971,7 +971,7 @@ public class FolderListFragment extends ListFragment implements
             mInboxPresent = (inboxFolders.size() > 0);
 
             // Add all inboxes (sectioned Inboxes included) before recent folders.
-            addFolderDivision(itemList, inboxFolders, R.string.inbox_folders_heading);
+            addFolderDivision(itemList, inboxFolders, BLANK_HEADER_RESOURCE);
 
             // Add recent folders next.
             addRecentsToList(itemList);
@@ -989,15 +989,17 @@ public class FolderListFragment extends ListFragment implements
          * @param destination List of drawer items to populate
          * @param source List of drawer items representing folders to add to the drawer
          * @param headerStringResource
-         *            {@link FolderAdapter#NO_HEADER_RESOURCE} if no header
+         *            {@link FolderAdapter#BLANK_HEADER_RESOURCE} if no header text
          *            is required, or res-id otherwise. The integer is interpreted as the string
          *            for the header's title.
          */
         private void addFolderDivision(List<DrawerItem> destination, List<DrawerItem> source,
                 int headerStringResource) {
             if (source.size() > 0) {
-                if(headerStringResource != NO_HEADER_RESOURCE) {
+                if(headerStringResource != BLANK_HEADER_RESOURCE) {
                     destination.add(DrawerItem.ofHeader(mActivity, headerStringResource));
+                } else {
+                    destination.add(DrawerItem.ofBlankHeader(mActivity));
                 }
                 destination.addAll(source);
             }
