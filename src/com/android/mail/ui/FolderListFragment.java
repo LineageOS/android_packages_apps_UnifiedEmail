@@ -1526,7 +1526,7 @@ public class FolderListFragment extends ListFragment implements
 
     private class HelpItem extends FooterItem {
         protected HelpItem() {
-            super(R.drawable.ic_menu_help, R.string.help_and_feedback);
+            super(R.drawable.ic_drawer_help, R.string.help_and_feedback);
         }
 
         @Override
@@ -1537,22 +1537,9 @@ public class FolderListFragment extends ListFragment implements
         }
     }
 
-    private class FeedbackItem extends FooterItem {
-        protected FeedbackItem() {
-            super(R.drawable.ic_menu_feedback, R.string.feedback);
-        }
-
-        @Override
-        void doFooterAction() {
-            Analytics.getInstance().sendMenuItemEvent(Analytics.EVENT_CATEGORY_MENU_ITEM,
-                    R.id.feedback_menu_item, getEventLabel(), 0);
-            Utils.sendFeedback(getActivity(), mCurrentAccount, false);
-        }
-    }
-
     private class SettingsItem extends FooterItem {
         protected SettingsItem() {
-            super(R.drawable.ic_menu_settings, R.string.menu_settings);
+            super(R.drawable.ic_drawer_settings, R.string.menu_settings);
         }
 
         @Override
