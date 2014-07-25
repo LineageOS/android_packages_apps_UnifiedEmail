@@ -32,6 +32,7 @@ import com.android.emailcommon.mail.Address;
 import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
+import com.android.mail.browse.ConversationFooterView.ConversationFooterCallbacks;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
 import com.android.mail.browse.MessageFooterView.MessageFooterCallbacks;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
@@ -76,6 +77,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final MessageFooterCallbacks mFooterCallbacks;
     private final ContactInfoSource mContactInfoSource;
     private final ConversationViewHeaderCallbacks mConversationCallbacks;
+    private final ConversationFooterCallbacks mConversationFooterCallbacks;
     private final ConversationUpdater mConversationUpdater;
     private final OnClickListener mSuperCollapsedListener;
     private final Map<String, Address> mAddressCache;
@@ -170,12 +172,18 @@ public class ConversationViewAdapter extends BaseAdapter {
             final ConversationFooterView view = (ConversationFooterView)
                     inflater.inflate(R.layout.conversation_footer, parent, false);
             view.setAccountController(mAccountController);
+            view.setConversationFooterCallbacks(mConversationFooterCallbacks);
             return view;
         }
 
         @Override
         public void bindView(View v, boolean measureOnly) {
             ((ConversationFooterView) v).bind(this);
+        }
+
+        @Override
+        public void rebindView(View view) {
+            ((ConversationFooterView) view).rebind(this);
         }
 
         @Override
@@ -421,11 +429,13 @@ public class ConversationViewAdapter extends BaseAdapter {
     public class SuperCollapsedBlockItem extends ConversationOverlayItem {
 
         private final int mStart;
-        private int mEnd;
+        private final int mEnd;
+        private final boolean mHasDraft;
 
-        private SuperCollapsedBlockItem(int start, int end) {
+        private SuperCollapsedBlockItem(int start, int end, boolean hasDraft) {
             mStart = start;
             mEnd = end;
+            mHasDraft = hasDraft;
         }
 
         @Override
@@ -465,6 +475,10 @@ public class ConversationViewAdapter extends BaseAdapter {
             return mEnd;
         }
 
+        public boolean hasDraft() {
+            return mHasDraft;
+        }
+
         @Override
         public boolean canPushSnapHeader() {
             return true;
@@ -478,6 +492,7 @@ public class ConversationViewAdapter extends BaseAdapter {
             MessageFooterCallbacks footerCallbacks,
             ContactInfoSource contactInfoSource,
             ConversationViewHeaderCallbacks convCallbacks,
+            ConversationFooterCallbacks convFooterCallbacks,
             ConversationUpdater conversationUpdater,
             OnClickListener scbListener,
             Map<String, Address> addressCache,
@@ -492,6 +507,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         mFooterCallbacks = footerCallbacks;
         mContactInfoSource = contactInfoSource;
         mConversationCallbacks = convCallbacks;
+        mConversationFooterCallbacks = convFooterCallbacks;
         mConversationUpdater = conversationUpdater;
         mSuperCollapsedListener = scbListener;
         mAddressCache = addressCache;
@@ -594,8 +610,8 @@ public class ConversationViewAdapter extends BaseAdapter {
         return new MessageFooterItem(adapter, headerItem);
     }
 
-    public int addSuperCollapsedBlock(int start, int end) {
-        return addItem(new SuperCollapsedBlockItem(start, end));
+    public int addSuperCollapsedBlock(int start, int end, boolean hasDraft) {
+        return addItem(new SuperCollapsedBlockItem(start, end, hasDraft));
     }
 
     public void replaceSuperCollapsedBlock(SuperCollapsedBlockItem blockToRemove,
@@ -641,6 +657,15 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         return item;
+    }
+
+    public ConversationFooterItem getFooterItem() {
+        final int count = mItems.size();
+        if (count < 4) {
+            LogUtils.wtf(LOG_TAG, "not enough items in the adapter. count: %s", count);
+            return null;
+        }
+        return (ConversationFooterItem) mItems.get(count - 1);
     }
 
     /**

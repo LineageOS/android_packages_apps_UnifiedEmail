@@ -50,7 +50,6 @@
         android:background="@drawable/super_collapse_circle"
         android:contentDescription="@null"
         android:gravity="center"
-        android:textSize="@dimen/super_collapsed_text_size"
-        android:textColor="@color/conversation_view_text_color_light" />
+        android:textSize="@dimen/super_collapsed_text_size" />
 
 </com.android.mail.browse.SuperCollapsedBlock>
