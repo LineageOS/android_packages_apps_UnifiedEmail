@@ -65,9 +65,6 @@
     <!-- this is off for shortish devices. values-h480dp enables this for anything tallish -->
     <bool name="show_drawer_floaty_footer">false</bool>
 
-    <!-- Whether to show the archive item as disabled rather than hiding it entirely -->
-    <bool name="show_disabled_archive_menu_item">false</bool>
-
     <!-- Amount of memory in bytes allocated for image cache -->
     <integer name="config_image_cache_max_bytes">1500000</integer>
 

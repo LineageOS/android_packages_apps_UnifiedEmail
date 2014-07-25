@@ -46,7 +46,6 @@
         android:showAsAction="never" />
 
     <item android:id="@+id/discard"
-        android:icon="@drawable/trash"
         android:title="@string/discard"
         android:showAsAction="never" />
 
