@@ -19,7 +19,6 @@ package com.android.mail.ui;
 
 import android.animation.ValueAnimator;
 import android.app.ActionBar;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -54,7 +53,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -192,7 +190,7 @@ public abstract class AbstractActivityController implements ActivityController,
     protected Folder mInbox;
     /** True when {@link #mFolder} is first shown to the user. */
     private boolean mFolderChanged = false;
-    protected MailActionBarView mActionBarView;
+    protected ActionBarController mActionBarController;
     protected final MailActivity mActivity;
     protected final Context mContext;
     private final FragmentManager mFragmentManager;
@@ -441,7 +439,7 @@ public abstract class AbstractActivityController implements ActivityController,
     /**
      * Guaranteed to be the last loader ID used by the Fragment. Loaders are owned by Activity or
      * fragments, and within an activity, loader IDs need to be unique. Currently,
-     * {@link SectionedInboxTeaserView} is the only class that uses the
+     * SectionedInboxTeaserView is the only class that uses the
      * {@link ConversationListFragment}'s LoaderManager.
      */
     public static final int LAST_FRAGMENT_LOADER_ID = 1000;
@@ -612,17 +610,16 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
 
-        // be sure to inherit from the ActionBar theme when inflating
-        final LayoutInflater inflater = LayoutInflater.from(actionBar.getThemedContext());
         final boolean isSearch = mActivity.getIntent() != null
                 && Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction());
-        mActionBarView = (MailActionBarView) inflater.inflate(
-                isSearch ? R.layout.search_actionbar_view : R.layout.actionbar_view, null);
-        mActionBarView.initialize(mActivity, this, actionBar);
+        mActionBarController = isSearch ?
+                new SearchActionBarController(mContext) :
+                new ActionBarController(mContext);
+        mActionBarController.initialize(mActivity, this, actionBar);
 
         // init the action bar to allow the 'up' affordance.
         // any configurations that disallow 'up' should do that later.
-        mActionBarView.setBackButton();
+        mActionBarController.setBackButton();
     }
 
     /**
@@ -631,12 +628,10 @@ public abstract class AbstractActivityController implements ActivityController,
     private void attachActionBar() {
         final ActionBar actionBar = mActivity.getActionBar();
         if (actionBar != null) {
-            actionBar.setCustomView(mActionBarView, new ActionBar.LayoutParams(
-                    LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
-            // Show a custom view and home icon, keep the title and subttitle
-            final int mask = ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE;
+            // Show a title
+            final int mask = ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME;
             actionBar.setDisplayOptions(mask, mask);
-            mActionBarView.setViewModeController(mViewMode);
+            mActionBarController.setViewModeController(mViewMode);
         }
     }
 
@@ -1043,7 +1038,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // We do not need to notify folder observers yet. Instead we start the loaders and
         // when the load finishes, we will get an updated folder. Then, we notify the
         // folderObservers in onLoadFinished.
-        mActionBarView.setFolder(mFolder);
+        mActionBarController.setFolder(mFolder);
 
         // Only when we switch from one folder to another do we want to restart the
         // folder and conversation list loaders (to trigger onCreateLoader).
@@ -1402,8 +1397,8 @@ public abstract class AbstractActivityController implements ActivityController,
             return false;
         }
         final MenuInflater inflater = mActivity.getMenuInflater();
-        inflater.inflate(mActionBarView.getOptionsMenuId(), menu);
-        mActionBarView.onCreateOptionsMenu(menu);
+        inflater.inflate(mActionBarController.getOptionsMenuId(), menu);
+        mActionBarController.onCreateOptionsMenu(menu);
         return true;
     }
 
@@ -2053,7 +2048,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        return mActionBarView.onPrepareOptionsMenu(menu);
+        return mActionBarController.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -2138,7 +2133,7 @@ public abstract class AbstractActivityController implements ActivityController,
         intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, query);
         intent.putExtra(Utils.EXTRA_ACCOUNT, mAccount);
         intent.setComponent(mActivity.getComponentName());
-        mActionBarView.collapseSearch();
+        mActionBarController.collapseSearch();
         // Call startActivityForResult here so we can tell if we have navigated to a different folder
         // or account from search results.
         mActivity.startActivityForResult(intent, CHANGE_NAVIGATION_REQUEST_CODE);
@@ -2159,7 +2154,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mDrawIdler.setRootView(null);
         // unregister the ViewPager's observer on the conversation cursor
         mPagerController.onDestroy();
-        mActionBarView.onDestroy();
+        mActionBarController.onDestroy();
         mRecentFolderList.destroy();
         mDestroyed = true;
         mHandler.removeCallbacks(mLogServiceChecker);
@@ -2587,7 +2582,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mCurrentConversation = conversation;
 
         if (mCurrentConversation != null) {
-            mActionBarView.setCurrentConversation(mCurrentConversation);
+            mActionBarController.setCurrentConversation(mCurrentConversation);
             mActivity.invalidateOptionsMenu();
         }
     }
@@ -3228,7 +3223,7 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
         if (mAccount.supportsSearch()) {
-            mActionBarView.expandSearch();
+            mActionBarController.expandSearch();
         } else {
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
                     .getString(R.string.search_unsupported), Toast.LENGTH_SHORT).show();

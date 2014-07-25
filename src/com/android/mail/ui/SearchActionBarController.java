@@ -19,7 +19,6 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
@@ -28,21 +27,13 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.utils.Utils;
 
 /**
- * This class is used to show a custom actionbar for the search activity. This doesn't have any
- * custom views, but it shows/hides various menu items based on the viewmode.
+ * This class is used to control the actionbar for the search activity.
+ * It shows/hides various menu items based on the viewmode.
  */
-public class SearchMailActionBarView extends MailActionBarView {
+public class SearchActionBarController extends ActionBarController {
 
-    public SearchMailActionBarView(Context context) {
-        this(context, null);
-    }
-
-    public SearchMailActionBarView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public SearchMailActionBarView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    public SearchActionBarController(Context context) {
+        super(context);
     }
 
     @Override
@@ -110,7 +101,6 @@ public class SearchMailActionBarView extends MailActionBarView {
 
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
-        super.onMenuItemActionCollapse(item);
         // When we are in the search activity, back closes the search action mode. At that point
         // we want to quit the activity entirely.
         final int mode = getMode();

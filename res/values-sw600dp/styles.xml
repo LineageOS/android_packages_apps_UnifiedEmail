@@ -29,7 +29,7 @@
 
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.Dialog.MinWidth">
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_up_holo_light</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
     </style>
 
     <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme">

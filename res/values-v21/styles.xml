@@ -18,6 +18,7 @@
 <resources>
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
         <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
+        <item name="android:actionModeBackground">@color/action_mode_background</item>
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Material.Light.ListView</item>
         <!-- ActionBar color -->
@@ -25,7 +26,6 @@
         <!-- Used by the StatusBar and NavBar (currently broken?) -->
         <item name="android:colorPrimaryDark">@color/statusbar_color</item>
         <item name="android:colorAccent">@color/accent_blue</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
     </style>
 
     <style name="ComposeTheme" parent="@style/ComposeThemeBase">
@@ -45,8 +45,8 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="ActionBarStyle"  parent="@android:style/Widget.Material.Light.ActionBar.Solid">
-        <item name="android:background">@color/actionbar_color</item>
+    <style name="ActionBarStyle" parent="@android:style/Widget.Material.Light.ActionBar.Solid" >
+        <item name="android:background">?android:attr/colorPrimary</item>
     </style>
 
     <style name="WaitFragmentTitleBase" parent="@android:style/Widget.Material.TextView" />
@@ -60,8 +60,6 @@
     <style name="ComposeFieldLayoutBase" parent="android:Widget.Material.Light.EditText" />
 
     <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title" />
-
-    <style name="AccountSpinnerAnchorTextSecondary" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle" />
 
     <style name="ConversationListFadeBase" parent="@android:style/Widget.Material.Light.ListView" />
 

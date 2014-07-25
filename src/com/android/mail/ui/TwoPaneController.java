@@ -200,7 +200,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
         if (!Utils.isEmpty(folder.parent)) {
             // Show the up affordance when digging into child folders.
-            mActionBarView.setBackButton();
+            mActionBarController.setBackButton();
         }
         setHierarchyFolder(folder);
         super.onFolderSelected(folder);
@@ -259,9 +259,9 @@ public final class TwoPaneController extends AbstractActivityController {
         // folders, and shown for every other condition.
         if ((mViewMode.isListMode() && (Folder.isRoot(mFolder) || mFolder.parent == null))
                 || mViewMode.isWaitingForSync()) {
-            mActionBarView.removeBackButton();
+            mActionBarController.removeBackButton();
         } else {
-            mActionBarView.setBackButton();
+            mActionBarController.setBackButton();
         }
     }
 
