@@ -18,6 +18,7 @@ package com.android.mail.providers;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -25,8 +26,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.android.mail.R;
 import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursor;
+import com.android.mail.lib.base.Preconditions;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.SyncStatus;
@@ -234,6 +237,12 @@ public class Account implements Parcelable {
     private static final String LOG_TAG = LogTag.getLogTag();
 
     /**
+     * A custom {@coder Builder} class which client could override.
+     */
+    private static Class<? extends Builder> sBuilderClass;
+    private static Builder sBuilder;
+
+    /**
      * Return a serialized String for this account.
      */
     public synchronized String serialize() {
@@ -281,6 +290,43 @@ public class Account implements Parcelable {
         return json.toString();
     }
 
+    public static class Builder {
+        public Account buildFrom(Cursor cursor) {
+            return new Account(cursor);
+        }
+
+        public Account buildFrom(JSONObject json) throws JSONException {
+            return new Account(json);
+        }
+
+        public Account buildFrom(Parcel in, ClassLoader loader) {
+            return new Account(in, loader);
+        }
+    }
+
+    public static synchronized Builder builder() {
+        if (sBuilderClass == null) {
+            sBuilderClass = Builder.class;
+        }
+        if (sBuilder == null) {
+            try {
+                sBuilder = sBuilderClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                LogUtils.w(LogUtils.TAG, e, "Can't initialize account builder");
+                sBuilder = new Builder();
+            }
+        }
+        return sBuilder;
+    }
+
+    /**
+     * Overrides the default {@code Account.Builder}
+     */
+    public static synchronized void setBuilderClass(Class<? extends Builder> builderClass) {
+        Preconditions.checkState(sBuilderClass == null);
+        sBuilderClass = builderClass;
+    }
+
     /**
      * Create a new instance of an Account object using a serialized instance created previously
      * using {@link #serialize()}. This returns null if the serialized instance was invalid or does
@@ -295,7 +341,7 @@ public class Account implements Parcelable {
         // something breaks.
         try {
             final JSONObject json = new JSONObject(serializedAccount);
-            return new Account(json);
+            return builder().buildFrom(json);
         } catch (JSONException e) {
             LogUtils.w(LOG_TAG, e, "Could not create an account from this input: \"%s\"",
                     serializedAccount);
@@ -312,7 +358,7 @@ public class Account implements Parcelable {
      * @param json {@link JSONObject} representing a valid account.
      * @throws JSONException
      */
-    private Account(JSONObject json) throws JSONException {
+    protected Account(JSONObject json) throws JSONException {
         displayName = (String) json.get(UIProvider.AccountColumns.NAME);
         type = (String) json.get(UIProvider.AccountColumns.TYPE);
         senderName = json.optString(AccountColumns.SENDER_NAME, null);
@@ -377,7 +423,7 @@ public class Account implements Parcelable {
         }
     }
 
-    public Account(Cursor cursor) {
+    protected Account(Cursor cursor) {
         displayName = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.NAME));
         senderName = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.SENDER_NAME));
         type = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.TYPE));
@@ -512,7 +558,7 @@ public class Account implements Parcelable {
         return !isAccountInitializationRequired() && !isAccountSyncRequired();
     }
 
-    public Account(Parcel in, ClassLoader loader) {
+    protected Account(Parcel in, ClassLoader loader) {
         displayName = in.readString();
         senderName = in.readString();
         type = in.readString();
@@ -793,7 +839,7 @@ public class Account implements Parcelable {
     /**
      * The account id is an unique id to represent this account.
      */
-    public String getAccountId() {
+    public String getAccountId(Context context) {
         return accountManagerName;
     }
 
@@ -810,12 +856,12 @@ public class Account implements Parcelable {
     public static final ClassLoaderCreator<Account> CREATOR = new ClassLoaderCreator<Account>() {
         @Override
         public Account createFromParcel(Parcel source, ClassLoader loader) {
-            return new Account(source, loader);
+            return builder().buildFrom(source, loader);
         }
 
         @Override
         public Account createFromParcel(Parcel source) {
-            return new Account(source, null);
+            return builder().buildFrom(source, null);
         }
 
         @Override
@@ -876,7 +922,7 @@ public class Account implements Parcelable {
     public final static CursorCreator<Account> FACTORY = new CursorCreator<Account>() {
         @Override
         public Account createFromCursor(Cursor c) {
-            return new Account(c);
+            return builder().buildFrom(c);
         }
 
         @Override

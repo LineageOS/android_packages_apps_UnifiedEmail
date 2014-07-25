@@ -447,7 +447,7 @@ public abstract class MailAppProvider extends ContentProvider
         // We are relying on the fact that all accounts are added in the order specified in the
         // cursor.  Initially assume that we insert these items to at the end of the list
         while (data.moveToNext()) {
-            final Account account = new Account(data);
+            final Account account = Account.builder().buildFrom(data);
             final Uri accountUri = account.uri;
             newQueryUriMap.add(accountUri);
             // preserve existing order if already present and this is a partial update,

@@ -224,13 +224,13 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * (such as one that does not rely on account and/or conversation.
      */
     protected void setBaseUri() {
-        mBaseUri = buildBaseUri(mAccount, mConversation);
+        mBaseUri = buildBaseUri(mContext, mAccount, mConversation);
     }
 
-    public static String buildBaseUri(Account account, Conversation conversation) {
+    public static String buildBaseUri(Context context, Account account, Conversation conversation) {
         // Since the uri specified in the conversation base uri may not be unique, we specify a
         // base uri that us guaranteed to be unique for this conversation.
-        return "x-thread://" + account.getAccountId().hashCode() + "/" + conversation.id;
+        return "x-thread://" + account.getAccountId(context).hashCode() + "/" + conversation.id;
     }
 
     @Override
