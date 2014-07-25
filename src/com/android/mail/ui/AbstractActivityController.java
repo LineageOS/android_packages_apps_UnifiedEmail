@@ -363,6 +363,11 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     public static final int LOADER_WELCOME_TOUR = 20;
 
+    /**
+     * The load which loads accounts for the welcome tour.
+     */
+    public static final int LOADER_WELCOME_TOUR_ACCOUNTS = 21;
+
     // Loader constants: Folders
 
     /** The current folder. This loader watches for updates to the current folder in a manner
@@ -3775,7 +3780,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     mActivity.getWelcomeCallbacks();
             if (welcomeLoaderCallbacks != null) {
                 // The callback is responsible for showing the tour when appropriate.
-                mActivity.getLoaderManager().initLoader(LOADER_WELCOME_TOUR, Bundle.EMPTY,
+                mActivity.getLoaderManager().initLoader(LOADER_WELCOME_TOUR_ACCOUNTS, Bundle.EMPTY,
                         welcomeLoaderCallbacks);
             }
         }

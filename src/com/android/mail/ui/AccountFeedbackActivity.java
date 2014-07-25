@@ -19,9 +19,7 @@ package com.android.mail.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.Intent;
-import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,9 +27,7 @@ import android.view.MenuItem;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationAccountController;
-import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursor;
-import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.Utils;
@@ -42,7 +38,7 @@ import com.android.mail.utils.Utils;
  * overflow menu.
  */
 public abstract class AccountFeedbackActivity extends Activity
-        implements ConversationAccountController {
+        implements ConversationAccountController, AccountLoadCallbacks.AccountLoadCallbackListener {
     public static final String EXTRA_ACCOUNT_URI = "extra-account-uri";
 
     private static final int ACCOUNT_LOADER = 0;
@@ -55,7 +51,7 @@ public abstract class AccountFeedbackActivity extends Activity
     protected Uri mAccountUri;
     protected Account mAccount;
 
-    private final AccountLoadCallbacks mAccountLoadCallbacks = new AccountLoadCallbacks();
+    private AccountLoadCallbacks mAccountLoadCallbacks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +73,18 @@ public abstract class AccountFeedbackActivity extends Activity
         // Account uri will be null if we launched from outside of the app.
         // So just don't load an account at all.
         if (mAccountUri != null) {
+            mAccountLoadCallbacks = new AccountLoadCallbacks(
+                    this /* context */, mAccountUri, this /* accountLoadCallbackListener*/);
             getLoaderManager().initLoader(ACCOUNT_LOADER, Bundle.EMPTY, mAccountLoadCallbacks);
         }
     }
 
+    @Override
+    public void onAccountLoadCallbackFinished(ObjectCursor<Account> data) {
+        if (data != null && data.moveToFirst()) {
+            mAccount = data.getModel();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -129,29 +133,5 @@ public abstract class AccountFeedbackActivity extends Activity
     @Override
     public Account getAccount() {
         return mAccount;
-    }
-
-    private class AccountLoadCallbacks
-            implements LoaderManager.LoaderCallbacks<ObjectCursor<Account>> {
-
-        @Override
-        public Loader<ObjectCursor<Account>> onCreateLoader(int id, Bundle args) {
-            final String[] projection = UIProvider.ACCOUNTS_PROJECTION;
-            final CursorCreator<Account> factory = Account.FACTORY;
-            return new ObjectCursorLoader<Account>(
-                    AccountFeedbackActivity.this, mAccountUri, projection, factory);
-        }
-
-        @Override
-        public void onLoadFinished(Loader<ObjectCursor<Account>> loader,
-                ObjectCursor<Account> data) {
-            if (data != null && data.moveToFirst()) {
-                mAccount = data.getModel();
-            }
-        }
-
-        @Override
-        public void onLoaderReset(Loader<ObjectCursor<Account>> loader) {
-        }
     }
 }
