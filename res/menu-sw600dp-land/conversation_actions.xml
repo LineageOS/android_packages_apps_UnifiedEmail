@@ -18,12 +18,11 @@
 <!-- Action bar items for the tablet when viewing a conversation in landscape mode. -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Since we show the conversation list in landscape mode, we show compose and search
-         even in the conversation view. -->
-    <item android:id="@+id/compose"
+    <!-- This invisible menu item is used to map CTRL-C to the compose action -->
+    <item
+        android:id="@+id/compose"
         android:title="@string/menu_compose"
-        android:showAsAction="always"
-        android:icon="@drawable/ic_menu_compose_normal_holo_light"
+        android:visible="false"
         android:alphabeticShortcut="@string/trigger_compose_char" />
 
     <item android:id="@+id/search"

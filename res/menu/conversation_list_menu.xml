@@ -17,11 +17,11 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Always available -->
-    <item android:id="@+id/compose"
+    <!-- This invisible menu item is used to map CTRL-C to the compose action -->
+    <item
+        android:id="@+id/compose"
         android:title="@string/menu_compose"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_menu_compose_normal_holo_light"
+        android:visible="false"
         android:alphabeticShortcut="@string/trigger_compose_char" />
 
     <!-- Available only for accounts with SERVER_SEARCH and in a folder
