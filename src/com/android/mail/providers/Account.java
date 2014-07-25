@@ -64,8 +64,12 @@ public class Account implements Parcelable {
     /**
      * Account manager name. MUST MATCH SYSTEM ACCOUNT MANAGER NAME
      */
-
     private final String accountManagerName;
+
+    /**
+     * An unique ID to represent this account.
+     */
+    private String accountId;
 
     /**
      * Account type. MUST MATCH SYSTEM ACCOUNT MANAGER TYPE
@@ -252,6 +256,7 @@ public class Account implements Parcelable {
             json.put(AccountColumns.TYPE, type);
             json.put(AccountColumns.SENDER_NAME, senderName);
             json.put(AccountColumns.ACCOUNT_MANAGER_NAME, accountManagerName);
+            json.put(AccountColumns.ACCOUNT_ID, accountId);
             json.put(AccountColumns.PROVIDER_VERSION, providerVersion);
             json.put(AccountColumns.URI, uri);
             json.put(AccountColumns.CAPABILITIES, capabilities);
@@ -370,6 +375,7 @@ public class Account implements Parcelable {
         } else {
             accountManagerName = amName;
         }
+        accountId = json.getString(UIProvider.AccountColumns.ACCOUNT_ID);
         providerVersion = json.getInt(AccountColumns.PROVIDER_VERSION);
         uri = Uri.parse(json.optString(AccountColumns.URI));
         capabilities = json.getInt(AccountColumns.CAPABILITIES);
@@ -429,6 +435,8 @@ public class Account implements Parcelable {
         type = cursor.getString(cursor.getColumnIndex(UIProvider.AccountColumns.TYPE));
         accountManagerName = cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_MANAGER_NAME));
+        accountId = cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_ID));
         accountFromAddresses = cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES));
 
@@ -601,6 +609,7 @@ public class Account implements Parcelable {
         } else {
             settings = in.readParcelable(loader);
         }
+        accountId = in.readString();
     }
 
     @Override
@@ -644,6 +653,7 @@ public class Account implements Parcelable {
             dest.writeInt(1);
             dest.writeParcelable(settings, 0);
         }
+        dest.writeString(accountId);
     }
 
     @Override
@@ -671,6 +681,7 @@ public class Account implements Parcelable {
         return TextUtils.equals(displayName, other.displayName) &&
                 TextUtils.equals(senderName, other.senderName) &&
                 TextUtils.equals(accountManagerName, other.accountManagerName) &&
+                TextUtils.equals(accountId, other.accountId) &&
                 TextUtils.equals(type, other.type) &&
                 capabilities == other.capabilities &&
                 providerVersion == other.providerVersion &&
@@ -840,7 +851,8 @@ public class Account implements Parcelable {
      * The account id is an unique id to represent this account.
      */
     public String getAccountId(Context context) {
-        return accountManagerName;
+        LogUtils.d(LogUtils.TAG, "getAccountId = %s for email %s", accountId, accountManagerName);
+        return accountId;
     }
 
     /**
@@ -883,6 +895,7 @@ public class Account implements Parcelable {
         map.put(AccountColumns.SENDER_NAME, senderName);
         map.put(AccountColumns.TYPE, type);
         map.put(AccountColumns.ACCOUNT_MANAGER_NAME, accountManagerName);
+        map.put(AccountColumns.ACCOUNT_ID, accountId);
         map.put(AccountColumns.PROVIDER_VERSION, providerVersion);
         map.put(AccountColumns.URI, uri);
         map.put(AccountColumns.CAPABILITIES, capabilities);
