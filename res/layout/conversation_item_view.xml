@@ -149,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:includeFontPadding="false"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     style="@style/ConversationListSubjectStyle"/>
 
                 <!-- snippet overlaps folders completely in the layout;
