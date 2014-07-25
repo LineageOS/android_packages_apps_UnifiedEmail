@@ -38,14 +38,5 @@ public class MailPreferenceFragment extends PreferenceFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.settings_fragment_menu, menu);
-        removeManageAccountsIfApplicable(menu);
-    }
-
-    protected void removeManageAccountsIfApplicable(Menu menu) {
-        // Selectively remove manage accounts if it's not applicable
-        MenuItem accounts = menu.findItem(R.id.manage_accounts_menu_item);
-        if (accounts != null && !getResources().getBoolean(R.bool.use_expansive_tablet_ui)) {
-            accounts.setVisible(false);
-        }
     }
 }
