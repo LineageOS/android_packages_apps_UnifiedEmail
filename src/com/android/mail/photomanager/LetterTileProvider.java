@@ -55,15 +55,13 @@ public class LetterTileProvider {
     private final int mTileFontColor;
     private final TextPaint mPaint = new TextPaint();
     private final TypedArray mColors;
+    private final int mColorCount;
     private final int mDefaultColor;
     private final Canvas mCanvas = new Canvas();
     private final Dimensions mDims = new Dimensions();
     private final char[] mFirstChar = new char[1];
 
     private static final int POSSIBLE_BITMAP_SIZES = 3;
-
-    // This should match the total number of colors defined in colors.xml for letter_tile_color
-    private static final int NUM_OF_TILE_COLORS = 12;
 
     public LetterTileProvider(Context context) {
         final Resources res = context.getResources();
@@ -83,6 +81,7 @@ public class LetterTileProvider {
         mDefaultBitmapCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
 
         mColors = res.obtainTypedArray(R.array.letter_tile_colors);
+        mColorCount = mColors.length();
         mDefaultColor = res.getColor(R.color.letter_tile_default_color);
     }
 
@@ -168,7 +167,7 @@ public class LetterTileProvider {
     private int pickColor(String emailAddress) {
         // String.hashCode() implementation is not supposed to change across java versions, so
         // this should guarantee the same email address always maps to the same color.
-        int color = Math.abs(emailAddress.hashCode()) % NUM_OF_TILE_COLORS;
+        int color = Math.abs(emailAddress.hashCode()) % mColorCount;
         return mColors.getColor(color, mDefaultColor);
     }
 }
