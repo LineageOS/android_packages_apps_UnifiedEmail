@@ -1011,7 +1011,9 @@ public class Utils {
      */
     public static int getFolderUnreadDisplayCount(final Folder folder) {
         if (folder != null) {
-            if (folder.isUnreadCountHidden()) {
+            if (folder.supportsCapability(UIProvider.FolderCapabilities.UNSEEN_COUNT_ONLY)) {
+                return 0;
+            } else if (folder.isUnreadCountHidden()) {
                 return folder.totalCount;
             } else {
                 return folder.unreadCount;
