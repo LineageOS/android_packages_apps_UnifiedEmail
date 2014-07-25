@@ -119,4 +119,9 @@
     <integer name="compose_padding_weight">0</integer>
     <!-- Whether or not we should scroll down so cc aligns with the top -->
     <bool name="auto_scroll_cc">true</bool>
+
+    <!-- Maximum number of folders to be displayed in the thread list -->
+    <integer name="conversation_list_max_folder_count">4</integer>
+    <integer name="folder_max_width_proportion">31</integer>
+    <integer name="folder_cell_max_width_proportion">22</integer>
 </resources>
