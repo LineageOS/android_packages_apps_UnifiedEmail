@@ -24,4 +24,5 @@
     android:icon="@drawable/ic_menu_search"
     android:searchSuggestIntentAction="android.intent.action.SEARCH"
     android:searchSuggestAuthority="com.android.mail"
-    android:imeOptions="actionSearch" />
+    android:imeOptions="actionSearch"
+    android:voiceSearchMode="showVoiceSearchButton|launchRecognizer" />
