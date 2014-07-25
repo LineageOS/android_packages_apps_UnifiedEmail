@@ -16,33 +16,37 @@
      limitations under the License.
 -->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/between_chrome"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <include layout="@layout/search_results_view"/>
 
     <com.android.mail.ui.MailSwipeRefreshLayout
         android:id="@+id/swipe_refresh_widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <FrameLayout
             android:id="@+id/conversation_list_parent_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true">
+
             <!-- Note: intentionally not called "empty" because we call
              setEmptyView programmatically-->
             <!-- Offset by height of undo bar and action bar -->
             <include layout="@layout/conversation_list_empty_view" />
+
             <com.android.mail.ui.SwipeableListView
                 android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 style="@style/ConversationListFade" />
+
             <include layout="@layout/conversation_load_spinner" />
+
         </FrameLayout>
+
     </com.android.mail.ui.MailSwipeRefreshLayout>
+
 </RelativeLayout>

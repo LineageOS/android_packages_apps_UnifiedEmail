@@ -848,12 +848,9 @@
         <item name="android:paddingRight">@dimen/widget_attachment_padding_end</item>
     </style>
 
-    <style name="SearchStatusStyle">
-        <item name="android:paddingLeft">@dimen/search_results_padding</item>
-    </style>
-
-    <style name="SearchCountStyle">
-        <item name="android:paddingRight">@dimen/search_results_padding</item>
+    <style name="SearchTextStyle">
+        <item name="android:textColor">@color/search_banner_text</item>
+        <item name="android:textSize">@dimen/search_banner_text_size</item>
     </style>
 
     <!-- START Conversation list styles -->
