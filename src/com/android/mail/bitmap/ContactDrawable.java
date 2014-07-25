@@ -19,11 +19,15 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 
@@ -43,19 +47,17 @@ import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
  */
 public class ContactDrawable extends Drawable implements ContactDrawableInterface {
 
-    private final BitmapCache mCache;
-    private final ContactResolver mContactResolver;
+    private BitmapCache mCache;
+    private ContactResolver mContactResolver;
 
     private ContactRequest mContactRequest;
     private ReusableBitmap mBitmap;
     private final Paint mPaint;
-    private int mScale;
 
     /** Letter tile */
     private static TypedArray sColors;
     private static int sDefaultColor;
     private static int sTileLetterFontSize;
-    private static int sTileLetterFontSizeSmall;
     private static int sTileFontColor;
     private static Bitmap DEFAULT_AVATAR;
     /** Reusable components to avoid new allocations */
@@ -66,23 +68,38 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
     /** This should match the total number of colors defined in colors.xml for letter_tile_color */
     private static final int NUM_OF_TILE_COLORS = 12;
 
+    private final float mBorderWidth;
+    private final Paint mBitmapPaint;
+    private final Paint mBorderPaint;
+    private final Matrix mMatrix;
+
     private int mDecodeWidth;
     private int mDecodeHeight;
 
-    public ContactDrawable(final Resources res, final BitmapCache cache,
-            final ContactResolver contactResolver) {
-        mCache = cache;
-        mContactResolver = contactResolver;
+    public ContactDrawable(final Resources res) {
         mPaint = new Paint();
         mPaint.setFilterBitmap(true);
         mPaint.setDither(true);
+
+        mBitmapPaint = new Paint();
+        mBitmapPaint.setAntiAlias(true);
+        mBitmapPaint.setFilterBitmap(true);
+        mBitmapPaint.setDither(true);
+
+        mBorderWidth = res.getDimensionPixelSize(R.dimen.avatar_border_width);
+
+        mBorderPaint = new Paint();
+        mBorderPaint.setColor(Color.TRANSPARENT);
+        mBorderPaint.setStyle(Paint.Style.STROKE);
+        mBorderPaint.setStrokeWidth(mBorderWidth);
+        mBorderPaint.setAntiAlias(true);
+
+        mMatrix = new Matrix();
 
         if (sColors == null) {
             sColors = res.obtainTypedArray(R.array.letter_tile_colors);
             sDefaultColor = res.getColor(R.color.letter_tile_default_color);
             sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
-            sTileLetterFontSizeSmall = res
-                    .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
             sTileFontColor = res.getColor(R.color.letter_tile_font_color);
             DEFAULT_AVATAR = BitmapFactory.decodeResource(res, R.drawable.ic_generic_man);
 
@@ -90,6 +107,14 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
             sPaint.setTextAlign(Align.CENTER);
             sPaint.setAntiAlias(true);
         }
+    }
+
+    public void setBitmapCache(final BitmapCache cache) {
+        mCache = cache;
+    }
+
+    public void setContactResolver(final ContactResolver contactResolver) {
+        mContactResolver = contactResolver;
     }
 
     @Override
@@ -114,14 +139,27 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
     private void drawBitmap(final Bitmap bitmap, final int width, final int height,
             final Canvas canvas) {
         final Rect bounds = getBounds();
+        // Draw bitmap through shader first.
+        final BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP,
+                Shader.TileMode.CLAMP);
+        mMatrix.reset();
 
-        if (mScale != ContactGridDrawable.SCALE_TYPE_HALF) {
-            sRect.set(0, 0, width, height);
-        } else {
-            // For skinny bounds, draw the middle two quarters.
-            sRect.set(width / 4, 0, width / 4 * 3, height);
-        }
-        canvas.drawBitmap(bitmap, sRect, bounds, mPaint);
+        // Fit bitmap to bounds.
+        final float boundsWidth = (float) bounds.width();
+        final float boundsHeight = (float) bounds.height();
+        final float scale = Math.max(boundsWidth / width, boundsHeight / height);
+        mMatrix.postScale(scale, scale);
+
+        // Translate bitmap to dst bounds.
+        mMatrix.postTranslate(bounds.left, bounds.top);
+
+        shader.setLocalMatrix(mMatrix);
+        mBitmapPaint.setShader(shader);
+        drawCircle(canvas, bounds, mBitmapPaint);
+
+        // Then draw the border.
+        final float radius = bounds.width() / 2f - mBorderWidth / 2;
+        canvas.drawCircle(bounds.centerX(), bounds.centerY(), radius, mBorderPaint);
     }
 
     private void drawLetterTile(final Canvas canvas) {
@@ -129,21 +167,21 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
             return;
         }
 
+        final Rect bounds = getBounds();
+
         // Draw background color.
         final String email = mContactRequest.getEmail();
         sPaint.setColor(pickColor(email));
         sPaint.setAlpha(mPaint.getAlpha());
-        canvas.drawRect(getBounds(), sPaint);
+        drawCircle(canvas, bounds, sPaint);
 
         // Draw letter/digit or generic avatar.
         final String displayName = mContactRequest.getDisplayName();
         final char firstChar = displayName.charAt(0);
-        final Rect bounds = getBounds();
         if (isEnglishLetterOrDigit(firstChar)) {
             // Draw letter or digit.
             sFirstChar[0] = Character.toUpperCase(firstChar);
-            sPaint.setTextSize(mScale == ContactGridDrawable.SCALE_TYPE_ONE ? sTileLetterFontSize
-                    : sTileLetterFontSizeSmall);
+            sPaint.setTextSize(sTileLetterFontSize);
             sPaint.getTextBounds(sFirstChar, 0, 1, sRect);
             sPaint.setColor(sTileFontColor);
             canvas.drawText(sFirstChar, 0, 1, bounds.centerX(),
@@ -152,6 +190,17 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
             drawBitmap(DEFAULT_AVATAR, DEFAULT_AVATAR.getWidth(), DEFAULT_AVATAR.getHeight(),
                     canvas);
         }
+    }
+
+    /**
+     * Draws the largest circle that fits within the given <code>bounds</code>.
+     *
+     * @param canvas the canvas on which to draw
+     * @param bounds the bounding box of the circle
+     * @param paint the paint with which to draw
+     */
+    private static void drawCircle(Canvas canvas, Rect bounds, Paint paint) {
+        canvas.drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2, paint);
     }
 
     private static int pickColor(final String email) {
@@ -184,10 +233,6 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
     public void setDecodeDimensions(final int decodeWidth, final int decodeHeight) {
         mDecodeWidth = decodeWidth;
         mDecodeHeight = decodeHeight;
-    }
-
-    public void setScale(final int scale) {
-        mScale = scale;
     }
 
     public void unbind() {
