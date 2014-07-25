@@ -136,7 +136,7 @@
     <!-- End Compose styles -->
 
     <style name="UnreadCount">
-        <item name="android:layout_width">44dp</item>
+        <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
         <item name="android:singleLine">true</item>
