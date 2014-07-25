@@ -2287,24 +2287,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem ccBcc = menu.findItem(R.id.add_cc_bcc);
-        if (ccBcc != null && mCc != null) {
-            // Its possible there is a menu item OR a button.
-            boolean ccFieldVisible = mCc.isShown();
-            boolean bccFieldVisible = mBcc.isShown();
-            if (!ccFieldVisible || !bccFieldVisible) {
-                ccBcc.setVisible(true);
-                ccBcc.setTitle(getString(!ccFieldVisible ? R.string.add_cc_label
-                        : R.string.add_bcc_label));
-            } else {
-                ccBcc.setVisible(false);
-            }
-        }
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
 
@@ -2316,8 +2298,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             doAttach(MIME_TYPE_ALL);
         } else if (id == R.id.add_photo_attachment) {
             doAttach(MIME_TYPE_PHOTO);
-        } else if (id == R.id.add_cc_bcc) {
-            showCcBccViews();
         } else if (id == R.id.save) {
             doSave(true);
         } else if (id == R.id.send) {

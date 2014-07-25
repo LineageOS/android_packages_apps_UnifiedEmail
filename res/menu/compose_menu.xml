@@ -17,29 +17,36 @@
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/send"
-        android:showAsAction="ifRoom|withText"
-        android:icon="@drawable/send"
-        android:title="@string/send"/>
-
-    <item android:id="@+id/add_photo_attachment"
-          android:icon="@drawable/ic_attach_file_20dp"
-          android:title="@string/add_photo_attachment"
-          android:showAsAction="never" />
-
-    <item android:id="@+id/add_file_attachment"
-        android:icon="@drawable/ic_attach_file_20dp"
+    <!--
+        Nested menu on action bar allows the user to tap on the menu item to see an overflow
+        with the inner menu.
+    -->
+    <item android:id="@+id/add_attachment"
+        android:icon="@drawable/ic_attach_file_wht_24dp"
         android:title="@string/add_file_attachment"
-        android:showAsAction="never" />
+        android:showAsAction="always">
 
-    <item android:id="@+id/attach_from_service_stub1"
-        android:title="@string/attach_from_service_stub1"
-        android:showAsAction="never"
-        android:visible="false" />
+        <menu>
+            <item android:id="@+id/add_file_attachment"
+                android:title="@string/add_file_attachment"
+                android:showAsAction="never" />
 
-    <item android:id="@+id/add_cc_bcc"
-        android:title="@string/add_cc_label"
-        android:showAsAction="never"/>
+            <item android:id="@+id/add_photo_attachment"
+                android:title="@string/add_photo_attachment"
+                android:showAsAction="never" />
+
+            <item android:id="@+id/attach_from_service_stub1"
+                android:title="@string/attach_from_service_stub1"
+                android:showAsAction="never"
+                android:visible="false" />
+        </menu>
+
+    </item>
+
+    <item android:id="@+id/send"
+        android:icon="@drawable/ic_send_wht_24dp"
+        android:title="@string/send"
+        android:showAsAction="always" />
 
     <item android:id="@+id/save"
         android:title="@string/save_draft"
