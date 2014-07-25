@@ -329,8 +329,6 @@
     <!-- String used to represent "me"/"I" when used as an subject pronoun. This string is use when
          showing the list of senders for a conversation list item. [CHAR LIMIT=15] -->
     <string name="me_subject_pronoun">me</string>
-    <!-- Header for list of inboxes in the drawer (Inbox, Priority) [CHAR LIMIT=50] -->
-    <string name="inbox_folders_heading">Inbox</string>
 
     <plurals name="confirm_delete_conversation">
         <!-- Dialog message to confirm deletion of one conversation -->
