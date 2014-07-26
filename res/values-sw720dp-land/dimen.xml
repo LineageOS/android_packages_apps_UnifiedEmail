@@ -16,6 +16,5 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="compose_scrollview_width">900dip</dimen>
     <dimen name="spinner_frame_width">260dip</dimen>
 </resources>

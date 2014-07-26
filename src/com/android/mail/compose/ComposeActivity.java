@@ -69,7 +69,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -270,7 +269,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private RecipientEditTextView mTo;
     private RecipientEditTextView mCc;
     private RecipientEditTextView mBcc;
-    private Button mCcBccButton;
+    private View mCcBccButton;
     private CcBccView mCcBccView;
     private AttachmentsView mAttachmentsView;
     protected Account mAccount;
@@ -1283,16 +1282,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void findViews() {
         findViewById(R.id.compose).setVisibility(View.VISIBLE);
-        mCcBccButton = (Button) findViewById(R.id.add_cc_bcc);
+        mCcBccButton = findViewById(R.id.add_cc_bcc);
         if (mCcBccButton != null) {
             mCcBccButton.setOnClickListener(this);
         }
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
-        final View addAttachmentsButton = findViewById(R.id.add_attachment);
-        if (addAttachmentsButton != null) {
-            addAttachmentsButton.setOnClickListener(this);
-        }
         mTo = (RecipientEditTextView) findViewById(R.id.to);
         initializeRecipientEditTextView(mTo);
         mCc = (RecipientEditTextView) findViewById(R.id.cc);
@@ -1892,10 +1887,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mCcBccButton != null) {
             if (!ccVisible || !bccVisible) {
                 mCcBccButton.setVisibility(View.VISIBLE);
-                mCcBccButton.setText(getString(!ccVisible ? R.string.add_cc_label
-                        : R.string.add_bcc_label));
             } else {
-                mCcBccButton.setVisibility(View.INVISIBLE);
+                mCcBccButton.setVisibility(View.GONE);
             }
         }
     }
@@ -2230,8 +2223,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Verify that cc/ bcc aren't showing.
             // Animate in cc/bcc.
             showCcBccViews();
-        } else if (id == R.id.add_attachment) {
-            doAttach(Utils.isRunningKitkatOrLater() ? MIME_TYPE_ALL : MIME_TYPE_PHOTO);
         }
     }
 
@@ -3315,7 +3306,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void showCcBccViews() {
         mCcBccView.show(true, true, true);
         if (mCcBccButton != null) {
-            mCcBccButton.setVisibility(View.INVISIBLE);
+            mCcBccButton.setVisibility(View.GONE);
         }
     }
 

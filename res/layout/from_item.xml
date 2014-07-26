@@ -15,14 +15,23 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/spinner_account_address"
-    android:layout_width="wrap_content"
-    android:layout_height="48dip"
-    android:singleLine="true"
-    android:ellipsize="end"
-    android:textAlignment="viewStart"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:paddingLeft="8dip"
-    android:paddingRight="8dip"
-    android:gravity="center_vertical"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/compose_header_min_height">
+
+    <TextView
+        android:id="@+id/spinner_account_address"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageView
+        android:src="@drawable/ic_forward_24dp"
+        style="@style/ComposeFieldButton" />
+
+</LinearLayout>

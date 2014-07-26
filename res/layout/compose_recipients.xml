@@ -15,41 +15,48 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/compose_recipients_wrapper"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <!-- To -->
-
-    <LinearLayout android:id="@+id/to_content"
+    <LinearLayout
+        android:id="@+id/to_content"
         style="@style/RecipientComposeFieldLayout">
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:addStatesFromChildren="true"
-            android:gravity="center_vertical"
-            android:layout_gravity="center_vertical">
 
-            <TextView style="@style/RecipientComposeHeading"
-                android:text="@string/to"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/ComposeFieldContent">
+
+            <TextView
                 android:id="@+id/to_label"
-                android:contentDescription="@string/to"/>
+                android:contentDescription="@string/to"
+                android:text="@string/to"
+                style="@style/RecipientComposeHeading" />
 
             <com.android.ex.chips.RecipientEditTextView
                 android:id="@+id/to"
-                style="@style/RecipientEditTextViewStyle"
-                android:contentDescription="@string/to"/>
+                android:contentDescription="@string/to"
+                style="@style/ToRecipientEditTextViewStyle" />
+
+            <ImageView
+                android:id="@+id/add_cc_bcc"
+                android:src="@drawable/ic_forward_24dp"
+                android:contentDescription="@string/add_cc_label"
+                style="@style/ComposeFieldButton" />
 
         </LinearLayout>
 
-        <View style="@style/RecipientComposeFieldSpacer"/>
+        <View style="@style/RecipientComposeFieldSpacer" />
     </LinearLayout>
 
-
+    <!-- Cc/Bcc -->
     <com.android.mail.compose.CcBccView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
         android:id="@+id/cc_bcc_wrapper"
-        android:layout_below="@id/to_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-</RelativeLayout>
+</LinearLayout>

@@ -16,76 +16,91 @@
      limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
-    <include layout="@layout/wait_fragment"/>
-    <LinearLayout
-        android:layout_height="match_parent"
+    android:background="@color/holo_light_background_color"
+    style="@style/ComposeAreaWrapper">
+
+    <include layout="@layout/wait_fragment" />
+
+    <ScrollView
+        android:id="@+id/compose"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
         android:orientation="vertical"
-        android:background="@android:color/white"
-        android:visibility="gone"
-        android:id="@+id/compose">
+        android:visibility="gone">
 
-        <ScrollView
-            android:id="@+id/compose_scrollview"
-            android:fillViewport="true"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:layout_width="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <LinearLayout android:id="@+id/content"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
+            <!-- Start border -->
+            <Space
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:animateLayoutChanges="true"
-                android:paddingLeft="16dip"
-                android:paddingRight="16dip">
+                android:layout_weight="@integer/compose_padding_weight" />
 
-                <include layout="@layout/compose_from"/>
+            <!-- Main compose content -->
+            <LinearLayout
+                android:id="@+id/content"
+                android:orientation="vertical"
+                style="@style/ComposeArea">
 
-                <LinearLayout android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:orientation="vertical">
+                <!-- From -->
+                <include layout="@layout/compose_from" />
 
-                    <include layout="@layout/compose_recipients"/>
+                <!-- To/Cc/Bcc -->
+                <include layout="@layout/compose_recipients" />
 
-                    <include layout="@layout/compose_subject"/>
-                </LinearLayout>
+                <!-- Subject -->
+                <include layout="@layout/compose_subject" />
 
                 <!-- Body -->
-                <include layout="@layout/compose_body"/>
+                <include layout="@layout/compose_body" />
 
                 <!--  Attachments -->
-                <com.android.mail.compose.AttachmentsView android:id="@+id/attachments"
-                    android:layout_height="wrap_content"
+                <com.android.mail.compose.AttachmentsView
+                    android:id="@+id/attachments"
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
                     android:animateLayoutChanges="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
                     android:paddingTop="8dip"
                     android:paddingRight="5dip"
                     android:paddingBottom="0dip"
                     android:paddingLeft="5dip"
-                    android:visibility="gone"
-                    android:focusable="true">
+                    android:visibility="gone">
+
                     <include layout="@layout/compose_attachments" />
+
                 </com.android.mail.compose.AttachmentsView>
 
                 <!-- Quoted text -->
-                <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
-                    android:layout_height="wrap_content"
+                <com.android.mail.compose.QuotedTextView
+                    android:id="@+id/quoted_text_view"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:visibility="gone" />
 
-                <View android:id="@+id/composearea_tap_trap_bottom"
-                    android:clickable="true"
+                <View
+                    android:id="@+id/composearea_tap_trap_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/compose_background_color"/>
+                    android:background="@color/compose_background_color"
+                    android:clickable="true" />
 
             </LinearLayout>
 
-        </ScrollView>
+            <!-- End border -->
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="@integer/compose_padding_weight" />
 
-    </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
 </FrameLayout>

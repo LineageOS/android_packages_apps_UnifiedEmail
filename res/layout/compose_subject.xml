@@ -15,10 +15,27 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/ComposeFieldLayout"
-    android:layout_below="@id/cc_bcc_wrapper">
-        <!-- Subject: localization cannot control what field pressing tab will bring the user to. This is controlled at runtime.  -->
-        <com.android.mail.compose.EnterSubject android:id="@+id/subject"
-            style="@style/ComposeSubjectView" />
-</RelativeLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/subject_content"
+    style="@style/RecipientComposeFieldLayout">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/ComposeFieldContent">
+
+        <RelativeLayout
+            style="@style/ComposeFieldLayout">
+
+            <!-- Subject: localization cannot control what field pressing tab will bring the user to. This is controlled at runtime.  -->
+            <com.android.mail.compose.EnterSubject
+                android:id="@+id/subject"
+                style="@style/ComposeSubjectView" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View style="@style/RecipientComposeFieldSpacer"/>
+
+</LinearLayout>

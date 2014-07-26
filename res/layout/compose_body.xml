@@ -16,13 +16,22 @@
      limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
     android:id="@+id/body_wrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     style="@style/ComposeFieldLayout">
 
-    <com.android.mail.compose.BodyView android:id="@+id/body"
-        android:hint="@string/body_hint"
-        style="@style/ComposeBodyView" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/ComposeFieldContent">
+
+        <com.android.mail.compose.BodyView
+            android:id="@+id/body"
+            android:background="@null"
+            android:hint="@string/body_hint"
+            style="@style/ComposeBodyView" />
+
+    </LinearLayout>
 
 </RelativeLayout>

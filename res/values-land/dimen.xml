@@ -16,8 +16,6 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="compose_scrollview_width">800dp</dimen>
-
     <dimen name="empty_view_text_width">380dip</dimen>
     <dimen name="empty_view_space">8dip</dimen>
 </resources>

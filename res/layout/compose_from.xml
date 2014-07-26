@@ -15,40 +15,65 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_marginTop="4dip"
-    android:layout_height="48dip">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/RecipientComposeFieldLayout">
 
-    <!-- From spinner -->
-    <LinearLayout android:id="@+id/spinner_from_content"
-        style="@style/RecipientComposeFieldLayout"
-        android:background="@android:color/transparent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        style="@style/ComposeFieldContent">
 
-        <com.android.mail.compose.FromAddressSpinner
-            android:id="@+id/from_picker"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        <TextView
+            android:id="@+id/from_label"
+            android:contentDescription="@string/from"
+            android:text="@string/from"
+            style="@style/RecipientComposeHeading" />
 
-    </LinearLayout>
-
-    <!-- static From -->
-    <LinearLayout android:id="@+id/static_from_content"
-        style="@style/RecipientComposeFieldLayout"
-        android:layout_height="match_parent">
-
-        <TextView android:id="@+id/from_account_name"
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:textAlignment="viewStart"
-            android:textSize="18sp"
-            android:background="@android:color/transparent" />
+            android:layout_weight="1">
+
+            <!-- From spinner -->
+            <LinearLayout
+                android:id="@+id/spinner_from_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:visibility="gone"
+                style="@style/RecipientComposeFieldLayout">
+
+                <com.android.mail.compose.FromAddressSpinner
+                    android:id="@+id/from_picker"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null" />
+
+            </LinearLayout>
+
+            <!-- static From -->
+            <LinearLayout
+                android:id="@+id/static_from_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/from_account_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/compose_user_text"
+                    android:textSize="@dimen/compose_header_text_size" />
+
+            </LinearLayout>
+
+        </FrameLayout>
 
     </LinearLayout>
 
-</FrameLayout>
+    <View style="@style/RecipientComposeFieldSpacer" />
+
+</LinearLayout>
