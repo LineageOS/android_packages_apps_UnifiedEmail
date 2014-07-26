@@ -4267,6 +4267,11 @@ public abstract class AbstractActivityController implements ActivityController,
         }
 
         @Override
+        public boolean isDrawerEnabled() {
+            return AbstractActivityController.this.isDrawerEnabled();
+        }
+
+        @Override
         public void registerDrawerListener(DrawerLayout.DrawerListener l) {
             registerObserver(l);
         }

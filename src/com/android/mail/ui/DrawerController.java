@@ -24,6 +24,7 @@ import android.support.v4.widget.DrawerLayout;
  */
 public interface DrawerController {
 
+    boolean isDrawerEnabled();
     void registerDrawerListener(DrawerLayout.DrawerListener l);
     void unregisterDrawerListener(DrawerLayout.DrawerListener l);
     boolean isDrawerOpen();

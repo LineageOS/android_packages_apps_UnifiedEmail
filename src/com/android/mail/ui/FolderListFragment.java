@@ -1379,17 +1379,22 @@ public class FolderListFragment extends ListFragment implements
          * <br>
          * WARNING: you probably don't want to call this directly; use
          * {@link #onClick(View)} instead. This method actually performs the action, and its
-         * execution is deferred from when the 'click' happens so we can smoothly close the drawer
-         * beforehand.
+         * execution may be deferred from when the 'click' happens so we can smoothly close the
+         * drawer beforehand.
          */
         abstract void doFooterAction();
 
         @Override
         public final void onClick(View v) {
-            // close the drawer and defer handling the click until onDrawerClosed
-            mAccountController.closeDrawer(false /* hasNewFolderOrAccount */,
-                    null /* nextAccount */, null /* nextFolder */);
-            mDrawerListener.setPendingFooterClick(this);
+            final DrawerController dc = mActivity.getDrawerController();
+            if (dc.isDrawerEnabled()) {
+                // close the drawer and defer handling the click until onDrawerClosed
+                mAccountController.closeDrawer(false /* hasNewFolderOrAccount */,
+                        null /* nextAccount */, null /* nextFolder */);
+                mDrawerListener.setPendingFooterClick(this);
+            } else {
+                doFooterAction();
+            }
         }
 
         public boolean shouldShowTopBorder() {
