@@ -406,6 +406,7 @@
     <style name="ComposeThemeBase" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:homeAsUpIndicator">@drawable/ic_close_wht_24dp</item>
     </style>
+
     <style name="ComposeTheme" parent="@style/ComposeThemeBase">
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:colorBackground">@android:color/white</item>
@@ -419,16 +420,12 @@
         <item name="android:windowNoDisplay">true</item>
     </style>
 
-    <style name="PlainSpinnerDropdown" parent="@android:style/Widget.Holo.Light.Spinner">
-        <item name="android:background">@null</item>
-    </style>
-
     <style name="PlainActionBarStyle" parent="ActionBarStyle">
         <item name="android:displayOptions" />
     </style>
 
     <style name="ActionBarStyle"  parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-            <item name="android:background">@color/actionbar_color</item>
+        <item name="android:background">@color/actionbar_color</item>
     </style>
 
     <style name="OverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
@@ -441,7 +438,6 @@
 
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
-        <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
         <item name="android:actionModeBackground">@color/action_mode_background</item>
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
