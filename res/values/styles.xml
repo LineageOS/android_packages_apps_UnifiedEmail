@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- Compose Styles -->
     <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextView">
         <item name="android:layout_gravity">center_vertical</item>
@@ -197,12 +197,8 @@
         <item name="android:paddingRight">6dp</item>
     </style>
 
-    <!-- No change in the default case. -->
-    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-    </style>
-
     <!-- Browse list item styles -->
-    <style name="ConversationListFadeBase" parent="@android:style/Widget.Holo.Light.ListView" />
+    <style name="ConversationListFadeBase" parent="android:Widget.Holo.Light.ListView" />
     <style name="ConversationListFade" parent="@style/ConversationListFadeBase">
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">0dip</item>
@@ -353,7 +349,7 @@
         <item name="android:textIsSelectable">true</item>
     </style>
 
-    <style name="MessageButtonStyleBase" parent="android:Widget.Holo.Button.Borderless" />
+    <style name="MessageButtonStyleBase" parent="@android:style/Widget.Holo.Button.Borderless" />
 
     <style name="MessageHeaderActionButtonStyle" parent="@style/MessageButtonStyleBase">
         <item name="android:layout_width">@dimen/message_header_action_button_width</item>
@@ -422,11 +418,11 @@
     </style>
 
     <!-- Widget styles -->
-    <style name="WidgetTitle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title.Inverse">
+    <style name="WidgetTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="WidgetSubtitle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle.Inverse">
+    <style name="WidgetSubtitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle.Inverse">
         <item name="android:singleLine">true</item>
     </style>
 
@@ -439,44 +435,32 @@
         <item name="android:layout_marginTop">16dip</item>
     </style>
 
-    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.DialogWhenLarge">
-        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
-        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
-    </style>
+    <style name="ShortcutWidgetTheme" parent="@style/UnifiedEmailTheme.Appcompat" />
 
-    <style name="ComposeThemeBase" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:homeAsUpIndicator">@drawable/ic_close_wht_24dp</item>
-    </style>
-
-    <style name="ComposeTheme" parent="@style/ComposeThemeBase">
-        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
+    <style name="ComposeTheme" parent="@style/UnifiedEmailTheme.Appcompat">
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
         <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
     </style>
 
     <style name="InvisibleShortcutWidgetTheme" parent="@style/ShortcutWidgetTheme">
         <item name="android:windowNoDisplay">true</item>
     </style>
 
-    <style name="PlainActionBarStyle" parent="ActionBarStyle">
-        <item name="android:displayOptions" />
-    </style>
-
-    <style name="ActionBarStyle"  parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/actionbar_color</item>
-    </style>
-
-    <style name="OverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+    <style name="OverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_overflow_24dp</item>
     </style>
 
     <style name="ActionBarOverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_menu_moreoverflow_mtrl_alpha</item>
+    </style>
+
+    <style name="ActionBarOverflowButtonStyle.Appcompat" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu_moreoverflow_mtrl_alpha</item>
+    </style>
+
+    <style name="ActionBarStyle"  parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/actionbar_color</item>
     </style>
 
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
@@ -487,10 +471,23 @@
         <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
     </style>
 
-    <style name="PlainUnifiedEmailTheme" parent="@style/UnifiedEmailTheme">
-        <item name="android:actionBarStyle">@style/PlainActionBarStyle</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
+
+    <style name="UnifiedEmailTheme.Appcompat" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionModeBackground">@color/action_mode_background</item>
+        <item name="actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle.Appcompat</item>
+        <item name="colorPrimary">@color/actionbar_color</item>
+        <!-- Used by the StatusBar and NavBar (currently broken?) -->
+        <item name="colorPrimaryDark">@color/statusbar_color</item>
+        <item name="colorAccent">@color/accent_blue</item>
+        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
     </style>
+
+    <style name="UnifiedEmailTheme.Appcompat.Toolbar" parent="@style/UnifiedEmailTheme.Appcompat">
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="MailActivityTheme" parent="@style/UnifiedEmailTheme.Appcompat.Toolbar" />
 
     <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme">
     </style>
@@ -510,12 +507,7 @@
     <style name="NotificationSecondaryText">
     </style>
 
-    <style name="TwoPaneConversationList">
-    </style>
-
-    <style name="AccountSpinnerStyle">
-        <item name="android:layout_width">wrap_content</item>
-    </style>
+    <style name="TwoPaneConversationList" />
 
     <style name="AttachmentButtonStyle">
         <item name="android:clickable">true</item>
@@ -708,7 +700,7 @@
         <item name="android:layout_alignParentRight">true</item>
     </style>
 
-    <style name="CustomActionButtonBase" parent="android:style/Widget.Holo.Light.ActionButton" />
+    <style name="CustomActionButtonBase" parent="@style/Widget.AppCompat.Light.ActionButton" />
 
     <style name="CustomActionButton" parent="@style/CustomActionButtonBase">
         <item name="android:layout_height">match_parent</item>
@@ -741,7 +733,7 @@
     </style>
 
     <style name="AbstractVacationResponderDateSpinnerBase"
-           parent="android:style/Widget.Holo.Light.Spinner" />
+           parent="android:Widget.Holo.Light.Spinner" />
 
     <style name="AbstractVacationResponderDateSpinner"
            parent="@style/AbstractVacationResponderDateSpinnerBase">

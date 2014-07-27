@@ -17,10 +17,10 @@
 
 package com.android.mail.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v7.app.ActionBarActivity;
 
 /**
  * <p>
@@ -34,7 +34,7 @@ import android.os.StrictMode;
  * <p>In the Gmail codebase, this was called GmailBaseActivity</p>
  *
  */
-public abstract class AbstractMailActivity extends Activity implements RestrictedActivity {
+public abstract class AbstractMailActivity extends ActionBarActivity implements RestrictedActivity {
 
     private final UiHandler mUiHandler = new UiHandler();
 

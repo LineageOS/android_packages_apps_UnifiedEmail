@@ -16,8 +16,6 @@
 
 package com.android.mail.ui;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.appwidget.AppWidgetManager;
@@ -28,6 +26,7 @@ import android.content.Intent;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,7 +51,7 @@ import java.util.ArrayList;
 /**
  * This activity displays the list of available folders for the current account.
  */
-public class FolderSelectionActivity extends Activity implements OnClickListener,
+public class FolderSelectionActivity extends ActionBarActivity implements OnClickListener,
         DialogInterface.OnClickListener, FolderChangeListener, ControllableActivity,
         FolderSelector {
     public static final String EXTRA_ACCOUNT_SHORTCUT = "account-shortcut";
@@ -166,10 +165,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             LogUtils.wtf(LOG_TAG, "unexpected intent: %s", intent);
         }
         if (mConfigureShortcut || mConfigureWidget) {
-            ActionBar actionBar = getActionBar();
-            if (actionBar != null) {
-                actionBar.setIcon(R.mipmap.ic_launcher_shortcut_folder);
-            }
             mMode = CONFIGURE;
         } else {
             mMode = VIEW;

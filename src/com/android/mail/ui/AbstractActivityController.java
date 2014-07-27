@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.animation.ValueAnimator;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -50,6 +49,7 @@ import android.os.SystemClock;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -605,7 +605,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * TwoPaneController so they cannot override this behavior.
      */
     private void initializeActionBar() {
-        final ActionBar actionBar = mActivity.getActionBar();
+        final ActionBar actionBar = mActivity.getSupportActionBar();
         if (actionBar == null) {
             return;
         }
@@ -626,7 +626,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * Attach the action bar to the activity.
      */
     private void attachActionBar() {
-        final ActionBar actionBar = mActivity.getActionBar();
+        final ActionBar actionBar = mActivity.getSupportActionBar();
         if (actionBar != null) {
             // Show a title
             final int mask = ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME;
@@ -1288,7 +1288,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
             mDrawerToggle.setDrawerIndicatorEnabled(isDrawerEnabled());
         } else {
-            final ActionBar ab = mActivity.getActionBar();
+            final ActionBar ab = mActivity.getSupportActionBar();
             ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
             ab.setHomeActionContentDescription(R.string.drawer_open);
             ab.setDisplayHomeAsUpEnabled(true);
@@ -4365,21 +4365,21 @@ public abstract class AbstractActivityController implements ActivityController,
             if (mDrawerState == DrawerLayout.STATE_SETTLING) {
                 if (mHideMenuItems && slideOffset < 0.15f && mOldSlideOffset > slideOffset) {
                     mHideMenuItems = false;
-                    mActivity.invalidateOptionsMenu();
+                    mActivity.supportInvalidateOptionsMenu();
                     maybeEnableCabMode();
                 } else if (!mHideMenuItems && slideOffset > 0.f && mOldSlideOffset < slideOffset) {
                     mHideMenuItems = true;
-                    mActivity.invalidateOptionsMenu();
+                    mActivity.supportInvalidateOptionsMenu();
                     disableCabMode();
                 }
             } else {
                 if (mHideMenuItems && Float.compare(slideOffset, 0.f) == 0) {
                     mHideMenuItems = false;
-                    mActivity.invalidateOptionsMenu();
+                    mActivity.supportInvalidateOptionsMenu();
                     maybeEnableCabMode();
                 } else if (!mHideMenuItems && slideOffset > 0.f) {
                     mHideMenuItems = true;
-                    mActivity.invalidateOptionsMenu();
+                    mActivity.supportInvalidateOptionsMenu();
                     disableCabMode();
                 }
             }

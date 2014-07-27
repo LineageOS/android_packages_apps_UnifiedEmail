@@ -71,7 +71,6 @@
     <dimen name="message_header_contact_photo_margin">16dp</dimen>
     <dimen name="message_header_inner_side_padding">16dp</dimen>
     <dimen name="attachment_toast_yoffset">-100dip</dimen>
-    <dimen name="spinner_frame_width">196dip</dimen>
     <dimen name="floating_action_bar_margin">16dp</dimen>
     <dimen name="snack_bar_margin_horizontal">24dp</dimen>
     <dimen name="snack_bar_margin_vertical">14dp</dimen>

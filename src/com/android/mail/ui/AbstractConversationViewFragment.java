@@ -668,7 +668,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         mHandler.post(new FragmentRunnable("invalidateOptionsMenu", this) {
             @Override
             public void go() {
-                mActivity.invalidateOptionsMenu();
+                mActivity.supportInvalidateOptionsMenu();
             }
         });
     }

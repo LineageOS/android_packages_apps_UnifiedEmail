@@ -17,8 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Application;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
@@ -27,7 +25,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ActionMode;
+import android.support.v7.app.ActionBar;
+import android.support.v7.view.ActionMode;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,8 +35,10 @@ import android.view.Window;
 // Should not rely on any mail-specific packages.
 
 /**
- * {@link RestrictedActivity} gives access to a subset of {@link Activity} methods. These methods
- * match the signatures from {@link Activity}.
+ * {@link RestrictedActivity} gives access to a subset of
+ * {@link android.support.v7.app.ActionBarActivity} methods.
+ * These methods match the signatures from
+ * {@link android.support.v7.app.ActionBarActivity}.
  */
 public interface RestrictedActivity {
     /*
@@ -56,9 +57,9 @@ public interface RestrictedActivity {
     void finish();
 
     /**
-     * @see android.app.Activity#getActionBar()
+     * @see android.support.v7.app.ActionBarActivity#getSupportActionBar()
      */
-    ActionBar getActionBar();
+    ActionBar getSupportActionBar();
 
     /**
      * @see android.app.Activity#getApplication()
@@ -101,9 +102,9 @@ public interface RestrictedActivity {
     Window getWindow();
 
     /**
-     * @see android.app.Activity#invalidateOptionsMenu()
+     * @see android.support.v7.app.ActionBarActivity#supportInvalidateOptionsMenu()
      */
-    void invalidateOptionsMenu();
+    void supportInvalidateOptionsMenu();
 
     /**
      * @see android.app.Activity#isChangingConfigurations()
@@ -146,9 +147,9 @@ public interface RestrictedActivity {
     void showDialog(int id);
 
     /**
-     * @see android.app.Activity#startActionMode(android.view.ActionMode.Callback)
+     * @see android.support.v7.app.ActionBarActivity#startSupportActionMode(ActionMode.Callback)
      */
-    ActionMode startActionMode(ActionMode.Callback callback);
+    ActionMode startSupportActionMode(ActionMode.Callback callback);
 
     /**
      * @see android.app.Activity#startActivityForResult(Intent, int)
@@ -181,14 +182,9 @@ public interface RestrictedActivity {
     Context getActivityContext();
 
     /**
-     * @see Activity#onOptionsItemSelected(MenuItem)
+     * @see android.app.Activity#onOptionsItemSelected(MenuItem)
      */
     boolean onOptionsItemSelected(MenuItem item);
-
-    /**
-     * @see Activity#hasWindowFocus()
-     */
-    public boolean hasWindowFocus();
 
     void setPendingToastOperation(ToastBarOperation op);
 

@@ -17,19 +17,20 @@
 -->
 <!-- Action bar items for the tablet when viewing a conversation -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/archive"
         android:title="@string/archive"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_archive_wht_24dp"
         android:alphabeticShortcut="@string/trigger_y_char" />
 
     <item
         android:id="@+id/remove_folder"
         android:title="@string/remove_folder"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_remove_label_wht_24dp"
         android:alphabeticShortcut="@string/trigger_y_char"
         android:visible="false" />
@@ -38,20 +39,21 @@
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp" />
+
     <!-- Depends on the user viewing a draft label, and the above menu item not being shown -->
     <item
         android:id="@+id/discard_drafts"
         android:title="@string/discard_drafts"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp"
         android:visible="false" />
     <!-- Depends on the user viewing a outbox label and the setting supports delete -->
     <item
         android:id="@+id/discard_outbox"
         android:title="@string/discard_failed"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp"
         android:visible="false" />
 
@@ -59,26 +61,26 @@
     <item
         android:id="@+id/inside_conversation_unread"
         android:title="@string/mark_unread"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_markunread_wht_24dp" />
 
     <!-- Always available -->
     <item
         android:id="@+id/move_to"
         android:title="@string/menu_move_to"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:icon="@drawable/ic_menu_move_to_holo_light" />
 
     <!-- Always available -->
     <item
         android:id="@+id/change_folders"
         android:title="@string/menu_change_folders"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:icon="@drawable/ic_change_labels_wht_24dp" />
 
     <item
         android:id="@+id/move_to_inbox"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/menu_move_to_inbox"
         android:icon="@drawable/ic_move_to_inbox_wht_24dp"/>
 

@@ -18,10 +18,11 @@
 package com.android.mail.ui;
 
 import android.content.Context;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SearchView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.utils.Utils;
@@ -78,7 +79,7 @@ public class SearchActionBarController extends ActionBarController {
         // the IME and the suggestions don't get in the way.
         final MenuItem search = getSearch();
         if (search != null) {
-            final SearchView searchWidget = (SearchView) search.getActionView();
+            final SearchView searchWidget = (SearchView) MenuItemCompat.getActionView(search);
             searchWidget.clearFocus();
         }
     }
@@ -89,10 +90,10 @@ public class SearchActionBarController extends ActionBarController {
     private void setSearchQueryTerm() {
         final MenuItem search = getSearch();
         if (search != null) {
-            search.expandActionView();
+            MenuItemCompat.expandActionView(search);
             final String query = mActivity.getIntent().getStringExtra(
                     ConversationListContext.EXTRA_SEARCH_QUERY);
-            final SearchView searchWidget = (SearchView) search.getActionView();
+            final SearchView searchWidget = (SearchView) MenuItemCompat.getActionView(search);
             if (!TextUtils.isEmpty(query)) {
                 searchWidget.setQuery(query, false);
             }
