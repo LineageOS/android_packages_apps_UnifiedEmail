@@ -167,7 +167,7 @@
     <string name="loading_conversations" msgid="7255732786298655246">"Учитавање…"</string>
     <string name="empty_inbox" msgid="5901734942362315228">"Завршили сте! Пријатан дан."</string>
     <string name="empty_search" msgid="8564899353449880818">"Упс! Нисмо ништа пронашли за „<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>“."</string>
-    <string name="empty_spam_folder" msgid="3288985543286122800">"Ура, овде нема непожељних порука!"</string>
+    <string name="empty_spam_folder" msgid="3288985543286122800">"Јупи, овде нема непожељних порука!"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"Овде нема отпада. Хвала вам што рециклирате!"</string>
     <string name="empty_folder" msgid="3227552635613553855">"Овде нема поште."</string>
     <string name="getting_messages" msgid="8403333791332403244">"Преузимање порука"</string>
