@@ -27,6 +27,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
@@ -62,7 +63,7 @@ public interface ActivityController extends LayoutListener,
         FolderChangeListener, ConversationSetObserver, ConversationListener, FolderSelector,
         UndoListener, ConversationUpdater, ErrorListener, FolderController, AccountController,
         ConversationPositionTracker.Callbacks, ConversationListFooterView.FooterViewClickListener,
-        RecentFolderController, UpOrBackController, FragmentLauncher {
+        RecentFolderController, FragmentLauncher {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
@@ -325,7 +326,7 @@ public interface ActivityController extends LayoutListener,
      * Currently this is used for when the drawer is open to hide certain
      * items that are not applicable while the drawer is open.
      */
-    public boolean shouldHideMenuItems();
+    boolean shouldHideMenuItems();
 
     DrawerController getDrawerController();
 
@@ -334,4 +335,6 @@ public interface ActivityController extends LayoutListener,
      * @return Resource ID
      */
     @LayoutRes int getContentViewResource();
+
+    View.OnClickListener getNavigationViewClickListener();
 }
