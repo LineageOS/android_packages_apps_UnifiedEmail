@@ -436,12 +436,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public UpOrBackController getUpOrBackController() {
-        // Unsupported
-        return null;
-    }
-
-    @Override
     public DrawerController getDrawerController() {
         // Unsupported
         return null;
