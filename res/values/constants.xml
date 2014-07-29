@@ -118,4 +118,6 @@
 
     <!-- Used to force 70% of max width in compose for landscape tablet -->
     <integer name="compose_padding_weight">0</integer>
+    <!-- Whether or not we should scroll down so cc aligns with the top -->
+    <bool name="auto_scroll_cc">true</bool>
 </resources>
