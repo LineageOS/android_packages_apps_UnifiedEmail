@@ -60,18 +60,18 @@ public class AccountPreferences extends VersionedPrefs {
     }
 
     /**
-     * @param account The account id
+     * @param account The account email. This must never change for the account.
      */
-    public AccountPreferences(final Context context, final String accountId) {
-        super(context, buildSharedPrefsName(accountId));
+    public AccountPreferences(final Context context, final String account) {
+        super(context, buildSharedPrefsName(account));
     }
 
-    private static String buildSharedPrefsName(final String accountId) {
-        return PREFS_NAME_PREFIX + '-' + accountId;
+    private static String buildSharedPrefsName(final String account) {
+        return PREFS_NAME_PREFIX + '-' + account;
     }
 
     public static synchronized AccountPreferences get(Context context, Account account) {
-        final String id = account.getAccountId();
+        final String id = account.getAccountId(context);
         AccountPreferences pref = mInstances.get(id);
         if (pref == null) {
             pref = new AccountPreferences(context, id);

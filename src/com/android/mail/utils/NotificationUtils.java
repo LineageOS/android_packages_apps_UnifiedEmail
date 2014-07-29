@@ -394,22 +394,20 @@ public class NotificationUtils {
     /**
      * Validate the notifications for the specified account.
      */
-    public static void validateAccountNotifications(Context context, Account account) {
-        final String email = account.getEmailAddress();
-        LogUtils.d(LOG_TAG, "validateAccountNotifications - %s", email);
+    public static void validateAccountNotifications(Context context, String account) {
+        LogUtils.d(LOG_TAG, "validateAccountNotifications - %s", account);
 
         List<NotificationKey> notificationsToCancel = Lists.newArrayList();
         // Iterate through the notification map to see if there are any entries that correspond to
         // labels that are not in the sync set.
         final NotificationMap notificationMap = getNotificationMap(context);
         Set<NotificationKey> keys = notificationMap.keySet();
-        final AccountPreferences accountPreferences = new AccountPreferences(context,
-                account.getAccountId());
+        final AccountPreferences accountPreferences = new AccountPreferences(context, account);
         final boolean enabled = accountPreferences.areNotificationsEnabled();
         if (!enabled) {
             // Cancel all notifications for this account
             for (NotificationKey notification : keys) {
-                if (notification.account.getAccountManagerAccount().name.equals(email)) {
+                if (notification.account.getAccountManagerAccount().name.equals(account)) {
                     notificationsToCancel.add(notification);
                 }
             }
@@ -417,14 +415,14 @@ public class NotificationUtils {
             // Iterate through the notification map to see if there are any entries that
             // correspond to labels that are not in the notification set.
             for (NotificationKey notification : keys) {
-                if (notification.account.getAccountManagerAccount().name.equals(email)) {
+                if (notification.account.getAccountManagerAccount().name.equals(account)) {
                     // If notification is not enabled for this label, remember this NotificationKey
                     // to later cancel the notification, and remove the entry from the map
                     final Folder folder = notification.folder;
                     final boolean isInbox = folder.folderUri.equals(
                             notification.account.settings.defaultInbox);
                     final FolderPreferences folderPreferences = new FolderPreferences(
-                            context, notification.account.getAccountId(), folder, isInbox);
+                            context, notification.account.getEmailAddress(), folder, isInbox);
 
                     if (!folderPreferences.areNotificationsEnabled()) {
                         notificationsToCancel.add(notification);
@@ -650,11 +648,11 @@ public class NotificationUtils {
 
             final boolean isInbox = folder.folderUri.equals(account.settings.defaultInbox);
             final FolderPreferences folderPreferences =
-                    new FolderPreferences(context, account.getAccountId(), folder, isInbox);
+                    new FolderPreferences(context, account.getEmailAddress(), folder, isInbox);
 
             if (isInbox) {
                 final AccountPreferences accountPreferences =
-                        new AccountPreferences(context, account.getAccountId());
+                        new AccountPreferences(context, account.getEmailAddress());
                 moveNotificationSetting(accountPreferences, folderPreferences);
             }
 
@@ -742,7 +740,7 @@ public class NotificationUtils {
              */
             if (getAttention && oldWhen == 0 && hasNewConversationNotification) {
                 final AccountPreferences accountPreferences =
-                        new AccountPreferences(context, account.getAccountId());
+                        new AccountPreferences(context, account.getEmailAddress());
                 if (accountPreferences.areNotificationsEnabled()) {
                     if (vibrate) {
                         defaults |= Notification.DEFAULT_VIBRATE;
