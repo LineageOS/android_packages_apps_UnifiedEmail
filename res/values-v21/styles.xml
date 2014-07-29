@@ -20,6 +20,7 @@
         <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Material.Light.ListView</item>
+        <item name="android:actionModeBackground">@color/action_mode_background</item>
     </style>
 
     <style name="OverflowButtonStyle" parent="@android:style/Widget.Material.Light.ActionButton.Overflow" >
