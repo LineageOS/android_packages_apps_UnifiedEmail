@@ -16,11 +16,6 @@
     limitations under the License.
 -->
 <resources>
-    <dimen name="toast_bar_description_icon_padding_start">0dip</dimen>
-    <dimen name="toast_bar_description_icon_padding_end">16dip</dimen>
-    <dimen name="toast_bar_description_text_padding_start">0dip</dimen>
-    <dimen name="toast_bar_separator_margin_vertical">11dip</dimen>
-    <dimen name="toast_bar_undo_text_padding">0dip</dimen>
     <dimen name="toast_bar_margin">24dip</dimen>
     <dimen name="new_message_button_padding">0dip</dimen>
 </resources>

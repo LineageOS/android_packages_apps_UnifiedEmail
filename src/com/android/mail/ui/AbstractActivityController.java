@@ -4062,9 +4062,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 return;
         }
         mToastBar.show(listener,
-                R.drawable.ic_alert_white,
                 Utils.getSyncStatusText(mActivity.getActivityContext(), lastSyncResult),
-                false, /* showActionIcon */
                 actionTextResourceId,
                 replaceVisibleToast,
                 new ToastBarOperation(1, 0, ToastBarOperation.ERROR, false, folder));

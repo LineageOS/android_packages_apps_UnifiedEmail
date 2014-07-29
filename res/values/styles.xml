@@ -201,8 +201,21 @@
     </style>
     <!-- End browse list item styles -->
 
-    <style name="FloatingActionBarStyle">
+    <style name="AbstractFloatingActionButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/floating_action_bar_margin</item>
+        <item name="android:background">@drawable/compose_button</item>
+    </style>
+
+    <style name="FloatingActionButtonStyle" parent="AbstractFloatingActionButtonStyle">
+        <item name="android:layout_gravity">bottom|right</item>
         <item name="android:layout_marginRight">@dimen/floating_action_bar_margin</item>
+    </style>
+
+    <style name="SnackBarActionTextStyle">
+        <item name="android:layout_gravity">right</item>
+        <item name="android:layout_marginRight">@dimen/snack_bar_margin</item>
     </style>
 
     <!-- Undo bar styles -->
@@ -489,25 +502,6 @@
     <style name="NotificationSecondaryText">
     </style>
 
-    <style name="AbstractToastBarStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dip</item>
-        <item name="android:layout_gravity">bottom</item>
-        <item name="android:layout_marginLeft">@dimen/toast_bar_margin</item>
-        <item name="android:layout_marginRight">@dimen/toast_bar_margin</item>
-        <item name="android:layout_marginBottom">@dimen/toast_bar_margin</item>
-        <item name="android:orientation">horizontal</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:background">@drawable/panel_undo_holo</item>
-        <item name="android:visibility">gone</item>
-        <item name="android:alpha">0</item>
-        <item name="android:clickable">true</item>
-    </style>
-
-    <!-- Overridden in v19 -->
-    <style name="ToastBarStyle" parent="AbstractToastBarStyle">
-    </style>
-
     <style name="AccountSpinnerStyle">
         <item name="android:layout_width">wrap_content</item>
     </style>
@@ -685,32 +679,6 @@
         <item name="android:layout_marginRight">@dimen/folder_list_item_end_margin</item>
     </style>
 
-    <style name="ToastBarDescriptionIconStyle">
-        <item name="android:paddingLeft">@dimen/toast_bar_description_icon_padding_start</item>
-        <item name="android:paddingRight">@dimen/toast_bar_description_icon_padding_end</item>
-    </style>
-
-    <style name="ToastBarDescriptionTextStyle">
-        <item name="android:paddingLeft">@dimen/toast_bar_description_text_padding_start</item>
-    </style>
-
-    <style name="AbstractToastBarSeparatorStyle">
-        <item name="android:layout_marginTop">@dimen/toast_bar_separator_margin_vertical</item>
-        <item name="android:layout_marginBottom">@dimen/toast_bar_separator_margin_vertical</item>
-    </style>
-    <style name="ToastBarSeparatorStyle" parent="AbstractToastBarSeparatorStyle">
-        <item name="android:layout_marginRight">@dimen/toast_bar_separator_margin</item>
-    </style>
-
-    <style name="ToastBarActionIconStyle">
-        <item name="android:layout_marginRight">@dimen/toast_bar_action_margin</item>
-    </style>
-
-    <style name="ToastBarActionTextStyle" parent="AbstractUndoTextStyle">
-        <item name="android:layout_marginLeft">@dimen/toast_bar_action_margin</item>
-        <item name="android:paddingRight">@dimen/toast_bar_undo_text_padding</item>
-    </style>
-
     <style name="AccountRadioButtonStyle">
         <item name="android:layout_marginLeft">@dimen/account_item_margin_start</item>
     </style>
@@ -832,11 +800,6 @@
 
     <style name="VacationResponderBody" parent="ComposeBodyView">
         <item name="android:maxLength">@integer/vacation_responder_body_length</item>
-    </style>
-
-    <!-- Overridden in v19 -->
-    <style name="ToastButtonStyle">
-        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 
     <style name="MessageAttachmentBarMarginEndStyle">

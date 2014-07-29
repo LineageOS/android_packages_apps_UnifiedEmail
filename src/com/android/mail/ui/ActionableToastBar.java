@@ -17,30 +17,23 @@ package com.android.mail.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.ClipDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.annotation.StringRes;
+import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.utils.Utils;
-import com.android.mail.utils.ViewUtils;
 
 /**
  * A custom {@link View} that exposes an action to the user.
  */
-public class ActionableToastBar extends LinearLayout {
+public class ActionableToastBar extends FrameLayout {
+
     private boolean mHidden = false;
     private Animator mShowAnimation;
     private Animator mHideAnimation;
@@ -50,21 +43,21 @@ public class ActionableToastBar extends LinearLayout {
     /** How long toast will last in ms */
     private static final long TOAST_LIFETIME = 15*1000L;
 
-    /** Icon for the description. */
-    private ImageView mActionDescriptionIcon;
-    /** The clickable view */
-    private View mActionButton;
-    /** The divider between the description and the action button. */
-    private View mDivider;
-    /** Icon for the action button. */
-    private View mActionIcon;
-    /** The view that contains the description. */
-    private TextView mActionDescriptionView;
-    /** The view that contains the text for the action button. */
-    private TextView mActionText;
-    private ToastBarOperation mOperation;
+    /** The view that contains the description when laid out as a single line. */
+    private TextView mSingleLineDescriptionView;
 
-    private ClipBoundsDrawable mButtonDrawable;
+    /** The view that contains the text for the action button when laid out as a single line. */
+    private TextView mSingleLineActionView;
+
+    /** The view that contains the description when laid out as a multiple lines;
+     * always <tt>null</tt> in two-pane layouts. */
+    private TextView mMultiLineDescriptionView;
+
+    /** The view that contains the text for the action button when laid out as a multiple lines;
+     * always <tt>null</tt> in two-pane layouts. */
+    private TextView mMultiLineActionView;
+
+    private ToastBarOperation mOperation;
 
     public ActionableToastBar(Context context) {
         this(context, null);
@@ -80,48 +73,40 @@ public class ActionableToastBar extends LinearLayout {
         mRunnable = new Runnable() {
             @Override
             public void run() {
-                if(!mHidden) {
+                if (!mHidden) {
                     hide(true, false /* actionClicked */);
                 }
             }
         };
-        LayoutInflater.from(context).inflate(R.layout.actionable_toast_row, this, true);
     }
 
     @Override
-    @SuppressLint("NewApi")
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mActionDescriptionIcon = (ImageView) findViewById(R.id.description_icon);
-        mActionDescriptionView = (TextView) findViewById(R.id.description_text);
-        mActionButton = findViewById(R.id.action_button);
-        mDivider = findViewById(R.id.divider);
-        mActionIcon = findViewById(R.id.action_icon);
-        mActionText = (TextView) findViewById(R.id.action_text);
-
-        if (Utils.isRunningKitkatOrLater()) {
-            // Wrap the drawable so we can clip the bounds (see explanation in onLayout).
-            final Drawable buttonToastBackground = mActionButton.getBackground();
-            mActionButton.setBackground(null);
-            mButtonDrawable = new ClipBoundsDrawable(buttonToastBackground);
-            mActionButton.setBackground(mButtonDrawable);
-        }
+        mSingleLineDescriptionView = (TextView) findViewById(R.id.description_text);
+        mSingleLineActionView = (TextView) findViewById(R.id.action_text);
+        mMultiLineDescriptionView = (TextView) findViewById(R.id.multiline_description_text);
+        mMultiLineActionView = (TextView) findViewById(R.id.multiline_action_text);
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final boolean showAction = !TextUtils.isEmpty(mSingleLineActionView.getText());
 
-        // The button has the same background on pressed state so it will have rounded corners
-        // on both the right edge. We clip the background before the divider to remove the
-        // rounded edge there, creating a split-pill button effect.
-        if (mButtonDrawable != null) {
-            final boolean isRtl = ViewUtils.isViewRtl(this);
-            mButtonDrawable.setClipBounds(
-                    (isRtl ? 0 : mDivider.getLeft()), 0,
-                    (isRtl ? mDivider.getRight() : mActionButton.getWidth()),
-                    mActionButton.getHeight());
+        // configure the UI assuming the description fits on a single line
+        setVisibility(false /* multiLine */, showAction);
+
+        // measure the view and its content
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        // if the description does not fit, switch to multi line display if one is present
+        final boolean descriptionIsMultiLine = mSingleLineDescriptionView.getLineCount() > 1;
+        final boolean haveMultiLineView = mMultiLineDescriptionView != null;
+        if (descriptionIsMultiLine && haveMultiLineView) {
+            setVisibility(true /* multiLine */, showAction);
+
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }
 
@@ -134,28 +119,25 @@ public class ActionableToastBar extends LinearLayout {
      *                 to return <code>true</code>, the
      *                 {@link ToastBarOperation#onActionClicked(android.content.Context)}
      *                 will override this listener and be called instead.
-     * @param descriptionIconResourceId resource ID for the description icon or
-     *                                  0 if no icon should be shown
      * @param descriptionText a description text to show in the toast bar
-     * @param showActionIcon if true, the action button icon should be shown
-     * @param actionTextResource resource ID for the text to show in the action button
+     * @param actionTextResourceId resource ID for the text to show in the action button
      * @param replaceVisibleToast if true, this toast should replace any currently visible toast.
      *                            Otherwise, skip showing this toast.
      * @param op the operation that corresponds to the specific toast being shown
      */
-    public void show(final ActionClickedListener listener, int descriptionIconResourceId,
-            CharSequence descriptionText, boolean showActionIcon, int actionTextResource,
-            boolean replaceVisibleToast, final ToastBarOperation op) {
-
+    public void show(final ActionClickedListener listener, final CharSequence descriptionText,
+                     @StringRes final int actionTextResourceId, final boolean replaceVisibleToast,
+                     final ToastBarOperation op) {
         if (!mHidden && !replaceVisibleToast) {
             return;
         }
+
         // Remove any running delayed animations first
         mFadeOutHandler.removeCallbacks(mRunnable);
 
         mOperation = op;
 
-        mActionButton.setOnClickListener(new OnClickListener() {
+        setActionClickListener(new OnClickListener() {
             @Override
             public void onClick(View widget) {
                 if (op.shouldTakeOnActionClickedPrecedence()) {
@@ -167,17 +149,8 @@ public class ActionableToastBar extends LinearLayout {
             }
         });
 
-        // Set description icon.
-        if (descriptionIconResourceId == 0) {
-            mActionDescriptionIcon.setVisibility(GONE);
-        } else {
-            mActionDescriptionIcon.setVisibility(VISIBLE);
-            mActionDescriptionIcon.setImageResource(descriptionIconResourceId);
-        }
-
-        mActionDescriptionView.setText(descriptionText);
-        mActionIcon.setVisibility(showActionIcon ? VISIBLE : GONE);
-        mActionText.setText(actionTextResource);
+        setDescriptionText(descriptionText);
+        setActionText(actionTextResourceId);
 
         mHidden = false;
         getShowAnimation().start();
@@ -197,8 +170,8 @@ public class ActionableToastBar extends LinearLayout {
         mHidden = true;
         mFadeOutHandler.removeCallbacks(mRunnable);
         if (getVisibility() == View.VISIBLE) {
-            mActionDescriptionView.setText("");
-            mActionButton.setOnClickListener(null);
+            setDescriptionText("");
+            setActionClickListener(null);
             // Hide view once it's clicked.
             if (animate) {
                 getHideAnimation().start();
@@ -213,52 +186,14 @@ public class ActionableToastBar extends LinearLayout {
         }
     }
 
-    private Animator getShowAnimation() {
-        if (mShowAnimation == null) {
-            mShowAnimation = AnimatorInflater.loadAnimator(getContext(),
-                    R.anim.fade_in);
-            mShowAnimation.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    setVisibility(View.VISIBLE);
-                }
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                }
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                }
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                }
-            });
-            mShowAnimation.setTarget(this);
-        }
-        return mShowAnimation;
+    public boolean isAnimating() {
+        return mShowAnimation != null && mShowAnimation.isStarted();
     }
 
-    private Animator getHideAnimation() {
-        if (mHideAnimation == null) {
-            mHideAnimation = AnimatorInflater.loadAnimator(getContext(),
-                    R.anim.fade_out);
-            mHideAnimation.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                }
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                }
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    setVisibility(View.GONE);
-                }
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                }
-            });
-            mHideAnimation.setTarget(this);
-        }
-        return mHideAnimation;
+    @Override
+    public void onDetachedFromWindow() {
+        mFadeOutHandler.removeCallbacks(mRunnable);
+        super.onDetachedFromWindow();
     }
 
     public boolean isEventInToastBar(MotionEvent event) {
@@ -272,14 +207,92 @@ public class ActionableToastBar extends LinearLayout {
         return (x > xy[0] && x < (xy[0] + getWidth()) && y > xy[1] && y < xy[1] + getHeight());
     }
 
-    public boolean isAnimating() {
-        return mShowAnimation != null && mShowAnimation.isStarted();
+    private Animator getShowAnimation() {
+        if (mShowAnimation == null) {
+            mShowAnimation = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_in);
+            mShowAnimation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    setVisibility(View.VISIBLE);
+                }
+                @Override
+                public void onAnimationEnd(Animator animation) { }
+                @Override
+                public void onAnimationCancel(Animator animation) { }
+                @Override
+                public void onAnimationRepeat(Animator animation) { }
+            });
+            mShowAnimation.setTarget(this);
+        }
+        return mShowAnimation;
     }
 
-    @Override
-    public void onDetachedFromWindow() {
-        mFadeOutHandler.removeCallbacks(mRunnable);
-        super.onDetachedFromWindow();
+    private Animator getHideAnimation() {
+        if (mHideAnimation == null) {
+            mHideAnimation = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
+            mHideAnimation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) { }
+                @Override
+                public void onAnimationRepeat(Animator animation) { }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    setVisibility(View.GONE);
+                }
+                @Override
+                public void onAnimationCancel(Animator animation) { }
+            });
+            mHideAnimation.setTarget(this);
+        }
+        return mHideAnimation;
+    }
+
+    /**
+     * If the View requires multiple lines to fully display the toast description then make the
+     * multi-line view visible and hide the single line view; otherwise vice versa. If the action
+     * text is present, display it, otherwise hide it.
+     *
+     * @param multiLine <tt>true</tt> if the View requires multiple lines to display the toast
+     * @param showAction <tt>true</tt> if the action text is present and should be shown
+     */
+    private void setVisibility(boolean multiLine, boolean showAction) {
+        mSingleLineDescriptionView.setVisibility(!multiLine ? View.VISIBLE : View.GONE);
+        mSingleLineActionView.setVisibility(!multiLine && showAction ? View.VISIBLE : View.GONE);
+        if (mMultiLineDescriptionView != null) {
+            mMultiLineDescriptionView.setVisibility(multiLine ? View.VISIBLE : View.GONE);
+        }
+        if (mMultiLineActionView != null) {
+            mMultiLineActionView.setVisibility(multiLine && showAction ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void setDescriptionText(CharSequence description) {
+        mSingleLineDescriptionView.setText(description);
+        if (mMultiLineDescriptionView != null) {
+            mMultiLineDescriptionView.setText(description);
+        }
+    }
+
+    private void setActionText(@StringRes int actionTextResourceId) {
+        if (actionTextResourceId == 0) {
+            mSingleLineActionView.setText("");
+            if (mMultiLineActionView != null) {
+                mMultiLineActionView.setText("");
+            }
+        } else {
+            mSingleLineActionView.setText(actionTextResourceId);
+            if (mMultiLineActionView != null) {
+                mMultiLineActionView.setText(actionTextResourceId);
+            }
+        }
+    }
+
+    private void setActionClickListener(OnClickListener listener) {
+        mSingleLineActionView.setOnClickListener(listener);
+
+        if (mMultiLineActionView != null) {
+            mMultiLineActionView.setOnClickListener(listener);
+        }
     }
 
     /**
@@ -288,37 +301,5 @@ public class ActionableToastBar extends LinearLayout {
      */
     public interface ActionClickedListener {
         public void onActionClicked(Context context);
-    }
-
-    /**
-     * A wrapper that allows a drawable to be clipped at specific bounds. {@link ClipDrawable} only
-     * supports clipping based on a relative level. This extends {@link ClipDrawable} since it is
-     * the simplest base class that will delegate the rest of the methods to the wrapped drawable.
-     *
-     * <br/><br/><b>Note: Only use on JBMR2 or later as clipRect is not supported until API 18.</b>
-     */
-    private static class ClipBoundsDrawable extends ClipDrawable {
-        private final Drawable mDrawable;
-        private final Rect mClipRect = new Rect();
-
-        public ClipBoundsDrawable(Drawable drawable) {
-            super(drawable, Gravity.START, ClipDrawable.HORIZONTAL);
-            mDrawable = drawable;
-        }
-
-        public void setClipBounds(int left, int top, int right, int bottom) {
-            mClipRect.left = left;
-            mClipRect.top = top;
-            mClipRect.right = right;
-            mClipRect.bottom = bottom;
-        }
-
-        @Override
-        public void draw(Canvas canvas) {
-            canvas.save();
-            canvas.clipRect(mClipRect);
-            mDrawable.draw(canvas);
-            canvas.restore();
-        }
     }
 }

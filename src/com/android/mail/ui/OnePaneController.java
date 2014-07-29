@@ -426,10 +426,8 @@ public final class OnePaneController extends AbstractActivityController {
                 case ViewMode.CONVERSATION:
                     mToastBar.show(getUndoClickedListener(
                             convList != null ? convList.getAnimatedAdapter() : null),
-                            0,
                             Utils.convertHtmlToPlainText
                                 (op.getDescription(mActivity.getActivityContext())),
-                            true, /* showActionIcon */
                             R.string.undo,
                             true,  /* replaceVisibleToast */
                             op);
@@ -439,10 +437,8 @@ public final class OnePaneController extends AbstractActivityController {
                     if (convList != null) {
                         mToastBar.show(
                                 getUndoClickedListener(convList.getAnimatedAdapter()),
-                                0,
                                 Utils.convertHtmlToPlainText
                                     (op.getDescription(mActivity.getActivityContext())),
-                                true, /* showActionIcon */
                                 R.string.undo,
                                 true,  /* replaceVisibleToast */
                                 op);

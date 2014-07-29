@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
@@ -500,8 +499,6 @@ public final class TwoPaneController extends AbstractActivityController {
         final int mode = mViewMode.getMode();
         final ConversationListFragment convList = getConversationListFragment();
 
-        repositionToastBar(op);
-
         switch (mode) {
             case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
@@ -509,56 +506,12 @@ public final class TwoPaneController extends AbstractActivityController {
             case ViewMode.CONVERSATION:
                 if (convList != null) {
                     mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()),
-                            0,
                             Utils.convertHtmlToPlainText
                                 (op.getDescription(mActivity.getActivityContext())),
-                            true, /* showActionIcon */
                             R.string.undo,
                             true,  /* replaceVisibleToast */
                             op);
                 }
-        }
-    }
-
-    public void repositionToastBar(ToastBarOperation op) {
-        repositionToastBar(op.isBatchUndo());
-    }
-
-    /**
-     * Set the toast bar's layout params to position it in the right place
-     * depending the current view mode.
-     *
-     * @param convModeShowInList if we're in conversation mode, should the toast
-     *            bar appear over the list? no effect when not in conversation mode.
-     */
-    private void repositionToastBar(boolean convModeShowInList) {
-        final int mode = mViewMode.getMode();
-        final FrameLayout.LayoutParams params =
-                (FrameLayout.LayoutParams) mToastBar.getLayoutParams();
-        switch (mode) {
-            case ViewMode.SEARCH_RESULTS_LIST:
-            case ViewMode.CONVERSATION_LIST:
-                params.width = mLayout.computeConversationListWidth() - params.leftMargin
-                        - params.rightMargin;
-                params.gravity = Gravity.BOTTOM | Gravity.END;
-                mToastBar.setLayoutParams(params);
-                break;
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-            case ViewMode.CONVERSATION:
-                if (convModeShowInList && !mLayout.isConversationListCollapsed()) {
-                    // Show undo bar in the conversation list.
-                    params.gravity = Gravity.BOTTOM | Gravity.START;
-                    params.width = mLayout.computeConversationListWidth() - params.leftMargin
-                            - params.rightMargin;
-                    mToastBar.setLayoutParams(params);
-                } else {
-                    // Show undo bar in the conversation.
-                    params.gravity = Gravity.BOTTOM | Gravity.END;
-                    params.width = mLayout.computeConversationWidth() - params.leftMargin
-                            - params.rightMargin;
-                    mToastBar.setLayoutParams(params);
-                }
-                break;
         }
     }
 
@@ -571,9 +524,6 @@ public final class TwoPaneController extends AbstractActivityController {
                 if (/* the touch did not open a conversation */oldViewMode == mViewMode.getMode() ||
                 /* animation has ended */!mToastBar.isAnimating()) {
                     mToastBar.hide(animated, false /* actionClicked */);
-                } else {
-                    // the touch opened a conversation, reposition undo bar
-                    repositionToastBar(mToastBar.getOperation());
                 }
             }
         },
@@ -583,7 +533,6 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void onError(final Folder folder, boolean replaceVisibleToast) {
-        repositionToastBar(true /* convModeShowInList */);
         showErrorToast(folder, replaceVisibleToast);
     }
 

@@ -77,11 +77,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="left" />
 
-        <include layout="@layout/floating_action_bar" />
-
-        <com.android.mail.ui.ActionableToastBar
-            android:id="@+id/toast_bar"
-            style="@style/ToastBarStyle" />
+        <include layout="@layout/floating_actions" />
 
     </com.android.mail.ui.TwoPaneLayout>
 
