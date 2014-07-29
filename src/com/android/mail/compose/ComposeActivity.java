@@ -39,6 +39,7 @@ import android.content.Loader;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -70,6 +71,7 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -266,6 +268,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         SEND_SAVE_TASK_HANDLER = new Handler(handlerThread.getLooper());
     }
 
+    private ScrollView mScrollView;
     private RecipientEditTextView mTo;
     private RecipientEditTextView mCc;
     private RecipientEditTextView mBcc;
@@ -1281,7 +1284,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void findViews() {
-        findViewById(R.id.compose).setVisibility(View.VISIBLE);
+        mScrollView = (ScrollView) findViewById(R.id.compose);
+        mScrollView.setVisibility(View.VISIBLE);
         mCcBccButton = findViewById(R.id.add_cc_bcc);
         if (mCcBccButton != null) {
             mCcBccButton.setOnClickListener(this);
@@ -2236,7 +2240,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             final boolean showCcBccFields = !TextUtils.isEmpty(mCc.getText()) ||
                     !TextUtils.isEmpty(mBcc.getText());
             mCcBccView.show(false /* animate */, showCcBccFields, showCcBccFields);
-            mCcBccButton.setVisibility(!showCcBccFields ? View.VISIBLE : View.GONE);
+            mCcBccButton.setVisibility(showCcBccFields ? View.GONE : View.VISIBLE);
+
+            // On phones autoscroll down so that Cc aligns to the top if we are showing cc/bcc.
+            if (getResources().getBoolean(R.bool.auto_scroll_cc) && showCcBccFields) {
+                final int[] coords = new int[2];
+                mCc.getLocationOnScreen(coords);
+
+                // Subtract status bar and action bar height from y-coord.
+                final Rect rect = new Rect();
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+                final int deltaY = coords[1] - getActionBar().getHeight() - rect.top;
+
+                // Only scroll down
+                if (deltaY > 0) {
+                    mScrollView.smoothScrollBy(0, deltaY);
+                }
+            }
         }
     }
 
