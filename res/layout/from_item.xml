@@ -17,7 +17,7 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/compose_header_min_height">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/spinner_account_address"
@@ -31,7 +31,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageView
-        android:src="@drawable/ic_forward_24dp"
+        android:src="@drawable/ic_expand_more_24dp"
         style="@style/ComposeFieldButton" />
 
 </LinearLayout>

@@ -45,7 +45,7 @@
 
             <ImageView
                 android:id="@+id/add_cc_bcc"
-                android:src="@drawable/ic_forward_24dp"
+                android:src="@drawable/ic_expand_more_24dp"
                 android:contentDescription="@string/add_cc_label"
                 style="@style/ComposeFieldButton" />
 

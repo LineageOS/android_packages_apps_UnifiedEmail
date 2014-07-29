@@ -18,9 +18,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Compose Styles -->
     <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextView">
+        <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:minHeight">@dimen/compose_header_min_height</item>
         <item name="android:maxLines">@integer/chips_max_lines</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">0dp</item>
         <item name="android:textColor">@color/compose_user_text</item>
@@ -37,8 +39,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:background">@null</item>
-        <item name="android:minHeight">@dimen/compose_header_min_height</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">20dp</item>
     </style>
+
 
     <style name="ComposeSubjectView" parent="@style/ComposeEditTextView">
         <item name="android:hint">@string/subject_hint</item>
@@ -48,7 +52,6 @@
     </style>
 
     <style name="ComposeBodyView" parent="@style/ComposeEditTextView">
-        <item name="android:layout_gravity">top</item>
         <item name="android:imeOptions">flagNoFullscreen|actionDone|flagNoEnterAction</item>
         <item name="android:inputType">textLongMessage|textMultiLine|textAutoCorrect|textCapSentences</item>
         <item name="android:textColorHint">@color/compose_label_hint</item>
@@ -62,7 +65,7 @@
 
     <style name="ComposeHeading">
         <item name="android:layout_width">56dp</item>
-        <item name="android:layout_height">@dimen/compose_header_min_height</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/compose_label_text</item>
@@ -82,7 +85,6 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">false</item>
         <item name="android:focusableInTouchMode">false</item>
-        <item name="android:minHeight">@dimen/compose_header_min_height</item>
         <item name="android:orientation">horizontal</item>
     </style>
 
@@ -91,14 +93,18 @@
         <item name="android:paddingTop">0dip</item>
     </style>
 
-    <style name="ComposeFieldContent">
+    <style name="ComposeFieldContentBase">
+        <item name="android:minHeight">@dimen/compose_header_min_height</item>
+    </style>
+
+    <style name="ComposeFieldContent" parent="@style/ComposeFieldContentBase">
         <item name="android:paddingLeft">@dimen/compose_content_start_padding</item>
         <item name="android:paddingRight">@dimen/compose_content_end_padding</item>
     </style>
 
     <style name="BaseComposeFieldButton">
         <item name="android:layout_width">44dp</item>
-        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_height">@dimen/compose_header_min_height</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
         <item name="android:paddingTop">12dp</item>
