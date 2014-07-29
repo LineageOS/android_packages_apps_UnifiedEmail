@@ -40,6 +40,7 @@
                 <com.android.ex.chips.RecipientEditTextView
                     android:id="@+id/cc"
                     android:contentDescription="@string/cc"
+                    android:dropDownAnchor="@id/cc_content"
                     style="@style/RecipientEditTextViewStyle" />
 
         </LinearLayout>
@@ -68,6 +69,7 @@
             <com.android.ex.chips.RecipientEditTextView
                 android:id="@+id/bcc"
                 android:contentDescription="@string/bcc"
+                android:dropDownAnchor="@id/bcc_content"
                 style="@style/RecipientEditTextViewStyle" />
 
         </LinearLayout>

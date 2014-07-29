@@ -45,4 +45,6 @@
     <dimen name="empty_view_text_width">380dip</dimen>
     <dimen name="empty_view_text_size">28sp</dimen>
     <dimen name="empty_view_space">16dip</dimen>
+
+    <dimen name="chip_wrapper_start_padding">64dp</dimen>
 </resources>
