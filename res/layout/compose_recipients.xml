@@ -40,6 +40,7 @@
             <com.android.ex.chips.RecipientEditTextView
                 android:id="@+id/to"
                 android:contentDescription="@string/to"
+                android:dropDownAnchor="@id/to_content"
                 style="@style/ToRecipientEditTextViewStyle" />
 
             <ImageView
