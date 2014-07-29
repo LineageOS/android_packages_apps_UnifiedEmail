@@ -114,6 +114,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -491,6 +492,8 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     private Runnable mAutoAdvanceOp = null;
 
+    private final Deque<UpOrBackHandler> mUpOrBackHandlers = Lists.newLinkedList();
+
     protected DrawerLayout mDrawerContainer;
     protected View mDrawerPullout;
     protected ActionBarDrawerToggle mDrawerToggle;
@@ -514,8 +517,6 @@ public abstract class AbstractActivityController implements ActivityController,
             }
         }
     };
-
-    private final HomeButtonListener mHomeButtonListener = new HomeButtonListener();
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -1343,13 +1344,7 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     @Override
     public void onClick(View view) {
-        final int viewId = view.getId();
-        if (viewId == R.id.compose_button) {
-            ComposeActivity.compose(mActivity.getActivityContext(), getAccount());
-        } else if (viewId == android.R.id.home) {
-            // TODO: b/16627877
-            onUpPressed();
-        }
+        ComposeActivity.compose(mActivity.getActivityContext(), getAccount());
     }
 
     /**
@@ -1630,11 +1625,22 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public final boolean onUpPressed() {
+        for (UpOrBackHandler h : mUpOrBackHandlers) {
+            if (h.onUpPressed()) {
+                return true;
+            }
+        }
         return handleUpPress();
     }
 
     @Override
     public final boolean onBackPressed() {
+        for (UpOrBackHandler h : mUpOrBackHandlers) {
+            if (h.onBackPressed()) {
+                return true;
+            }
+        }
+
         if (isDrawerEnabled() && mDrawerContainer.isDrawerVisible(mDrawerPullout)) {
             mDrawerContainer.closeDrawers();
             return true;
@@ -1646,6 +1652,19 @@ public abstract class AbstractActivityController implements ActivityController,
     protected abstract boolean handleBackPress();
 
     protected abstract boolean handleUpPress();
+
+    @Override
+    public void addUpOrBackHandler(UpOrBackHandler handler) {
+        if (mUpOrBackHandlers.contains(handler)) {
+            return;
+        }
+        mUpOrBackHandlers.addFirst(handler);
+    }
+
+    @Override
+    public void removeUpOrBackHandler(UpOrBackHandler handler) {
+        mUpOrBackHandlers.remove(handler);
+    }
 
     @Override
     public void updateConversation(Collection<Conversation> target, ContentValues values) {
@@ -4487,19 +4506,5 @@ public abstract class AbstractActivityController implements ActivityController,
     public void setConversationListScrollPosition(final String folderUri,
             final Parcelable savedPosition) {
         mConversationListScrollPositions.putParcelable(folderUri, savedPosition);
-    }
-
-    @Override
-    public View.OnClickListener getNavigationViewClickListener() {
-        return mHomeButtonListener;
-    }
-
-    // TODO: Fold this into the outer class when b/16627877 is fixed
-    private class HomeButtonListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            onUpPressed();
-        }
     }
 }
