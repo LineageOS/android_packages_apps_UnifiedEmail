@@ -35,7 +35,7 @@
                 android:id="@+id/to_label"
                 android:contentDescription="@string/to"
                 android:text="@string/to"
-                style="@style/RecipientComposeHeading" />
+                style="@style/ComposeHeading" />
 
             <com.android.ex.chips.RecipientEditTextView
                 android:id="@+id/to"
