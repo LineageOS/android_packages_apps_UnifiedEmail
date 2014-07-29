@@ -132,7 +132,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         RespondInlineListener, TextWatcher,
         AttachmentAddedOrDeletedListener, OnAccountChangedListener,
         LoaderManager.LoaderCallbacks<Cursor>, TextView.OnEditorActionListener,
-        RecipientEditTextView.RecipientEntryItemClickedListener {
+        RecipientEditTextView.RecipientEntryItemClickedListener, View.OnFocusChangeListener {
     /**
      * An {@link Intent} action that launches {@link ComposeActivity}, but is handled as if the
      * {@link Activity} were launched with no special action.
@@ -1298,9 +1298,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // this as a text changed watcher to the to, cc, bcc fields.
         mSubject = (TextView) findViewById(R.id.subject);
         mSubject.setOnEditorActionListener(this);
+        mSubject.setOnFocusChangeListener(this);
         mQuotedTextView = (QuotedTextView) findViewById(R.id.quoted_text_view);
         mQuotedTextView.setRespondInlineListener(this);
         mBodyView = (EditText) findViewById(R.id.body);
+        mBodyView.setOnFocusChangeListener(this);
         mFromStatic = findViewById(R.id.static_from_content);
         mFromStaticText = (TextView) findViewById(R.id.from_account_name);
         mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
@@ -2223,6 +2225,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Verify that cc/ bcc aren't showing.
             // Animate in cc/bcc.
             showCcBccViews();
+        }
+    }
+
+    @Override
+    public void onFocusChange (View v, boolean hasFocus) {
+        final int id = v.getId();
+        if (hasFocus && (id == R.id.subject || id == R.id.body)) {
+            // Collapse cc/bcc iff both are empty
+            final boolean showCcBccFields = !TextUtils.isEmpty(mCc.getText()) ||
+                    !TextUtils.isEmpty(mBcc.getText());
+            mCcBccView.show(false /* animate */, showCcBccFields, showCcBccFields);
+            mCcBccButton.setVisibility(!showCcBccFields ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -3383,7 +3397,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 showCc = !TextUtils.isEmpty(mCc.getText());
                 showBcc = !TextUtils.isEmpty(mBcc.getText());
             }
-            mCcBccView.show(false, showCc, showBcc);
+            mCcBccView.show(false /* animate */, showCc, showBcc);
         }
         updateHideOrShowCcBcc();
         initChangeListeners();
