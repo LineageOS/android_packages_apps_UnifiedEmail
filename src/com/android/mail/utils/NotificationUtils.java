@@ -230,6 +230,12 @@ public class NotificationUtils {
                         final Uri accountUri = Uri.parse(notificationParts[0]);
                         final Cursor accountCursor = context.getContentResolver().query(
                                 accountUri, UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+
+                        if (accountCursor == null) {
+                            throw new IllegalStateException("Unable to locate account for uri: " +
+                                    LogUtils.contentUriToString(accountUri));
+                        }
+
                         final Account account;
                         try {
                             if (accountCursor.moveToFirst()) {
@@ -244,6 +250,12 @@ public class NotificationUtils {
                         final Uri folderUri = Uri.parse(notificationParts[1]);
                         final Cursor folderCursor = context.getContentResolver().query(
                                 folderUri, UIProvider.FOLDERS_PROJECTION, null, null, null);
+
+                        if (folderCursor == null) {
+                            throw new IllegalStateException("Unable to locate folder for uri: " +
+                                    LogUtils.contentUriToString(folderUri));
+                        }
+
                         final Folder folder;
                         try {
                             if (folderCursor.moveToFirst()) {
