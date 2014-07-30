@@ -414,10 +414,11 @@ public class FolderListFragment extends ListFragment implements
             Bundle savedState) {
         setInstanceFromBundle(getArguments());
 
-        final View rootView = inflateRootView(inflater, container);
+        final View rootView = inflater.inflate(R.layout.folder_list, container, false);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setEmptyView(null);
         mListView.setDivider(null);
+        addListHeader(inflater, mListView);
         if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(BUNDLE_LIST_STATE));
         }
@@ -439,8 +440,8 @@ public class FolderListFragment extends ListFragment implements
         return rootView;
     }
 
-    protected View inflateRootView(LayoutInflater inflater, ViewGroup parent) {
-        return inflater.inflate(R.layout.folder_list, parent, false);
+    protected void addListHeader(LayoutInflater inflater, ListView list) {
+        // Default impl does nothing
     }
 
     @Override
@@ -538,7 +539,8 @@ public class FolderListFragment extends ListFragment implements
      * @param position a zero indexed position into the list.
      */
     protected void viewFolderOrChangeAccount(int position) {
-        final Object item = getListAdapter().getItem(position);
+        // Get the ListView's adapter
+        final Object item = getListView().getAdapter().getItem(position);
         LogUtils.d(LOG_TAG, "viewFolderOrChangeAccount(%d): %s", position, item);
         final Folder folder;
         int folderType = DrawerItem.UNSET;
@@ -742,10 +744,12 @@ public class FolderListFragment extends ListFragment implements
             final DrawerItem item = (DrawerItem) getItem(position);
             final View view = item.getView(convertView, parent);
             final int type = item.mType;
-            final boolean isSelected = item.isHighlighted(mSelectedFolderUri, mSelectedDrawerItemType);
+            final boolean isSelected =
+                    item.isHighlighted(mSelectedFolderUri, mSelectedDrawerItemType);
             if (type == DrawerItem.VIEW_FOLDER) {
                 mListView.setItemChecked((mAccountsAdapter != null ?
-                        mAccountsAdapter.getCount() : 0) + position, isSelected);
+                        mAccountsAdapter.getCount() : 0) +
+                        position + mListView.getHeaderViewsCount(), isSelected);
             }
             // If this is the current folder, also check to verify that the unread count
             // matches what the action bar shows.
@@ -1053,8 +1057,10 @@ public class FolderListFragment extends ListFragment implements
             }
             folderItemView.bind(folder, mDropHandler);
             if (folder.folderUri.equals(mSelectedFolderUri)) {
-                getListView().setItemChecked((mAccountsAdapter != null ?
-                        mAccountsAdapter.getCount() : 0) + position, true);
+                final ListView listView = getListView();
+                listView.setItemChecked((mAccountsAdapter != null ?
+                        mAccountsAdapter.getCount() : 0) +
+                        position + listView.getHeaderViewsCount(), true);
                 // If this is the current folder, also check to verify that the unread count
                 // matches what the action bar shows.
                 final boolean unreadCountDiffers = (mCurrentFolderForUnreadCheck != null)
@@ -1164,6 +1170,10 @@ public class FolderListFragment extends ListFragment implements
 
     protected String getCurrentAccountEmailAddress() {
         return mCurrentAccount == null ? "" : mCurrentAccount.getEmailAddress();
+    }
+
+    protected MergedAdapter<ListAdapter> getMergedAdapter() {
+        return mMergedAdapter;
     }
 
     private class FooterAdapter extends BaseAdapter {
@@ -1486,5 +1496,12 @@ public class FolderListFragment extends ListFragment implements
                 mNextAccount = null;
             }
         }
+    }
+
+    @Override
+    public ListAdapter getListAdapter() {
+        // Ensures that we get the adapter with the header views.
+        throw new UnsupportedOperationException("Use getListView().getAdapter() instead "
+                + "which accounts for any header or footer views.");
     }
 }
