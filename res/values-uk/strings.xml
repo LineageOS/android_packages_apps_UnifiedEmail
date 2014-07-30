@@ -151,7 +151,6 @@
     <string name="send_failed" msgid="2186285547449865010">"Повідомл. не надісл."</string>
     <string name="me_object_pronoun" msgid="4674452244417913816">"я"</string>
     <string name="me_subject_pronoun" msgid="7479328865714008288">"я"</string>
-    <string name="inbox_folders_heading" msgid="6534923118688156523">"Вхідні"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="7605755011865575440">"Видалити цю бесіду?"</item>
     <item quantity="other" msgid="1585660381208712562">"Видалити ці бесіди (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>

@@ -151,7 +151,6 @@
     <string name="send_failed" msgid="2186285547449865010">"메일이 전송되지 않았습니다."</string>
     <string name="me_object_pronoun" msgid="4674452244417913816">"나"</string>
     <string name="me_subject_pronoun" msgid="7479328865714008288">"나"</string>
-    <string name="inbox_folders_heading" msgid="6534923118688156523">"받은편지함"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="7605755011865575440">"대화를 삭제하시겠습니까?"</item>
     <item quantity="other" msgid="1585660381208712562">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 삭제하시겠습니까?"</item>

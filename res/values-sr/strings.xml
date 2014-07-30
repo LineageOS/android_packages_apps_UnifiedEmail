@@ -151,7 +151,6 @@
     <string name="send_failed" msgid="2186285547449865010">"Порука није послата."</string>
     <string name="me_object_pronoun" msgid="4674452244417913816">"ја"</string>
     <string name="me_subject_pronoun" msgid="7479328865714008288">"ја"</string>
-    <string name="inbox_folders_heading" msgid="6534923118688156523">"Примљене"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="7605755011865575440">"Желите ли да избришете ову преписку?"</item>
     <item quantity="other" msgid="1585660381208712562">"Желите ли да избришете ове преписке (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
@@ -168,7 +167,7 @@
     <string name="loading_conversations" msgid="7255732786298655246">"Учитавање…"</string>
     <string name="empty_inbox" msgid="5901734942362315228">"Завршили сте! Пријатан дан."</string>
     <string name="empty_search" msgid="8564899353449880818">"Упс! Нисмо ништа пронашли за „<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>“."</string>
-    <string name="empty_spam_folder" msgid="3288985543286122800">"Ура, овде нема непожељних порука!"</string>
+    <string name="empty_spam_folder" msgid="3288985543286122800">"Јупи, овде нема непожељних порука!"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"Овде нема отпада. Хвала вам што рециклирате!"</string>
     <string name="empty_folder" msgid="3227552635613553855">"Овде нема поште."</string>
     <string name="getting_messages" msgid="8403333791332403244">"Преузимање порука"</string>

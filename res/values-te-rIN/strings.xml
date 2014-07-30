@@ -151,7 +151,6 @@
     <string name="send_failed" msgid="2186285547449865010">"సందేశం పంపబడలేదు."</string>
     <string name="me_object_pronoun" msgid="4674452244417913816">"నాకు"</string>
     <string name="me_subject_pronoun" msgid="7479328865714008288">"నేను"</string>
-    <string name="inbox_folders_heading" msgid="6534923118688156523">"ఇన్‌బాక్స్"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="7605755011865575440">"ఈ సంభాషణను తొలగించాలా?"</item>
     <item quantity="other" msgid="1585660381208712562">"ఈ <xliff:g id="COUNT">%1$d</xliff:g> సంభాషణలను తొలగించాలా?"</item>

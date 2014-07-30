@@ -151,7 +151,6 @@
     <string name="send_failed" msgid="2186285547449865010">"संदेश पाठवला गेला नाही."</string>
     <string name="me_object_pronoun" msgid="4674452244417913816">"मी"</string>
     <string name="me_subject_pronoun" msgid="7479328865714008288">"मी"</string>
-    <string name="inbox_folders_heading" msgid="6534923118688156523">"इनबॉक्स"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="7605755011865575440">"हे संभाषण हटवायचे?"</item>
     <item quantity="other" msgid="1585660381208712562">"ही <xliff:g id="COUNT">%1$d</xliff:g> संभाषणे हटवायची?"</item>
