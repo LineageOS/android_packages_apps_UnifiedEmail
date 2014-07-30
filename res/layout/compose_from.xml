@@ -27,7 +27,7 @@
             android:id="@+id/from_label"
             android:contentDescription="@string/from"
             android:text="@string/from"
-            style="@style/RecipientComposeHeading" />
+            style="@style/ComposeHeading" />
 
         <FrameLayout
             android:layout_width="0dp"

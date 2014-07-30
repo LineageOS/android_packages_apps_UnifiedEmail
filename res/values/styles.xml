@@ -68,13 +68,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center_vertical</item>
+        <item name="android:textAlignment">viewStart</item>
         <item name="android:textColor">@color/compose_label_text</item>
         <item name="android:textSize">@dimen/compose_header_text_size</item>
      </style>
-
-    <style name="RecipientComposeHeading" parent="@style/ComposeHeading">
-        <item name="android:paddingLeft">0dp</item>
-    </style>
 
     <style name="ComposeFieldLayoutBase" />
 
@@ -987,11 +984,12 @@
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:animateLayoutChanges">true</item>
         <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="ComposeArea" parent="AbstractComposeArea">
         <item name="android:paddingLeft">@dimen/compose_area_start_padding</item>
         <item name="android:paddingRight">@dimen/compose_area_end_padding</item>
     </style>
-
-    <style name="ComposeArea" parent="AbstractComposeArea" />
 
     <style name="ComposeAreaWrapper">
         <item name="android:layout_gravity">center_horizontal</item>

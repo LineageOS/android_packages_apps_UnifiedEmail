@@ -244,10 +244,6 @@
         <item name="android:layout_marginEnd">@dimen/message_attachment_bar_padding</item>
     </style>
 
-    <style name="RecipientComposeHeading" parent="@style/ComposeHeading">
-        <item name="android:paddingStart">0dip</item>
-    </style>
-
     <style name="WidgetSendersStyle">
         <item name="android:paddingEnd">@dimen/widget_senders_padding_end</item>
     </style>
@@ -377,7 +373,7 @@
         <item name="android:paddingStart">@dimen/custom_from_inner_padding</item>
     </style>
 
-    <style name="AbstractComposeArea">
+    <style name="ComposeArea" parent="@style/AbstractComposeArea">
         <item name="android:paddingStart">@dimen/compose_area_start_padding</item>
         <item name="android:paddingEnd">@dimen/compose_area_end_padding</item>
     </style>
