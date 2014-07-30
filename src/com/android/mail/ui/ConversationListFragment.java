@@ -107,10 +107,8 @@ public final class ConversationListFragment extends ListFragment implements
     // The internal view objects.
     private SwipeableListView mListView;
 
+    private View mSearchHeaderView;
     private TextView mSearchResultCountTextView;
-    private TextView mSearchStatusTextView;
-
-    private View mSearchStatusView;
 
     /**
      * Current Account being viewed
@@ -254,55 +252,12 @@ public final class ConversationListFragment extends ListFragment implements
      * Show the header if the current conversation list is showing search
      * results.
      */
-    void configureSearchResultHeader() {
-        if (mActivity == null) {
-            return;
-        }
-        // Only show the header if the context is for a search result
-        final Resources res = getResources();
-        final boolean showHeader = ConversationListContext.isSearchResult(mViewContext);
-        // TODO(viki): This code contains intimate understanding of the view.
-        // Much of this logic
-        // needs to reside in a separate class that handles the text view in
-        // isolation. Then,
-        // that logic can be reused in other fragments.
-        mSearchStatusView.setVisibility(showHeader ? View.INVISIBLE : View.GONE);
-        int paddingTop = showHeader ? (int) res.getDimension(R.dimen.notification_view_height) : 0;
-        mListView.setPadding(mListView.getPaddingLeft(), paddingTop, mListView.getPaddingRight(),
-                mListView.getPaddingBottom());
-    }
-
-    /**
-     * Show the header if the current conversation list is showing search
-     * results.
-     */
     private void updateSearchResultHeader(int count) {
-        if (mActivity == null) {
+        if (mActivity == null || mSearchHeaderView == null) {
             return;
         }
-        // Only show the header if the context is for a search result
-        final Resources res = getResources();
-        final boolean showHeader = ConversationListContext.isSearchResult(mViewContext);
-        if (showHeader) {
-            mSearchStatusTextView.setText(res.getString(R.string.search_results_header));
-            mSearchResultCountTextView
-                    .setText(res.getString(R.string.search_results_loaded, count));
-            mSearchStatusView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    /**
-     * Initializes all internal state for a rendering.
-     */
-    private void initializeUiForFirstDisplay() {
-        // TODO(mindyp): find some way to make the notification container more
-        // re-usable.
-        // TODO(viki): refactor according to comment in
-        // configureSearchResultHandler()
-        mSearchStatusView = mActivity.findViewById(R.id.search_status_view);
-        mSearchStatusTextView = (TextView) mActivity.findViewById(R.id.search_status_text_view);
-        mSearchResultCountTextView = (TextView) mActivity
-                .findViewById(R.id.search_result_count_view);
+        mSearchResultCountTextView.setText(
+                getResources().getString(R.string.search_results_loaded, count));
     }
 
     @Override
@@ -337,10 +292,9 @@ public final class ConversationListFragment extends ListFragment implements
         mCallbacks = mActivity.getListHandler();
         mErrorListener = mActivity.getErrorListener();
         // Start off with the current state of the folder being viewed.
-        Context activityContext = mActivity.getActivityContext();
-        mFooterView = (ConversationListFooterView) LayoutInflater.from(
-                activityContext).inflate(R.layout.conversation_list_footer_view,
-                null);
+        final LayoutInflater inflater = LayoutInflater.from(mActivity.getActivityContext());
+        mFooterView = (ConversationListFooterView) inflater.inflate(
+                R.layout.conversation_list_footer_view, null);
         mFooterView.setClickListener(mActivity);
         final ConversationCursor conversationCursor = getConversationListCursor();
         final LoaderManager manager = getLoaderManager();
@@ -378,8 +332,6 @@ public final class ConversationListFragment extends ListFragment implements
         mUpdater = mActivity.getConversationUpdater();
         mUpdater.registerConversationListObserver(mConversationCursorObserver);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext().getResources());
-        initializeUiForFirstDisplay();
-        configureSearchResultHeader();
         // The onViewModeChanged callback doesn't get called when the mode
         // object is created, so
         // force setting the mode manually this time around.
@@ -490,6 +442,15 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setListItemSwipedListener(this);
         mListView.setSwipeListener(this);
+
+        // Show search result header only if we are in search mode
+        final boolean showSearchHeader = ConversationListContext.isSearchResult(mViewContext);
+        if (showSearchHeader) {
+            mSearchHeaderView = inflater.inflate(R.layout.search_results_view, null);
+            mSearchResultCountTextView = (TextView)
+                    mSearchHeaderView.findViewById(R.id.search_result_count_view);
+            mListView.addHeaderView(mSearchHeaderView);
+        }
 
         // enable animateOnLayout (equivalent of setLayoutTransition) only for >=JB (b/14302062)
         if (Utils.isRunningJellybeanOrLater()) {

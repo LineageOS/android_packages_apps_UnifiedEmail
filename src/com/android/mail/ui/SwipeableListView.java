@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 
 import com.android.mail.R;
@@ -329,6 +330,9 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     private AnimatedAdapter getAnimatedAdapter() {
+        if (getAdapter() instanceof HeaderViewListAdapter) {
+            return (AnimatedAdapter) ((HeaderViewListAdapter) getAdapter()).getWrappedAdapter();
+        }
         return (AnimatedAdapter) getAdapter();
     }
 
