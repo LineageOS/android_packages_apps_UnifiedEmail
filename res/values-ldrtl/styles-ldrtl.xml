@@ -349,7 +349,7 @@
         <item name="android:paddingStart">@dimen/custom_from_inner_padding</item>
     </style>
 
-    <style name="ComposeArea" parent="@style/AbstractComposeArea">
+    <style name="AbstractComposeAreaWithRtl" parent="@style/AbstractComposeArea">
         <item name="android:paddingStart">@dimen/compose_area_start_padding</item>
         <item name="android:paddingEnd">@dimen/compose_area_end_padding</item>
     </style>

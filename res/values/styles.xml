@@ -946,10 +946,12 @@
         <item name="android:background">@android:color/white</item>
     </style>
 
-    <style name="ComposeArea" parent="AbstractComposeArea">
+    <style name="AbstractComposeAreaWithRtl" parent="@style/AbstractComposeArea">
         <item name="android:paddingLeft">@dimen/compose_area_start_padding</item>
         <item name="android:paddingRight">@dimen/compose_area_end_padding</item>
     </style>
+
+    <style name="ComposeArea" parent="AbstractComposeAreaWithRtl" />
 
     <style name="ComposeAreaWrapper">
         <item name="android:layout_gravity">center_horizontal</item>
