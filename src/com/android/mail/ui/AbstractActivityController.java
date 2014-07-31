@@ -2939,11 +2939,10 @@ public abstract class AbstractActivityController implements ActivityController,
     public final void assignFolder(Collection<FolderOperation> folderOps,
             Collection<Conversation> target, boolean batch, boolean showUndo,
             final boolean isMoveTo) {
-        // Actions are destructive only when the current folder can be assigned
-        // to (which is the same as being able to un-assign a conversation from the folder) and
+        // Actions are destructive only when the current folder can be un-assigned from and
         // when the list of folders contains the current folder.
         final boolean isDestructive = mFolder
-                .supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
+                .supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION)
                 && FolderOperation.isDestructive(folderOps, mFolder);
         LogUtils.d(LOG_TAG, "onFolderChangesCommit: isDestructive = %b", isDestructive);
         if (isDestructive) {
