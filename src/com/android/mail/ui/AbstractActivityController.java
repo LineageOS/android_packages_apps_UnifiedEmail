@@ -3766,20 +3766,31 @@ public abstract class AbstractActivityController implements ActivityController,
      * For this to function, the account must have been synced.
      */
     private void perhapsStartWelcomeTour() {
-        if (mActivity.wasLatestWelcomeTourShownOnDeviceForAllAccounts()) {
-            // No need to go through the WelcomeStateLoader machinery.
-            return;
-        }
-
-        if (mAccount != null && mAccount.isAccountReady()) {
-            LoaderManager.LoaderCallbacks<?> welcomeLoaderCallbacks =
-                    mActivity.getWelcomeCallbacks();
-            if (welcomeLoaderCallbacks != null) {
-                // The callback is responsible for showing the tour when appropriate.
-                mActivity.getLoaderManager().initLoader(LOADER_WELCOME_TOUR_ACCOUNTS, Bundle.EMPTY,
-                        welcomeLoaderCallbacks);
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                if (mActivity.wasLatestWelcomeTourShownOnDeviceForAllAccounts()) {
+                    // No need to go through the WelcomeStateLoader machinery.
+                    return false;
+                }
+                return true;
             }
-        }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (result) {
+                    if (mAccount != null && mAccount.isAccountReady()) {
+                        LoaderManager.LoaderCallbacks<?> welcomeLoaderCallbacks =
+                                mActivity.getWelcomeCallbacks();
+                        if (welcomeLoaderCallbacks != null) {
+                            // The callback is responsible for showing the tour when appropriate.
+                            mActivity.getLoaderManager().initLoader(LOADER_WELCOME_TOUR_ACCOUNTS,
+                                    Bundle.EMPTY, welcomeLoaderCallbacks);
+                        }
+                    }
+                }
+            }
+        }.execute();
     }
 
     /**
