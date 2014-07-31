@@ -28,10 +28,10 @@
         android:layout_marginLeft="@dimen/floating_action_bar_margin"
         android:layout_marginRight="@dimen/floating_action_bar_margin"
         android:layout_marginBottom="@dimen/floating_action_bar_margin"
-        android:background="@color/snack_bar_background_color"
+        android:background="@drawable/snack_bar_edge_tablet"
         android:clickable="true"
-        android:paddingTop="@dimen/floating_action_bar_margin"
-        android:paddingBottom="@dimen/snack_bar_margin_bottom"
+        android:paddingTop="@dimen/snack_bar_margin_vertical"
+        android:paddingBottom="@dimen/snack_bar_margin_vertical"
         android:visibility="gone">
 
         <LinearLayout
@@ -44,8 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/snack_bar_margin"
-                android:layout_marginRight="@dimen/snack_bar_margin"
+                android:layout_marginLeft="@dimen/snack_bar_margin_horizontal"
+                android:layout_marginRight="@dimen/snack_bar_margin_horizontal"
                 android:minWidth="240dp"
                 android:maxWidth="350dp"
                 android:textColor="@android:color/white" />

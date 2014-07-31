@@ -198,7 +198,7 @@
 
     <style name="SnackBarActionTextStyle">
         <item name="android:layout_gravity">end</item>
-        <item name="android:layout_marginEnd">@dimen/snack_bar_margin</item>
+        <item name="android:layout_marginEnd">@dimen/snack_bar_margin_horizontal</item>
     </style>
 
     <style name="FolderSelectionItemStyle" parent="AbstractFolderSelectionItemStyle">
