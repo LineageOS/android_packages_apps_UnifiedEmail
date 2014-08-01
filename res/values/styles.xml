@@ -34,6 +34,14 @@
         <item name="android:layout_weight">1</item>
     </style>
 
+    <style name="ComposeFromTextViewStyle">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/compose_user_text</item>
+        <item name="android:textSize">@dimen/compose_header_text_size</item>
+    </style>
+
     <style name="ComposeEditTextView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -609,7 +617,7 @@
         <item name="android:paddingRight">@dimen/checked_text_padding</item>
     </style>
 
-    <style name="SendMailStyle">
+    <style name="SendMailStyle" parent="ComposeFromTextViewStyle">
         <item name="android:paddingRight">@dimen/send_mail_as_padding</item>
     </style>
 
@@ -934,7 +942,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="SpinnerAccountAddressStyle">
+    <style name="SpinnerAccountAddressStyle" parent="ComposeFromTextViewStyle">
         <item name="android:paddingLeft">@dimen/custom_from_inner_padding</item>
     </style>
 

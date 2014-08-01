@@ -17,35 +17,31 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingTop="10dip"
-    android:paddingBottom="10dip"
-    android:paddingLeft="24dip"
-    android:paddingRight="24dip">
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp">
 
     <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:singleLine="true"
           android:text="@string/custom_from_account_label"
-          android:textAppearance="?android:attr/textAppearanceMedium"
           style="@style/SendMailStyle" />
 
       <TextView
           android:id="@+id/spinner_account_name"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:singleLine="true"
           android:textAlignment="viewStart"
-          android:textAppearance="?android:attr/textAppearanceMedium" />
+          style="@style/ComposeFromTextViewStyle" />
 
     </LinearLayout>
 
@@ -53,8 +49,7 @@
         android:id="@+id/spinner_account_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:textAlignment="viewStart"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        style="@style/ComposeFromTextViewStyle" />
 
 </LinearLayout>
