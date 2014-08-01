@@ -53,6 +53,7 @@ import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private static final String LEAVE_BEHIND_ITEM_ID = "leave_behind_item_id";
     private final static int TYPE_VIEW_CONVERSATION = 0;
     private final static int TYPE_VIEW_FOOTER = 1;
+    private final static int TYPE_VIEW_HEADER = 2;
     private final static int TYPE_VIEW_DONT_RECYCLE = -1;
     private final HashSet<Long> mDeletingItems = new HashSet<Long>();
     private final ArrayList<Long> mLastDeletingItems = new ArrayList<Long>();
@@ -162,6 +164,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     private View mFooter;
     private boolean mShowFooter;
+    private List<View> mHeaders = Lists.newArrayList();
     private Folder mFolder;
     private final SwipeableListView mListView;
     private boolean mSwipeEnabled;
@@ -304,8 +307,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         // mSpecialViews only contains the views that are currently being displayed
         final int specialViewCount = mSpecialViews.size();
 
-        final int count = super.getCount() + specialViewCount;
-        return mShowFooter ? count + 1 : count;
+        return super.getCount() + specialViewCount +
+                (mShowFooter ? 1 : 0) + mHeaders.size();
     }
 
     /**
@@ -385,7 +388,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     @Override
     public int getItemViewType(int position) {
         // Try to recycle views.
-        if (mShowFooter && position == getCount() - 1) {
+        if (mHeaders.size() > position) {
+            return TYPE_VIEW_HEADER;
+        } else if (mShowFooter && position == getCount() - 1) {
             return TYPE_VIEW_FOOTER;
         } else if (hasLeaveBehinds() || isAnimating()) {
             // Setting as type -1 means the recycler won't take this view and
@@ -465,7 +470,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (mShowFooter && position == getCount() - 1) {
+        if (mHeaders.size() > position) {
+            return mHeaders.get(position);
+        } else if (mShowFooter && position == getCount() - 1) {
             return mFooter;
         }
 
@@ -691,7 +698,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public long getItemId(int position) {
-        if (mShowFooter && position == getCount() - 1) {
+        if ((mHeaders.size() > position) || (mShowFooter && position == getCount() - 1)) {
             return -1;
         }
 
@@ -777,7 +784,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public Object getItem(int position) {
-        if (mShowFooter && position == getCount() - 1) {
+        if (mHeaders.size() > position) {
+            return mHeaders.get(position);
+        } else if (mShowFooter && position == getCount() - 1) {
             return mFooter;
         } else if (mSpecialViews.get(position) != null) {
             return mSpecialViews.get(position);
@@ -866,6 +875,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     public void addFooter(View footerView) {
         mFooter = footerView;
+    }
+
+    public void addHeader(View headerView) {
+        mHeaders.add(headerView);
     }
 
     public void setFolder(Folder folder) {
@@ -1094,7 +1107,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
      * that may be above it.
      */
     public int getPositionOffset(final int position) {
-        int viewsAbove = 0;
+        int viewsAbove = mHeaders.size();
 
         for (int i = 0, size = mSpecialViews.size(); i < size; i++) {
             final int bidPosition = mSpecialViews.keyAt(i);

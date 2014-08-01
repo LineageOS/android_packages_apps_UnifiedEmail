@@ -330,9 +330,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     private AnimatedAdapter getAnimatedAdapter() {
-        if (getAdapter() instanceof HeaderViewListAdapter) {
-            return (AnimatedAdapter) ((HeaderViewListAdapter) getAdapter()).getWrappedAdapter();
-        }
         return (AnimatedAdapter) getAdapter();
     }
 

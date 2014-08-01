@@ -317,6 +317,15 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), conversationCursor,
                 mActivity.getSelectedSet(), mActivity, mListView, specialItemViews);
         mListAdapter.addFooter(mFooterView);
+        // Show search result header only if we are in search mode
+        final boolean showSearchHeader = ConversationListContext.isSearchResult(mViewContext);
+        if (showSearchHeader) {
+            mSearchHeaderView = inflater.inflate(R.layout.search_results_view, null);
+            mSearchResultCountTextView = (TextView)
+                    mSearchHeaderView.findViewById(R.id.search_result_count_view);
+            mListAdapter.addHeader(mSearchHeaderView);
+        }
+
         mListView.setAdapter(mListAdapter);
         mSelectedSet = mActivity.getSelectedSet();
         mListView.setSelectionSet(mSelectedSet);
@@ -442,15 +451,6 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setListItemSwipedListener(this);
         mListView.setSwipeListener(this);
-
-        // Show search result header only if we are in search mode
-        final boolean showSearchHeader = ConversationListContext.isSearchResult(mViewContext);
-        if (showSearchHeader) {
-            mSearchHeaderView = inflater.inflate(R.layout.search_results_view, null);
-            mSearchResultCountTextView = (TextView)
-                    mSearchHeaderView.findViewById(R.id.search_result_count_view);
-            mListView.addHeaderView(mSearchHeaderView);
-        }
 
         // enable animateOnLayout (equivalent of setLayoutTransition) only for >=JB (b/14302062)
         if (Utils.isRunningJellybeanOrLater()) {
