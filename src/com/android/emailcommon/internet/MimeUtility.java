@@ -215,42 +215,6 @@ public class MimeUtility {
         return null;
     }
 
-    public static Part findFirstPartByMimeType(Part part, String mimeType)
-            throws MessagingException {
-        if (part.getBody() instanceof Multipart) {
-            Multipart multipart = (Multipart)part.getBody();
-            for (int i = 0, count = multipart.getCount(); i < count; i++) {
-                BodyPart bodyPart = multipart.getBodyPart(i);
-                Part ret = findFirstPartByMimeType(bodyPart, mimeType);
-                if (ret != null) {
-                    return ret;
-                }
-            }
-        }
-        else if (part.getMimeType().equalsIgnoreCase(mimeType)) {
-            return part;
-        }
-        return null;
-    }
-
-    public static Part findPartByContentId(Part part, String contentId) throws Exception {
-        if (part.getBody() instanceof Multipart) {
-            Multipart multipart = (Multipart)part.getBody();
-            for (int i = 0, count = multipart.getCount(); i < count; i++) {
-                BodyPart bodyPart = multipart.getBodyPart(i);
-                Part ret = findPartByContentId(bodyPart, contentId);
-                if (ret != null) {
-                    return ret;
-                }
-            }
-        }
-        String cid = part.getContentId();
-        if (contentId.equals(cid)) {
-            return part;
-        }
-        return null;
-    }
-
     /**
      * Reads the Part's body and returns a String based on any charset conversion that needed
      * to be done.
