@@ -23,12 +23,9 @@ import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
@@ -65,13 +62,17 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private static final String LOG_TAG = "TwoPaneLayout";
     private static final long SLIDE_DURATION_MS = 300;
 
+    private final int mDrawerWidthMini;
+    private final int mDrawerWidthOpen;
     private final double mConversationListWeight;
-    private final double mFolderListWeight;
     private final TimeInterpolator mSlideInterpolator;
     /**
-     * True if and only if the conversation list is collapsible in the current device configuration.
-     * See {@link #isConversationListCollapsed()} to see whether it is currently collapsed
-     * (based on the current view mode).
+     * If true, this layout group will treat the thread list and conversation view as full-width
+     * panes to switch between.<br>
+     * <br>
+     * If false, always show a conversation view right next to the conversation list. This view will
+     * also be populated (preview / "peek" mode) with a default conversation if none is selected by
+     * the user.
      */
     private final boolean mListCollapsible;
 
@@ -86,11 +87,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      */
     private int mPositionedMode = ViewMode.UNKNOWN;
 
-    private AbstractActivityController mController;
+    private TwoPaneController mController;
     private LayoutListener mListener;
     private boolean mIsSearchResult;
-
-    private DrawerLayout mDrawerLayout;
 
     private View mMiscellaneousView;
     private View mConversationView;
@@ -105,25 +104,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             onTransitionComplete();
         }
     };
-    /**
-     * A special view used during animation of the conversation list.
-     * <p>
-     * The conversation list changes width when switching view modes, so to visually smooth out
-     * the transition, we cross-fade the old and new widths. During the transition, a bitmap of the
-     * old conversation list is kept here, and this view moves in tandem with the real list view,
-     * but its opacity gradually fades out to give way to the new width.
-     */
-    private ConversationListCopy mListCopyView;
-
-    /**
-     * During a mode transition, this value is the final width for {@link #mListCopyView}. We want
-     * to avoid changing its width during the animation, as it should match the initial width of
-     * {@link #mListView}.
-     */
-    private Integer mListCopyWidthOnComplete;
-
-    private final boolean mIsExpansiveLayout;
-    private boolean mDrawerInitialSetupComplete;
 
     public TwoPaneLayout(Context context) {
         this(context, null);
@@ -139,28 +119,24 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         // in the constants
         mListCollapsible = res.getBoolean(R.bool.list_collapsible);
 
+        mDrawerWidthMini = res.getDimensionPixelSize(R.dimen.two_pane_drawer_width_mini);
+        mDrawerWidthOpen = res.getDimensionPixelSize(R.dimen.two_pane_drawer_width_open);
+
         mSlideInterpolator = AnimationUtils.loadInterpolator(context,
                 android.R.interpolator.decelerate_cubic);
 
-        final int folderListWeight = res.getInteger(R.integer.folder_list_weight);
         final int convListWeight = res.getInteger(R.integer.conversation_list_weight);
         final int convViewWeight = res.getInteger(R.integer.conversation_view_weight);
-        mFolderListWeight = (double) folderListWeight
-                / (folderListWeight + convListWeight);
         mConversationListWeight = (double) convListWeight
                 / (convListWeight + convViewWeight);
-
-        mIsExpansiveLayout = res.getBoolean(R.bool.use_expansive_tablet_ui);
-        mDrawerInitialSetupComplete = false;
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mFoldersView = findViewById(R.id.content_pane);
+        mFoldersView = findViewById(R.id.drawer);
         mListView = findViewById(R.id.conversation_list_pane);
-        mListCopyView = (ConversationListCopy) findViewById(R.id.conversation_list_copy);
         mConversationView = findViewById(R.id.conversation_pane);
         mMiscellaneousView = findViewById(MISCELLANEOUS_VIEW_ID);
 
@@ -168,20 +144,17 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mCurrentMode = ViewMode.UNKNOWN;
         mFoldersView.setVisibility(GONE);
         mListView.setVisibility(GONE);
-        mListCopyView.setVisibility(GONE);
         mConversationView.setVisibility(GONE);
         mMiscellaneousView.setVisibility(GONE);
     }
 
     @VisibleForTesting
-    public void setController(AbstractActivityController controller, boolean isSearchResult) {
+    public void setController(TwoPaneController controller, boolean isSearchResult) {
         mController = controller;
         mListener = controller;
         mIsSearchResult = isSearchResult;
-    }
 
-    public void setDrawerLayout(DrawerLayout drawerLayout) {
-        mDrawerLayout = drawerLayout;
+        ((ConversationViewFrame) mConversationView).setDownEventListener(mController);
     }
 
     @Override
@@ -194,9 +167,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "TPL(%s).onLayout()", this);
-        if (changed || mCurrentMode != mPositionedMode) {
-            positionPanes(getMeasuredWidth());
-        }
+        positionPanes(getMeasuredWidth());
         super.onLayout(changed, l, t, r, b);
     }
 
@@ -207,52 +178,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      * @param parentWidth this view's new width
      */
     private void setupPaneWidths(int parentWidth) {
-        final int foldersWidth = computeFolderListWidth(parentWidth);
-        final int foldersFragmentWidth;
-        if (isDrawerView(mFoldersView)) {
-            foldersFragmentWidth = getResources().getDimensionPixelSize(R.dimen.drawer_width);
-        } else {
-            foldersFragmentWidth = foldersWidth;
-        }
-        final int convWidth = computeConversationWidth(parentWidth);
-
-        setPaneWidth(mFoldersView, foldersFragmentWidth);
-
-        // only adjust the fixed conversation view width when my width changes
+        // only adjust the pane widths when my width changes
         if (parentWidth != getMeasuredWidth()) {
-            LogUtils.i(LOG_TAG, "setting up new TPL, w=%d fw=%d cv=%d", parentWidth,
-                    foldersWidth, convWidth);
-
+            final int convWidth = computeConversationWidth(parentWidth);
             setPaneWidth(mMiscellaneousView, convWidth);
             setPaneWidth(mConversationView, convWidth);
-        }
-
-        final int currListWidth = getPaneWidth(mListView);
-        int listWidth = currListWidth;
-        switch (mCurrentMode) {
-            case ViewMode.AD:
-            case ViewMode.CONVERSATION:
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                if (!mListCollapsible) {
-                    listWidth = parentWidth - convWidth;
-                }
-                break;
-            case ViewMode.CONVERSATION_LIST:
-            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
-            case ViewMode.SEARCH_RESULTS_LIST:
-                listWidth = parentWidth - foldersWidth;
-                break;
-            default:
-                break;
-        }
-        LogUtils.d(LOG_TAG, "conversation list width change, w=%d", listWidth);
-        setPaneWidth(mListView, listWidth);
-
-        if ((mCurrentMode != mPositionedMode && mPositionedMode != ViewMode.UNKNOWN)
-                || mListCopyWidthOnComplete != null) {
-            mListCopyWidthOnComplete = listWidth;
-        } else {
-            setPaneWidth(mListCopyView, listWidth);
+            setPaneWidth(mListView, computeConversationListWidth(parentWidth));
         }
     }
 
@@ -263,86 +194,61 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      * @param width
      */
     private void positionPanes(int width) {
-        if (mPositionedMode == mCurrentMode) {
-            return;
-        }
-
-        boolean hasPositions = false;
-        int convX = 0, listX = 0, foldersX = 0;
+        final int convX, listX, foldersX;
         final boolean isRtl = ViewUtils.isViewRtl(this);
 
-        switch (mCurrentMode) {
-            case ViewMode.AD:
-            case ViewMode.CONVERSATION:
-            case ViewMode.SEARCH_RESULTS_CONVERSATION: {
-                final int foldersW = getPaneWidth(mFoldersView);
-                final int listW = getPaneWidth(mListView);
+        final int foldersW = isDrawerOpen() ? mDrawerWidthOpen : mDrawerWidthMini;
+        final int listW = getPaneWidth(mListView);
 
-                if (mListCollapsible) {
-                    if (isRtl) {
-                        convX = 0;
-                        listX = width;
-                        foldersX = width + listW;
-                    } else {
-                        convX = 0;
-                        listX = -listW;
-                        foldersX = listX - foldersW;
-                    }
-                } else {
-                    if (isRtl) {
-                        convX = 0;
-                        listX = getPaneWidth(mConversationView);
-                        foldersX = width;
-                    } else {
-                        convX = listW;
-                        listX = 0;
-                        foldersX = -foldersW;
-                    }
-                }
-                hasPositions = true;
-                LogUtils.i(LOG_TAG, "conversation mode layout, x=%d/%d/%d", foldersX, listX, convX);
-                break;
+        if (!mListCollapsible) {
+            if (isRtl) {
+                foldersX = width - mDrawerWidthOpen;
+                listX = width - foldersW - listW;
+                convX = listX - getPaneWidth(mConversationView);
+            } else {
+                foldersX = 0;
+                listX = foldersW;
+                convX = listX + listW;
             }
-            case ViewMode.CONVERSATION_LIST:
-            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
-            case ViewMode.SEARCH_RESULTS_LIST: {
+        } else {
+            if (mController.getCurrentConversation() != null
+                    && !mController.isCurrentConversationJustPeeking()) {
+                // CV mode
                 if (isRtl) {
-                    convX = -getPaneWidth(mConversationView);
-                    listX = 0;
-                    foldersX = getPaneWidth(mListView);
+                    convX = 0;
+                    listX = getPaneWidth(mConversationView);
+                    foldersX = listX + width - mDrawerWidthOpen;
                 } else {
-                    convX = width;
-                    listX = getPaneWidth(mFoldersView);
-                    foldersX = 0;
+                    convX = 0;
+                    listX = -listW;
+                    foldersX = listX - foldersW;
                 }
-
-                hasPositions = true;
-                LogUtils.i(LOG_TAG, "conv-list mode layout, fX:%d/lX:%d/cX:%d",
-                        foldersX, listX, convX);
-                break;
+            } else {
+                // TL mode
+                if (isRtl) {
+                    foldersX = width - mDrawerWidthOpen;
+                    listX = width - foldersW - listW;
+                    convX = listX - getPaneWidth(mConversationView);
+                } else {
+                    foldersX = 0;
+                    listX = foldersW;
+                    convX = listX + listW;
+                }
             }
-            default:
-                break;
         }
 
-        if (hasPositions) {
-            animatePanes(foldersX, listX, convX);
-        }
-
+        animatePanes(foldersX, listX, convX);
         mPositionedMode = mCurrentMode;
     }
 
     private final AnimatorListenerAdapter mPaneAnimationListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
-            mListCopyView.unbind();
             useHardwareLayer(false);
-            fixupListCopyWidth();
             onTransitionComplete();
         }
         @Override
         public void onAnimationCancel(Animator animation) {
-            mListCopyView.unbind();
             useHardwareLayer(false);
         }
     };
@@ -355,25 +261,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             mConversationView.setX(convX);
             mMiscellaneousView.setX(convX);
             mListView.setX(listX);
-            if (!isDrawerView(mFoldersView)) {
-                mFoldersView.setX(foldersX);
-            }
+            mFoldersView.setX(foldersX);
 
             // listeners need to know that the "transition" is complete, even if one is not run.
             // defer notifying listeners because we're in a layout pass, and they might do layout.
             post(mTransitionCompleteRunnable);
             return;
-        }
-
-        final boolean useListCopy = getPaneWidth(mListView) != getPaneWidth(mListCopyView);
-
-        if (useListCopy) {
-            // freeze the current list view before it gets redrawn
-            mListCopyView.bind(mListView);
-            mListCopyView.setX(mListView.getX());
-
-            mListCopyView.setAlpha(1.0f);
-            mListView.setAlpha(0.0f);
         }
 
         useHardwareLayer(true);
@@ -384,25 +277,15 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             mConversationView.animate().x(convX);
         }
 
-        if (!isDrawerView(mFoldersView)) {
-            mFoldersView.animate().x(foldersX);
-        }
-        if (useListCopy) {
-            mListCopyView.animate().x(listX).alpha(0.0f);
-        }
+        mFoldersView.animate().x(foldersX);
         mListView.animate()
             .x(listX)
-            .alpha(1.0f)
             .setListener(mPaneAnimationListener);
-        configureAnimations(mConversationView, mFoldersView, mListView, mListCopyView,
-                mMiscellaneousView);
+        configureAnimations(mConversationView, mFoldersView, mListView, mMiscellaneousView);
     }
 
     private void configureAnimations(View... views) {
         for (View v : views) {
-            if (isDrawerView(v)) {
-                continue;
-            }
             v.animate()
                 .setInterpolator(mSlideInterpolator)
                 .setDuration(SLIDE_DURATION_MS);
@@ -411,36 +294,18 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     private void useHardwareLayer(boolean useHardware) {
         final int layerType = useHardware ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE;
-        if (!isDrawerView(mFoldersView)) {
-            mFoldersView.setLayerType(layerType, null);
-        }
+        mFoldersView.setLayerType(layerType, null);
         mListView.setLayerType(layerType, null);
-        mListCopyView.setLayerType(layerType, null);
         mConversationView.setLayerType(layerType, null);
         mMiscellaneousView.setLayerType(layerType, null);
         if (useHardware) {
             // these buildLayer calls are safe because layout is the only way we get here
             // (i.e. these views must already be attached)
-            if (!isDrawerView(mFoldersView)) {
-                mFoldersView.buildLayer();
-            }
+            mFoldersView.buildLayer();
             mListView.buildLayer();
-            mListCopyView.buildLayer();
             mConversationView.buildLayer();
             mMiscellaneousView.buildLayer();
         }
-    }
-
-    private void fixupListCopyWidth() {
-        if (mListCopyWidthOnComplete == null ||
-                getPaneWidth(mListCopyView) == mListCopyWidthOnComplete) {
-            mListCopyWidthOnComplete = null;
-            return;
-        }
-        LogUtils.i(LOG_TAG, "onAnimationEnd of list view, setting copy width to %d",
-                mListCopyWidthOnComplete);
-        setPaneWidth(mListCopyView, mListCopyWidthOnComplete);
-        mListCopyWidthOnComplete = null;
     }
 
     private void onTransitionComplete() {
@@ -483,18 +348,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     /**
      * Computes the width of the conversation list in stable state of the current mode.
      */
-    private int computeConversationListWidth(int totalWidth) {
-        switch (mCurrentMode) {
-            case ViewMode.CONVERSATION_LIST:
-            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
-            case ViewMode.SEARCH_RESULTS_LIST:
-                return totalWidth - computeFolderListWidth(totalWidth);
-            case ViewMode.AD:
-            case ViewMode.CONVERSATION:
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                return (int) (totalWidth * mConversationListWeight);
-        }
-        return 0;
+    private int computeConversationListWidth(int parentWidth) {
+        final int availWidth = parentWidth - mDrawerWidthMini;
+        return mListCollapsible ? availWidth : (int) (availWidth * mConversationListWeight);
     }
 
     public int computeConversationWidth() {
@@ -505,25 +361,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      * Computes the width of the conversation pane in stable state of the
      * current mode.
      */
-    private int computeConversationWidth(int totalWidth) {
-        if (mListCollapsible) {
-            return totalWidth;
-        } else {
-            return totalWidth - (int) (totalWidth * mConversationListWeight);
-        }
-    }
-
-    /**
-     * Computes the width of the folder list in stable state of the current mode.
-     */
-    private int computeFolderListWidth(int parentWidth) {
-        if (mIsSearchResult) {
-            return 0;
-        } else if (isDrawerView(mFoldersView)) {
-            return 0;
-        } else {
-            return (int) (parentWidth * mFolderListWeight);
-        }
+    private int computeConversationWidth(int parentWidth) {
+        return mListCollapsible ? parentWidth :
+                parentWidth - computeConversationListWidth(parentWidth) - mDrawerWidthMini;
     }
 
     private void dispatchConversationListVisibilityChange(boolean visible) {
@@ -540,16 +380,17 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     // does not apply to drawer children. will return zero for those.
     private int getPaneWidth(View pane) {
-        return isDrawerView(pane) ? 0 : pane.getLayoutParams().width;
+        return pane.getLayoutParams().width;
     }
 
-    private boolean isDrawerView(View child) {
-        return child != null && child.getParent() == mDrawerLayout;
+    private boolean isDrawerOpen() {
+        return mController != null && mController.isDrawerOpen();
     }
 
     /**
      * @return Whether or not the conversation list is visible on screen.
      */
+    @Deprecated
     public boolean isConversationListCollapsed() {
         return !ViewMode.isListMode(mCurrentMode) && mListCollapsible;
     }
@@ -560,7 +401,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         if (mCurrentMode == ViewMode.UNKNOWN) {
             mFoldersView.setVisibility(VISIBLE);
             mListView.setVisibility(VISIBLE);
-            mListCopyView.setVisibility(VISIBLE);
         }
 
         if (ViewMode.isAdMode(newMode)) {
@@ -571,34 +411,11 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             mMiscellaneousView.setVisibility(GONE);
         }
 
-        // set up the drawer as appropriate for the configuration
-        final ViewParent foldersParent = mFoldersView.getParent();
-        if (mIsExpansiveLayout && foldersParent != this) {
-            if (foldersParent != mDrawerLayout) {
-                throw new IllegalStateException("invalid Folders fragment parent: " +
-                        foldersParent);
-            }
-            mDrawerLayout.removeView(mFoldersView);
-            addView(mFoldersView, 0);
-            mFoldersView.findViewById(R.id.folders_pane_edge).setVisibility(VISIBLE);
-            mFoldersView.setBackgroundDrawable(null);
-        } else if (!mIsExpansiveLayout && foldersParent == this) {
-            removeView(mFoldersView);
-            mDrawerLayout.addView(mFoldersView);
-            final DrawerLayout.LayoutParams lp =
-                    (DrawerLayout.LayoutParams) mFoldersView.getLayoutParams();
-            lp.gravity = Gravity.START;
-            mFoldersView.setLayoutParams(lp);
-            mFoldersView.findViewById(R.id.folders_pane_edge).setVisibility(GONE);
-            mFoldersView.setBackgroundResource(R.color.list_background_color);
-        }
-
         // detach the pager immediately from its data source (to prevent processing updates)
         if (ViewMode.isConversationMode(mCurrentMode)) {
             mController.disablePagerUpdates();
         }
 
-        mDrawerInitialSetupComplete = true;
         mCurrentMode = newMode;
         LogUtils.i(LOG_TAG, "onViewModeChanged(%d)", newMode);
 
@@ -635,11 +452,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
     }
 
-    public boolean isDrawerEnabled() {
-        return !mIsExpansiveLayout && mDrawerInitialSetupComplete;
+    public boolean shouldShowPreviewPanel() {
+        return !mListCollapsible;
     }
 
-    public boolean isExpansiveLayout() {
-        return mIsExpansiveLayout;
-    }
 }

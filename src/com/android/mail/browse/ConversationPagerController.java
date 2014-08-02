@@ -87,7 +87,7 @@ public class ConversationPagerController {
     public ConversationPagerController(RestrictedActivity activity,
             ActivityController controller) {
         mFragmentManager = activity.getFragmentManager();
-        mPager = (ViewPager) activity.findViewById(R.id.conversation_pane);
+        mPager = (ViewPager) activity.findViewById(R.id.conversation_pager);
         mActivityController = controller;
         setupPageMargin(activity.getActivityContext());
     }

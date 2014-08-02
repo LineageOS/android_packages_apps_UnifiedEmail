@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
@@ -139,6 +140,9 @@ public final class OnePaneController extends AbstractActivityController {
         final String drawerPulloutTag = mActivity.getString(R.string.drawer_pullout_tag);
         mDrawerPullout = mDrawerContainer.findViewWithTag(drawerPulloutTag);
         mDrawerPullout.setBackgroundResource(R.color.list_background_color);
+
+        // CV is initially GONE on 1-pane (mode changes trigger visibility changes)
+        mActivity.findViewById(R.id.conversation_pager).setVisibility(View.GONE);
 
         // The parent class sets the correct viewmode and starts the application off.
         return super.onCreate(savedInstanceState);

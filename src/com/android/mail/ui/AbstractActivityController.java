@@ -497,6 +497,7 @@ public abstract class AbstractActivityController implements ActivityController,
     protected DrawerLayout mDrawerContainer;
     protected View mDrawerPullout;
     protected ActionBarDrawerToggle mDrawerToggle;
+
     protected ListView mListViewForAnimating;
     protected boolean mHasNewAccountOrFolder;
     private boolean mConversationListLoadFinishedIgnored;
@@ -875,15 +876,17 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onFolderChanged(Folder folder, final boolean force) {
-        /** If the folder doesn't exist, or its parent URI is empty,
-         * this is not a child folder */
-        final boolean isTopLevel = Folder.isRoot(folder);
-        final int mode = mViewMode.getMode();
-        mDrawerToggle.setDrawerIndicatorEnabled(
-                getShouldShowDrawerIndicator(mode, isTopLevel));
-        mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        if (isDrawerEnabled()) {
+            /** If the folder doesn't exist, or its parent URI is empty,
+             * this is not a child folder */
+            final boolean isTopLevel = Folder.isRoot(folder);
+            final int mode = mViewMode.getMode();
+            mDrawerToggle.setDrawerIndicatorEnabled(
+                    getShouldShowDrawerIndicator(mode, isTopLevel));
+            mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
-        mDrawerContainer.closeDrawers();
+            mDrawerContainer.closeDrawers();
+        }
 
         if (mFolder == null || !mFolder.equals(folder)) {
             // We are actually changing the folder, so exit cab mode
@@ -1277,13 +1280,20 @@ public abstract class AbstractActivityController implements ActivityController,
         mFloatingComposeButton = mActivity.findViewById(R.id.compose_button);
         mFloatingComposeButton.setOnClickListener(this);
 
-        mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerContainer, false,
-                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
-        mDrawerContainer.setDrawerListener(mDrawerListener);
-        mDrawerContainer.setDrawerShadow(
-                mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.START);
+        if (isDrawerEnabled()) {
+            mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerContainer, false,
+                    R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
+            mDrawerContainer.setDrawerListener(mDrawerListener);
+            mDrawerContainer.setDrawerShadow(
+                    mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.START);
 
-        mDrawerToggle.setDrawerIndicatorEnabled(isDrawerEnabled());
+            mDrawerToggle.setDrawerIndicatorEnabled(isDrawerEnabled());
+        } else {
+            final ActionBar ab = mActivity.getActionBar();
+            ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
+            ab.setHomeActionContentDescription(R.string.drawer_open);
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         // All the individual UI components listen for ViewMode changes. This
         // simplifies the amount of logic in the AbstractActivityController, but increases the
@@ -1326,6 +1336,9 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onPostCreate(Bundle savedState) {
+        if (!isDrawerEnabled()) {
+            return;
+        }
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
 
@@ -1334,7 +1347,9 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        if (isDrawerEnabled()) {
+            mDrawerToggle.onConfigurationChanged(newConfig);
+        }
     }
 
     /**
@@ -1462,7 +1477,7 @@ public abstract class AbstractActivityController implements ActivityController,
          * The action bar home/up action should open or close the drawer.
          * mDrawerToggle will take care of this.
          */
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
+        if (isDrawerEnabled() && mDrawerToggle.onOptionsItemSelected(item)) {
             Analytics.getInstance().sendEvent(Analytics.EVENT_CATEGORY_MENU_ITEM, "drawer_toggle",
                     null, 0);
             return true;
@@ -4302,6 +4317,11 @@ public abstract class AbstractActivityController implements ActivityController,
         @Override
         public boolean isDrawerVisible() {
             return isDrawerEnabled() && mDrawerContainer.isDrawerVisible(mDrawerPullout);
+        }
+
+        @Override
+        public void toggleDrawerState() {
+            AbstractActivityController.this.toggleDrawerState();
         }
 
         @Override

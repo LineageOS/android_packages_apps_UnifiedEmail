@@ -19,6 +19,10 @@
 <resources>
     <dimen name="account_avatar_dimension">48dp</dimen>
     <dimen name="drawer_width">300dp</dimen>
+    <dimen name="two_pane_drawer_width_mini">72dp</dimen>
+    <dimen name="two_pane_drawer_width_open">288dp</dimen>
+    <dimen name="two_pane_tl_side">24dp</dimen>
+    <dimen name="two_pane_tl_top">16dp</dimen>
     <dimen name="list_min_width_is_wide">720dp</dimen>
     <dimen name="list_normal_mode_min_width_is_spacious">600dp</dimen>
     <dimen name="senders_font_size">18sp</dimen>

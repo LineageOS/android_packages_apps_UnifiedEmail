@@ -16,8 +16,6 @@
      limitations under the License.
 -->
 <resources>
-    <bool name="use_expansive_tablet_ui">true</bool>
-
     <!-- Search results in portrait mode on 10" tablets should still show wide conversation
          list items.
          Note: this this value should be set with the same qualifiers where

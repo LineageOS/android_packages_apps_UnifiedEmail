@@ -510,6 +510,9 @@
     <style name="NotificationSecondaryText">
     </style>
 
+    <style name="TwoPaneConversationList">
+    </style>
+
     <style name="AccountSpinnerStyle">
         <item name="android:layout_width">wrap_content</item>
     </style>
@@ -629,6 +632,15 @@
     <style name="ConversationViewMarginStyle">
         <item name="android:layout_marginLeft">@dimen/conversation_view_margin_side</item>
     </style>
+
+    <style name="MiniDrawerFolderStyle">
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        </style>
 
     <style name="FolderListItemStartStyle">
         <item name="android:layout_marginLeft">@dimen/folder_list_item_start_margin</item>
