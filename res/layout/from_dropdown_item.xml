@@ -16,8 +16,8 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/spinner_account_address"
@@ -27,8 +27,7 @@
         android:gravity="center_vertical"
         android:paddingLeft="8dip"
         android:paddingRight="8dip"
-        android:singleLine="true"
         android:textAlignment="viewStart"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        style="@style/ComposeFromTextViewStyle" />
 
 </LinearLayout>

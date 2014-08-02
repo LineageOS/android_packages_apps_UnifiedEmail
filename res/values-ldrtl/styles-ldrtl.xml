@@ -52,7 +52,7 @@
         <item name="android:paddingEnd">@dimen/checked_text_padding</item>
     </style>
 
-    <style name="SendMailStyle">
+    <style name="SendMailStyle" parent="ComposeFromTextViewStyle">
         <item name="android:paddingEnd">@dimen/send_mail_as_padding</item>
     </style>
 
@@ -345,7 +345,7 @@
     </style>
     <!-- END Conversation list styles -->
 
-    <style name="SpinnerAccountAddressStyle">
+    <style name="SpinnerAccountAddressStyle" parent="ComposeFromTextViewStyle">
         <item name="android:paddingStart">@dimen/custom_from_inner_padding</item>
     </style>
 

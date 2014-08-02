@@ -22,13 +22,11 @@
     <TextView
         android:id="@+id/spinner_account_address"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
         android:singleLine="true"
         android:textAlignment="viewStart"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        style="@style/ComposeFromTextViewStyle" />
 
     <ImageView
         android:src="@drawable/ic_expand_more_24dp"
