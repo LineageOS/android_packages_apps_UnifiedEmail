@@ -30,7 +30,7 @@
         android:id="@+id/remove_folder"
         android:title="@string/remove_folder"
         android:showAsAction="always"
-        android:icon="@drawable/ic_remove_label"
+        android:icon="@drawable/ic_remove_label_wht_24dp"
         android:alphabeticShortcut="@string/trigger_y_char"
         android:visible="false" />
 
@@ -71,21 +71,20 @@
         android:id="@+id/change_folders"
         android:showAsAction="never"
         android:title="@string/menu_change_folders"
-        android:icon="@drawable/ic_menu_folders_holo_light" />
+        android:icon="@drawable/ic_change_labels_wht_24dp" />
 
     <item
         android:id="@+id/move_to_inbox"
         android:showAsAction="never"
-        android:title="@string/menu_move_to_inbox" />
+        android:title="@string/menu_move_to_inbox"
+        android:icon="@drawable/ic_move_to_inbox_wht_24dp" />
 
     <item android:id="@+id/star"
         android:title="@string/add_star"
-        android:icon="@drawable/ic_menu_starred_holo_light"
         android:showAsAction="never" />
 
     <item android:id="@+id/remove_star"
         android:title="@string/remove_star"
-        android:icon="@drawable/ic_menu_unstarred_holo_light"
         android:showAsAction="never" />
 
     <item

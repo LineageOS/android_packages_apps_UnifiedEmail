@@ -82,7 +82,7 @@ public class NotificationActionUtils {
 
     public enum NotificationActionType {
         ARCHIVE_REMOVE_LABEL("archive", true, R.drawable.ic_archive_wht_24dp,
-                R.drawable.ic_remove_label, R.string.notification_action_archive,
+                R.drawable.ic_remove_label_wht_24dp, R.string.notification_action_archive,
                 R.string.notification_action_remove_label, new ActionToggler() {
             @Override
             public boolean shouldDisplayPrimary(final Folder folder,
@@ -92,8 +92,8 @@ public class NotificationActionUtils {
         }),
         DELETE("delete", true, R.drawable.ic_delete_wht_24dp,
                 R.string.notification_action_delete),
-        REPLY("reply", false, R.drawable.ic_reply_holo_dark, R.string.notification_action_reply),
-        REPLY_ALL("reply_all", false, R.drawable.ic_reply_all_holo_dark,
+        REPLY("reply", false, R.drawable.ic_reply_wht_24dp, R.string.notification_action_reply),
+        REPLY_ALL("reply_all", false, R.drawable.ic_reply_all_wht_24dp,
                 R.string.notification_action_reply_all);
 
         private final String mPersistedValue;

@@ -391,8 +391,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // We only ever show one of:
         // 1) remove folder
         // 2) archive
-        // 3) If we show neither archive or remove folder, then show a disabled
-        // archive icon if the setting for that is true.
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
         final MenuItem moveTo = menu.findItem(R.id.move_to);
         final MenuItem moveToInbox = menu.findItem(R.id.move_to_inbox);

@@ -39,7 +39,7 @@
         android:id="@+id/change_folders"
         android:title="@string/menu_change_folders"
         android:showAsAction="never"
-        android:icon="@drawable/ic_menu_folders_holo_light" />
+        android:icon="@drawable/ic_change_labels_wht_24dp" />
 
     <item
         android:id="@+id/mark_important"

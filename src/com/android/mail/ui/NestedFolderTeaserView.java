@@ -223,7 +223,7 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
                 LayoutInflater.from(getContext()).inflate(R.layout.folder_teaser_item, null);
 
         final ImageView imageView = (ImageView) itemView.findViewById(R.id.folder_imageView);
-        imageView.setImageResource(R.drawable.ic_menu_folders_holo_light);
+        imageView.setImageResource(R.drawable.ic_menu_move_to_holo_light);
         // Remove background
         imageView.setBackgroundColor(Color.TRANSPARENT);
 
