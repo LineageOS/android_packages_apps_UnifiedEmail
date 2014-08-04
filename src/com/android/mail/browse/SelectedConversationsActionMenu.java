@@ -94,6 +94,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private AccountObserver mAccountObserver;
 
+    private MenuItem mDiscardOutboxMenuItem;
+
     public SelectedConversationsActionMenu(
             ControllableActivity activity, ConversationSelectionSet selectionSet, Folder folder) {
         mActivity = activity;
@@ -126,7 +128,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             LogUtils.i(LOG_TAG, "Delete selected from CAB menu");
             performDestructiveAction(R.id.delete, undoCallback);
         } else if (itemId == R.id.discard_drafts) {
+            LogUtils.i(LOG_TAG, "Discard drafts selected from CAB menu");
             performDestructiveAction(R.id.discard_drafts, undoCallback);
+        } else if (itemId == R.id.discard_outbox) {
+            LogUtils.i(LOG_TAG, "Discard outbox selected from CAB menu");
+            performDestructiveAction(R.id.discard_outbox, undoCallback);
         } else if (itemId == R.id.archive) {
             LogUtils.i(LOG_TAG, "Archive selected from CAB menu");
             performDestructiveAction(R.id.archive, undoCallback);
@@ -440,7 +446,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuItem markNotImportant = menu.findItem(R.id.mark_not_important);
         markNotImportant.setVisible(!showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        final boolean showDelete = mFolder != null
+
+        boolean shouldShowDiscardOutbox = mFolder != null && mFolder.isType(FolderType.OUTBOX);
+        mDiscardOutboxMenuItem = menu.findItem(R.id.discard_outbox);
+        if (mDiscardOutboxMenuItem != null) {
+            mDiscardOutboxMenuItem.setVisible(shouldShowDiscardOutbox);
+            mDiscardOutboxMenuItem.setEnabled(shouldEnableDiscardOutbox(conversations));
+        }
+        final boolean showDelete = mFolder != null && !mFolder.isType(FolderType.OUTBOX)
                 && mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
         final MenuItem trash = menu.findItem(R.id.delete);
         trash.setVisible(showDelete);
@@ -455,6 +468,18 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
 
         return true;
+    }
+
+    private boolean shouldEnableDiscardOutbox(Collection<Conversation> conversations) {
+        boolean shouldEnableDiscardOutbox = true;
+        // Java should be smart enough to realize that once showDiscardOutbox becomes false it can
+        // just skip everything remaining in the for-loop..
+        for (Conversation conv : conversations) {
+            shouldEnableDiscardOutbox &=
+                    conv.sendingState != UIProvider.ConversationSendingState.SENDING &&
+                    conv.sendingState != UIProvider.ConversationSendingState.RETRYING;
+        }
+        return shouldEnableDiscardOutbox;
     }
 
     @Override
@@ -491,6 +516,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // before hiding the menu.
         if (set.isEmpty()) {
             return;
+        }
+
+        if (mFolder.isType(FolderType.OUTBOX) && mDiscardOutboxMenuItem != null) {
+            mDiscardOutboxMenuItem.setEnabled(shouldEnableDiscardOutbox(set.values()));
         }
     }
 

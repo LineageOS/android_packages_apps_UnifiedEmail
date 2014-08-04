@@ -47,6 +47,13 @@
         android:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp"
         android:visible="false" />
+    <!-- Depends on the user viewing a outbox label and the setting supports delete -->
+    <item
+        android:id="@+id/discard_outbox"
+        android:title="@string/discard_failed"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_delete_wht_24dp"
+        android:visible="false" />
 
     <!-- Always available -->
     <item

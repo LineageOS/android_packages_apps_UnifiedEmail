@@ -1464,6 +1464,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private boolean doesActionRemoveCurrentConversationFromView(int actionId) {
         return actionId == R.id.archive ||
                 actionId == R.id.delete ||
+                actionId == R.id.discard_outbox ||
                 actionId == R.id.remove_folder ||
                 actionId == R.id.report_spam ||
                 actionId == R.id.report_phishing ||
@@ -1513,6 +1514,9 @@ public abstract class AbstractActivityController implements ActivityController,
             // drafts are lost forever, so always confirm
             confirmAndDelete(id, target, true /* showDialog */,
                     R.plurals.confirm_discard_drafts_conversation, undoCallback);
+        } else if (id == R.id.discard_outbox) {
+            // discard in outbox means we discard the failed message and save them in drafts
+            delete(id, target, getDeferredAction(id, target, isBatch, undoCallback), isBatch);
         } else if (id == R.id.mark_important) {
             updateConversation(Conversation.listOf(mCurrentConversation),
                     ConversationColumns.PRIORITY, UIProvider.ConversationPriority.HIGH);
@@ -2918,6 +2922,10 @@ public abstract class AbstractActivityController implements ActivityController,
                 }
                 mConversationListCursor.discardDrafts(mTarget);
                 // We don't support undoing discarding drafts
+                undoEnabled = false;
+            } else if (mAction == R.id.discard_outbox) {
+                LogUtils.d(LOG_TAG, "Discarding failed messages in Outbox");
+                mConversationListCursor.moveFailedIntoDrafts(mTarget);
                 undoEnabled = false;
             }
             if (undoEnabled) {

@@ -45,6 +45,8 @@ public class AnalyticsUtils {
             s = "delete";
         } else if (id == R.id.discard_drafts) {
             s = "discard_drafts";
+        } else if (id == R.id.discard_outbox) {
+            s = "discard_outbox";
         } else if (id == R.id.mark_important) {
             s = "mark important";
         } else if (id == R.id.mark_not_important) {
