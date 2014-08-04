@@ -83,7 +83,7 @@
     <string name="mark_not_important" msgid="3342258155408116917">"Markér som uvigtig"</string>
     <string name="add_cc_label" msgid="2249679001141195213">"Tilføj Cc/Bcc"</string>
     <string name="add_bcc_label" msgid="963745641238037813">"Tilføj Bcc"</string>
-    <string name="quoted_text" msgid="977782904293216533">"Medtag citeret tekst"</string>
+    <string name="quoted_text" msgid="977782904293216533">"Inkluder citeret tekst"</string>
     <string name="quoted_text_label" msgid="2296807722849923934">"Citat"</string>
     <string name="respond_inline" msgid="6609746292081928078">"Svar indlejret"</string>
     <string name="bytes" msgid="651011686747499628">"<xliff:g id="COUNT">%s</xliff:g> B"</string>

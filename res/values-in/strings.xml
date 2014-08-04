@@ -121,7 +121,7 @@
     <string name="contextmenu_copy" msgid="2584243784216385180">"Salin"</string>
     <string name="contextmenu_copylink" msgid="8659897702269320063">"Salin URL tautan"</string>
     <string name="contextmenu_view_image" msgid="1031172763893491000">"Lihat gambar"</string>
-    <string name="contextmenu_dial_dot" msgid="8881095692316726628">"Panggil..."</string>
+    <string name="contextmenu_dial_dot" msgid="8881095692316726628">"Telepon..."</string>
     <string name="contextmenu_sms_dot" msgid="5319737001771622657">"SMS..."</string>
     <string name="contextmenu_add_contact" msgid="2310064151427072475">"Tambahkan kontak"</string>
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"Kirim email"</string>
