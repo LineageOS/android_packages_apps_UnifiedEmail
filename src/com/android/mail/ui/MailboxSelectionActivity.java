@@ -24,10 +24,8 @@ import com.android.mail.utils.LogTag;
 
 import java.util.ArrayList;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
@@ -38,10 +36,11 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -50,8 +49,8 @@ import android.widget.TextView;
  * An activity that shows the list of all the available accounts and return the
  * one selected in onResult().
  */
-public class MailboxSelectionActivity extends ListActivity implements OnClickListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+public class MailboxSelectionActivity extends ActionBarActivity implements OnClickListener,
+        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
     // Used to save our instance state
     private static final String CREATE_SHORTCUT_KEY = "createShortcut";
@@ -79,6 +78,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
     // Can only do certain actions if the Activity is resumed (e.g. setVisible)
     private boolean mResumed = false;
     private Handler mHandler = new Handler();
+    private ListView mList;
     private View mContent;
     private View mWait;
 
@@ -86,6 +86,8 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.mailbox_selection_activity);
+        mList = (ListView) findViewById(android.R.id.list);
+        mList.setOnItemClickListener(this);
         mContent = findViewById(R.id.content);
         mWait = findViewById(R.id.wait);
         if (icicle != null) {
@@ -105,12 +107,8 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
         // we should set the title to "Select account".
         if (mCreateShortcut || mConfigureWidget) {
             setTitle(getResources().getString(R.string.activity_mailbox_selection));
-            ActionBar actionBar = getActionBar();
-            if (actionBar != null) {
-                actionBar.setIcon(R.mipmap.ic_launcher_shortcut_folder);
-            }
         }
-        ((Button) findViewById(R.id.first_button)).setOnClickListener(this);
+        findViewById(R.id.first_button).setOnClickListener(this);
 
         // Initially, assume that the main view is invisible.  It will be made visible,
         // if we display the account list
@@ -264,13 +262,13 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                     return v;
                 }
             };
-            setListAdapter(mAdapter);
+            mList.setAdapter(mAdapter);
         }
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        selectAccount(Account.builder().buildFrom((Cursor)mAdapter.getItem(position)));
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        selectAccount(Account.builder().buildFrom((Cursor) mAdapter.getItem(position)));
     }
 
     private void selectAccount(Account account) {
