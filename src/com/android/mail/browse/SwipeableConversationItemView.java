@@ -25,6 +25,7 @@ import android.widget.ListView;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
@@ -53,9 +54,17 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
 
     public void bind(final Conversation conversation, final ControllableActivity activity,
             final ConversationSelectionSet set, final Folder folder,
-            final int checkboxOrSenderImage, final boolean swipeEnabled,
+            final int checkboxOrSenderImage, boolean swipeEnabled,
             final boolean importanceMarkersEnabled, final boolean showChevronsEnabled,
             final AnimatedAdapter animatedAdapter) {
+        // Only enable delete for failed items in the Outbox.
+        // Necessary to do it here because Outbox is the only place where we selectively enable
+        // swipe on a item-by-item basis.
+        if (folder.isType(UIProvider.FolderType.OUTBOX)) {
+            swipeEnabled &=
+                    conversation.sendingState != UIProvider.ConversationSendingState.SENDING &&
+                    conversation.sendingState != UIProvider.ConversationSendingState.RETRYING;
+        }
         mConversationItemView.bind(conversation, activity, set, folder, checkboxOrSenderImage,
                 swipeEnabled, importanceMarkersEnabled, showChevronsEnabled, animatedAdapter);
     }

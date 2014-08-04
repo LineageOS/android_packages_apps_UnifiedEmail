@@ -1711,6 +1711,7 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
         public static final int REPORT_NOT_SPAM = 6;
         public static final int REPORT_PHISHING = 7;
         public static final int DISCARD_DRAFTS = 8;
+        public static final int MOVE_FAILED_INTO_DRAFTS = 9;
         public static final int MOSTLY_ARCHIVE = MOSTLY | ARCHIVE;
         public static final int MOSTLY_DELETE = MOSTLY | DELETE;
         public static final int MOSTLY_DESTRUCTIVE_UPDATE = MOSTLY | UPDATE;
@@ -1849,6 +1850,15 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
                     op = ContentProviderOperation.newUpdate(uri).withValue(
                             ConversationOperations.OPERATION_KEY,
                             ConversationOperations.DISCARD_DRAFTS).build();
+                    break;
+                case MOVE_FAILED_INTO_DRAFTS:
+                    sProvider.deleteLocal(mUri, ConversationCursor.this, mUndoCallback);
+
+                    // Create an update operation that represents removing current folder label
+                    // and adding the drafts folder label for all failed messages.
+                    op = ContentProviderOperation.newUpdate(uri).withValue(
+                            ConversationOperations.OPERATION_KEY,
+                            ConversationOperations.MOVE_FAILED_TO_DRAFTS).build();
                     break;
                 default:
                     throw new UnsupportedOperationException(
@@ -2248,6 +2258,14 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
 
     public int discardDrafts(Collection<Conversation> conversations, UndoCallback undoCallback) {
         return applyAction(conversations, ConversationOperation.DISCARD_DRAFTS, undoCallback);
+    }
+
+    /**
+     * Move the failed messages in the specified conversation from the current folder to drafts
+     */
+    public int moveFailedIntoDrafts(Collection<Conversation> conversations) {
+        // this operation does not permit undo
+        return applyAction(conversations, ConversationOperation.MOVE_FAILED_INTO_DRAFTS, null);
     }
 
     /**

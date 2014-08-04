@@ -541,7 +541,11 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
         Utils.setMenuItemVisibility(menu, R.id.mark_not_important, !showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        final boolean showDelete = mFolder != null &&
+        final boolean isOutbox = mFolder.isType(FolderType.OUTBOX);
+        final boolean showDiscardOutbox = mFolder != null && isOutbox &&
+                mCurrentConversation.sendingState == UIProvider.ConversationSendingState.SEND_ERROR;
+        Utils.setMenuItemVisibility(menu, R.id.discard_outbox, showDiscardOutbox);
+        final boolean showDelete = !isOutbox && mFolder != null &&
                 mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
         Utils.setMenuItemVisibility(menu, R.id.delete, showDelete);
         // We only want to show the discard drafts menu item if we are not showing the delete menu

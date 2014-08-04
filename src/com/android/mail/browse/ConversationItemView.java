@@ -1518,7 +1518,7 @@ public class ConversationItemView extends View
 
     @Override
     public boolean canChildBeDismissed() {
-        return true;
+        return mSwipeEnabled;
     }
 
     @Override
