@@ -96,6 +96,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private View mFoldersView;
     private View mListView;
 
+    private TwoPaneLayoutListener mLayoutListener;
+
     public static final int MISCELLANEOUS_VIEW_ID = R.id.miscellaneous_pane;
 
     private final Runnable mTransitionCompleteRunnable = new Runnable() {
@@ -171,6 +173,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         super.onLayout(changed, l, t, r, b);
     }
 
+    public void setLayoutListener(TwoPaneLayoutListener listener) {
+        mLayoutListener = listener;
+    }
+
     /**
      * Sizes up the three sliding panes. This method will ensure that the LayoutParams of the panes
      * have the correct widths set for the current overall size and view mode.
@@ -238,6 +244,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
 
         animatePanes(foldersX, listX, convX);
+        // For keyboard navigation, let's disable focus on the list if it's not visible.
+        if (mLayoutListener != null) {
+            mLayoutListener.onListViewLayout(listX >= 0);
+        }
         mPositionedMode = mCurrentMode;
     }
 
@@ -456,4 +466,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         return !mListCollapsible;
     }
 
+    public interface TwoPaneLayoutListener {
+        public void onListViewLayout(boolean isOnScreen);
+    }
 }

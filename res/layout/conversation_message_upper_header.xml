@@ -18,8 +18,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/message_header_background_color"
-    android:duplicateParentState="true" >
+    android:addStatesFromChildren="true"
+    android:background="?android:attr/selectableItemBackground"
+    android:focusable="true">
 
     <com.android.mail.browse.MessageHeaderContactBadge
         android:id="@+id/photo"

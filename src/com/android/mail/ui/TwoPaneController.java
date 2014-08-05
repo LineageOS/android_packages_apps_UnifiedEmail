@@ -42,7 +42,7 @@ import com.android.mail.utils.Utils;
  * abounds.
  */
 public final class TwoPaneController extends AbstractActivityController implements
-        ConversationViewFrame.DownEventListener {
+        ConversationViewFrame.DownEventListener, TwoPaneLayout.TwoPaneLayoutListener {
 
     private static final String SAVED_MISCELLANEOUS_VIEW = "saved-miscellaneous-view";
     private static final String SAVED_MISCELLANEOUS_VIEW_TRANSACTION_ID =
@@ -153,6 +153,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
             return false;
         }
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
+        mLayout.setLayoutListener(this);
         mActivity.getWindow().setBackgroundDrawable(null);
         mIsTabletLandscape = !mActivity.getResources().getBoolean(R.bool.list_collapsible);
 
@@ -589,5 +590,13 @@ public final class TwoPaneController extends AbstractActivityController implemen
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onListViewLayout(boolean isOnScreen) {
+        ConversationListFragment clf = getConversationListFragment();
+        if (clf != null && clf.getListView() != null) {
+            clf.getListView().setFocusable(isOnScreen);
+        }
     }
 }

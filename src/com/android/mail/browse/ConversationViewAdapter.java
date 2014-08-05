@@ -110,6 +110,8 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     private final BidiFormatter mBidiFormatter;
 
+    private final View.OnKeyListener mOnKeyListener;
+
     public class ConversationHeaderItem extends ConversationOverlayItem {
         public final Conversation mConversation;
 
@@ -124,19 +126,22 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         @Override
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
-            final ConversationViewHeader headerView = (ConversationViewHeader) inflater.inflate(
+            final ConversationViewHeader v = (ConversationViewHeader) inflater.inflate(
                     R.layout.conversation_view_header, parent, false);
-            headerView.setCallbacks(
+            v.setCallbacks(
                     mConversationCallbacks, mAccountController, mConversationUpdater);
-            headerView.bind(this);
-            headerView.setSubject(mConversation.subject);
+            v.bind(this);
+            v.setSubject(mConversation.subject);
             if (mAccountController.getAccount().supportsCapability(
                     UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
-                headerView.setFolders(mConversation);
+                v.setFolders(mConversation);
             }
-            headerView.setStarred(mConversation.starred);
+            v.setStarred(mConversation.starred);
 
-            return headerView;
+            // Register the onkey listener for all relevant views
+            registerOnKeyListeners(v, v.findViewById(R.id.subject_and_folder_view));
+
+            return v;
         }
 
         @Override
@@ -148,6 +153,11 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public boolean isContiguous() {
             return true;
+        }
+
+        @Override
+        public View.OnKeyListener getOnKeyListener() {
+            return mOnKeyListener;
         }
 
         public ConversationViewAdapter getAdapter() {
@@ -169,11 +179,16 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         @Override
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
-            final ConversationFooterView view = (ConversationFooterView)
+            final ConversationFooterView v = (ConversationFooterView)
                     inflater.inflate(R.layout.conversation_footer, parent, false);
-            view.setAccountController(mAccountController);
-            view.setConversationFooterCallbacks(mConversationFooterCallbacks);
-            return view;
+            v.setAccountController(mAccountController);
+            v.setConversationFooterCallbacks(mConversationFooterCallbacks);
+
+            // Register the onkey listener for all relevant views
+            registerOnKeyListeners(v, v.findViewById(R.id.reply_button),
+                    v.findViewById(R.id.reply_all_button), v.findViewById(R.id.forward_button));
+
+            return v;
         }
 
         @Override
@@ -189,6 +204,11 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public boolean isContiguous() {
             return true;
+        }
+
+        @Override
+        public View.OnKeyListener getOnKeyListener() {
+            return mOnKeyListener;
         }
 
         public MessageHeaderItem getLastMessageHeaderItem() {
@@ -248,6 +268,12 @@ public class ConversationViewAdapter extends BaseAdapter {
             v.setCallbacks(mAdapter.mMessageCallbacks);
             v.setContactInfoSource(mAdapter.mContactInfoSource);
             v.setVeiledMatcher(mAdapter.mMatcher);
+
+            // Register the onkey listener for all relevant views
+            registerOnKeyListeners(v, v.findViewById(R.id.upper_header),
+                    v.findViewById(R.id.hide_details), v.findViewById(R.id.edit_draft),
+                    v.findViewById(R.id.reply), v.findViewById(R.id.reply_all),
+                    v.findViewById(R.id.overflow), v.findViewById(R.id.send_date));
             return v;
         }
 
@@ -266,6 +292,11 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public boolean isContiguous() {
             return !isExpanded();
+        }
+
+        @Override
+        public View.OnKeyListener getOnKeyListener() {
+            return mAdapter.getOnKeyListener();
         }
 
         @Override
@@ -367,6 +398,9 @@ public class ConversationViewAdapter extends BaseAdapter {
                     R.layout.conversation_message_footer, parent, false);
             v.initialize(mAdapter.mLoaderManager, mAdapter.mFragmentManager,
                     mAdapter.mAccountController, mAdapter.mFooterCallbacks);
+
+            // Register the onkey listener for all relevant views
+            registerOnKeyListeners(v, v.findViewById(R.id.view_entire_message_prompt));
             return v;
         }
 
@@ -379,6 +413,11 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public boolean isContiguous() {
             return true;
+        }
+
+        @Override
+        public View.OnKeyListener getOnKeyListener() {
+            return mAdapter.getOnKeyListener();
         }
 
         @Override
@@ -427,10 +466,14 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         @Override
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
-            final SuperCollapsedBlock scb = (SuperCollapsedBlock) inflater.inflate(
+            final SuperCollapsedBlock v = (SuperCollapsedBlock) inflater.inflate(
                     R.layout.super_collapsed_block, parent, false);
-            scb.initialize(mSuperCollapsedListener);
-            return scb;
+            v.initialize(mSuperCollapsedListener);
+            v.setOnKeyListener(mOnKeyListener);
+
+            // Register the onkey listener for all relevant views
+            registerOnKeyListeners(v);
+            return v;
         }
 
         @Override
@@ -442,6 +485,11 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public boolean isContiguous() {
             return true;
+        }
+
+        @Override
+        public View.OnKeyListener getOnKeyListener() {
+            return mOnKeyListener;
         }
 
         @Override
@@ -479,7 +527,8 @@ public class ConversationViewAdapter extends BaseAdapter {
             OnClickListener scbListener,
             Map<String, Address> addressCache,
             FormattedDateBuilder dateBuilder,
-            BidiFormatter bidiFormatter) {
+            BidiFormatter bidiFormatter,
+            View.OnKeyListener onKeyListener) {
         mContext = controllableActivity.getActivityContext();
         mDateBuilder = dateBuilder;
         mAccountController = accountController;
@@ -499,6 +548,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         mMatcher = controllableActivity.getAccountController().getVeiledAddressMatcher();
 
         mBidiFormatter = bidiFormatter;
+        mOnKeyListener = onKeyListener;
     }
 
     @Override
@@ -664,5 +714,9 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public BidiFormatter getBidiFormatter() {
         return mBidiFormatter;
+    }
+
+    public View.OnKeyListener getOnKeyListener() {
+        return mOnKeyListener;
     }
 }
