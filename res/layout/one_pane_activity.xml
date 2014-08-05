@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2012 The Android Open Source Project
+     Copyright (C) 2014 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -21,25 +21,38 @@
     android:layout_height="match_parent">
 
     <!-- DrawerLayout current only supports one content view (b/8752191) -->
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/mail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" />
 
         <FrameLayout
-            android:id="@+id/content_pane"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
-        <include layout="@layout/conversation_pager" />
+            <FrameLayout
+                android:id="@+id/content_pane"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <include layout="@layout/floating_actions" />
+            <include layout="@layout/conversation_pager" />
 
-    </FrameLayout>
+            <include layout="@layout/floating_actions" />
+
+        </FrameLayout>
+
+    </LinearLayout>
 
     <!--A drawer for phones: a pull-out that gives the list of folders. -->
     <include layout="@layout/drawer_fragment"
-             android:layout_width="@dimen/drawer_width"
-             android:layout_height="match_parent"
-             android:layout_gravity="start" />
+        android:layout_width="@dimen/drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start" />
 
 </android.support.v4.widget.DrawerLayout>

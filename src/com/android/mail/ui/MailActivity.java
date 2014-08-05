@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.app.ActionBar;
 import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
@@ -29,13 +28,14 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.Toolbar;
 
 import com.android.bitmap.BitmapCache;
 import com.android.bitmap.UnrefedBitmapCache;
@@ -170,17 +170,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
         setContentView(mController.getContentViewResource());
 
-        if (Utils.isRunningLOrLater()) {
-            final Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-            // Toolbar is currently only used on phone layout, so this is expected to be null
-            // on tablets
-            if (toolbar != null) {
-                setActionBar(toolbar);
-                toolbar.setNavigationOnClickListener(mController.getNavigationViewClickListener());
-            }
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.mail_toolbar);
+        // Toolbar is currently only used on phone layout, so this is expected to be null
+        // on tablets
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            toolbar.setNavigationOnClickListener(mController.getNavigationViewClickListener());
         }
 
-        final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // Hide the app icon.
             actionBar.setIcon(android.R.color.transparent);

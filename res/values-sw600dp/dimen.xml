@@ -40,7 +40,6 @@
     <dimen name="compose_content_start_padding">8dp</dimen>
     <dimen name="compose_content_end_padding">8dp</dimen>
     <dimen name="search_view_width">400dip</dimen>
-    <dimen name="spinner_frame_width">170dp</dimen>
 
     <dimen name="empty_view_text_width">380dip</dimen>
     <dimen name="empty_view_text_size">28sp</dimen>

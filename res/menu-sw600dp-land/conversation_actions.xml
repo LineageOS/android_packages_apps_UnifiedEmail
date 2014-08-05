@@ -16,87 +16,91 @@
      limitations under the License.
 -->
 <!-- Action bar items for the tablet when viewing a conversation in landscape mode. -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/search"
         android:title="@string/menu_search"
-        android:showAsAction="always|collapseActionView"
+        app:showAsAction="always|collapseActionView"
         android:icon="@drawable/ic_menu_search"
-        android:actionLayout="@layout/mail_actionbar_searchview" />
+        app:actionLayout="@layout/mail_actionbar_searchview" />
 
     <item
         android:id="@+id/archive"
         android:title="@string/archive"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_archive_wht_24dp"
         android:alphabeticShortcut="@string/trigger_y_char" />
+
     <item
         android:id="@+id/remove_folder"
         android:title="@string/remove_folder"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_remove_label_wht_24dp"
         android:alphabeticShortcut="@string/trigger_y_char"
         android:visible="false" />
+
     <!-- Depends on FolderCapabilities.DELETE -->
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp" />
+
     <!-- Depends on the user viewing a draft label, and the above menu item not being shown -->
     <item
         android:id="@+id/discard_drafts"
         android:title="@string/discard_drafts"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp"
         android:visible="false" />
     <!-- Depends on the user viewing a outbox label and the setting supports delete -->
     <item
         android:id="@+id/discard_outbox"
         android:title="@string/discard_failed"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp"
         android:visible="false" />
 
     <item
         android:id="@+id/inside_conversation_unread"
         android:title="@string/mark_unread"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_markunread_wht_24dp" />
 
     <item
         android:id="@+id/move_to"
         android:title="@string/menu_move_to"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:icon="@drawable/ic_menu_move_to_holo_light" />
 
     <!-- Always available -->
     <item
         android:id="@+id/change_folders"
         android:title="@string/menu_change_folders"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:icon="@drawable/ic_change_labels_wht_24dp" />
 
     <item
         android:id="@+id/move_to_inbox"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/menu_move_to_inbox"
         android:icon="@drawable/ic_move_to_inbox_wht_24dp" />
 
     <item
         android:id="@+id/mark_important"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/mark_important" />
 
     <item
         android:id="@+id/mark_not_important"
         android:title="@string/mark_not_important"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/mute"
         android:title="@string/mute"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <item android:id="@+id/print_all"
           android:title="@string/print_all"
@@ -105,25 +109,25 @@
     <item
         android:id="@+id/show_original"
         android:title="@string/menu_show_original"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/report_spam"
         android:title="@string/report_spam"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
 
     <!-- Depends on AccountCapabilities.REPORT_SPAM -->
     <item
         android:id="@+id/mark_not_spam"
         android:title="@string/mark_not_spam"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="false" />
 
     <!-- Depends on AccountCapabilities.REPORT_PHISHING -->
     <item
         android:id="@+id/report_phishing"
         android:title="@string/report_phishing"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="false" />
 
     <!-- These invisible menu items are used to enable keyboard shortcuts -->

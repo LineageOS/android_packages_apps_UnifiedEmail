@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -25,6 +24,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.ListView;
 
@@ -290,7 +290,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
     @Override
     public void resetActionBarIcon() {
-        final ActionBar ab = mActivity.getActionBar();
+        final ActionBar ab = mActivity.getSupportActionBar();
         final boolean isChildFolder = getFolder() != null && !Utils.isEmpty(getFolder().parent);
         if (isConversationOnlyMode() || isChildFolder) {
             ab.setHomeAsUpIndicator(R.drawable.ic_arrow_back_wht_24dp);

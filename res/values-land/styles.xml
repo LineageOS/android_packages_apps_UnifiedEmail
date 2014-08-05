@@ -28,8 +28,4 @@
     </style>
     <!-- End compose styles -->
 
-    <!-- Spinner primary text is smaller than usual due to extra vertical padding in spinner asset -->
-    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textSize">14dp</item>
-    </style>
 </resources>

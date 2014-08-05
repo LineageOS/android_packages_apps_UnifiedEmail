@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.app.ActionBar;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ContentResolver;
@@ -26,12 +25,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
+import android.support.v7.widget.SearchView.OnSuggestionListener;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SearchView;
-import android.widget.SearchView.OnQueryTextListener;
-import android.widget.SearchView.OnSuggestionListener;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -53,7 +54,7 @@ import com.android.mail.utils.Utils;
  * Controller to manage the various states of the {@link android.app.ActionBar}.
  */
 public class ActionBarController implements ViewMode.ModeChangeListener,
-        OnQueryTextListener, OnSuggestionListener, MenuItem.OnActionExpandListener {
+        OnQueryTextListener, OnSuggestionListener, MenuItemCompat.OnActionExpandListener {
 
     private final Context mContext;
 
@@ -65,7 +66,6 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
      */
     private ViewMode mViewModeController;
 
-    private MenuItem mSearch;
     /**
      * The account currently being shown
      */
@@ -76,6 +76,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
     private Folder mFolder;
 
     private SearchView mSearchWidget;
+    private MenuItem mSearch;
     private MenuItem mEmptyTrashItem;
     private MenuItem mEmptySpamItem;
 
@@ -118,7 +119,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
 
     public void expandSearch() {
         if (mSearch != null) {
-            mSearch.expandActionView();
+            MenuItemCompat.expandActionView(mSearch);
         }
     }
 
@@ -127,7 +128,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
      */
     public void collapseSearch() {
         if (mSearch != null) {
-            mSearch.collapseActionView();
+            MenuItemCompat.collapseActionView(mSearch);
         }
     }
 
@@ -144,8 +145,8 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
         mSearch = menu.findItem(R.id.search);
 
         if (mSearch != null) {
-            mSearchWidget = (SearchView) mSearch.getActionView();
-            mSearch.setOnActionExpandListener(this);
+            mSearchWidget = (SearchView) MenuItemCompat.getActionView(mSearch);
+            MenuItemCompat.setOnActionExpandListener(mSearch, this);
             SearchManager searchManager = (SearchManager) mActivity.getActivityContext()
                     .getSystemService(Context.SEARCH_SERVICE);
             if (searchManager != null && mSearchWidget != null) {
@@ -229,7 +230,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
 
     @Override
     public void onViewModeChanged(int newMode) {
-        mActivity.invalidateOptionsMenu();
+        mActivity.supportInvalidateOptionsMenu();
         // Check if we are either on a phone, or in Conversation mode on tablet. For these, the
         // recent folders is enabled.
         switch (getMode()) {
@@ -368,7 +369,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
         // Remove the back button but continue showing an icon.
         final int mask = ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME;
         mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME, mask);
-        mActivity.getActionBar().setHomeButtonEnabled(false);
+        mActionBar.setHomeButtonEnabled(false);
     }
 
     public void setBackButton() {
@@ -378,13 +379,13 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
         // Show home as up, and show an icon.
         final int mask = ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME;
         mActionBar.setDisplayOptions(mask, mask);
-        mActivity.getActionBar().setHomeButtonEnabled(true);
+        mActionBar.setHomeButtonEnabled(true);
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         if (mSearch != null) {
-            mSearch.collapseActionView();
+            MenuItemCompat.collapseActionView(mSearch);
             mSearchWidget.setQuery("", false);
         }
         mController.executeSearch(query.trim());
