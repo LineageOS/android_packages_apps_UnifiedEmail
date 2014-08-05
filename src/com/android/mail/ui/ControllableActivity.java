@@ -99,8 +99,6 @@ public interface ControllableActivity extends RestrictedActivity,
      */
     RecentFolderController getRecentFolderController();
 
-    UpOrBackController getUpOrBackController();
-
     DrawerController getDrawerController();
 
     void startDragMode();

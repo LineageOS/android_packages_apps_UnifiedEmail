@@ -170,15 +170,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
         setContentView(mController.getContentViewResource());
 
-        /*
-        Blocked: b/16491458
         if (Utils.isRunningLOrLater()) {
             final Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+            // Toolbar is currently only used on phone layout, so this is expected to be null
+            // on tablets
             if (toolbar != null) {
                 setActionBar(toolbar);
+                toolbar.setNavigationOnClickListener(mController.getNavigationViewClickListener());
             }
         }
-        */
 
         final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
@@ -411,11 +411,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     @Override
     public RecentFolderController getRecentFolderController() {
-        return mController;
-    }
-
-    @Override
-    public UpOrBackController getUpOrBackController() {
         return mController;
     }
 
