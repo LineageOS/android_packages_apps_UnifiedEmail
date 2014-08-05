@@ -100,6 +100,7 @@
 
     <style name="ComposeFieldContentBase">
         <item name="android:minHeight">@dimen/compose_header_min_height</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
 
     <style name="ComposeFieldContent" parent="@style/ComposeFieldContentBase">
@@ -108,22 +109,15 @@
     </style>
 
     <style name="BaseComposeFieldButton">
-        <item name="android:layout_width">44dp</item>
+        <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">@dimen/compose_header_min_height</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="android:padding">12dp</item>
     </style>
 
     <style name="ComposeFieldButton" parent="@style/BaseComposeFieldButton">
-        <!--
-            hardcoded values here because the paddings depend on the exact values.
-            The height should correspond to @dimen/compose_header_min_height.
-            This is solely to increase click target of these buttons.
-        -->
         <item name="android:layout_marginLeft">@dimen/compose_header_btn_padding</item>
-        <item name="android:paddingLeft">12dp</item>
     </style>
 
     <style name="AttachmentContainer">
