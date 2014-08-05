@@ -16,6 +16,11 @@
      limitations under the License.
 -->
 <resources>
+    <style name="PlainUnifiedEmailTheme" parent="@style/UnifiedEmailTheme">
+        <item name="android:actionBarStyle">@style/PlainActionBarStyle</item>
+        <item name="android:actionModeBackground">@color/action_mode_background</item>
+    </style>
+
     <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title" />
 
     <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Material.Light.Dialog.MinWidth">
