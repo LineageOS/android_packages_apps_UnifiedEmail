@@ -364,13 +364,7 @@
     </style>
 
     <style name="ComposeFieldButton" parent="@style/BaseComposeFieldButton">
-        <!--
-            hardcoded values here because the paddings depend on the exact values.
-            The height should correspond to @dimen/compose_header_min_height.
-            This is solely to increase click target of these buttons.
-        -->
         <item name="android:layout_marginStart">@dimen/compose_header_btn_padding</item>
-        <item name="android:paddingStart">12dp</item>
     </style>
 
     <style name="FolderTeaserMarginStartStyle" parent="FolderTeaserVerticalMarginStyle">
