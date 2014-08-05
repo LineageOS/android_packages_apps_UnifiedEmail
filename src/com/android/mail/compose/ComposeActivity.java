@@ -18,8 +18,6 @@ package com.android.mail.compose;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -49,6 +47,8 @@ import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
 import android.support.v4.app.RemoteInput;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpanWatcher;
@@ -130,7 +130,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
+public class ComposeActivity extends ActionBarActivity
+        implements OnClickListener, ActionBar.OnNavigationListener,
         RespondInlineListener, TextWatcher,
         AttachmentAddedOrDeletedListener, OnAccountChangedListener,
         LoaderManager.LoaderCallbacks<Cursor>, TextView.OnEditorActionListener,
@@ -482,7 +483,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.compose);
-        final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // Hide the app icon.
             actionBar.setIcon(null);
@@ -1057,7 +1058,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private int getMode() {
         int mode = ComposeActivity.COMPOSE;
-        ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null
                 && actionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST) {
             mode = actionBar.getSelectedNavigationIndex();
@@ -1411,7 +1412,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void initActionBar() {
         LogUtils.d(LOG_TAG, "initializing action bar in ComposeActivity");
-        ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar == null) {
             return;
         }
@@ -2250,7 +2251,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // Subtract status bar and action bar height from y-coord.
                 final Rect rect = new Rect();
                 getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-                final int deltaY = coords[1] - getActionBar().getHeight() - rect.top;
+                final int deltaY = coords[1] - getSupportActionBar().getHeight() - rect.top;
 
                 // Only scroll down
                 if (deltaY > 0) {

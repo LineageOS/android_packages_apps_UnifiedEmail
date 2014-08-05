@@ -15,46 +15,47 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/search"
         android:title="@string/menu_search"
-        android:showAsAction="always|collapseActionView"
+        app:showAsAction="always|collapseActionView"
         android:icon="@drawable/ic_menu_search"
-        android:actionLayout="@layout/mail_actionbar_searchview" />
+        app:actionLayout="@layout/mail_actionbar_searchview" />
 
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_delete_wht_24dp" />
 
     <item
         android:id="@+id/inside_conversation_unread"
         android:title="@string/mark_read"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/ic_markunread_wht_24dp" />
 
     <item
         android:id="@+id/change_folders"
         android:title="@string/menu_change_folders"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:icon="@drawable/ic_change_labels_wht_24dp" />
 
     <item
         android:id="@+id/mark_important"
         android:title="@string/mark_important"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/mark_not_important"
         android:title="@string/mark_not_important"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/report_spam"
         android:title="@string/report_spam"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <!-- This invisible menu items are used to enable keyboard shortcuts -->
     <item

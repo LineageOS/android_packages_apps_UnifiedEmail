@@ -27,72 +27,22 @@
         <item name="android:colorAccent">@color/accent_blue</item>
     </style>
 
-    <style name="PlainUnifiedEmailTheme" parent="@style/UnifiedEmailTheme">
-        <item name="android:actionBarStyle">@style/PlainActionBarStyle</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-    </style>
-
-    <style name="ComposeTheme" parent="@style/ComposeThemeBase">
-        <!-- ActionBar color -->
-        <item name="android:colorPrimary">@color/actionbar_color</item>
-        <!-- Used by the StatusBar and NavBar (currently broken?) -->
-        <item name="android:colorPrimaryDark">@color/statusbar_color</item>
-        <item name="android:colorAccent">@color/accent_blue</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
-    </style>
-
-    <style name="OverflowButtonStyle" parent="@android:style/Widget.Material.Light.ActionButton.Overflow" >
-        <item name="android:src">@drawable/ic_overflow_24dp</item>
-    </style>
-
-    <style name="ActionBarStyle" parent="@android:style/Widget.Material.Light.ActionBar.Solid" >
-        <item name="android:background">?android:attr/colorPrimary</item>
-    </style>
-
-    <style name="WaitFragmentTitleBase" parent="@android:style/Widget.Material.TextView" />
+    <style name="WaitFragmentTitleBase" parent="android:Widget.Material.TextView" />
 
     <style name="AbstractNewMessageButtonStyleBase"
         parent="@android:style/Widget.Material.Light.Button">
     </style>
 
-    <style name="CustomActionButtonBase" parent="android:style/Widget.Material.Light.ActionButton" />
-
     <style name="ComposeFieldLayoutBase" />
 
-    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title" />
+    <style name="ConversationListFadeBase" parent="android:Widget.Material.Light.ListView" />
 
-    <style name="ConversationListFadeBase" parent="@android:style/Widget.Material.Light.ListView" />
-
-    <style name="MinTimeProgressViewStyle" parent="@android:style/Widget.Material.Light.ProgressBar" />
+    <style name="MinTimeProgressViewStyle" parent="android:Widget.Material.Light.ProgressBar" />
 
     <style name="MinTimeProgressDialogStyleBase" parent="@android:style/Theme.Material.Light.Dialog" />
 
     <style name="MessageButtonStyleBase" parent="android:Widget.Material.Button.Borderless" />
 
-    <style name="WidgetTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title.Inverse">
-        <item name="android:singleLine">true</item>
-    </style>
-
-    <style name="WidgetSubtitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle.Inverse">
-        <item name="android:singleLine">true</item>
-    </style>
-
-    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Material.Light.DialogWhenLarge">
-        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
-        <!-- ActionBar color -->
-        <item name="android:colorPrimary">@color/actionbar_color</item>
-        <!-- Used by the StatusBar and NavBar (currently broken?) -->
-        <item name="android:colorPrimaryDark">@color/statusbar_color</item>
-        <item name="android:colorAccent">@color/accent_blue</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
-    </style>
-
-    <style name="ComposeThemeBase" parent="@style/UnifiedEmailTheme">
-        <item name="android:homeAsUpIndicator">@drawable/ic_close_wht_24dp</item>
-    </style>
-
     <style name="AbstractVacationResponderDateSpinnerBase"
-           parent="android:style/Widget.Material.Light.Spinner" />
+           parent="android:Widget.Material.Light.Spinner" />
 </resources>

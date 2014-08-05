@@ -17,5 +17,4 @@
 -->
 <resources>
     <dimen name="search_view_width">500dip</dimen>
-    <dimen name="spinner_frame_width">196dp</dimen>
 </resources>

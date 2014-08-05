@@ -16,13 +16,14 @@
      limitations under the License.
 -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/search"
       android:title="@string/menu_search"
-      android:showAsAction="ifRoom|collapseActionView"
+      app:showAsAction="ifRoom|collapseActionView"
       android:icon="@drawable/ic_menu_search"
-      android:actionLayout="@layout/mail_actionbar_searchview" />
+      app:actionLayout="@layout/mail_actionbar_searchview" />
 
     <!-- This invisible menu item is used to map CTRL-C to the compose action -->
     <item

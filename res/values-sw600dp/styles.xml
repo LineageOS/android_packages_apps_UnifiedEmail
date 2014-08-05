@@ -16,17 +16,14 @@
      limitations under the License.
 -->
 <resources>
-    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-    </style>
 
-    <style name="AccountSpinnerStyle">
-        <item name="android:layout_width">@dimen/spinner_frame_width</item>
-    </style>
+    <style name="MailActivityTheme" parent="@style/UnifiedEmailTheme.Appcompat" />
 
-    <style name="ShortcutWidgetTheme" parent="@android:style/Theme.Holo.Light.Dialog.MinWidth">
-        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
-    </style>
+    <!-- todo - comment out when theme exists -->
+    <!--<style name="ShortcutWidgetTheme" parent="@style/Theme.Appcompat.Light.Dialog.MinWidth">-->
+        <!--<item name="actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>-->
+        <!--<item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>-->
+    <!--</style>-->
 
     <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme">
         <item name="android:windowBackground">@color/vacation_responder_background</item>

@@ -20,7 +20,7 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.view.ActionMode;
+import android.support.v7.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -82,8 +82,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private ActionMode mActionMode;
 
     private boolean mActivated = false;
-
-    private Menu mMenu;
 
     /** Object that can update conversation state on our behalf. */
     private final ConversationUpdater mUpdater;
@@ -351,7 +349,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(R.menu.conversation_list_selection_actions_menu, menu);
         mActionMode = mode;
-        mMenu = menu;
         return true;
     }
 
@@ -495,7 +492,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             // selection state.
             mActivity.getListHandler().commitDestructiveActions(true);
         }
-        mMenu = null;
     }
 
     @Override
@@ -534,7 +530,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mListController.onCabModeEntered();
         mActivated = true;
         if (mActionMode == null) {
-            mActivity.startActionMode(this);
+            mActivity.startSupportActionMode(this);
         }
     }
 

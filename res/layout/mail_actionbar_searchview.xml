@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 
-<android.widget.SearchView
+<android.support.v7.widget.SearchView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/search_layout"
     android:gravity="center_vertical"
