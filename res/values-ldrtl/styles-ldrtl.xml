@@ -41,9 +41,7 @@
         <item name="android:paddingStart">@dimen/message_header_inner_side_padding</item>
     </style>
 
-    <style name="ConversationHeaderMarginStyle">
-        <item name="android:layout_marginStart">@dimen/conversation_header_margin_side</item>
-        <item name="android:layout_marginEnd">@dimen/conversation_header_margin_side</item>
+    <style name="ConversationHeaderStyle">
         <item name="android:paddingStart">@dimen/conversation_header_padding_side</item>
     </style>
 
@@ -65,8 +63,13 @@
         <item name="android:paddingEnd">@dimen/conversation_view_margin_side</item>
     </style>
 
-    <style name="ConversationViewMarginStyle">
-        <item name="android:layout_marginStart">@dimen/conversation_view_margin_side</item>
+    <style name="MessageHeaderIconStyle">
+        <item name="android:layout_marginStart">@dimen/message_header_icon_additional_margin_start</item>
+    </style>
+
+    <style name="SuperCollapsedStrokeStyle">
+        <item name="android:layout_marginStart">@dimen/super_collapsed_stroke_margin_start</item>
+        <item name="android:layout_marginEnd">@dimen/conversation_border_margin_side</item>
     </style>
 
     <style name="NewMessageButtonStyle" parent="AbstractNewMessageButtonStyle">
