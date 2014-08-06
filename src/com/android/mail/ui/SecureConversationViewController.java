@@ -182,11 +182,12 @@ public class SecureConversationViewController implements
         // If we have scrolled further than the distance from the top of the scrollView to the top
         // of the message header, then the message header is at least partially ofscreen. As soon
         // as the message header goes partially offscreen we need to display the snap header.
-        if (y > rect.top) {
-            mSnapHeaderView.setVisibility(View.VISIBLE);
-        } else {
+        // TODO - re-enable when dogfooders howl
+//        if (y > rect.top) {
+//            mSnapHeaderView.setVisibility(View.VISIBLE);
+//        } else {
             mSnapHeaderView.setVisibility(View.GONE);
-        }
+//        }
     }
 
     /**

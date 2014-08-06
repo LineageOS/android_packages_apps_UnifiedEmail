@@ -280,14 +280,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
     }
 
-    public Adapter getOverlayAdapter() {
-        return mOverlayAdapter;
-    }
-
     public void setAccountController(ConversationAccountController controller) {
         mAccountController = controller;
 
-        mSnapEnabled = isSnapEnabled();
+//        mSnapEnabled = isSnapEnabled();
+        mSnapEnabled = false; // TODO - re-enable when dogfooders howl
     }
 
     /**
