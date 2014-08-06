@@ -26,7 +26,7 @@
         android:id="@+id/top_border"
         android:layout_width="match_parent"
         android:layout_height="@dimen/drawer_item_divider_thickness"
-        android:background="@color/separator_color"
+        android:background="@color/divider_color"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp" />
 

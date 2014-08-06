@@ -16,19 +16,26 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="conversation_view_margin_side">16dp</dimen>
-    <dimen name="conversation_header_margin_side">15dp</dimen>
-    <dimen name="conversation_header_font_size">24sp</dimen>
+    <dimen name="conversation_message_content_margin_side">32dp</dimen>
+    <dimen name="conversation_view_margin_side">24dp</dimen>
     <dimen name="conversation_header_padding_side">24dp</dimen>
-    <dimen name="conversation_page_gutter">0dip</dimen>
-    <dimen name="message_header_inner_side_padding">16dp</dimen>
+    <dimen name="conversation_header_star_size">55dp</dimen>
+    <dimen name="conversation_border_margin_side">24dp</dimen>
+
+    <dimen name="message_header_icon_margin">24dp</dimen>
+    <dimen name="message_header_icon_additional_margin_start">32dp</dimen>
     <dimen name="message_header_action_button_width">56dp</dimen>
     <dimen name="message_header_action_button_height">56dp</dimen>
-    <dimen name="message_details_header_padding_start_expanded">104dip</dimen>
-    <dimen name="message_sender_name_text_size">20sp</dimen>
-    <dimen name="message_header_subtitle_text_size">16sp</dimen>
-    <dimen name="super_collapsed_height">39sp</dimen>
-    <dimen name="super_collapsed_text_size">16sp</dimen>
+    <dimen name="message_header_action_button_margin_top">8dp</dimen>
+    <dimen name="message_header_text_margin_top">22dp</dimen>
+    <dimen name="message_header_margin_bottom">24dp</dimen>
+    <dimen name="message_details_header_padding_start_expanded">88dp</dimen>
+    <dimen name="message_details_header_padding_end">24dp</dimen>
+
+    <!-- This value needs to be greater than message_header_icon_margin_side.
+         Chose to make it larger by 20dp, half of the message_header_icon size. -->
+    <dimen name="super_collapsed_stroke_margin_start">52dp</dimen>
+
     <dimen name="attachment_tile_min_size">180dp</dimen>
     <dimen name="attachment_tile_max_size">254dp</dimen>
     <dimen name="wait_padding">32dp</dimen>
