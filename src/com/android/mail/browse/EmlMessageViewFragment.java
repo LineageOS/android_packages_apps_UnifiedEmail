@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -166,7 +167,6 @@ public class EmlMessageViewFragment extends Fragment
         mViewController = new SecureConversationViewController(this);
 
         setHasOptionsMenu(true);
-        getActivity().getActionBar().setTitle(R.string.attached_message);
     }
 
     @Override
@@ -343,7 +343,7 @@ public class EmlMessageViewFragment extends Fragment
                 return;
             }
 
-            getActivity().getActionBar().setSubtitle(
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(
                     data.getString(data.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
         }
 
