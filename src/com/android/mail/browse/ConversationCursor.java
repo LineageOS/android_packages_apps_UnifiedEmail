@@ -2491,9 +2491,9 @@ public final class ConversationCursor implements Cursor, ConversationCursorOpera
             return false;
         }
         Bundle extras = cursor.getExtras();
-        // if no extras, default to LOADING state (so isWaitingForResults check will pass)
         final int status = (extras == null) ? UIProvider.CursorStatus.LOADING :
                 extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
-        return (cursor.getCount() > 0 || UIProvider.CursorStatus.COMPLETE == status);
+        return (cursor.getCount() > 0 || UIProvider.CursorStatus.ERROR == status ||
+                UIProvider.CursorStatus.COMPLETE == status);
     }
 }
