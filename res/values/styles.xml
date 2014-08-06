@@ -25,6 +25,7 @@
         <item name="android:paddingBottom">12dp</item>
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">0dp</item>
+        <item name="android:popupElevation">0dp</item>
         <item name="android:textColor">@color/compose_user_text</item>
         <item name="android:textSize">@dimen/compose_header_text_size</item>
     </style>
@@ -67,7 +68,7 @@
 
     <style name="RecipientComposeFieldSpacer">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_height">1px</item>
         <item name="android:background">@color/compose_divider_color</item>
     </style>
 
@@ -434,7 +435,12 @@
     <style name="ComposeTheme" parent="@style/UnifiedEmailTheme.Appcompat">
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
+        <item name="android:dropDownListViewStyle">@style/ComposeDropdownListViewStyle</item>
         <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="ComposeDropdownListViewStyle">
+        <item name="android:dividerHeight">0dp</item>
     </style>
 
     <style name="InvisibleShortcutWidgetTheme" parent="@style/ShortcutWidgetTheme">
