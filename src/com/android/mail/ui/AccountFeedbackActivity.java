@@ -17,11 +17,11 @@
 
 package com.android.mail.ui;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -37,7 +37,7 @@ import com.android.mail.utils.Utils;
  * as well as showing settings/help/send feedback in the action
  * overflow menu.
  */
-public abstract class AccountFeedbackActivity extends Activity
+public abstract class AccountFeedbackActivity extends ActionBarActivity
         implements ConversationAccountController, AccountLoadCallbacks.AccountLoadCallbackListener {
     public static final String EXTRA_ACCOUNT_URI = "extra-account-uri";
 
@@ -58,7 +58,7 @@ public abstract class AccountFeedbackActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_feedback_activity);
 
-        final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         final Intent intent = getIntent();
