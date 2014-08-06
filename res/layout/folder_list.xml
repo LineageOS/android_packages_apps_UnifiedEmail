@@ -24,6 +24,7 @@
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:nextFocusRight="@+id/conversation_list_view"
         android:fadingEdge="none" />
 
     <com.android.mail.ui.MiniDrawerView
@@ -42,8 +43,7 @@
             android:paddingBottom="16dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:scaleType="fitCenter" />
+            style="@style/MiniDrawerItemStyleBase" />
 
         <ImageView
             android:id="@+id/dotdotdot"

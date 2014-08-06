@@ -22,6 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/notification_view_height"
     android:background="@color/search_banner_bg"
+    android:focusable="false"
     android:minHeight="@dimen/notification_view_height"
     android:paddingLeft="@dimen/search_results_padding"
     android:paddingRight="@dimen/search_results_padding">

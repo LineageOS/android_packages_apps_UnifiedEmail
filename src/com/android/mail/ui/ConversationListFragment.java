@@ -19,14 +19,14 @@ package com.android.mail.ui;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -74,9 +74,9 @@ import static android.view.View.OnKeyListener;
 /**
  * The conversation list UI component.
  */
-public final class ConversationListFragment extends ListFragment implements
+public final class ConversationListFragment extends Fragment implements
         OnItemLongClickListener, ModeChangeListener, ListItemSwipedListener, OnRefreshListener,
-        SwipeListener, OnKeyListener {
+        SwipeListener, OnKeyListener, AdapterView.OnItemClickListener {
     /** Key used to pass data to {@link ConversationListFragment}. */
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     /** Key used to keep track of the scroll state of the list. */
@@ -154,6 +154,8 @@ public final class ConversationListFragment extends ListFragment implements
     // State variable to keep track if we just loaded a new list, used for analytics only
     // True if NO DATA has returned, false if we either partially or fully loaded the data
     private boolean mInitialCursorLoading;
+
+    private @IdRes int mNextFocusLeftId;
 
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
@@ -448,13 +450,17 @@ public final class ConversationListFragment extends ListFragment implements
         mLoadingView = rootView.findViewById(R.id.background_view);
         mLoadingView.setVisibility(View.GONE);
         mLoadingView.findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
-        mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
+        mListView = (SwipeableListView) rootView.findViewById(R.id.conversation_list_view);
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setListItemSwipedListener(this);
         mListView.setSwipeListener(this);
         mListView.setOnKeyListener(this);
+        mListView.setOnItemClickListener(this);
+        if (mNextFocusLeftId != 0) {
+            mListView.setNextFocusLeftId(mNextFocusLeftId);
+        }
 
         // enable animateOnLayout (equivalent of setLayoutTransition) only for >=JB (b/14302062)
         if (Utils.isRunningJellybeanOrLater()) {
@@ -584,7 +590,7 @@ public final class ConversationListFragment extends ListFragment implements
      * {@inheritDoc}
      */
     @Override
-    public void onListItemClick(ListView l, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         onListItemSelected(view, position);
     }
 
@@ -709,6 +715,15 @@ public final class ConversationListFragment extends ListFragment implements
         }
         if (mFooterView != null) {
             mFooterView.onViewModeChanged(newMode);
+        }
+
+        // Set default navigation
+        if (ViewMode.isListMode(newMode)) {
+            mListView.setNextFocusRightId(R.id.conversation_list_view);
+            mListView.requestFocus();
+        } else if (ViewMode.isConversationMode(newMode)) {
+            // This would only happen in two_pane
+            mListView.setNextFocusRightId(R.id.conversation_pager);
         }
     }
 
@@ -857,9 +872,8 @@ public final class ConversationListFragment extends ListFragment implements
                 action.performAction();
             }
         };
-        final SwipeableListView listView = (SwipeableListView) getListView();
-        if (listView.getSwipeAction() == actionId) {
-            if (!listView.destroyItems(conversations, listener)) {
+        if (mListView.getSwipeAction() == actionId) {
+            if (!mListView.destroyItems(conversations, listener)) {
                 // The listView failed to destroy the items, perform the action manually
                 LogUtils.e(LOG_TAG, "ConversationListFragment.requestDelete: " +
                         "listView failed to destroy items.");
@@ -1193,5 +1207,16 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private boolean isCursorReadyToShow() {
         return ConversationCursor.isCursorReadyToShow(getConversationListCursor());
+    }
+
+    public ListView getListView() {
+        return mListView;
+    }
+
+    public void setNextFocusLeftId(@IdRes int id) {
+        mNextFocusLeftId = id;
+        if (mListView != null) {
+            mListView.setNextFocusLeftId(mNextFocusLeftId);
+        }
     }
 }

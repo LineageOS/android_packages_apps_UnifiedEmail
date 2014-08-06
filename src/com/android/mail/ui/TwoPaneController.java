@@ -23,6 +23,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.ActionBar;
 import android.view.View;
@@ -109,11 +110,14 @@ public final class TwoPaneController extends AbstractActivityController implemen
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         // Use cross fading animation.
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        final Fragment conversationListFragment =
+        final ConversationListFragment conversationListFragment =
                 ConversationListFragment.newInstance(mConvListContext);
         fragmentTransaction.replace(R.id.conversation_list_pane, conversationListFragment,
                 TAG_CONVERSATION_LIST);
         fragmentTransaction.commitAllowingStateLoss();
+        // Set default navigation here once the ConversationListFragment is created.
+        conversationListFragment.setNextFocusLeftId(
+                getClfNextFocusLeftId(getFolderListFragment().isMinimized()));
     }
 
     @Override
@@ -147,7 +151,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     @Override
     public boolean onCreate(Bundle savedState) {
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
-        if (mLayout == null) {
+            if (mLayout == null) {
             // We need the layout for everything. Crash/Return early if it is null.
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
             return false;
@@ -242,6 +246,11 @@ public final class TwoPaneController extends AbstractActivityController implemen
         flf.setMinimized(!flf.isMinimized());
         mLayout.requestLayout();
         resetActionBarIcon();
+
+        final ConversationListFragment clf = getConversationListFragment();
+        if (clf != null) {
+            clf.setNextFocusLeftId(getClfNextFocusLeftId(flf.isMinimized()));
+        }
     }
 
     @Override
@@ -271,6 +280,10 @@ public final class TwoPaneController extends AbstractActivityController implemen
                 || ViewMode.isAdMode(newMode)) {
             enableOrDisableCab();
         }
+    }
+
+    private @IdRes int getClfNextFocusLeftId(boolean drawerMinimized) {
+        return (drawerMinimized) ? R.id.current_account_avatar : android.R.id.list;
     }
 
     @Override

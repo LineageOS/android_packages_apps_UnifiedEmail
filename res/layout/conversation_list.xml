@@ -38,7 +38,7 @@
             <include layout="@layout/conversation_list_empty_view" />
 
             <com.android.mail.ui.SwipeableListView
-                android:id="@android:id/list"
+                android:id="@+id/conversation_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 style="@style/ConversationListFade" />

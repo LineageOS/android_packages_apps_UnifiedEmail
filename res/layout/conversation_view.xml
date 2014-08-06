@@ -28,8 +28,10 @@
             android:id="@+id/conversation_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            style="@style/ConversationViewPaddingStyle"
-            android:scrollbars="none" />
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:scrollbars="none"
+            style="@style/ConversationViewPaddingStyle" />
 
         <!-- scrolling overlay views go here -->
 
