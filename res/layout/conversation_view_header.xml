@@ -20,12 +20,12 @@
     android:id="@+id/conversation_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/conversation_view_background_color"
+    android:background="@color/conversation_view_item_background_color"
     android:orientation="horizontal"
     android:minHeight="88sp"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
-    style="@style/ConversationHeaderMarginStyle" >
+    style="@style/ConversationHeaderStyle" >
 
     <com.android.mail.browse.SubjectAndFolderView
         android:id="@+id/subject_and_folder_view"
@@ -38,8 +38,8 @@
 
     <com.android.mail.browse.StarView
         android:id="@+id/conversation_header_star"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="@dimen/conversation_header_star_size"
+        android:layout_height="@dimen/conversation_header_star_size"
         android:layout_gravity="center_vertical"
         android:background="?android:attr/selectableItemBackground"
         android:scaleType="center"

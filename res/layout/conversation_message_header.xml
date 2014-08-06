@@ -22,10 +22,7 @@
     android:visibility="visible"
     android:orientation="vertical">
 
-    <View android:id="@+id/message_header_border"
-          android:layout_width="match_parent"
-          android:layout_height="1dp"
-          android:background="@color/conversation_view_border_color"/>
+    <include android:id="@+id/message_header_border" layout="@layout/conversation_view_border" />
 
     <include layout="@layout/conversation_message_upper_header"
              android:id="@+id/upper_header" />

@@ -16,6 +16,9 @@
      limitations under the License.
 -->
 <View xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/conversation_view_item_background_color" />
+    android:id="@+id/border"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginLeft="@dimen/conversation_border_margin_side"
+    android:layout_marginRight="@dimen/conversation_border_margin_side"
+    android:background="@color/conversation_view_border_color" />
