@@ -878,9 +878,6 @@
     <!-- Content Provider Authority for Eml Attachments -->
     <string name="eml_attachment_provider" translatable="false">com.android.mail.provider.eml.attachment</string>
 
-    <!-- Action bar title for viewing messages that are attached to another message. -->
-    <string name="attached_message">Attached message</string>
-
     <!-- Content description for the "X" image icon for dismissing a tip. This is used for spoken description of the icon when touch explore is enabled. [CHAR LIMIT=50] -->
     <string name="dismiss_tip_hover_text">Dismiss tip</string>
 
