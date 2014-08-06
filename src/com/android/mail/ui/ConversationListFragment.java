@@ -884,20 +884,21 @@ public final class ConversationListFragment extends ListFragment implements
 
     private void hideLoadingViewAndShowContents() {
         final ConversationCursor cursor = getConversationListCursor();
-        // Even though cursor might be empty, the list adapter might have teasers. So we check the
-        // list adapter count if the cursor is fully/partially loaded.
-        if (cursor != null && ConversationCursor.isCursorReadyToShow(cursor) &&
-                mListAdapter.getCount() == 0) {
-            showEmptyView();
-        } else {
-            showListView();
-        }
         final boolean showFooter = mFooterView.updateStatus(cursor);
         // Update the sync status bar with sync results if needed
         checkSyncStatus();
         mListAdapter.setFooterVisibility(showFooter);
         mLoadingViewPending = false;
         mHandler.removeCallbacks(mLoadingViewRunnable);
+
+        // Even though cursor might be empty, the list adapter might have teasers/footers.
+        // So we check the list adapter count if the cursor is fully/partially loaded.
+        if (cursor != null && ConversationCursor.isCursorReadyToShow(cursor) &&
+                mListAdapter.getCount() == 0) {
+            showEmptyView();
+        } else {
+            showListView();
+        }
     }
 
     private void setSwipeAction() {
