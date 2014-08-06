@@ -65,6 +65,8 @@
     <string name="report_phishing" msgid="8454666464488413739">"Report phishing"</string>
     <string name="delete" msgid="6784262386780496958">"Delete"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"Discard drafts"</string>
+    <!-- no translation found for discard_failed (7520780769812210279) -->
+    <skip />
     <string name="refresh" msgid="1533748989749277511">"Refresh"</string>
     <string name="reply" msgid="8337757482824207118">"Reply"</string>
     <string name="reply_all" msgid="5366796103758360957">"Reply all"</string>
@@ -386,7 +388,6 @@
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"Touch &amp; hold to select one conversation, then touch to select more."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"Folder icon"</string>
     <string name="add_account" msgid="5905863370226612377">"Add account"</string>
-    <string name="attached_message" msgid="4514369068177801675">"Attached message"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Dismiss tip"</string>
     <string name="auto_sync_off" msgid="3664082916022670831">"Auto-sync is off."</string>
     <string name="tap_to_enable_sync" msgid="30588010316606899">"Touch to turn on."</string>
