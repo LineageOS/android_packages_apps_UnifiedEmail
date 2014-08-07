@@ -400,7 +400,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             // types. In a future release, use position/id map to try to make
             // this cleaner / faster to determine if the view is animating.
             return TYPE_VIEW_DONT_RECYCLE;
-        } else if (mSpecialViews.get(position) != null) {
+        } else if (mSpecialViews.get(getSpecialViewsPos(position)) != null) {
             // Don't recycle the special views
             return TYPE_VIEW_DONT_RECYCLE;
         }
@@ -477,7 +477,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
 
         // Check if this is a special view
-        final ConversationSpecialItemView specialView = mSpecialViews.get(position);
+        final ConversationSpecialItemView specialView = mSpecialViews.get(
+                getSpecialViewsPos(position));
         if (specialView != null) {
             specialView.onGetView();
             return (View) specialView;
@@ -702,7 +703,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             return -1;
         }
 
-        final ConversationSpecialItemView specialView = mSpecialViews.get(position);
+        final ConversationSpecialItemView specialView = mSpecialViews.get(
+                getSpecialViewsPos(position));
         if (specialView != null) {
             // TODO(skennedy) We probably want something better than this
             return specialView.hashCode();
@@ -784,12 +786,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public Object getItem(int position) {
+        final ConversationSpecialItemView specialView = mSpecialViews.get(
+                getSpecialViewsPos(position));
         if (mHeaders.size() > position) {
             return mHeaders.get(position);
         } else if (mShowFooter && position == getCount() - 1) {
             return mFooter;
-        } else if (mSpecialViews.get(position) != null) {
-            return mSpecialViews.get(position);
+        } else if (specialView != null) {
+            return specialView;
         }
         return super.getItem(position - getPositionOffset(position));
     }
@@ -1106,9 +1110,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
      * Gets the offset for the given position in the underlying cursor, based on any special views
      * that may be above it.
      */
-    public int getPositionOffset(final int position) {
+    public int getPositionOffset(int position) {
         int viewsAbove = mHeaders.size();
 
+        position -= viewsAbove;
         for (int i = 0, size = mSpecialViews.size(); i < size; i++) {
             final int bidPosition = mSpecialViews.keyAt(i);
             // If the view bid for a position above the cursor position,
@@ -1119,6 +1124,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         }
 
         return viewsAbove;
+    }
+
+    /**
+     * Gets the correct position for special views given the number of headers we have.
+     */
+    private int getSpecialViewsPos(final int position) {
+        return position - mHeaders.size();
     }
 
     public void cleanup() {
