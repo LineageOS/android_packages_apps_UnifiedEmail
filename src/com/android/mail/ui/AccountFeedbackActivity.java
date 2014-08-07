@@ -45,8 +45,7 @@ public abstract class AccountFeedbackActivity extends ActionBarActivity
 
     private static final String SAVED_ACCOUNT = "saved-account";
 
-    private MenuItem mHelpItem;
-    private MenuItem mSendFeedbackItem;
+    private MenuItem mHelpAndFeedbackItem;
 
     protected Uri mAccountUri;
     protected Account mAccount;
@@ -93,23 +92,18 @@ public abstract class AccountFeedbackActivity extends ActionBarActivity
         }
 
         getMenuInflater().inflate(R.menu.account_feedback_menu, menu);
-        mHelpItem = menu.findItem(R.id.help_info_menu_item);
-        mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
+        mHelpAndFeedbackItem = menu.findItem(R.id.help_info_menu_item);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (mHelpItem != null) {
-            mHelpItem.setVisible(mAccount != null
+        if (mHelpAndFeedbackItem != null) {
+            mHelpAndFeedbackItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(UIProvider.AccountCapabilities.HELP_CONTENT));
         }
-        if (mSendFeedbackItem != null) {
-            mSendFeedbackItem.setVisible(mAccount != null
-                    && mAccount.supportsCapability(UIProvider.AccountCapabilities.SEND_FEEDBACK));
-        }
 
-        return true;
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -121,8 +115,6 @@ public abstract class AccountFeedbackActivity extends ActionBarActivity
             Utils.showSettings(this, mAccount);
         } else if (itemId == R.id.help_info_menu_item) {
             Utils.showHelp(this, mAccount, getString(R.string.main_help_context));
-        } else if (itemId == R.id.feedback_menu_item) {
-            Utils.sendFeedback(this, mAccount, false);
         } else {
             return super.onOptionsItemSelected(item);
         }
