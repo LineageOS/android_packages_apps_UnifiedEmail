@@ -361,7 +361,7 @@
         <item name="android:paddingEnd">@dimen/compose_attachment_tile_text_end_padding</item>
     </style>
 
-    <style name="ComposeFieldContent" >
+    <style name="ComposeFieldContent" parent="@style/ComposeFieldContentBase">
         <item name="android:paddingStart">@dimen/compose_content_start_padding</item>
         <item name="android:paddingEnd">@dimen/compose_content_end_padding</item>
     </style>
