@@ -44,6 +44,12 @@
     <integer name="show_undo_bar_delay_ms">200</integer>
     <!-- Delay dismissing undo bar after a touch so we know whether to hide the action bar or to reposition it during view mode change -->
     <integer name="dismiss_undo_bar_delay_ms">300</integer>
+    <!-- Amount of time spent animating the popup and push down of the snack bar -->
+    <integer name="toast_bar_animation_duration_ms">300</integer>
+    <!-- The smallest amount of time the toast bar must remain visible -->
+    <integer name="toast_bar_min_duration_ms">500</integer>
+    <!-- The largest amount of time the toast bar can remain visible -->
+    <integer name="toast_bar_max_duration_ms">3000</integer>
     <integer name="conversation_desired_font_size_px">14</integer>
     <!-- matches 'font-size' style in template_conversation_upper.html -->
     <integer name="conversation_unstyled_font_size_px">13</integer>

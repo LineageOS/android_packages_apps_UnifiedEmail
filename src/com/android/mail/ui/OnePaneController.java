@@ -149,6 +149,16 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
+    protected ActionableToastBar findActionableToastBar(MailActivity activity) {
+        final ActionableToastBar tb = super.findActionableToastBar(activity);
+
+        // notify the toast bar of its sibling floating action button so it can move them together
+        // as they animate
+        tb.setFloatingActionButton(activity.findViewById(R.id.compose_button));
+        return tb;
+    }
+
+    @Override
     protected boolean isConversationListVisible() {
         return mConversationListVisible;
     }
@@ -453,11 +463,6 @@ public final class OnePaneController extends AbstractActivityController {
                     break;
             }
         }
-    }
-
-    @Override
-    protected void hideOrRepositionToastBar(boolean animated) {
-        mToastBar.hide(animated, false /* actionClicked */);
     }
 
     @Override
