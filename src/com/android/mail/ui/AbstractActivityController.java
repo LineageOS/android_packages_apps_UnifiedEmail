@@ -1299,7 +1299,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // possibility of timing-related bugs.
         mViewMode.addListener(this);
         mPagerController = new ConversationPagerController(mActivity, this);
-        mToastBar = (ActionableToastBar) mActivity.findViewById(R.id.toast_bar);
+        mToastBar = findActionableToastBar(mActivity);
         attachActionBar();
 
         mDrawIdler.setRootView(mActivity.getWindow().getDecorView());
@@ -1331,6 +1331,14 @@ public abstract class AbstractActivityController implements ActivityController,
         mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, Bundle.EMPTY,
                 mAccountCallbacks);
         return true;
+    }
+
+    /**
+     * @param activity the activity that has been inflated
+     * @return the Actionable Toast Bar defined within the activity
+     */
+    protected ActionableToastBar findActionableToastBar(MailActivity activity) {
+        return (ActionableToastBar) activity.findViewById(R.id.toast_bar);
     }
 
     @Override
@@ -3396,12 +3404,21 @@ public abstract class AbstractActivityController implements ActivityController,
     public void onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             if (mToastBar != null && !mToastBar.isEventInToastBar(event)) {
-                hideOrRepositionToastBar(true);
+                // if the toast bar is still animating, ignore this attempt to hide it
+                if (mToastBar.isAnimating()) {
+                    return;
+                }
+
+                // if the toast bar has not been seen long enough, ignore this attempt to hide it
+                if (mToastBar.cannotBeHidden()) {
+                    return;
+                }
+
+                // hide the toast bar
+                mToastBar.hide(true /* animated */, false /* actionClicked */);
             }
         }
     }
-
-    protected abstract void hideOrRepositionToastBar(boolean animated);
 
     @Override
     public void onConversationSeen() {

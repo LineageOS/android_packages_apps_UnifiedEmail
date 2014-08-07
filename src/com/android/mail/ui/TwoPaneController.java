@@ -534,22 +534,6 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    protected void hideOrRepositionToastBar(final boolean animated) {
-        final int oldViewMode = mViewMode.getMode();
-        mLayout.postDelayed(new Runnable() {
-                @Override
-            public void run() {
-                if (/* the touch did not open a conversation */oldViewMode == mViewMode.getMode() ||
-                /* animation has ended */!mToastBar.isAnimating()) {
-                    mToastBar.hide(animated, false /* actionClicked */);
-                }
-            }
-        },
-        /* Give time for ViewMode to change from the touch */
-        mContext.getResources().getInteger(R.integer.dismiss_undo_bar_delay_ms));
-    }
-
-    @Override
     public void onError(final Folder folder, boolean replaceVisibleToast) {
         showErrorToast(folder, replaceVisibleToast);
     }
