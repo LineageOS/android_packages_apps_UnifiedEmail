@@ -1295,6 +1295,7 @@ public class ComposeActivity extends ActionBarActivity
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
         mTo = (RecipientEditTextView) findViewById(R.id.to);
         initializeRecipientEditTextView(mTo);
+        mTo.setAlternatePopupAnchor(findViewById(R.id.compose_to_dropdown_anchor));
         mCc = (RecipientEditTextView) findViewById(R.id.cc);
         initializeRecipientEditTextView(mCc);
         mBcc = (RecipientEditTextView) findViewById(R.id.bcc);

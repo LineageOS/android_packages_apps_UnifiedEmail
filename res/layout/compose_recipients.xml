@@ -38,17 +38,24 @@
                 android:text="@string/to"
                 style="@style/ComposeHeading" />
 
-            <com.android.ex.chips.RecipientEditTextView
-                android:id="@+id/to"
-                android:contentDescription="@string/to"
-                android:dropDownAnchor="@id/to_content"
-                style="@style/ToRecipientEditTextViewStyle" />
+            <LinearLayout
+                android:id="@+id/compose_to_dropdown_anchor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/add_cc_bcc"
-                android:src="@drawable/ic_expand_more_24dp"
-                android:contentDescription="@string/add_cc_label"
-                style="@style/ComposeFieldButton" />
+                <com.android.ex.chips.RecipientEditTextView
+                    android:id="@+id/to"
+                    android:contentDescription="@string/to"
+                    android:dropDownAnchor="@id/to_content"
+                    style="@style/ToRecipientEditTextViewStyle" />
+
+                <ImageView
+                    android:id="@+id/add_cc_bcc"
+                    android:src="@drawable/ic_expand_more_24dp"
+                    android:contentDescription="@string/add_cc_label"
+                    style="@style/ComposeFieldButton" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
