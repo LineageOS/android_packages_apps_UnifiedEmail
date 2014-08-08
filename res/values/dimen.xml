@@ -29,7 +29,7 @@
     <dimen name="folders_text_bottom_padding">4dip</dimen>
     <dimen name="attachment_tile_min_size">120dp</dimen>
     <dimen name="attachment_tile_max_size">164dp</dimen>
-    <dimen name="attachment_tile_padding">12dp</dimen>
+    <dimen name="attachment_tile_padding">8dp</dimen>
     <dimen name="compose_scrollview_max_width">768dp</dimen>
     <dimen name="color_block_width">32dip</dimen>
     <dimen name="color_block_height">6dip</dimen>
@@ -98,7 +98,6 @@
     <dimen name="drawer_footer_item_padding">16dp</dimen>
     <dimen name="drawer_footer_text_padding_start">16dp</dimen>
     <dimen name="drawer_footer_item_minimum_height">48dp</dimen>
-    <dimen name="drawer_item_divider_thickness">1px</dimen>
     <dimen name="drawer_item_font_size">16sp</dimen>
     <dimen name="widget_subject_font_size">13sp</dimen>
     <dimen name="widget_date_font_size">12sp</dimen>
@@ -217,4 +216,7 @@
     <dimen name="compose_content_end_padding">16dp</dimen>
 
     <dimen name="chip_wrapper_start_padding">72dp</dimen>
+
+    <!-- Standard height for all dividers -->
+    <dimen name="divider_height">0.5dp</dimen>
 </resources>

@@ -70,7 +70,7 @@
 
     <style name="RecipientComposeFieldSpacer">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1px</item>
+        <item name="android:layout_height">@dimen/divider_height</item>
         <item name="android:background">@color/compose_divider_color</item>
     </style>
 
