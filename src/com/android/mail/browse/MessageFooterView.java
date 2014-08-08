@@ -30,7 +30,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,14 +41,12 @@ import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
-import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.ui.AccountFeedbackActivity;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -68,7 +65,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     private TextView mTitleText;
     private AttachmentTileGrid mAttachmentGrid;
     private LinearLayout mAttachmentBarList;
-    private View mAboveAttachmentBarListLayout;
 
     private final LayoutInflater mInflater;
 
@@ -86,12 +82,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
      * Callbacks for the MessageFooterView to enable resizing the height.
      */
     public interface MessageFooterCallbacks {
-        void setMessageSpacerHeight(MessageFooterItem item, int newSpacerHeight);
-
-        MessageFooterView getViewForItem(MessageFooterItem item);
-
-        int getUpdatedHeight(MessageFooterItem item);
-
         /**
          * @return <tt>true</tt> if this footer is contained within a SecureConversationViewFragment
          * and cannot assume the content is <strong>not</strong> malicious
@@ -117,7 +107,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mTitleText = (TextView) findViewById(R.id.attachments_header_text);
         mAttachmentGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
         mAttachmentBarList = (LinearLayout) findViewById(R.id.attachment_bar_list);
-        mAboveAttachmentBarListLayout = findViewById(R.id.above_attachment_bar_list_layout);
 
         mViewEntireMessagePrompt.setOnClickListener(this);
     }
@@ -152,7 +141,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             mTitleText.setVisibility(View.GONE);
             mAttachmentGrid.setVisibility(View.GONE);
             mAttachmentBarList.setVisibility(View.GONE);
-            hideAboveAttachmentBarListLayout();
         }
         mOldAttachmentLoaderId = attachmentLoaderId;
 
@@ -174,25 +162,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mViewEntireMessagePrompt.setVisibility(
                 message.clipped && !TextUtils.isEmpty(message.permalink) ? VISIBLE : GONE);
         setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
-    }
-
-    private void hideAboveAttachmentBarListLayout() {
-        if (mAboveAttachmentBarListLayout != null) {
-            mAboveAttachmentBarListLayout.setVisibility(GONE);
-        }
-    }
-
-    private void showAboveAttachmentBarListLayout() {
-        if (mAboveAttachmentBarListLayout != null) {
-            final Conversation conversation = mMessageHeaderItem.getMessage().getConversation();
-            if (conversation == null) {
-                hideAboveAttachmentBarListLayout();
-                return;
-            }
-            AttachmentActionHandler.registerDismissListener(conversation.uri, mMessageFooterItem);
-            mAboveAttachmentBarListLayout.setVisibility(VISIBLE);
-            AttachmentActionHandler.setupAboveBarAttachmentLayout(mAboveAttachmentBarListLayout);
-        }
     }
 
     private void renderAttachments(boolean loaderResult) {
@@ -261,14 +230,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     private void renderBarAttachments(List<Attachment> barAttachments, boolean loaderResult) {
         mAttachmentBarList.setVisibility(View.VISIBLE);
-
-        if (!barAttachments.isEmpty() &&
-                AttachmentActionHandler.shouldShowAboveBarAttachmentLayout(
-                        getContext(), barAttachments)) {
-            showAboveAttachmentBarListLayout();
-        } else {
-            hideAboveAttachmentBarListLayout();
-        }
 
         final Account account = getAccount();
         for (Attachment attachment : barAttachments) {
@@ -367,29 +328,5 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     private Account getAccount() {
         return mAccountController != null ? mAccountController.getAccount() : null;
-    }
-
-    public void collapseAboveBarAttachmentsView() {
-        measureHeight();
-        mAboveAttachmentBarListLayout.setVisibility(View.GONE);
-        updateSpacerHeight();
-    }
-
-    private int measureHeight() {
-        ViewGroup parent = (ViewGroup) getParent();
-        if (parent == null) {
-            LogUtils.e(LOG_TAG, new Error(), "Unable to measure height of detached header");
-            return getHeight();
-        }
-        return Utils.measureViewHeight(this, parent);
-    }
-
-    private void updateSpacerHeight() {
-        final int h = measureHeight();
-
-        mMessageFooterItem.setHeight(h);
-        if (mCallbacks != null) {
-            mCallbacks.setMessageSpacerHeight(mMessageFooterItem, h);
-        }
     }
 }

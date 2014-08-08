@@ -53,10 +53,6 @@
         android:visibility="gone"
         style="@style/AttachmentMarginStyle" />
 
-    <include
-        layout="@layout/above_attachment_bar_list_layout"
-        android:id="@+id/above_attachment_bar_list_layout"/>
-
     <LinearLayout
         android:id="@+id/attachment_bar_list"
         android:layout_width="match_parent"
