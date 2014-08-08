@@ -316,15 +316,6 @@
         <item name="android:layout_marginLeft">@dimen/attachment_icon_padding</item>
     </style>
 
-    <style name="AbstractMessageAttachmentsHeaderStyle" parent="MessageHeaderSmallStyle">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">true</item>
-    </style>
-
-    <style name="MessageAttachmentsHeaderStyle" parent="AbstractMessageAttachmentsHeaderStyle">
-        <item name="android:paddingLeft">@dimen/message_details_header_padding_start</item>
-    </style>
-
     <style name="MessageDetailsValueStyle" parent="MessageHeaderSmallStyle">
         <item name="android:autoLink">email</item>
         <item name="android:linksClickable">true</item>
@@ -661,7 +652,6 @@
 
     <style name="AttachmentMarginStyle">
         <item name="android:layout_marginLeft">@dimen/attachment_margin_side</item>
-        <item name="android:layout_marginRight">@dimen/attachment_margin_side</item>
     </style>
 
     <style name="AttachmentIconStyle">

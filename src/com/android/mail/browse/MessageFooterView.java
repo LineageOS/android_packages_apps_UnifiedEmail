@@ -31,13 +31,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.browse.ConversationContainer.DetachListener;
-import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
@@ -56,13 +54,11 @@ import java.util.List;
 public class MessageFooterView extends LinearLayout implements DetachListener,
         LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
-    private MessageFooterItem mMessageFooterItem;
     private MessageHeaderItem mMessageHeaderItem;
     private LoaderManager mLoaderManager;
     private FragmentManager mFragmentManager;
     private AttachmentCursor mAttachmentsCursor;
     private View mViewEntireMessagePrompt;
-    private TextView mTitleText;
     private AttachmentTileGrid mAttachmentGrid;
     private LinearLayout mAttachmentBarList;
 
@@ -104,7 +100,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         super.onFinishInflate();
 
         mViewEntireMessagePrompt = findViewById(R.id.view_entire_message_prompt);
-        mTitleText = (TextView) findViewById(R.id.attachments_header_text);
         mAttachmentGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
         mAttachmentBarList = (LinearLayout) findViewById(R.id.attachment_bar_list);
 
@@ -120,8 +115,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     }
 
     public void bind(
-            MessageHeaderItem headerItem, MessageFooterItem footerItem, boolean measureOnly) {
-        mMessageFooterItem = footerItem;
+            MessageHeaderItem headerItem, boolean measureOnly) {
         mMessageHeaderItem = headerItem;
 
         final Integer attachmentLoaderId = getAttachmentLoaderId();
@@ -138,7 +132,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             mAttachmentGrid.removeAllViewsInLayout();
             mAttachmentBarList.removeAllViewsInLayout();
             mViewEntireMessagePrompt.setVisibility(View.GONE);
-            mTitleText.setVisibility(View.GONE);
             mAttachmentGrid.setVisibility(View.GONE);
             mAttachmentBarList.setVisibility(View.GONE);
         }
@@ -209,8 +202,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         if (tiledAttachments.isEmpty() && barAttachments.isEmpty()) {
             return;
         }
-
-        mTitleText.setVisibility(View.VISIBLE);
 
         if (!tiledAttachments.isEmpty()) {
             renderTiledAttachments(tiledAttachments, loaderResult);

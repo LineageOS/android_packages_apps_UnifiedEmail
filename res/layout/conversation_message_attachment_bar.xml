@@ -18,7 +18,7 @@
 <com.android.mail.browse.MessageAttachmentBar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dip"
+    android:layout_marginBottom="12dp"
     android:background="@drawable/attachment_bg_holo"
     android:minHeight="48dip" >
 

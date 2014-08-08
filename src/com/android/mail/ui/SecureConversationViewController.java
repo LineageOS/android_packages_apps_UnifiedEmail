@@ -214,8 +214,7 @@ public class SecureConversationViewController implements
 
         if (mMessage.hasAttachments) {
             mMessageFooterView.setVisibility(View.VISIBLE);
-            mMessageFooterView.bind(
-                    item, ConversationViewAdapter.newMessageFooterItem(null, item), false);
+            mMessageFooterView.bind(item, false);
         }
     }
 

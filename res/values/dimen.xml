@@ -29,6 +29,7 @@
     <dimen name="folders_text_bottom_padding">4dip</dimen>
     <dimen name="attachment_tile_min_size">120dp</dimen>
     <dimen name="attachment_tile_max_size">164dp</dimen>
+    <dimen name="attachment_tile_padding">12dp</dimen>
     <dimen name="compose_scrollview_max_width">768dp</dimen>
     <dimen name="color_block_width">32dip</dimen>
     <dimen name="color_block_height">6dip</dimen>
@@ -51,7 +52,6 @@
     <dimen name="conversation_folder_padding_after">8dp</dimen>
     <dimen name="folder_rounded_corner_radius">1dp</dimen>
     <dimen name="conversation_folder_margin_top">6dp</dimen>
-    <dimen name="message_details_header_padding_start">16dip</dimen>
     <dimen name="message_details_header_padding_start_expanded">72dip</dimen>
     <dimen name="message_details_header_padding_end">16dp</dimen>
     <dimen name="message_details_header_vertical_padding">7dp</dimen>
@@ -122,7 +122,7 @@
     <dimen name="undo_text_padding">16dip</dimen>
     <dimen name="dismiss_separator_padding">16dip</dimen>
     <dimen name="teaser_text_padding">16dip</dimen>
-    <dimen name="attachment_margin_side">16dip</dimen>
+    <dimen name="attachment_margin_side">0dp</dimen>
     <dimen name="attachment_icon_padding">5dip</dimen>
     <dimen name="recipient_summary_margin">16dip</dimen>
 

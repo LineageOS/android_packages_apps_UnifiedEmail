@@ -19,7 +19,6 @@
     <!-- Boolean value indicating whether the table UI should be used. -->
     <bool name="use_tablet_ui">true</bool>
     <integer name="conversation_header_mode">1</integer>
-    <integer name="conversation_desired_font_size_px">16</integer>
 
     <!-- Whether to show single or 2 pane search results -->
     <bool name="show_two_pane_search_results">false</bool>

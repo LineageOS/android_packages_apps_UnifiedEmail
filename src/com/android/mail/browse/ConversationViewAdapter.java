@@ -373,7 +373,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public void bindView(View v, boolean measureOnly) {
             final MessageFooterView attachmentsView = (MessageFooterView) v;
-            attachmentsView.bind(mHeaderItem, this, measureOnly);
+            attachmentsView.bind(mHeaderItem, measureOnly);
         }
 
         @Override
