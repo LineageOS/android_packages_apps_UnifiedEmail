@@ -629,12 +629,12 @@ public class ConversationViewAdapter extends BaseAdapter {
     public ConversationFooterItem removeFooterItem() {
         final int count = mItems.size();
         if (count < 4) {
-            LogUtils.wtf(LOG_TAG, "not enough items in the adapter. count: %s", count);
+            LogUtils.e(LOG_TAG, "not enough items in the adapter. count: %s", count);
             return null;
         }
         final ConversationFooterItem item = (ConversationFooterItem) mItems.remove(count - 1);
         if (item == null) {
-            LogUtils.wtf(LOG_TAG, "removed wrong overlay item: %s", item);
+            LogUtils.e(LOG_TAG, "removed wrong overlay item: %s", item);
             return null;
         }
 
@@ -644,7 +644,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     public ConversationFooterItem getFooterItem() {
         final int count = mItems.size();
         if (count < 4) {
-            LogUtils.wtf(LOG_TAG, "not enough items in the adapter. count: %s", count);
+            LogUtils.e(LOG_TAG, "not enough items in the adapter. count: %s", count);
             return null;
         }
         return (ConversationFooterItem) mItems.get(count - 1);
