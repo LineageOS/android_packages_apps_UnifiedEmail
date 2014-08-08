@@ -27,10 +27,6 @@
         <item name="android:paddingEnd">@dimen/message_details_header_padding_end</item>
     </style>
 
-    <style name="MessageAttachmentsHeaderStyle" parent="AbstractMessageAttachmentsHeaderStyle">
-        <item name="android:paddingStart">@dimen/message_details_header_padding_start</item>
-    </style>
-
     <style name="MessageHeaderShowPicsStyle" parent="AbstractMessageHeaderShowPicsStyle">
         <item name="android:paddingStart">@dimen/message_details_header_padding_start_expanded</item>
         <item name="android:paddingEnd">@dimen/message_show_pics_header_padding_end</item>
@@ -56,11 +52,6 @@
 
     <style name="UndoTextStyle" parent="AbstractUndoTextStyle">
         <item name="android:paddingEnd">@dimen/undo_text_padding</item>
-    </style>
-
-    <style name="ConversationViewPaddingStyle">
-        <item name="android:paddingStart">@dimen/conversation_view_margin_side</item>
-        <item name="android:paddingEnd">@dimen/conversation_view_margin_side</item>
     </style>
 
     <style name="MessageHeaderIconStyle">
@@ -104,7 +95,6 @@
 
     <style name="AttachmentMarginStyle">
         <item name="android:layout_marginStart">@dimen/attachment_margin_side</item>
-        <item name="android:layout_marginEnd">@dimen/attachment_margin_side</item>
     </style>
 
     <style name="AttachmentIconStyle">

@@ -187,12 +187,6 @@ public class EmlMessageViewFragment extends Fragment
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mViewController.onDestroyView();
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (Utils.isRunningKitkatOrLater()) {
             inflater.inflate(R.menu.eml_fragment_menu, menu);

@@ -37,25 +37,13 @@
         android:textSize="14sp"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/attachments_header_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/attachments_header"
-        android:visibility="gone"
-        style="@style/MessageAttachmentsHeaderStyle" />
-
     <com.android.mail.ui.AttachmentTileGrid
         android:id="@+id/attachment_tile_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
         android:visibility="gone"
         style="@style/AttachmentMarginStyle" />
-
-    <include
-        layout="@layout/above_attachment_bar_list_layout"
-        android:id="@+id/above_attachment_bar_list_layout"/>
 
     <LinearLayout
         android:id="@+id/attachment_bar_list"

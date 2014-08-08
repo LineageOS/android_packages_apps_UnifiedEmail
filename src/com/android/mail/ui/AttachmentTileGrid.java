@@ -18,6 +18,7 @@ package com.android.mail.ui;
 
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -48,6 +49,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
         MessageAttachmentTile.PhotoViewHandler {
     private final LayoutInflater mInflater;
     private final int mTileMinSize;
+    private final int mTilePadding;
     private int mColumnCount;
     private List<Attachment> mAttachments;
     private final HashMap<String, AttachmentPreview> mAttachmentPreviews;
@@ -58,8 +60,9 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
     public AttachmentTileGrid(Context context, AttributeSet attrs) {
         super(context, attrs);
         mInflater = LayoutInflater.from(context);
-        mTileMinSize = context.getResources()
-                .getDimensionPixelSize(R.dimen.attachment_tile_min_size);
+        final Resources res = context.getResources();
+        mTileMinSize = res.getDimensionPixelSize(R.dimen.attachment_tile_min_size);
+        mTilePadding = res.getDimensionPixelSize(R.dimen.attachment_tile_padding);
         mAttachmentPreviews = Maps.newHashMap();
     }
 
@@ -150,8 +153,10 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
         //    Let width = given width.
         //    Let height = image size + bottom padding.
 
-        final int imageSize = (width) / mColumnCount;
-        final int remainder = width - (imageSize * mColumnCount);
+        final int widthMinusPadding = width - (mColumnCount - 1) * mTilePadding;
+
+        final int imageSize = (widthMinusPadding) / mColumnCount;
+        final int remainder = widthMinusPadding - (imageSize * mColumnCount);
 
         for (int i = 0; i < childCount; i++) {
             final View child = getChildAt(i);
@@ -167,7 +172,8 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
         // Then multiply by the height of one tile to get the grid height.
         final int numRows = ((childCount - 1) / mColumnCount) + 1;
         setMeasuredDimension(width,
-                numRows*(imageSize + getChildAt(0).getPaddingBottom()));
+                numRows * (imageSize + getChildAt(0).getPaddingBottom()) +
+                (numRows - 1) * mTilePadding);
     }
 
     @Override
@@ -184,7 +190,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
         boolean skipBeginningOfRowFirstTime = true;
         final boolean isRtl = ViewUtils.isViewRtl(this);
         final int width = getMeasuredWidth();
-        int childLeft = (isRtl) ? width - getChildAt(0).getMeasuredWidth() : 0;;
+        int childLeft = (isRtl) ? width - getChildAt(0).getMeasuredWidth() : 0;
         int childTop = 0;
 
         // Layout the grid.
@@ -200,7 +206,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
             // to reflect the top of the new row.
             if (!skipBeginningOfRowFirstTime && i % mColumnCount == 0) {
                 childLeft = (isRtl) ? width - childWidth : 0;
-                childTop += childHeight;
+                childTop += childHeight + mTilePadding;
             } else {
                 skipBeginningOfRowFirstTime = false;
             }
@@ -209,9 +215,9 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
                     childLeft + childWidth, childTop + childHeight);
 
             if (isRtl) {
-                childLeft -= childWidth;
+                childLeft -= childWidth - mTilePadding;
             } else {
-                childLeft += childWidth;
+                childLeft += childWidth + mTilePadding;
             }
         }
     }
