@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,12 +69,14 @@ import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.List;
 
+import static android.view.View.OnKeyListener;
+
 /**
  * The conversation list UI component.
  */
 public final class ConversationListFragment extends ListFragment implements
         OnItemLongClickListener, ModeChangeListener, ListItemSwipedListener, OnRefreshListener,
-        SwipeListener {
+        SwipeListener, OnKeyListener {
     /** Key used to pass data to {@link ConversationListFragment}. */
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     /** Key used to keep track of the scroll state of the list. */
@@ -451,6 +454,7 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setListItemSwipedListener(this);
         mListView.setSwipeListener(this);
+        mListView.setOnKeyListener(this);
 
         // enable animateOnLayout (equivalent of setLayoutTransition) only for >=JB (b/14302062)
         if (Utils.isRunningJellybeanOrLater()) {
@@ -581,6 +585,10 @@ public final class ConversationListFragment extends ListFragment implements
      */
     @Override
     public void onListItemClick(ListView l, View view, int position, long id) {
+        onListItemSelected(view, position);
+    }
+
+    private void onListItemSelected(View view, int position) {
         if (view instanceof ToggleableItem) {
             final boolean showSenderImage =
                     (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
@@ -605,6 +613,34 @@ public final class ConversationListFragment extends ListFragment implements
         // items. Wait until we have opened the desired conversation to cause
         // any position changes.
         commitDestructiveActions(Utils.useTabletUI(mActivity.getActivityContext().getResources()));
+    }
+
+    @Override
+    public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+        SwipeableListView list = (SwipeableListView) view;
+        // Don't need to handle ENTER because it's auto-handled as a "click".
+        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                onListItemSelected(list.getSelectedView(), list.getSelectedItemPosition());
+            }
+            return true;
+        } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+            if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                final int position = list.getSelectedItemPosition();
+                final ConversationCursor cursor =
+                        (ConversationCursor) getAnimatedAdapter().getItem(position);
+
+                if (cursor != null) {
+                    final Conversation conv = cursor.getConversation();
+                    mCallbacks.onConversationFocused(conv);
+                } else {
+                    LogUtils.e(LOG_TAG,
+                            "unable to find conv at cursor pos=%s cursor=%s getPositionOffset=%s",
+                            position, cursor, getAnimatedAdapter().getPositionOffset(position));
+                }
+            }
+        }
+        return false;
     }
 
     @Override
