@@ -675,11 +675,6 @@ function setMessageHeaderSpacerHeight(messageDomId, spacerHeight) {
     setSpacerHeight(spacer, spacerHeight);
 }
 
-function setMessageFooterSpacerHeight(messageDomId, spacerHeight) {
-    var spacer = document.querySelector("#" + messageDomId + " > .mail-message-footer");
-    setSpacerHeight(spacer, spacerHeight);
-}
-
 function setSpacerHeight(spacer, spacerHeight) {
     if (!spacer) {
         console.log("can't set spacer for message with id: " + messageDomId);

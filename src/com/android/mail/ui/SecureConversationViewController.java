@@ -29,10 +29,8 @@ import android.webkit.WebSettings;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
-import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.browse.ConversationViewAdapter;
-import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.InlineAttachmentViewIntentBuilderCreator;
@@ -166,12 +164,6 @@ public class SecureConversationViewController implements
                 R.dimen.conversation_message_content_margin_side) / r.getDisplayMetrics().density);
     }
 
-    public void onDestroyView() {
-        if (mMessage != null && mMessage.getConversation() != null) {
-            AttachmentActionHandler.unregisterDismissListeners(mMessage.getConversation().uri);
-        }
-    }
-
     @Override
     public void onNotifierScroll(final int y) {
         // We need to decide whether or not to display the snap header.
@@ -222,8 +214,7 @@ public class SecureConversationViewController implements
 
         if (mMessage.hasAttachments) {
             mMessageFooterView.setVisibility(View.VISIBLE);
-            mMessageFooterView.bind(
-                    item, ConversationViewAdapter.newMessageFooterItem(null, item), false);
+            mMessageFooterView.bind(item, false);
         }
     }
 
@@ -299,23 +290,4 @@ public class SecureConversationViewController implements
     }
 
     // End MessageHeaderViewCallbacks implementations
-
-    // START MessageFooterCallbacks
-
-    @Override
-    public void setMessageSpacerHeight(MessageFooterItem item, int newSpacerHeight) {
-        // Do nothing.
-    }
-
-    @Override
-    public MessageFooterView getViewForItem(MessageFooterItem item) {
-        return mMessageFooterView;
-    }
-
-    @Override
-    public int getUpdatedHeight(MessageFooterItem item) {
-        return 0; // should never get called since we'll always have a footer view
-    }
-
-    // END MessageFooterCallbacks
 }

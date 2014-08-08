@@ -342,8 +342,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
     }
 
-    public static class MessageFooterItem extends ConversationOverlayItem implements
-            AttachmentActionHandler.AboveAttachmentLayoutDismissedListener {
+    public static class MessageFooterItem extends ConversationOverlayItem {
         private final ConversationViewAdapter mAdapter;
 
         /**
@@ -374,7 +373,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public void bindView(View v, boolean measureOnly) {
             final MessageFooterView attachmentsView = (MessageFooterView) v;
-            attachmentsView.bind(mHeaderItem, this, measureOnly);
+            attachmentsView.bind(mHeaderItem, measureOnly);
         }
 
         @Override
@@ -406,23 +405,6 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         public MessageHeaderItem getHeaderItem() {
             return mHeaderItem;
-        }
-
-        @Override
-        public void onOtherLayoutDismissed() {
-            final MessageFooterView view = mAdapter.mFooterCallbacks.getViewForItem(this);
-
-            // the item has a view, use the normal path
-            if (view != null) {
-                view.collapseAboveBarAttachmentsView();
-                return;
-            }
-
-            // the item is offscreen or otherwise doesn't have a view
-            // just update the HTML
-            final int newHeight = mAdapter.mFooterCallbacks.getUpdatedHeight(this);
-            setHeight(newHeight);
-            mAdapter.mFooterCallbacks.setMessageSpacerHeight(this, newHeight);
         }
     }
 

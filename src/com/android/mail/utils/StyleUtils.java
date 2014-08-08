@@ -24,30 +24,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.mail.text.LinkStyleSpan;
-import com.android.mail.text.UrlSpan;
 
 /**
  * Utility class for styling UI.
  */
 public class StyleUtils {
-
-    /**
-     * Removes any {@link android.text.style.URLSpan}s from the text view
-     * and replaces them with their non-underline version {@link com.android.mail.text.UrlSpan}.
-     */
-    public static void stripUnderlines(TextView textView) {
-        final Spannable spannable = (Spannable) textView.getText();
-        final URLSpan[] urls = textView.getUrls();
-
-        for (URLSpan span : urls) {
-            final int start = spannable.getSpanStart(span);
-            final int end = spannable.getSpanEnd(span);
-            spannable.removeSpan(span);
-            span = new UrlSpan(span.getURL());
-            spannable.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-    }
-
     /**
      * Removes any {@link android.text.style.URLSpan}s from the text view and replaces them with a
      * non-underline version {@link LinkStyleSpan} which calls the supplied listener when clicked.

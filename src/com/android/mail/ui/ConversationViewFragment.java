@@ -48,7 +48,6 @@ import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.analytics.AnalyticsTimer;
-import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationContainer.OverlayPosition;
 import com.android.mail.browse.ConversationFooterView.ConversationFooterCallbacks;
@@ -453,10 +452,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     public void onDestroyView() {
         super.onDestroyView();
         mConversationContainer.setOverlayAdapter(null);
-        // AdViewFragment has no conversation and will crash.
-        if (mConversation != null) {
-            AttachmentActionHandler.unregisterDismissListeners(mConversation.uri);
-        }
         mAdapter = null;
         resetLoadWaiting(); // be sure to unregister any active load observer
         mViewsCreated = false;
@@ -913,7 +908,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
      * @param convItem adapter item with data to render and measure
      * @return height of the rendered view in screen px
      */
-    public int measureOverlayHeight(ConversationOverlayItem convItem) {
+    private int measureOverlayHeight(ConversationOverlayItem convItem) {
         final int type = convItem.getType();
 
         final View convertView = mConversationContainer.getScrapView(type);
@@ -1619,31 +1614,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     public void setMessageDetailsExpanded(MessageHeaderItem i, boolean expanded, int heightBefore) {
         mDiff = (expanded ? 1 : -1) * Math.abs(i.getHeight() - heightBefore);
     }
-
-    // START MessageFooterCallbacks
-
-    @Override
-    public void setMessageSpacerHeight(MessageFooterItem item, int newSpacerHeight) {
-        mConversationContainer.invalidateSpacerGeometry();
-
-        // update message HTML spacer height
-        final int h = mWebView.screenPxToWebPx(newSpacerHeight);
-        LogUtils.i(LAYOUT_TAG, "setting HTML spacer h=%dwebPx (%dscreenPx)", h, newSpacerHeight);
-        mWebView.loadUrl(String.format("javascript:setMessageFooterSpacerHeight('%s', %s);",
-                mTemplates.getMessageDomId(item.getHeaderItem().getMessage()), h));
-    }
-
-    @Override
-    public MessageFooterView getViewForItem(MessageFooterItem item) {
-        return (MessageFooterView) mConversationContainer.getViewForItem(item);
-    }
-
-    @Override
-    public int getUpdatedHeight(MessageFooterItem item) {
-        return measureOverlayHeight(item);
-    }
-
-    // END MessageFooterCallbacks
 
     /**
      * @return {@code true} because either the Print or Print All menu item is shown in GMail
