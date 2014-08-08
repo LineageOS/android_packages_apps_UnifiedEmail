@@ -257,7 +257,8 @@ public class Message implements Parcelable, HtmlMessage {
                 TextUtils.equals(this.subject, o.subject) &&
                 TextUtils.equals(this.bodyHtml, o.bodyHtml) &&
                 TextUtils.equals(this.bodyText, o.bodyText) &&
-                Objects.equal(this.attachmentListUri, o.attachmentListUri);
+                Objects.equal(this.attachmentListUri, o.attachmentListUri) &&
+                Objects.equal(getAttachments(), o.getAttachments());
     }
 
     @Override
