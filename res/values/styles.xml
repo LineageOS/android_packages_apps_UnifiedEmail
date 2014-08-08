@@ -660,7 +660,13 @@
     </style>
 
     <style name="AttachmentMarginStyle">
-        <item name="android:layout_marginLeft">@dimen/attachment_margin_side</item>
+        <item name="android:layout_marginLeft">@dimen/attachment_padding_start</item>
+        <item name="android:layout_marginRight">@dimen/attachment_padding_end</item>
+    </style>
+
+    <style name="AttachmentPaddingStyle">
+        <item name="android:paddingLeft">@dimen/attachment_padding_start</item>
+        <item name="android:paddingRight">@dimen/attachment_padding_end</item>
     </style>
 
     <style name="AttachmentIconStyle">

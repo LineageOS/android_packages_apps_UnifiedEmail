@@ -121,7 +121,8 @@
     <dimen name="undo_text_padding">16dip</dimen>
     <dimen name="dismiss_separator_padding">16dip</dimen>
     <dimen name="teaser_text_padding">16dip</dimen>
-    <dimen name="attachment_margin_side">0dp</dimen>
+    <dimen name="attachment_padding_start">16dp</dimen>
+    <dimen name="attachment_padding_end">16dp</dimen>
     <dimen name="attachment_icon_padding">5dip</dimen>
     <dimen name="recipient_summary_margin">16dip</dimen>
 
