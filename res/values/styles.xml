@@ -57,12 +57,14 @@
         <item name="android:hint">@string/subject_hint</item>
         <item name="android:imeOptions">actionDone|flagNoExtractUi|flagNoFullscreen</item>
         <item name="android:inputType">textEmailSubject|textAutoCorrect|textCapSentences|textImeMultiLine|textMultiLine</item>
+        <item name="android:textAlignment">viewStart</item>
         <item name="android:textColorHint">@color/compose_label_hint</item>
     </style>
 
     <style name="ComposeBodyView" parent="@style/ComposeEditTextView">
         <item name="android:imeOptions">flagNoFullscreen|actionDone|flagNoEnterAction</item>
         <item name="android:inputType">textLongMessage|textMultiLine|textAutoCorrect|textCapSentences</item>
+        <item name="android:textAlignment">viewStart</item>
         <item name="android:textColorHint">@color/compose_label_hint</item>
     </style>
 
@@ -73,10 +75,11 @@
     </style>
 
     <style name="ComposeHeading">
-        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center_vertical</item>
+        <item name="android:minWidth">56dp</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:textColor">@color/compose_label_text</item>
         <item name="android:textSize">@dimen/compose_header_text_size</item>
