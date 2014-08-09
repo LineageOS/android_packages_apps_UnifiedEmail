@@ -18,7 +18,10 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="to">Fir</string>
+  <string name="body_hint">E-Mail schreiwen</string>
   <string name="add_file_attachment">Fichier drunhänken</string>
+  <string name="add_video_attachment">Video drunhänken</string>
+  <string name="save_draft">Brouillon späicheren</string>
   <string name="discard">Verwerfen</string>
   <string name="compose">Schreiwen</string>
   <string-array name="compose_modes">
@@ -26,10 +29,14 @@
     <item>Reply all</item>
     <item>Weider</item>
   </string-array>
+  <string name="forward_attribution_no_headers">---------- Weidergeleete Message ----------</string>
   <string name="forward">Weider</string>
   <string name="menu_compose">Schreiwen</string>
   <string name="menu_settings">Astellungen</string>
   <string name="save_attachment">Späicheren</string>
+  <string name="download_again">Erëm eroflueden</string>
+  <string name="please_wait">Waart w.e.g.\u2026</string>
+  <string name="menu_photo_share">Deelen</string>
   <string name="choosertitle_sharevia">Deelen iwwer</string>
   <string name="contextmenu_add_contact">Kontakt dobäisetzen</string>
   <string name="contextmenu_send_mail">E-Mail schécken</string>

@@ -293,23 +293,23 @@
   <string name="preference_removal_action_title">ئه‌رشیف &amp; سڕینه‌وه‌ی کار</string>
   <string-array name="prefEntries_removal_action">
     <item>تەنها پیشاندانی ئەرشیف</item>
-    <item>تەنها سڕینەوە پیشآنبدە</item>
+    <item>تەنها سڕینەوە پیشانبدە</item>
     <item>پیشاندانی ئەرشیف &amp; سڕینەوە</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
     <item>تەنها پیشاندانی ئەرشیف</item>
-    <item>تەنها سڕینەوە پیشآنبدە</item>
+    <item>تەنها سڕینەوە پیشانبدە</item>
     <item>پیشاندانی ئەرشیف &amp; سڕینەوە</item>
   </string-array>
   <string name="prefDialogTitle_removal_action">ئه‌رشیف &amp; سڕینه‌وه‌ی کار</string>
   <string name="preferences_default_reply_all_title">وەڵامدانەوەی هەموو</string>
-  <string name="preferences_default_reply_all_summary">به‌کارهێنان وه‌ک بنه‌ڕه‌ت بۆ وه‌ڵامدانه‌وه‌ی نامه‌</string>
-  <string name="preference_swipe_title_archive">ساوین بۆ ئەرشیف</string>
-  <string name="preference_swipe_title_delete">ساوین بۆ سڕینەوە</string>
+  <string name="preferences_default_reply_all_summary">به‌کارهێنان وه‌ک بنێڕه‌ت بۆ وه‌ڵامدانه‌وه‌ی نامه‌</string>
+  <string name="preference_swipe_title_archive">سوین بۆ ئەرشیف</string>
+  <string name="preference_swipe_title_delete">سوین بۆ سڕینەوە</string>
   <string name="preference_swipe_description">لە ڕیزبەدنی گفتوگۆ</string>
   <string name="preference_sender_image_title">وێنەی نێرەر</string>
   <string name="preference_sender_image_description">پیشاندانی لە پاڵ ناو لە ڕیزبەندی گفتوگۆ</string>
-  <string name="swipe_down_to_refresh">ساوین بۆ خوارەوە بۆ پاکردنەوە</string>
+  <string name="swipe_down_to_refresh">سوین بۆ خوارەوە بۆ پاکردنەوە</string>
   <string name="checking_for_mail">پشکنینی ئیمەیڵ</string>
   <string name="empty_trash">تەنەکەی خۆڵ بەتاڵ</string>
   <string name="empty_spam">بەتاڵ زبڵ</string>
