@@ -265,6 +265,11 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
+    public void onConversationFocused(Conversation conversation) {
+        // Do nothing
+    }
+
+    @Override
     public void showWaitForInitialization() {
         super.showWaitForInitialization();
         replaceFragment(getWaitFragment(), FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT,
