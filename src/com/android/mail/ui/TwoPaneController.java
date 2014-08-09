@@ -70,6 +70,8 @@ public final class TwoPaneController extends AbstractActivityController implemen
      */
     private boolean mSavedMiscellaneousView = false;
 
+    private boolean mIsTabletLandscape;
+
     public TwoPaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
     }
@@ -152,6 +154,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         }
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
         mActivity.getWindow().setBackgroundDrawable(null);
+        mIsTabletLandscape = !mActivity.getResources().getBoolean(R.bool.list_collapsible);
 
         final FolderListFragment flf = getFolderListFragment();
         flf.setMiniDrawerEnabled(true);
@@ -336,8 +339,8 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    protected void showConversation(Conversation conversation) {
-        super.showConversation(conversation);
+    protected void showConversation(Conversation conversation, boolean markAsRead) {
+        super.showConversation(conversation, markAsRead);
 
         // 2-pane can ignore inLoaderCallbacks because it doesn't use
         // FragmentManager.popBackStack().
@@ -363,6 +366,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         // When a mode change is required, wait for onConversationVisibilityChanged(), the signal
         // that the mode change animation has finished, before rendering the conversation.
         mConversationToShow = conversation;
+        mCurrentConversationJustPeeking = !markAsRead;
 
         final int mode = mViewMode.getMode();
         LogUtils.i(LOG_TAG, "IN TPC.showConv, oldMode=%s conv=%s", mode, mConversationToShow);
@@ -376,6 +380,13 @@ public final class TwoPaneController extends AbstractActivityController implemen
             onConversationVisibilityChanged(true);
         } else {
             LogUtils.i(LOG_TAG, "TPC.showConversation will wait for TPL.animationEnd to show!");
+        }
+    }
+
+    @Override
+    public void onConversationFocused(Conversation conversation) {
+        if (mIsTabletLandscape) {
+            showConversation(conversation, false /* markAsRead */);
         }
     }
 

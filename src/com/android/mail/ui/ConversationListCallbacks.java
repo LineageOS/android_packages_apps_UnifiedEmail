@@ -40,6 +40,12 @@ public interface ConversationListCallbacks {
     void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks);
 
     /**
+     * Possibly show the conversation provided here depending on implementation.
+     * Used mainly by two-pane landscape mode when we are navigating with the keyboard.
+     */
+    void onConversationFocused(Conversation conversation);
+
+    /**
      * Called whenever CAB mode has been entered via long press or selecting a sender image.
      */
     void onCabModeEntered();
