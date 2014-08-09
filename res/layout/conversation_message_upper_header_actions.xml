@@ -16,25 +16,30 @@
      limitations under the License.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
+
     <ImageView
         android:id="@+id/edit_draft"
-        style="@style/MessageHeaderActionButtonStyle"
-        android:visibility="gone"
+        android:contentDescription="@string/resume_draft"
         android:src="@drawable/ic_edit_24dp"
-        android:contentDescription="@string/resume_draft" />
+        android:visibility="gone"
+        style="@style/MessageHeaderActionButtonStyle" />
+
     <ImageView
         android:id="@+id/reply"
-        style="@style/MessageHeaderActionButtonStyle"
+        android:contentDescription="@string/reply"
         android:src="@drawable/ic_reply_24dp"
-        android:contentDescription="@string/reply" />
+        style="@style/MessageHeaderActionButtonStyle" />
+
     <ImageView
         android:id="@+id/reply_all"
-        style="@style/MessageHeaderActionButtonStyle"
+        android:contentDescription="@string/reply_all"
         android:src="@drawable/ic_reply_all_24dp"
-        android:contentDescription="@string/reply_all" />
+        style="@style/MessageHeaderActionButtonStyle" />
+
     <ImageView
         android:id="@+id/overflow"
-        android:layout_height="@dimen/message_header_action_button_height"
         android:layout_width="@dimen/message_header_action_button_width"
+        android:layout_height="@dimen/message_header_action_button_height"
         style="@style/OverflowButtonStyle" />
+
 </merge>

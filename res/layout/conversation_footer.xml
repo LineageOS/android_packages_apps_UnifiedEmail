@@ -33,18 +33,21 @@
         <TextView
             android:id="@+id/reply_button"
             android:drawableTop="@drawable/ic_reply_24dp"
+            android:focusable="true"
             android:text="@string/reply"
             style="@style/ConversationFooterButtonStyle" />
 
         <TextView
             android:id="@+id/reply_all_button"
             android:drawableTop="@drawable/ic_reply_all_24dp"
+            android:focusable="true"
             android:text="@string/reply_all"
             style="@style/ConversationFooterButtonStyle" />
 
         <TextView
             android:id="@+id/forward_button"
             android:drawableTop="@drawable/ic_forward_24dp"
+            android:focusable="true"
             android:text="@string/forward"
             style="@style/ConversationFooterButtonStyle" />
 
