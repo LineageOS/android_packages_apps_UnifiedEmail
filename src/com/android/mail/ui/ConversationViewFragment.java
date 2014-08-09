@@ -30,6 +30,7 @@ import android.os.SystemClock;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
@@ -97,7 +98,7 @@ import java.util.Set;
 public class ConversationViewFragment extends AbstractConversationViewFragment implements
         SuperCollapsedBlock.OnClickListener, OnLayoutChangeListener,
         MessageHeaderView.MessageHeaderViewCallbacks, MessageFooterView.MessageFooterCallbacks,
-        WebViewContextMenu.Callbacks, ConversationFooterCallbacks {
+        WebViewContextMenu.Callbacks, ConversationFooterCallbacks, View.OnKeyListener {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -129,6 +130,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     protected ConversationContainer mConversationContainer;
 
     protected ConversationWebView mWebView;
+
+    private ViewGroup mTopmostOverlay;
 
     private ConversationViewProgressController mProgressController;
 
@@ -276,7 +279,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         mAdapter = new ConversationViewAdapter(mActivity, this,
                 getLoaderManager(), this, this, getContactInfoSource(), this, this,
-                getListController(), this, mAddressCache, dateBuilder, mBidiFormatter);
+                getListController(), this, mAddressCache, dateBuilder, mBidiFormatter, this);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         // set up snap header (the adapter usually does this with the other ones)
@@ -354,9 +357,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 .findViewById(R.id.conversation_container);
         mConversationContainer.setAccountController(this);
 
-        final ViewGroup topmostOverlay =
+        mTopmostOverlay =
                 (ViewGroup) mConversationContainer.findViewById(R.id.conversation_topmost_overlay);
-        inflateSnapHeader(topmostOverlay, inflater);
+        mTopmostOverlay.setOnKeyListener(this);
+        inflateSnapHeader(mTopmostOverlay, inflater);
         mConversationContainer.setupSnapHeader();
 
         setupNewMessageBar();
@@ -1113,6 +1117,26 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         }
         final String messageId = mTemplates.getMessageIdForDomId(domMessageId);
         return getMessageCursor().getMessageForId(Long.parseLong(messageId));
+    }
+
+    @Override
+    public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+        // Only care about enter and esc
+        View currFocus = mActivity.getWindow().getCurrentFocus();
+        if (keyCode == KeyEvent.KEYCODE_BACK && currFocus != null &&
+                currFocus.getId() != R.id.conversation_topmost_overlay) {
+            if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                mTopmostOverlay.requestFocus();
+            }
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_ENTER && (currFocus == null ||
+                currFocus.getId() == R.id.conversation_topmost_overlay)) {
+            if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                mConversationContainer.findViewById(R.id.upper_header).requestFocus();
+            }
+            return true;
+        }
+        return false;
     }
 
     public class ConversationWebViewClient extends AbstractConversationWebViewClient {

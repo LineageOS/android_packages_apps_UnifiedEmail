@@ -42,6 +42,7 @@ public abstract class ConversationOverlayItem {
      * @see Adapter#getItemViewType(int)
      */
     public abstract @ConversationViewType int getType();
+
     /**
      * Inflate and perform one-time initialization on a view for later binding.
      */
@@ -55,6 +56,7 @@ public abstract class ConversationOverlayItem {
      * know they can cut certain corners that do not affect a view's height)
      */
     public abstract void bindView(View v, boolean measureOnly);
+
     /**
      * Returns true if this overlay view is meant to be positioned right on top of the overlay
      * below. This special positioning allows {@link ConversationContainer} to stack overlays
@@ -62,6 +64,10 @@ public abstract class ConversationOverlayItem {
      * apart.
      */
     public abstract boolean isContiguous();
+
+    public View.OnKeyListener getOnKeyListener() {
+        return null;
+    }
 
     /**
      * Returns true if this overlay view is in its expanded state.
@@ -180,5 +186,16 @@ public abstract class ConversationOverlayItem {
      */
     public void rebindView(View view) {
         // DO NOTHING
+    }
+
+    public void registerOnKeyListeners(View... views) {
+        final View.OnKeyListener listener = getOnKeyListener();
+        if (listener != null) {
+            for (View v : views) {
+                if (v != null) {
+                    v.setOnKeyListener(listener);
+                }
+            }
+        }
     }
 }
