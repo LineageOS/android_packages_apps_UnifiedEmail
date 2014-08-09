@@ -750,6 +750,7 @@ public class FolderListFragment extends ListFragment implements
         } else {
             mMiniDrawerView.setVisibility(View.INVISIBLE);
             mListView.setVisibility(View.VISIBLE);
+            mListView.requestFocus();
         }
     }
 

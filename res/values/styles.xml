@@ -615,14 +615,26 @@
         <item name="android:layout_marginRight">@dimen/conversation_border_margin_side</item>
     </style>
 
-    <style name="MiniDrawerFolderStyle">
-        <item name="android:paddingLeft">24dp</item>
-        <item name="android:paddingRight">24dp</item>
+    <style name="MiniDrawerItemStyleBase">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:focusable">true</item>
+        <item name="android:nextFocusRight">@+id/conversation_list_view</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
+    <style name="MiniDrawerFolderStyle" parent="@style/MiniDrawerItemStyleBase">
         <item name="android:paddingTop">16dp</item>
         <item name="android:paddingBottom">16dp</item>
-        <item name="android:scaleType">fitCenter</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
-        </style>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+    </style>
+
+    <style name="MiniDrawerAccountStyle" parent="@style/MiniDrawerItemStyleBase">
+        <item name="android:paddingTop">18dp</item>
+        <item name="android:paddingBottom">18dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+    </style>
 
     <style name="FolderListItemStartStyle">
         <item name="android:layout_marginLeft">@dimen/folder_list_item_start_margin</item>

@@ -19,9 +19,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="68dp"
-    android:paddingTop="18dp"
-    android:paddingBottom="18dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:background="?android:attr/selectableItemBackground"
-    android:scaleType="fitCenter" />
+    style="@style/MiniDrawerAccountStyle" />
