@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto">
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Compose Styles -->
     <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextView">
         <item name="android:layout_gravity">center_vertical</item>
@@ -217,7 +217,7 @@
 
     <style name="SnackBarActionTextStyle">
         <item name="android:layout_gravity">right</item>
-        <item name="android:layout_marginRight">@dimen/snack_bar_margin_horizontal</item>
+        <item name="android:paddingRight">@dimen/snack_bar_margin_horizontal</item>
     </style>
 
     <!-- Undo bar styles -->
