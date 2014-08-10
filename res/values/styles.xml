@@ -112,6 +112,10 @@
         <item name="android:paddingRight">@dimen/compose_content_end_padding</item>
     </style>
 
+    <style name="ComposeToDropdownAnchor">
+        <item name="android:layout_marginRight">@dimen/compose_content_end_padding</item>
+    </style>
+
     <style name="BaseComposeFieldButton">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">@dimen/compose_header_min_height</item>
