@@ -559,6 +559,7 @@ public class WidgetService extends RemoteViewsService {
                 // There is no reason to overwrite a valid non-null folder name with an empty string
                 if (!TextUtils.isEmpty(folderName)) {
                     remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
+                    remoteViews.setViewVisibility(R.id.widget_compose, View.VISIBLE);
                     remoteViews.setTextViewText(R.id.widget_folder, folderName);
                 } else {
                     LogUtils.e(LOG_TAG, "Empty folder name");
