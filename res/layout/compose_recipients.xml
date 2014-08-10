@@ -39,21 +39,37 @@
                 style="@style/ComposeHeading" />
 
             <LinearLayout
-                android:id="@+id/compose_to_dropdown_anchor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <com.android.ex.chips.RecipientEditTextView
-                    android:id="@+id/to"
-                    android:contentDescription="@string/to"
-                    android:dropDownAnchor="@id/to_content"
-                    style="@style/ToRecipientEditTextViewStyle" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/add_cc_bcc"
-                    android:src="@drawable/ic_expand_more_24dp"
-                    android:contentDescription="@string/add_cc_label"
-                    style="@style/ComposeFieldButton" />
+                    <com.android.ex.chips.RecipientEditTextView
+                        android:id="@+id/to"
+                        android:contentDescription="@string/to"
+                        android:dropDownAnchor="@id/to_content"
+                        style="@style/ToRecipientEditTextViewStyle" />
+
+                    <ImageView
+                        android:id="@+id/add_cc_bcc"
+                        android:src="@drawable/ic_expand_more_24dp"
+                        android:contentDescription="@string/add_cc_label"
+                        style="@style/ComposeFieldButton" />
+
+                </LinearLayout>
+
+                <!--
+                    0dp high space just so the anchor has appropriate right padding since it was
+                    removed for To field to compensate the show cc/bcc button
+                -->
+                <Space
+                    android:id="@+id/compose_to_dropdown_anchor"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    style="@style/ComposeToDropdownAnchor" />
 
             </LinearLayout>
 
