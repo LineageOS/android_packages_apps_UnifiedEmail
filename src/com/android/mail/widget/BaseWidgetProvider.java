@@ -328,8 +328,6 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         if (!isAccountValid(context, account) || !isFolderValid(context, folderUri)) {
             // Widget has not been configured yet
             remoteViews.setViewVisibility(R.id.widget_folder, View.GONE);
-            remoteViews.setViewVisibility(R.id.widget_account_noflip, View.GONE);
-            remoteViews.setViewVisibility(R.id.widget_account_unread_flipper, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_compose, View.GONE);
             remoteViews.setViewVisibility(R.id.conversation_list, View.GONE);
             remoteViews.setViewVisibility(R.id.empty_conversation_list, View.GONE);

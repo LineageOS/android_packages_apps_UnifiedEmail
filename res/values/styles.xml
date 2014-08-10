@@ -402,11 +402,7 @@
     </style>
 
     <!-- Widget styles -->
-    <style name="WidgetTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
-        <item name="android:singleLine">true</item>
-    </style>
-
-    <style name="WidgetSubtitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle.Inverse">
+    <style name="WidgetTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:singleLine">true</item>
     </style>
 

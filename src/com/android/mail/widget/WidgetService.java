@@ -99,13 +99,7 @@ public class WidgetService extends RemoteViewsService {
         if (!TextUtils.isEmpty(folderDisplayName)) {
             remoteViews.setTextViewText(R.id.widget_folder, folderDisplayName);
         }
-        remoteViews.setViewVisibility(R.id.widget_account_noflip, View.VISIBLE);
 
-        if (!TextUtils.isEmpty(account.getDisplayName())) {
-            remoteViews.setTextViewText(R.id.widget_account_noflip, account.getDisplayName());
-            remoteViews.setTextViewText(R.id.widget_account, account.getDisplayName());
-        }
-        remoteViews.setViewVisibility(R.id.widget_account_unread_flipper, View.GONE);
         remoteViews.setViewVisibility(R.id.widget_compose, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.conversation_list, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.empty_conversation_list, View.VISIBLE);
@@ -568,25 +562,6 @@ public class WidgetService extends RemoteViewsService {
                     remoteViews.setTextViewText(R.id.widget_folder, folderName);
                 } else {
                     LogUtils.e(LOG_TAG, "Empty folder name");
-                }
-                if (!TextUtils.isEmpty(mAccount.getDisplayName())) {
-                    remoteViews.setTextViewText(R.id.widget_account_noflip,
-                            mAccount.getDisplayName());
-                    remoteViews.setTextViewText(R.id.widget_account, mAccount.getDisplayName());
-                }
-
-                final CharSequence unreadCountString = Utils
-                        .getUnreadMessageString(mContext.getApplicationContext(), unreadCount);
-
-                // If there are 0 unread messages, hide the unread count text view.
-                // Otherwise, show the unread count.
-                if (unreadCount == 0) {
-                    remoteViews.setViewVisibility(R.id.widget_account_noflip, View.VISIBLE);
-                    remoteViews.setViewVisibility(R.id.widget_account_unread_flipper, View.GONE);
-                } else {
-                    remoteViews.setViewVisibility(R.id.widget_account_noflip, View.GONE);
-                    remoteViews.setViewVisibility(R.id.widget_account_unread_flipper, View.VISIBLE);
-                    remoteViews.setTextViewText(R.id.widget_unread_count, unreadCountString);
                 }
 
                 appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
