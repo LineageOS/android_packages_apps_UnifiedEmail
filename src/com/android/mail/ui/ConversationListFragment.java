@@ -156,6 +156,9 @@ public final class ConversationListFragment extends Fragment implements
     private boolean mInitialCursorLoading;
 
     private @IdRes int mNextFocusLeftId;
+    // Tracks if a onKey event was initiated from the listview (received ACTION_DOWN before
+    // ACTION_UP). If not, the listview only receives ACTION_UP.
+    private boolean mKeyInitiatedFromList;
 
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
@@ -627,7 +630,12 @@ public final class ConversationListFragment extends Fragment implements
         // Don't need to handle ENTER because it's auto-handled as a "click".
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
             if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                onListItemSelected(list.getSelectedView(), list.getSelectedItemPosition());
+                if (mKeyInitiatedFromList) {
+                    onListItemSelected(list.getSelectedView(), list.getSelectedItemPosition());
+                }
+                mKeyInitiatedFromList = false;
+            } else if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                mKeyInitiatedFromList = true;
             }
             return true;
         } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {

@@ -21,11 +21,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.ActionBar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ListView;
 
@@ -43,7 +45,7 @@ import com.android.mail.utils.Utils;
  * abounds.
  */
 public final class TwoPaneController extends AbstractActivityController implements
-        ConversationViewFrame.DownEventListener, TwoPaneLayout.TwoPaneLayoutListener {
+        ConversationViewFrame.DownEventListener {
 
     private static final String SAVED_MISCELLANEOUS_VIEW = "saved-miscellaneous-view";
     private static final String SAVED_MISCELLANEOUS_VIEW_TRANSACTION_ID =
@@ -157,7 +159,6 @@ public final class TwoPaneController extends AbstractActivityController implemen
             return false;
         }
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
-        mLayout.setLayoutListener(this);
         mActivity.getWindow().setBackgroundDrawable(null);
         mIsTabletLandscape = !mActivity.getResources().getBoolean(R.bool.list_collapsible);
 
@@ -398,6 +399,13 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
+    public final void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
+        super.onConversationSelected(conversation, inLoaderCallbacks);
+        // Shift the focus to the conversation in landscape mode
+        mPagerController.focusPager();
+    }
+
+    @Override
     public void onConversationFocused(Conversation conversation) {
         if (mIsTabletLandscape) {
             showConversation(conversation, false /* markAsRead */);
@@ -606,10 +614,22 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    public void onListViewLayout(boolean isOnScreen) {
-        ConversationListFragment clf = getConversationListFragment();
-        if (clf != null && clf.getListView() != null) {
-            clf.getListView().setFocusable(isOnScreen);
+    public boolean onInterceptKeyFromCV(int keyCode, KeyEvent keyEvent, boolean navigateAway) {
+        // Override left/right key presses in landscape mode.
+        if (navigateAway) {
+            if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                ConversationListFragment clf = getConversationListFragment();
+                if (clf != null) {
+                    clf.getListView().requestFocus();
+                }
+            }
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean isTwoPaneLandscape() {
+        return mIsTabletLandscape;
     }
 }
