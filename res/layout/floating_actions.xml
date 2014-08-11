@@ -32,8 +32,6 @@
         android:layout_gravity="bottom"
         android:background="@color/snack_bar_background_color"
         android:clickable="true"
-        android:paddingTop="@dimen/snack_bar_margin_vertical"
-        android:paddingBottom="@dimen/snack_bar_margin_vertical"
         android:visibility="gone">
 
         <!-- These children are visible when description and action text fit on one line -->
@@ -50,6 +48,8 @@
                 android:layout_marginLeft="@dimen/snack_bar_margin_horizontal"
                 android:layout_marginRight="@dimen/snack_bar_margin_horizontal"
                 android:layout_weight="1"
+                android:paddingTop="@dimen/snack_bar_margin_vertical"
+                android:paddingBottom="@dimen/snack_bar_margin_vertical"
                 android:textColor="@android:color/white" />
 
             <TextView
@@ -57,6 +57,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:paddingTop="@dimen/snack_bar_margin_vertical"
+                android:paddingBottom="@dimen/snack_bar_margin_vertical"
                 android:textAllCaps="true"
                 android:textColor="@color/snack_bar_action_text_color"
                 style="@style/SnackBarActionTextStyle"/>
@@ -74,6 +76,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/snack_bar_margin_horizontal"
                 android:layout_marginRight="@dimen/snack_bar_margin_horizontal"
+                android:paddingTop="@dimen/snack_bar_margin_vertical"
+                android:paddingBottom="@dimen/snack_bar_margin_vertical"
                 android:textColor="@android:color/white" />
 
             <TextView
@@ -83,6 +87,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="@dimen/snack_bar_margin_horizontal"
                 android:layout_marginRight="@dimen/snack_bar_margin_horizontal"
+                android:paddingTop="@dimen/snack_bar_margin_vertical"
+                android:paddingBottom="@dimen/snack_bar_margin_vertical"
                 android:textAllCaps="true"
                 android:textColor="@color/snack_bar_action_text_color"
                 style="@style/SnackBarActionTextStyle"/>
