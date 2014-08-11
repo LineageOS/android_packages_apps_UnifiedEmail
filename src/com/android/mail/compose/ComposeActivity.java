@@ -1423,7 +1423,7 @@ public class ComposeActivity extends ActionBarActivity
         } else {
             actionBar.setTitle(null);
             if (mComposeModeAdapter == null) {
-                mComposeModeAdapter = new ComposeModeAdapter(this);
+                mComposeModeAdapter = new ComposeModeAdapter(actionBar.getThemedContext());
             }
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             actionBar.setListNavigationCallbacks(mComposeModeAdapter, this);
@@ -3452,16 +3452,18 @@ public class ComposeActivity extends ActionBarActivity
 
     private class ComposeModeAdapter extends ArrayAdapter<String> {
 
+        private Context mContext;
         private LayoutInflater mInflater;
 
         public ComposeModeAdapter(Context context) {
             super(context, R.layout.compose_mode_item, R.id.mode, getResources()
                     .getStringArray(R.array.compose_modes));
+            mContext = context;
         }
 
         private LayoutInflater getInflater() {
             if (mInflater == null) {
-                mInflater = LayoutInflater.from(getContext());
+                mInflater = LayoutInflater.from(mContext);
             }
             return mInflater;
         }
