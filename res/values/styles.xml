@@ -17,7 +17,7 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- Compose Styles -->
-    <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextView">
+    <style name="RecipientEditTextViewStyleBase" parent="@style/RecipientEditTextView">
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:maxLines">@integer/chips_max_lines</item>
@@ -25,10 +25,11 @@
         <item name="android:paddingBottom">12dp</item>
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">0dp</item>
-        <item name="android:popupElevation">0dp</item>
         <item name="android:textColor">@color/compose_user_text</item>
         <item name="android:textSize">@dimen/compose_header_text_size</item>
     </style>
+
+    <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextViewStyleBase" />
 
     <style name="ToRecipientEditTextViewStyle" parent="@style/RecipientEditTextViewStyle">
         <item name="android:layout_width">0dp</item>
