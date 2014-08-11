@@ -1310,6 +1310,8 @@ public class FolderListFragment extends ListFragment implements
 
             footerItemView.findViewById(R.id.top_border).setVisibility(
                     item.shouldShowTopBorder() ? View.VISIBLE : View.GONE);
+            footerItemView.findViewById(R.id.bottom_margin).setVisibility(
+                    item.shouldIncludeBottomMargin() ? View.VISIBLE : View.GONE);
 
             // adjust the text of the footer item
             final TextView textView = (TextView) footerItemView.
@@ -1346,6 +1348,7 @@ public class FolderListFragment extends ListFragment implements
 
             if (!mFooterItems.isEmpty()) {
                 mFooterItems.get(0).setShowTopBorder(true);
+                mFooterItems.get(mFooterItems.size() - 1).setIncludeBottomMargin(true);
             }
 
             notifyDataSetChanged();
@@ -1469,6 +1472,7 @@ public class FolderListFragment extends ListFragment implements
         private final int mTextResourceID;
 
         private boolean mShowTopBorder;
+        private boolean mIncludeBottomMargin;
 
         private FooterItem(final int imageResourceID, final int textResourceID) {
             mImageResourceID = imageResourceID;
@@ -1512,6 +1516,14 @@ public class FolderListFragment extends ListFragment implements
 
         public void setShowTopBorder(boolean show) {
             mShowTopBorder = show;
+        }
+
+        public boolean shouldIncludeBottomMargin() {
+            return mIncludeBottomMargin;
+        }
+
+        public void setIncludeBottomMargin(boolean include) {
+            mIncludeBottomMargin = include;
         }
 
         // for analytics
