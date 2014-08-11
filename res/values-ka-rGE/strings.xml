@@ -331,8 +331,8 @@
     <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"გაუქმდეს ადრეული ნებართვები?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="3952553078559373729">"ადრე ნებადართული გამომგზავნებისგან ჩართული სურათების ჩვენების შეჩერება."</string>
     <string name="sender_whitelist_cleared" msgid="2490984995927904030">"სურათები ავტომატურად არ გამოჩნდება."</string>
-    <string name="preferences_signature_title" msgid="2318034745474929902">"ხელმოწერა"</string>
-    <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"ხელმოწერა"</string>
+    <string name="preferences_signature_title" msgid="2318034745474929902">"მინაწერი"</string>
+    <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"მინაწერი"</string>
     <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"არ არის დაყენებული"</string>
     <string name="notification_action_reply" msgid="8378725460102575919">"პასუხი"</string>
     <string name="notification_action_reply_all" msgid="5693469099941000037">"პასუხი ყველას"</string>
