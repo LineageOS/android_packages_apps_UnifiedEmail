@@ -1109,14 +1109,18 @@ public class ComposeActivity extends ActionBarActivity
             }
         }
         message.accountUri = null;
+        message.setFrom(computeFromForAccount(selectedReplyFromAccount));
+        message.draftType = getDraftType(mode);
+        return message;
+    }
+
+    protected String computeFromForAccount(ReplyFromAccount selectedReplyFromAccount) {
         final String email = selectedReplyFromAccount != null ? selectedReplyFromAccount.address
                 : mAccount != null ? mAccount.getEmailAddress() : null;
         final String senderName = selectedReplyFromAccount != null ? selectedReplyFromAccount.name
                 : mAccount != null ? mAccount.getSenderName() : null;
         final Address address = new Address(email, senderName);
-        message.setFrom(address.toHeader());
-        message.draftType = getDraftType(mode);
-        return message;
+        return address.toHeader();
     }
 
     private static String formatSenders(final String string) {
