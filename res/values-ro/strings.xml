@@ -65,6 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"Raportaţi phishing"</string>
     <string name="delete" msgid="6784262386780496958">"Ștergeţi"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"Ștergeţi mesajele nefinalizate"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"Ștergerea a eșuat"</string>
     <string name="refresh" msgid="1533748989749277511">"Actualizaţi"</string>
     <string name="reply" msgid="8337757482824207118">"Răspundeţi"</string>
     <string name="reply_all" msgid="5366796103758360957">"Răspundeți tuturor"</string>
@@ -110,7 +111,6 @@
     <string name="please_wait" msgid="3953824147776128899">"Aşteptaţi…"</string>
     <string name="saved" msgid="161536102236967534">"Salvat, <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="3878373998269062395">"Nu s-a descărcat. Reîncercați."</string>
-    <string name="attachments_header" msgid="6752739514995620140">"Ataşări"</string>
     <string name="menu_photo_save_all" msgid="2742869476474613396">"Salv. tot"</string>
     <string name="menu_photo_share" msgid="6410980274832639330">"Distrib."</string>
     <string name="menu_photo_share_all" msgid="3049053252719665320">"Distr. tot"</string>
@@ -386,7 +386,6 @@
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"Atingeți lung pentru a selecta o conversație, apoi atingeți pentru a selecta mai multe."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"Pictogramă dosar"</string>
     <string name="add_account" msgid="5905863370226612377">"Adăugați un cont"</string>
-    <string name="attached_message" msgid="4514369068177801675">"Mesaj atașat"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Ignorați sugestia"</string>
     <string name="auto_sync_off" msgid="3664082916022670831">"Sincronizarea automată este dezactivată."</string>
     <string name="tap_to_enable_sync" msgid="30588010316606899">"Atingeți pentru a activa."</string>

@@ -65,6 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"گزارش فیشینگ"</string>
     <string name="delete" msgid="6784262386780496958">"حذف"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"صرفنظر کردن از پیش‌نویس‌ها"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"نادیده گرفته نشد"</string>
     <string name="refresh" msgid="1533748989749277511">"بازخوانی"</string>
     <string name="reply" msgid="8337757482824207118">"پاسخ"</string>
     <string name="reply_all" msgid="5366796103758360957">"پاسخ به همه"</string>
@@ -110,7 +111,6 @@
     <string name="please_wait" msgid="3953824147776128899">"لطفاً منتظر بمانید…"</string>
     <string name="saved" msgid="161536102236967534">"ذخیره شده، <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="3878373998269062395">"دانلود نشد. برای امتحان مجدد لمس کنید."</string>
-    <string name="attachments_header" msgid="6752739514995620140">"پیوست‌ها"</string>
     <string name="menu_photo_save_all" msgid="2742869476474613396">"ذخیره همه"</string>
     <string name="menu_photo_share" msgid="6410980274832639330">"اشتراک‌گذاری"</string>
     <string name="menu_photo_share_all" msgid="3049053252719665320">"اشتراک‌گذاری همه"</string>
@@ -386,7 +386,6 @@
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"برای انتخاب یک مکالمه لمس کرده، نگه دارید، سپس برای انتخاب موارد بیشتر لمس کنید."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"نماد پوشه"</string>
     <string name="add_account" msgid="5905863370226612377">"افزودن حساب"</string>
-    <string name="attached_message" msgid="4514369068177801675">"پیام پیوست شده"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"رد کردن نکته راهنما"</string>
     <string name="auto_sync_off" msgid="3664082916022670831">"همگام‌سازی خودکار خاموش است."</string>
     <string name="tap_to_enable_sync" msgid="30588010316606899">"برای روشن کردن لمس کنید."</string>

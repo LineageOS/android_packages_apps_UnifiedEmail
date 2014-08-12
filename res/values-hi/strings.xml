@@ -18,8 +18,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for from (5159056500059912358) -->
-    <skip />
+    <string name="from" msgid="5159056500059912358">"प्रेषक"</string>
     <string name="to" msgid="3971614275716830581">"प्रति"</string>
     <string name="cc" msgid="8768828862207919684">"Cc"</string>
     <string name="bcc" msgid="519303553518479171">"Bcc"</string>
@@ -66,6 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"फ़िशिंग की रिपोर्ट करें"</string>
     <string name="delete" msgid="6784262386780496958">"हटाएं"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"अधूरा ईमेल छोड़ें"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"विफल संदेशों को छोड़ें"</string>
     <string name="refresh" msgid="1533748989749277511">"रीफ्रेश करें"</string>
     <string name="reply" msgid="8337757482824207118">"प्रत्‍युत्तर दें"</string>
     <string name="reply_all" msgid="5366796103758360957">"सभी को जवाब दें"</string>
@@ -111,7 +111,6 @@
     <string name="please_wait" msgid="3953824147776128899">"कृपया प्रतीक्षा करें…"</string>
     <string name="saved" msgid="161536102236967534">"सहेजा गया, <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="3878373998269062395">"डाउनलोड नहीं हो सका. पुनर्प्रयास हेतु स्पर्श करें."</string>
-    <string name="attachments_header" msgid="6752739514995620140">"अटैचमेंट"</string>
     <string name="menu_photo_save_all" msgid="2742869476474613396">"सभी सहेजें"</string>
     <string name="menu_photo_share" msgid="6410980274832639330">"साझा करें"</string>
     <string name="menu_photo_share_all" msgid="3049053252719665320">"सभी साझा करें"</string>
@@ -387,7 +386,6 @@
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"एक वार्तालाप चुनने के लिए स्पर्श करके रखें, फिर अधिक वार्तालाप चुनने के लिए स्पर्श करें."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"फ़ोल्डर आइकन"</string>
     <string name="add_account" msgid="5905863370226612377">"खाता जोड़ें"</string>
-    <string name="attached_message" msgid="4514369068177801675">"अनुलग्न किया गया संदेश"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"युक्ति ख़ारिज करें"</string>
     <string name="auto_sync_off" msgid="3664082916022670831">"स्वत: समन्वयन बंद है."</string>
     <string name="tap_to_enable_sync" msgid="30588010316606899">"चालू करने के लिए स्पर्श करें."</string>
