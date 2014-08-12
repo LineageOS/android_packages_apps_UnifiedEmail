@@ -370,12 +370,17 @@
         <item name="android:layout_marginStart">@dimen/compose_header_btn_padding</item>
     </style>
 
-    <style name="FolderTeaserMarginStartStyle" parent="FolderTeaserVerticalMarginStyle">
-        <item name="android:layout_marginStart">@dimen/folder_teaser_horizontal_padding</item>
+    <style name="FolderTeaserLabelMarginStyle">
+        <item name="android:layout_marginStart">@dimen/folder_teaser_label_start_padding</item>
+        <item name="android:layout_marginEnd">@dimen/folder_teaser_label_end_padding</item>
     </style>
 
-    <style name="FolderTeaserMarginEndStyle" parent="FolderTeaserVerticalMarginStyle">
-        <item name="android:layout_marginEnd">@dimen/folder_teaser_horizontal_padding</item>
+    <style name="FolderTeaserMarginStartStyle">
+        <item name="android:layout_marginStart">@dimen/folder_teaser_start_padding</item>
+    </style>
+
+    <style name="FolderTeaserMarginEndStyle">
+        <item name="android:layout_marginEnd">@dimen/folder_teaser_end_padding</item>
     </style>
 
     <style name="ArrowStyle">

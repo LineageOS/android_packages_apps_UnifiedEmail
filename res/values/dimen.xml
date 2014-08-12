@@ -184,8 +184,11 @@
 
     <dimen name="compose_attachment_tile_text_end_padding">4dip</dimen>
 
-    <dimen name="folder_teaser_vertical_padding">8dip</dimen>
-    <dimen name="folder_teaser_horizontal_padding">16dip</dimen>
+    <dimen name="folder_teaser_start_padding">24dp</dimen>
+    <dimen name="folder_teaser_end_padding">16dp</dimen>
+
+    <dimen name="folder_teaser_label_start_padding">24dp</dimen>
+    <dimen name="folder_teaser_label_end_padding">16dp</dimen>
 
     <dimen name="teaser_arrow_margin_start">16dip</dimen>
     <dimen name="teaser_arrow_margin_end">12dip</dimen>
