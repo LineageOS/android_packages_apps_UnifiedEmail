@@ -82,12 +82,15 @@ public abstract class MailAppProvider extends ContentProvider
             new LinkedHashMap<Uri, AccountCacheEntry>();
 
     private final Map<Uri, CursorLoader> mCursorLoaderMap = Maps.newHashMap();
+    /**
+     * When there is more than one {@link CursorLoader} we are considered finished only when all
+     * loaders finish.
+     */
+    private final Map<CursorLoader, Boolean> mAccountsLoaded = Maps.newHashMap();
 
     private ContentResolver mResolver;
     private static String sAuthority;
     private static MailAppProvider sInstance;
-
-    private volatile boolean mAccountsFullyLoaded = false;
 
     private SharedPreferences mSharedPrefs;
 
@@ -166,6 +169,7 @@ public abstract class MailAppProvider extends ContentProvider
             loader.stopLoading();
         }
         mCursorLoaderMap.clear();
+        mAccountsLoaded.clear();
     }
 
     @Override
@@ -177,7 +181,7 @@ public abstract class MailAppProvider extends ContentProvider
         // Validates and returns the projection that should be used.
         final String[] resultProjection = UIProviderValidator.validateAccountProjection(projection);
         final Bundle extras = new Bundle();
-        extras.putInt(AccountCursorExtraKeys.ACCOUNTS_LOADED, mAccountsFullyLoaded ? 1 : 0);
+        extras.putInt(AccountCursorExtraKeys.ACCOUNTS_LOADED, allAccountsLoaded() ? 1 : 0);
 
         // Make a copy of the account cache
         final List<AccountCacheEntry> accountList;
@@ -263,6 +267,7 @@ public abstract class MailAppProvider extends ContentProvider
             oldLoader.stopLoading();
         }
         mCursorLoaderMap.put(accountsQueryUri, accountsCursorLoader);
+        mAccountsLoaded.put(accountsCursorLoader, false);
     }
 
     private void addAccountImpl(Account account, Uri accountsQueryUri, boolean notify) {
@@ -397,7 +402,7 @@ public abstract class MailAppProvider extends ContentProvider
 
     static public Account getAccountFromAccountUri(Uri accountUri) {
         MailAppProvider provider = getInstance();
-        if (provider != null && provider.mAccountsFullyLoaded) {
+        if (provider != null && provider.allAccountsLoaded()) {
             synchronized(provider.mAccountCache) {
                 AccountCacheEntry entry = provider.mAccountCache.get(accountUri);
                 if (entry != null) {
@@ -438,25 +443,25 @@ public abstract class MailAppProvider extends ContentProvider
 
         // Update the internal state of this provider if the returned result set
         // represents all accounts
-        // TODO: determine what should happen with a heterogeneous set of accounts
-        final Bundle extra = data.getExtras();
-        mAccountsFullyLoaded = extra.getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
+        final boolean accountsFullyLoaded =
+                data.getExtras().getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
+        mAccountsLoaded.put(cursorLoader, accountsFullyLoaded);
 
-        final Set<Uri> newQueryUriMap = Sets.newHashSet();
+        final Set<Uri> newQueryUriSet = Sets.newHashSet();
 
         // We are relying on the fact that all accounts are added in the order specified in the
         // cursor.  Initially assume that we insert these items to at the end of the list
         while (data.moveToNext()) {
             final Account account = Account.builder().buildFrom(data);
             final Uri accountUri = account.uri;
-            newQueryUriMap.add(accountUri);
+            newQueryUriSet.add(accountUri);
 
             // preserve existing order if already present and this is a partial update,
             // otherwise add to the end
             //
             // N.B. this ordering policy means the order in which providers respond will affect
             // the order of accounts.
-            if (mAccountsFullyLoaded) {
+            if (accountsFullyLoaded) {
                 synchronized (mAccountCache) {
                     // removing the existing item will prevent LinkedHashMap from preserving the
                     // original insertion order
@@ -466,11 +471,11 @@ public abstract class MailAppProvider extends ContentProvider
             addAccountImpl(account, accountsQueryUri, false /* don't notify */);
         }
         // Remove all of the accounts that are in the new result set
-        previousQueryUriSet.removeAll(newQueryUriMap);
+        previousQueryUriSet.removeAll(newQueryUriSet);
 
         // For all of the entries that had been in the previous result set, and are not
         // in the new result set, remove them from the cache
-        if (previousQueryUriSet.size() > 0 && mAccountsFullyLoaded) {
+        if (previousQueryUriSet.size() > 0 && accountsFullyLoaded) {
             synchronized (mAccountCache) {
                 for (Uri accountUri : previousQueryUriSet) {
                     LogUtils.d(LOG_TAG, "Removing account %s", accountUri);
@@ -482,6 +487,15 @@ public abstract class MailAppProvider extends ContentProvider
 
         // Cache the updated account list
         cacheAccountList();
+    }
+
+    private boolean allAccountsLoaded() {
+        for (Boolean loaded : mAccountsLoaded.values()) {
+            if (!loaded) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
