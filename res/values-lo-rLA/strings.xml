@@ -65,8 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"ລາຍງານຟິດຊິ່ງ"</string>
     <string name="delete" msgid="6784262386780496958">"ລຶບ"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"ຍົກເລີກສະບັບຮ່າງ"</string>
-    <!-- no translation found for discard_failed (7520780769812210279) -->
-    <skip />
+    <string name="discard_failed" msgid="7520780769812210279">"​ການຍົກ​ເລີກ​ລົ້ມ​ເຫຼວ"</string>
     <string name="refresh" msgid="1533748989749277511">"ໂຫຼດໃໝ່"</string>
     <string name="reply" msgid="8337757482824207118">"ຕອບກັບ"</string>
     <string name="reply_all" msgid="5366796103758360957">"ຕອບກັບທັງຫມົດ"</string>
@@ -112,7 +111,6 @@
     <string name="please_wait" msgid="3953824147776128899">"ກະລຸນາລໍຖ້າ..."</string>
     <string name="saved" msgid="161536102236967534">"​ບັນ​ທຶກ​ແລ້ວ, <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="3878373998269062395">"ບໍ່ສາມາດ​ດາວໂຫລດ​ໄດ້. ແຕະເພື່ອລອງໃໝ່."</string>
-    <string name="attachments_header" msgid="6752739514995620140">"ໄຟລ໌ແນບ"</string>
     <string name="menu_photo_save_all" msgid="2742869476474613396">"ບັນທຶກທັງໝົດ"</string>
     <string name="menu_photo_share" msgid="6410980274832639330">"ແບ່ງປັນ"</string>
     <string name="menu_photo_share_all" msgid="3049053252719665320">"ແບ່ງປັນທັງຫມົດ"</string>
@@ -253,7 +251,7 @@
     <string name="message_invite_tentative" msgid="3199418731566655887">"ອາດຈະ"</string>
     <string name="message_invite_decline" msgid="6331040872447290777">"ບໍ່"</string>
     <string name="enumeration_comma" msgid="2848850136844740850">", "</string>
-    <string name="send_anyway" msgid="2727576121007079643">"ສົ່ງ"</string>
+    <string name="send_anyway" msgid="2727576121007079643">"ສົ່ງ​"</string>
     <string name="ok" msgid="6178802457914802336">"ຕົກລົງ"</string>
     <string name="done" msgid="344354738335270292">"ແລ້ວໆ"</string>
     <string name="cancel" msgid="4831678293149626190">"ຍົກເລີກ"</string>
@@ -422,7 +420,7 @@
     <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"ຂໍ້ຄວາມ"</string>
     <string name="send_to_contacts_text" msgid="124432913980620545">"ສົ່ງໃຫ້ຜູ່ທີ່ຢູ່ໃນ​ລາຍຊື່ຜູ່ຕິດຕໍ່​ຂອງຂ້ອຍ​ເທົ່ານັ້ນ"</string>
     <string name="send_to_domain_text" msgid="5064559546745918393">"ສົ່ງ​ໃຫ້ສະເພາະ <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
-    <string name="pick_start_date_title" msgid="2274665037355224165">"ມື້ເລີ່ມ"</string>
+    <string name="pick_start_date_title" msgid="2274665037355224165">"ມື້ເລີ່ມ​"</string>
     <string name="pick_end_date_title" msgid="733396083649496600">"ມື້ສິ້ນ​ສຸດ (ເປັນທາງເລືອກ​)"</string>
     <string name="date_not_set" msgid="3251555782945051904">"ຍັງບໍ່ໄດ້ຕັ້ງ"</string>
     <string name="set_end_date_dialog_title" msgid="7543009262788808443">"ມື້ສ​ິ້ນ​ສຸດ (ເປັນທາງເລືອກ)"</string>

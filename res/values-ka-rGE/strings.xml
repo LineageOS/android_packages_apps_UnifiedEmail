@@ -65,8 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"შეტყობინება ფიშინგის შესახებ"</string>
     <string name="delete" msgid="6784262386780496958">"წაშლა"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"მონახაზების წაშლა"</string>
-    <!-- no translation found for discard_failed (7520780769812210279) -->
-    <skip />
+    <string name="discard_failed" msgid="7520780769812210279">"გაუქმება ვერ მოხერხდა"</string>
     <string name="refresh" msgid="1533748989749277511">"განახლება"</string>
     <string name="reply" msgid="8337757482824207118">"პასუხი"</string>
     <string name="reply_all" msgid="5366796103758360957">"პასუხი ყველას"</string>
@@ -112,7 +111,6 @@
     <string name="please_wait" msgid="3953824147776128899">"გთხოვთ, მოითმინოთ..."</string>
     <string name="saved" msgid="161536102236967534">"შენახულია, <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="3878373998269062395">"ჩამოტვირთვა ვერ მოხერხდა, შეეხეთ განმეორებითი მცდელობისთვის."</string>
-    <string name="attachments_header" msgid="6752739514995620140">"დანართები"</string>
     <string name="menu_photo_save_all" msgid="2742869476474613396">"ყველაფრის შენახვა"</string>
     <string name="menu_photo_share" msgid="6410980274832639330">"გაზიარება"</string>
     <string name="menu_photo_share_all" msgid="3049053252719665320">"ყველაფრის გაზიარება"</string>
@@ -333,8 +331,8 @@
     <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"გაუქმდეს ადრეული ნებართვები?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="3952553078559373729">"ადრე ნებადართული გამომგზავნებისგან ჩართული სურათების ჩვენების შეჩერება."</string>
     <string name="sender_whitelist_cleared" msgid="2490984995927904030">"სურათები ავტომატურად არ გამოჩნდება."</string>
-    <string name="preferences_signature_title" msgid="2318034745474929902">"ხელმოწერა"</string>
-    <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"ხელმოწერა"</string>
+    <string name="preferences_signature_title" msgid="2318034745474929902">"მინაწერი"</string>
+    <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"მინაწერი"</string>
     <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"არ არის დაყენებული"</string>
     <string name="notification_action_reply" msgid="8378725460102575919">"პასუხი"</string>
     <string name="notification_action_reply_all" msgid="5693469099941000037">"პასუხი ყველას"</string>

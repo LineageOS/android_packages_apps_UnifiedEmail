@@ -65,8 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"फ़िशिंग की रिपोर्ट करें"</string>
     <string name="delete" msgid="6784262386780496958">"हटाएं"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"अधूरा ईमेल छोड़ें"</string>
-    <!-- no translation found for discard_failed (7520780769812210279) -->
-    <skip />
+    <string name="discard_failed" msgid="7520780769812210279">"विफल संदेशों को छोड़ें"</string>
     <string name="refresh" msgid="1533748989749277511">"रीफ्रेश करें"</string>
     <string name="reply" msgid="8337757482824207118">"प्रत्‍युत्तर दें"</string>
     <string name="reply_all" msgid="5366796103758360957">"सभी को जवाब दें"</string>
@@ -112,7 +111,6 @@
     <string name="please_wait" msgid="3953824147776128899">"कृपया प्रतीक्षा करें…"</string>
     <string name="saved" msgid="161536102236967534">"सहेजा गया, <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="3878373998269062395">"डाउनलोड नहीं हो सका. पुनर्प्रयास हेतु स्पर्श करें."</string>
-    <string name="attachments_header" msgid="6752739514995620140">"अटैचमेंट"</string>
     <string name="menu_photo_save_all" msgid="2742869476474613396">"सभी सहेजें"</string>
     <string name="menu_photo_share" msgid="6410980274832639330">"साझा करें"</string>
     <string name="menu_photo_share_all" msgid="3049053252719665320">"सभी साझा करें"</string>
