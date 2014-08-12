@@ -634,6 +634,8 @@ public class Conversation implements Parcelable {
                 rawFolders = FolderList.fromBlob((byte[]) val);
             } else if (ConversationColumns.VIEWED.equals(key)) {
                 // ignore. this is not read from the cursor, either.
+            } else if (ConversationColumns.PRIORITY.equals(key)) {
+                priority = (Integer) val;
             } else {
                 LogUtils.e(LOG_TAG, new UnsupportedOperationException(),
                         "unsupported cached conv value in col=%s", key);
