@@ -23,9 +23,11 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ListView;
 
@@ -499,5 +501,16 @@ public final class OnePaneController extends AbstractActivityController {
     public void launchFragment(final Fragment fragment, final int selectPosition) {
         replaceFragment(fragment, FragmentTransaction.TRANSIT_FRAGMENT_OPEN,
                 TAG_CUSTOM_FRAGMENT, R.id.content_pane);
+    }
+
+    @Override
+    public boolean onInterceptKeyFromCV(int keyCode, KeyEvent keyEvent, boolean navigateAway) {
+        // Not applicable
+        return false;
+    }
+
+    @Override
+    public boolean isTwoPaneLandscape() {
+        return false;
     }
 }

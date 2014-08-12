@@ -2540,7 +2540,7 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public final void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
+    public void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null && convListFragment.getAnimatedAdapter() != null) {
             convListFragment.getAnimatedAdapter().onConversationSelected();

@@ -96,8 +96,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private View mFoldersView;
     private View mListView;
 
-    private TwoPaneLayoutListener mLayoutListener;
-
     public static final int MISCELLANEOUS_VIEW_ID = R.id.miscellaneous_pane;
 
     private final Runnable mTransitionCompleteRunnable = new Runnable() {
@@ -173,10 +171,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         super.onLayout(changed, l, t, r, b);
     }
 
-    public void setLayoutListener(TwoPaneLayoutListener listener) {
-        mLayoutListener = listener;
-    }
-
     /**
      * Sizes up the three sliding panes. This method will ensure that the LayoutParams of the panes
      * have the correct widths set for the current overall size and view mode.
@@ -206,6 +200,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         final int foldersW = isDrawerOpen() ? mDrawerWidthOpen : mDrawerWidthMini;
         final int listW = getPaneWidth(mListView);
 
+        boolean cvOnScreen = true;
         if (!mListCollapsible) {
             if (isRtl) {
                 foldersX = width - mDrawerWidthOpen;
@@ -231,6 +226,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 }
             } else {
                 // TL mode
+                cvOnScreen = false;
                 if (isRtl) {
                     foldersX = width - mDrawerWidthOpen;
                     listX = width - foldersW - listW;
@@ -244,10 +240,13 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
 
         animatePanes(foldersX, listX, convX);
-        // For keyboard navigation, let's disable focus on the list if it's not visible.
-        if (mLayoutListener != null) {
-            mLayoutListener.onListViewLayout(listX >= 0);
-        }
+
+        // For views that are not on the screen, let's set their visibility for accessibility.
+        mFoldersView.setVisibility(foldersX >= 0 ? VISIBLE : INVISIBLE);
+        mListView.setVisibility(listX >= 0 ? VISIBLE : INVISIBLE);
+        mConversationView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
+        mMiscellaneousView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
+
         mPositionedMode = mCurrentMode;
     }
 
@@ -464,9 +463,5 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     public boolean shouldShowPreviewPanel() {
         return !mListCollapsible;
-    }
-
-    public interface TwoPaneLayoutListener {
-        public void onListViewLayout(boolean isOnScreen);
     }
 }

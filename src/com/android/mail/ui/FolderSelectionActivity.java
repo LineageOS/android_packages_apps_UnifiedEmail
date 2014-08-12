@@ -437,6 +437,12 @@ public class FolderSelectionActivity extends ActionBarActivity implements OnClic
     }
 
     @Override
+    public KeyboardNavigationController getKeyboardNavigationController() {
+        // Unsupported
+        return null;
+    }
+
+    @Override
     public boolean isAccessibilityEnabled() {
         // Unsupported
         return true;

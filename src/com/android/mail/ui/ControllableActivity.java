@@ -101,6 +101,8 @@ public interface ControllableActivity extends RestrictedActivity,
 
     DrawerController getDrawerController();
 
+    KeyboardNavigationController getKeyboardNavigationController();
+
     void startDragMode();
 
     void stopDragMode();
