@@ -15,15 +15,14 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/folder_teaser_item_background" >
+    android:layout_height="56dp"
+    android:background="@drawable/folder_teaser_item_background">
 
     <ImageView
         android:id="@+id/folder_imageView"
-        android:layout_width="48dp"
+        android:layout_width="24dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:background="@color/folder_teaser_icon_background"
         android:duplicateParentState="true"
         style="@style/FolderTeaserMarginStartStyle" />
 
@@ -33,11 +32,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
         android:duplicateParentState="true"
         android:orientation="vertical"
-        style="@style/FolderTeaserVerticalMarginStyle" >
+        style="@style/FolderTeaserLabelMarginStyle" >
 
         <TextView
             android:id="@+id/folder_textView"
@@ -45,7 +42,7 @@
             android:layout_height="wrap_content"
             android:duplicateParentState="true"
             android:includeFontPadding="false"
-            android:textColor="@color/teaser_main_text"
+            android:textColor="@color/folder_teaser_main_text"
             android:textSize="16sp"
             android:textStyle="bold"
             android:singleLine="true"
@@ -67,15 +64,12 @@
 
     <TextView
         android:id="@+id/count_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="24sp"
+        android:layout_width="57dp"
+        android:layout_height="20dp"
         android:layout_gravity="center_vertical"
-        android:minWidth="@dimen/folder_teaser_count_textview_minwidth"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
         android:gravity="center"
         android:textColor="@color/folder_teaser_count_text"
-        android:textSize="16sp"
+        android:textSize="14sp"
         style="@style/FolderTeaserMarginEndStyle" />
 
 </LinearLayout>

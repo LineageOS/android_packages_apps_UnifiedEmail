@@ -984,17 +984,17 @@
         <item name="android:paddingRight">@dimen/compose_attachment_tile_text_end_padding</item>
     </style>
 
-    <style name="FolderTeaserVerticalMarginStyle">
-        <item name="android:layout_marginTop">@dimen/folder_teaser_vertical_padding</item>
-        <item name="android:layout_marginBottom">@dimen/folder_teaser_vertical_padding</item>
+    <style name="FolderTeaserLabelMarginStyle">
+        <item name="android:layout_marginLeft">@dimen/folder_teaser_label_start_padding</item>
+        <item name="android:layout_marginRight">@dimen/folder_teaser_label_end_padding</item>
     </style>
 
-    <style name="FolderTeaserMarginStartStyle" parent="FolderTeaserVerticalMarginStyle">
-        <item name="android:layout_marginLeft">@dimen/folder_teaser_horizontal_padding</item>
+    <style name="FolderTeaserMarginStartStyle">
+        <item name="android:layout_marginLeft">@dimen/folder_teaser_start_padding</item>
     </style>
 
-    <style name="FolderTeaserMarginEndStyle" parent="FolderTeaserVerticalMarginStyle">
-        <item name="android:layout_marginRight">@dimen/folder_teaser_horizontal_padding</item>
+    <style name="FolderTeaserMarginEndStyle">
+        <item name="android:layout_marginRight">@dimen/folder_teaser_end_padding</item>
     </style>
 
     <style name="ArrowStyle">
