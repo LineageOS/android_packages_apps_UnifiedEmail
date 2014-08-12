@@ -418,6 +418,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    public KeyboardNavigationController getKeyboardNavigationController() {
+        return mController;
+    }
+
+    @Override
     public void onFooterViewErrorActionClick(Folder folder, int errorStatus) {
         mController.onFooterViewErrorActionClick(folder, errorStatus);
     }

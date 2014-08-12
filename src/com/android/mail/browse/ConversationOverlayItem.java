@@ -38,6 +38,9 @@ public abstract class ConversationOverlayItem {
 
     private int mPosition;
 
+    // The view to focus when this overlay item should be focused.
+    protected View mRootView;
+
     /**
      * @see Adapter#getItemViewType(int)
      */
@@ -186,6 +189,11 @@ public abstract class ConversationOverlayItem {
      */
     public void rebindView(View view) {
         // DO NOTHING
+    }
+
+    public View getFocusableView() {
+        // Focus the root view by default
+        return mRootView;
     }
 
     public void registerOnKeyListeners(View... views) {

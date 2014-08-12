@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.DataSetObserver;
+import android.support.annotation.IdRes;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -992,6 +993,27 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             return;
         }
         LogUtils.d(TAG, msg, params);
+    }
+
+    public void focusFirstMessageHeader() {
+        mOverlayAdapter.focusFirstMessageHeader();
+    }
+
+    public int getViewPosition(View v) {
+        return mOverlayAdapter.getViewPosition(v);
+    }
+
+    public View getNextOverlayView(int position, boolean isDown) {
+        return mOverlayAdapter.getNextOverlayView(position, isDown);
+    }
+
+    public boolean shouldInterceptLeftRightEvents(@IdRes int id, boolean isLeft, boolean isRight,
+            boolean twoPaneLand) {
+        return mOverlayAdapter.shouldInterceptLeftRightEvents(id, isLeft, isRight, twoPaneLand);
+    }
+
+    public boolean shouldNavigateAway(@IdRes int id, boolean isLeft, boolean twoPaneLand) {
+        return mOverlayAdapter.shouldNavigateAway(id, isLeft, twoPaneLand);
     }
 
     private class AdapterObserver extends DataSetObserver {

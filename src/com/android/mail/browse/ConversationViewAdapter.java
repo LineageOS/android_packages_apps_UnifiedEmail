@@ -20,12 +20,14 @@ package com.android.mail.browse;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
 import android.support.v4.text.BidiFormatter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.BaseAdapter;
 
 import com.android.emailcommon.mail.Address;
@@ -67,6 +69,7 @@ import java.util.Map;
 public class ConversationViewAdapter extends BaseAdapter {
 
     private static final String LOG_TAG = LogTag.getLogTag();
+    private static final String OVERLAY_ITEM_ROOT_TAG = "overlay_item_root";
 
     private final Context mContext;
     private final FormattedDateBuilder mDateBuilder;
@@ -130,13 +133,13 @@ public class ConversationViewAdapter extends BaseAdapter {
                     R.layout.conversation_view_header, parent, false);
             v.setCallbacks(
                     mConversationCallbacks, mAccountController, mConversationUpdater);
-            v.bind(this);
             v.setSubject(mConversation.subject);
             if (mAccountController.getAccount().supportsCapability(
                     UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
                 v.setFolders(mConversation);
             }
             v.setStarred(mConversation.starred);
+            v.setTag(OVERLAY_ITEM_ROOT_TAG);
 
             // Register the onkey listener for all relevant views
             registerOnKeyListeners(v, v.findViewById(R.id.subject_and_folder_view));
@@ -148,6 +151,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public void bindView(View v, boolean measureOnly) {
             ConversationViewHeader header = (ConversationViewHeader) v;
             header.bind(this);
+            mRootView = v;
         }
 
         @Override
@@ -183,6 +187,7 @@ public class ConversationViewAdapter extends BaseAdapter {
                     inflater.inflate(R.layout.conversation_footer, parent, false);
             v.setAccountController(mAccountController);
             v.setConversationFooterCallbacks(mConversationFooterCallbacks);
+            v.setTag(OVERLAY_ITEM_ROOT_TAG);
 
             // Register the onkey listener for all relevant views
             registerOnKeyListeners(v, v.findViewById(R.id.reply_button),
@@ -194,11 +199,18 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public void bindView(View v, boolean measureOnly) {
             ((ConversationFooterView) v).bind(this);
+            mRootView = v;
         }
 
         @Override
         public void rebindView(View view) {
             ((ConversationFooterView) view).rebind(this);
+            mRootView = view;
+        }
+
+        @Override
+        public View getFocusableView() {
+            return mRootView.findViewById(R.id.reply_button);
         }
 
         @Override
@@ -268,6 +280,7 @@ public class ConversationViewAdapter extends BaseAdapter {
             v.setCallbacks(mAdapter.mMessageCallbacks);
             v.setContactInfoSource(mAdapter.mContactInfoSource);
             v.setVeiledMatcher(mAdapter.mMatcher);
+            v.setTag(OVERLAY_ITEM_ROOT_TAG);
 
             // Register the onkey listener for all relevant views
             registerOnKeyListeners(v, v.findViewById(R.id.upper_header),
@@ -281,6 +294,12 @@ public class ConversationViewAdapter extends BaseAdapter {
         public void bindView(View v, boolean measureOnly) {
             final MessageHeaderView header = (MessageHeaderView) v;
             header.bind(this, measureOnly);
+            mRootView = v;
+        }
+
+        @Override
+        public View getFocusableView() {
+            return mRootView.findViewById(R.id.upper_header);
         }
 
         @Override
@@ -370,6 +389,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public void rebindView(View view) {
             final MessageHeaderView header = (MessageHeaderView) view;
             header.rebind(this);
+            mRootView = view;
         }
     }
 
@@ -398,6 +418,7 @@ public class ConversationViewAdapter extends BaseAdapter {
                     R.layout.conversation_message_footer, parent, false);
             v.initialize(mAdapter.mLoaderManager, mAdapter.mFragmentManager,
                     mAdapter.mAccountController, mAdapter.mFooterCallbacks);
+            v.setTag(OVERLAY_ITEM_ROOT_TAG);
 
             // Register the onkey listener for all relevant views
             registerOnKeyListeners(v, v.findViewById(R.id.view_entire_message_prompt));
@@ -408,6 +429,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public void bindView(View v, boolean measureOnly) {
             final MessageFooterView attachmentsView = (MessageFooterView) v;
             attachmentsView.bind(mHeaderItem, measureOnly);
+            mRootView = v;
         }
 
         @Override
@@ -470,6 +492,7 @@ public class ConversationViewAdapter extends BaseAdapter {
                     R.layout.super_collapsed_block, parent, false);
             v.initialize(mSuperCollapsedListener);
             v.setOnKeyListener(mOnKeyListener);
+            v.setTag(OVERLAY_ITEM_ROOT_TAG);
 
             // Register the onkey listener for all relevant views
             registerOnKeyListeners(v);
@@ -480,6 +503,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public void bindView(View v, boolean measureOnly) {
             final SuperCollapsedBlock scb = (SuperCollapsedBlock) v;
             scb.bind(this);
+            mRootView = v;
         }
 
         @Override
@@ -710,6 +734,86 @@ public class ConversationViewAdapter extends BaseAdapter {
         final int count = mItems.size();
         return !(position < 0 || position >= count)
                 && mItems.get(position).getType() == VIEW_TYPE_SUPER_COLLAPSED_BLOCK;
+    }
+
+    // This should be a safe call since all containers should have at least a conv header and a
+    // message header.
+    // TODO: what to do when the first header is off the screen and recycled?
+    public void focusFirstMessageHeader() {
+        if (mItems.size() > 1) {
+            final View v = mItems.get(1).getFocusableView();
+            if (v != null) {
+                v.requestFocus();
+            }
+        }
+    }
+
+    /**
+     * Try to find the position of the provided view (or it's view container) in the adapter.
+     */
+    public int getViewPosition(View v) {
+        // First find the root view of the overlay item
+        while (v.getTag() != OVERLAY_ITEM_ROOT_TAG) {
+            final ViewParent parent = v.getParent();
+            if (parent != null && parent instanceof View) {
+                v = (View) parent;
+            } else {
+                return -1;
+            }
+        }
+        // Find the position of the root view
+        for (int i = 0; i < mItems.size(); i++) {
+            if (mItems.get(i).mRootView == v) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Find the next view that should grab focus with respect to the current position.
+     */
+    public View getNextOverlayView(int position, boolean isDown) {
+        if (isDown && position >= 0) {
+            while (++position < mItems.size()) {
+                final View v = mItems.get(position).getFocusableView();
+                if (v != null && v.isFocusable()) {
+                    return v;
+                }
+            }
+        } else {
+            while (--position >= 0) {
+                final View v = mItems.get(position).getFocusableView();
+                if (v != null && v.isFocusable()) {
+                    return v;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean shouldInterceptLeftRightEvents(@IdRes int id, boolean isLeft, boolean isRight,
+            boolean twoPaneLand) {
+        return twoPaneLand && (id == R.id.conversation_header ||
+                id == R.id.subject_and_folder_view ||
+                id == R.id.upper_header ||
+                id == R.id.super_collapsed_block ||
+                id == R.id.message_footer ||
+                (id == R.id.overflow && isRight) ||
+                (id == R.id.reply_button && isLeft) ||
+                (id == R.id.forward_button && isRight));
+    }
+
+    // Indicates if the direction with the provided id should navigate away from the conversation
+    // view. Note that this is only applicable in two-pane landscape mode.
+    public boolean shouldNavigateAway(@IdRes int id, boolean isLeft, boolean twoPaneLand) {
+        return twoPaneLand && isLeft &&
+                (id == R.id.conversation_header ||
+                id == R.id.subject_and_folder_view ||
+                id == R.id.upper_header ||
+                id == R.id.super_collapsed_block ||
+                id == R.id.message_footer ||
+                id == R.id.reply_button);
     }
 
     public BidiFormatter getBidiFormatter() {

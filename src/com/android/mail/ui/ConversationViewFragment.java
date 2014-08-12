@@ -23,6 +23,7 @@ import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -126,6 +127,18 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
      * wait until this fragment is visible.
      */
     private final int LOAD_WAIT_UNTIL_VISIBLE = 2;
+
+    // Keyboard navigation
+    private KeyboardNavigationController mNavigationController;
+    // Since we manually control navigation for most of the conversation view due to problems
+    // with two-pane layout but still rely on the system for SOME navigation, we need to keep track
+    // of the view that had focus when KeyEvent.ACTION_DOWN was fired. This is because we only
+    // manually change focus on KeyEvent.ACTION_UP (to prevent holding down the DOWN button and
+    // lagging the app), however, the view in focus might have changed between ACTION_UP and
+    // ACTION_DOWN since the system might have handled the ACTION_DOWN and moved focus.
+    private View mOriginalKeyedView;
+    private int mMaxScreenHeight;
+    private int mTopOfVisibleScreen;
 
     protected ConversationContainer mConversationContainer;
 
@@ -277,6 +290,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(context);
 
+        mNavigationController = mActivity.getKeyboardNavigationController();
+
         mAdapter = new ConversationViewAdapter(mActivity, this,
                 getLoaderManager(), this, this, getContactInfoSource(), this, this,
                 getListController(), this, mAddressCache, dateBuilder, mBidiFormatter, this);
@@ -329,6 +344,12 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             new SetCookieTask(getContext(), mConversation.conversationBaseUri.toString(),
                     mAccount.accountCookieQueryUri).execute();
         }
+
+        // Find the height of the screen for manually scrolling the webview via keyboard.
+        final Rect screen = new Rect();
+        mActivity.getWindow().getDecorView().getWindowVisibleDisplayFrame(screen);
+        mMaxScreenHeight = screen.bottom;
+        mTopOfVisibleScreen = screen.top + mActivity.getSupportActionBar().getHeight();
     }
 
     @Override
@@ -1121,20 +1142,68 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
     @Override
     public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-        // Only care about enter and esc
-        View currFocus = mActivity.getWindow().getCurrentFocus();
-        if (keyCode == KeyEvent.KEYCODE_BACK && currFocus != null &&
-                currFocus.getId() != R.id.conversation_topmost_overlay) {
-            if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                mTopmostOverlay.requestFocus();
+        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+            mOriginalKeyedView = view;
+        }
+
+        if (mOriginalKeyedView != null) {
+            final int id = mOriginalKeyedView.getId();
+            final boolean isActionUp = keyEvent.getAction() == KeyEvent.ACTION_UP;
+            final boolean isLeft = keyCode == KeyEvent.KEYCODE_DPAD_LEFT;
+            final boolean isRight = keyCode == KeyEvent.KEYCODE_DPAD_RIGHT;
+            final boolean isUp = keyCode == KeyEvent.KEYCODE_DPAD_UP;
+            final boolean isDown = keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
+
+            // First we run the event by the controller
+            // We manually check if the view+direction combination should shift focus away from the
+            // conversation view to the thread list in two-pane landscape mode.
+            final boolean isTwoPaneLand = mNavigationController.isTwoPaneLandscape();
+            final boolean navigateAway = mConversationContainer.shouldNavigateAway(id, isLeft,
+                    isTwoPaneLand);
+            if (mNavigationController.onInterceptKeyFromCV(keyCode, keyEvent, navigateAway)) {
+                return true;
             }
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_ENTER && (currFocus == null ||
-                currFocus.getId() == R.id.conversation_topmost_overlay)) {
-            if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                mConversationContainer.findViewById(R.id.upper_header).requestFocus();
+
+            // If controller didn't handle the event, check directional interception.
+            if ((isLeft || isRight) && mConversationContainer.shouldInterceptLeftRightEvents(
+                    id, isLeft, isRight, isTwoPaneLand)) {
+                return true;
+            } else if (isUp || isDown) {
+                // We manually handle up/down navigation through the overlay items because the
+                // system's default isn't optimal for two-pane landscape since it's not a real list.
+                final int position = mConversationContainer.getViewPosition(mOriginalKeyedView);
+                final View next = mConversationContainer.getNextOverlayView(position, isDown);
+                if (next != null) {
+                    if (isActionUp) {
+                        next.requestFocus();
+
+                        // Make sure that v is in view
+                        final int[] coords = new int[2];
+                        next.getLocationOnScreen(coords);
+                        final int bottom = coords[1] + next.getHeight();
+                        if (bottom > mMaxScreenHeight) {
+                            mWebView.scrollBy(0, bottom - mMaxScreenHeight);
+                        } else if (coords[1] < mTopOfVisibleScreen) {
+                            mWebView.scrollBy(0, coords[1] - mTopOfVisibleScreen);
+                        }
+                    }
+                    return true;
+                }
             }
-            return true;
+
+            // Finally we handle the special keys
+            if (keyCode == KeyEvent.KEYCODE_BACK && id != R.id.conversation_topmost_overlay) {
+                if (isActionUp) {
+                    mTopmostOverlay.requestFocus();
+                }
+                return true;
+            } else if (keyCode == KeyEvent.KEYCODE_ENTER &&
+                    id == R.id.conversation_topmost_overlay) {
+                if (isActionUp) {
+                    mConversationContainer.focusFirstMessageHeader();
+                }
+                return true;
+            }
         }
         return false;
     }

@@ -157,6 +157,11 @@ public class ConversationPagerController {
         cleanup();
     }
 
+    // Explicitly set the focus to the conversation pager, specifically the conv overlay.
+    public void focusPager() {
+        mPager.requestFocus();
+    }
+
     public boolean isInitialConversationLoading() {
         return mInitialConversationLoading;
     }
