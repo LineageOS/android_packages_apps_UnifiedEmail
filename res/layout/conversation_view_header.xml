@@ -46,6 +46,7 @@
         android:layout_gravity="center_vertical"
         android:background="?android:attr/selectableItemBackground"
         android:scaleType="center"
+        android:visibility="invisible"
         android:src="@drawable/star" />
 
 </com.android.mail.browse.ConversationViewHeader>
