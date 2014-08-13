@@ -475,7 +475,7 @@
 
     <style name="MailActivityTheme" parent="@style/UnifiedEmailTheme.Appcompat.Toolbar" />
 
-    <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme">
+    <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme.Appcompat">
     </style>
 
     <style name="WaitFragmentTitleBase" parent="@android:style/Widget.Holo.TextView" />
