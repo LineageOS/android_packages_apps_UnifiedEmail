@@ -20,6 +20,7 @@
     <color name="text_color_black">#212121</color>
     <color name="accent_blue">#00bfd8</color>
     <color name="text_color_blue">@color/accent_blue</color>
+    <color name="text_color_dark_blue">#4285f4</color>
     <color name="text_color_draft_red">#da4336</color>
     <color name="gray_text_color">#777777</color>
     <color name="dark_gray_text_color">#58585b</color>
@@ -35,7 +36,7 @@
     <color name="subject_text_color_unread">@color/text_color_black</color>
     <color name="subject_text_color_read">@color/text_color_grey</color>
     <color name="snippet_text_color">@color/text_color_grey</color>
-    <color name="date_text_color_unread">#4285F4</color>
+    <color name="date_text_color_unread">@color/text_color_dark_blue</color>
     <color name="date_text_color_read">@color/text_color_grey</color>
     <color name="message_info_text_color">@color/gray_text_color</color>
     <color name="ap_background_color">#fff1f1f2</color>
