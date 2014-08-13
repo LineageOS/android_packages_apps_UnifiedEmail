@@ -763,6 +763,13 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
+     * Return if this is the outbox folder
+     */
+    public boolean isOutbox() {
+        return isType(FolderType.OUTBOX);
+    }
+
+    /**
      * Whether this is the special folder just used to display all mail for an account.
      */
     public boolean isViewAll() {
