@@ -19,10 +19,6 @@
     <!-- Names of packages and authorities that are common to all apps
     and read from resources -->
 
-    <!-- Name of the search suggestions authority that looks up recent suggestions. This
-         needs to be modified in AndroidManifest.xml and res/xml/searchable.xml as well.  -->
-    <string name="suggestions_authority" translatable="false">com.android.mail.suggestionsprovider</string>
-
     <!-- Layout tests strings -->
     <string name="mock_content_provider" translatable="false">Mock Content Provider</string>
     <string name="conversation_content_provider" translatable="false">Conversation Content Provider</string>
@@ -607,9 +603,11 @@
     <!-- Title of the search dialog -->
     <string name="search_title" translatable="false">Unified Email</string>
     <!-- Shown in light gray in the Search box when no text has been entered [CHAR LIMIT=20]-->
-    <string name="search_hint">Search mail</string>
+    <string name="search_hint">Search</string>
     <!-- Search Results: Text for status of the search when the results are completely loaded [CHAR LIMIT=10] -->
     <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
+    <!-- Voice search is not supported on this device [CHAR LIMIT=100] -->
+    <string name="voice_search_not_supported">Voice search is not supported on this device.</string>
 
     <!-- Shown in conversation list footer when application cannot make a connection [CHAR LIMIT=20]-->
     <string name="network_error">No connection</string>

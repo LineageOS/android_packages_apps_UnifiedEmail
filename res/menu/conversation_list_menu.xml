@@ -35,8 +35,7 @@
       that supports FOLDER_SERVER_SEARCH -->
     <item android:id="@+id/search" android:title="@string/menu_search"
         app:showAsAction="ifRoom|collapseActionView"
-        android:icon="@drawable/ic_menu_search"
-        app:actionLayout="@layout/mail_actionbar_searchview" />
+        android:icon="@drawable/ic_menu_search" />
 
     <!-- These invisible menu item are used to enable keyboard shortcuts -->
     <item
