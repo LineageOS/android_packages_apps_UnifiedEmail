@@ -2300,8 +2300,9 @@ public class ComposeActivity extends ActionBarActivity
                             || Intent.ACTION_SENDTO.equals(action)
                             || shouldSave()));
 
-        MenuItem helpItem = menu.findItem(R.id.help_info_menu_item);
-        MenuItem sendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
+        final MenuItem helpItem = menu.findItem(R.id.help_info_menu_item);
+        final MenuItem sendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
+        final MenuItem attachFromServiceItem = menu.findItem(R.id.attach_from_service_stub1);
         if (helpItem != null) {
             helpItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
@@ -2309,6 +2310,9 @@ public class ComposeActivity extends ActionBarActivity
         if (sendFeedbackItem != null) {
             sendFeedbackItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.SEND_FEEDBACK));
+        }
+        if (attachFromServiceItem != null) {
+            attachFromServiceItem.setVisible(shouldEnableAttachFromServiceMenu(mAccount));
         }
 
         // Show attach picture on pre-K devices.
@@ -2797,6 +2801,13 @@ public class ComposeActivity extends ActionBarActivity
             return (mTextChanged || mAttachmentsChanged || mReplyFromChanged)
                     && !isBlank();
         }
+    }
+
+    /**
+     * Returns whether the "Attach from Drive" menu item should be visible.
+     */
+    protected boolean shouldEnableAttachFromServiceMenu(Account mAccount) {
+        return false;
     }
 
     /**
@@ -3568,6 +3579,8 @@ public class ComposeActivity extends ActionBarActivity
             }
             mReplyFromChanged = true;
             initRecipients();
+
+            invalidateOptionsMenu();
         }
     }
 
