@@ -69,7 +69,7 @@
     </style>
 
     <style name="FolderListItemStartStyle">
-        <item name="android:layout_marginStart">@dimen/folder_list_item_start_margin</item>
+        <item name="android:layout_marginStart">@dimen/folder_list_item_text_start_margin</item>
     </style>
 
     <style name="FolderListItemEndStyle">
