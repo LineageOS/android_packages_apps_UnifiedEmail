@@ -64,8 +64,8 @@
 
     <TextView
         android:id="@+id/count_textView"
-        android:layout_width="57dp"
-        android:layout_height="20dp"
+        android:layout_width="57sp"
+        android:layout_height="20sp"
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:textColor="@color/folder_teaser_count_text"
