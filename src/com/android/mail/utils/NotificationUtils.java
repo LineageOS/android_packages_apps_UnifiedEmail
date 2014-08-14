@@ -630,8 +630,11 @@ public class NotificationUtils {
                     new NotificationCompat.WearableExtender();
             Map<Integer, NotificationBuilders> msgNotifications =
                     new ArrayMap<Integer, NotificationBuilders>();
-            notification.setColor(
-                    context.getResources().getColor(R.color.notification_icon_gmail_red));
+
+            if (com.android.mail.utils.Utils.isRunningLOrLater()) {
+                notification.setColor(
+                        context.getResources().getColor(R.color.notification_icon_gmail_red));
+            }
             // TODO(shahrk) - fix for multiple mail
             // if(folder.notificationIconResId != 0 || unseenCount <=  2)
             notification.setSmallIcon(R.drawable.ic_notification_mail_16dp);
@@ -856,10 +859,13 @@ public class NotificationUtils {
                 .setContentText(account.getDisplayName())
                 .setContentIntent(clickIntent)
                 .setLargeIcon(largeIcon)
-                .setColor(context.getResources().getColor(R.color.notification_icon_gmail_red))
                 .setNumber(unreadCount)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setWhen(when);
+
+        if (com.android.mail.utils.Utils.isRunningLOrLater()) {
+            builder.setColor(context.getResources().getColor(R.color.notification_icon_gmail_red));
+        }
 
         // if this public notification summarizes multiple single notifications, mark it as the
         // summary notification and generate the same group key as the single notifications
@@ -1102,8 +1108,11 @@ public class NotificationUtils {
                             // if (folder.notificationIconResId != 0) {
                             conversationNotif.setSmallIcon(R.drawable.ic_notification_mail_16dp);
 
-                            conversationNotif.setColor(
-                                    context.getResources().getColor(R.color.notification_icon_gmail_red));
+                            if (com.android.mail.utils.Utils.isRunningLOrLater()) {
+                                conversationNotif.setColor(
+                                        context.getResources()
+                                                .getColor(R.color.notification_icon_gmail_red));
+                            }
                             conversationNotif.setContentText(digestLine);
                             Intent conversationNotificationIntent = createViewConversationIntent(
                                     context, account, folder, conversationCursor);
