@@ -471,6 +471,7 @@
     <style name="UnifiedEmailTheme.Appcompat.Toolbar" parent="@style/UnifiedEmailTheme.Appcompat">
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="MailActivityTheme" parent="@style/UnifiedEmailTheme.Appcompat.Toolbar" />
