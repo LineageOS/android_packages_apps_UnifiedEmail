@@ -28,7 +28,7 @@
             style="@style/CustomActionButton">
 
         <ImageView
-                android:src="@drawable/ic_menu_cancel_holo_light"
+                android:src="@drawable/ic_cancel_holo_light"
                 style="@style/CustomActionButtonImage" />
         <TextView
                 android:text="@string/cancel"
