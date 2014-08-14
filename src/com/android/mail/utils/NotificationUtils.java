@@ -631,7 +631,7 @@ public class NotificationUtils {
             Map<Integer, NotificationBuilders> msgNotifications =
                     new ArrayMap<Integer, NotificationBuilders>();
             notification.setColor(
-                    context.getResources().getColor(R.color.notification_icon_bg_red));
+                    context.getResources().getColor(R.color.notification_icon_gmail_red));
             // TODO(shahrk) - fix for multiple mail
             // if(folder.notificationIconResId != 0 || unseenCount <=  2)
             notification.setSmallIcon(R.drawable.ic_notification_mail_16dp);
@@ -856,7 +856,7 @@ public class NotificationUtils {
                 .setContentText(account.getDisplayName())
                 .setContentIntent(clickIntent)
                 .setLargeIcon(largeIcon)
-                .setColor(context.getResources().getColor(R.color.notification_icon_bg_red))
+                .setColor(context.getResources().getColor(R.color.notification_icon_gmail_red))
                 .setNumber(unreadCount)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setWhen(when);
@@ -1103,7 +1103,7 @@ public class NotificationUtils {
                             conversationNotif.setSmallIcon(R.drawable.ic_notification_mail_16dp);
 
                             conversationNotif.setColor(
-                                    context.getResources().getColor(R.color.notification_icon_bg_red));
+                                    context.getResources().getColor(R.color.notification_icon_gmail_red));
                             conversationNotif.setContentText(digestLine);
                             Intent conversationNotificationIntent = createViewConversationIntent(
                                     context, account, folder, conversationCursor);
