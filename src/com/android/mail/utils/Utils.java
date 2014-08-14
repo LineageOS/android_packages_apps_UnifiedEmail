@@ -920,13 +920,6 @@ public class Utils {
     }
 
     /**
-     * @return whether to show two pane or single pane search results.
-     */
-    public static boolean showTwoPaneSearchResults(Context context) {
-        return context.getResources().getBoolean(R.bool.show_two_pane_search_results);
-    }
-
-    /**
      * Sets the layer type of a view to hardware if the view is attached and hardware acceleration
      * is enabled. Does nothing otherwise.
      */
