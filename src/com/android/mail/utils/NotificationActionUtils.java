@@ -633,7 +633,7 @@ public class NotificationActionUtils {
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
-        builder.setSmallIcon(R.drawable.stat_notify_email);
+        builder.setSmallIcon(R.drawable.ic_notification_mail_16dp);
         builder.setWhen(notificationAction.getWhen());
 
         final RemoteViews undoView =

@@ -26,6 +26,14 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
+import android.graphics.Rect;
+import android.graphics.Shader;
 import android.net.Uri;
 import android.os.Looper;
 import android.provider.ContactsContract;
@@ -622,7 +630,11 @@ public class NotificationUtils {
                     new NotificationCompat.WearableExtender();
             Map<Integer, NotificationBuilders> msgNotifications =
                     new ArrayMap<Integer, NotificationBuilders>();
-            notification.setSmallIcon(R.drawable.stat_notify_email);
+            notification.setColor(
+                    context.getResources().getColor(R.color.notification_icon_bg_red));
+            // TODO(shahrk) - fix for multiple mail
+            // if(folder.notificationIconResId != 0 || unseenCount <=  2)
+            notification.setSmallIcon(R.drawable.ic_notification_mail_16dp);
             notification.setTicker(account.getDisplayName());
             notification.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
 
@@ -784,6 +796,7 @@ public class NotificationUtils {
                 // create the *public* form of the *private* notification we have been assembling
                 final Notification publicNotification = createPublicNotification(context, account,
                         folder, when, unseenCount, unreadCount, clickIntent);
+
                 notification.setPublicVersion(publicNotification);
 
                 nm.notify(notificationId, notification.build());
@@ -842,8 +855,8 @@ public class NotificationUtils {
                 .setContentTitle(createTitle(context, unseenCount))
                 .setContentText(account.getDisplayName())
                 .setContentIntent(clickIntent)
-                .setSmallIcon(R.drawable.stat_notify_email)
                 .setLargeIcon(largeIcon)
+                .setColor(context.getResources().getColor(R.color.notification_icon_bg_red))
                 .setNumber(unreadCount)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setWhen(when);
@@ -854,6 +867,12 @@ public class NotificationUtils {
             builder.setGroup(createGroupKey(account, folder));
             builder.setGroupSummary(true);
         }
+
+        // TODO(shahrk) - fix for multiple mail
+        // If the folder is a special label or only has 1 unseen, tack on the badge
+        // if (folder.notificationIconResId != 0 || !multipleUnseen) {
+        builder.setSmallIcon(R.drawable.ic_notification_mail_16dp);
+
 
         return builder.build();
     }
@@ -926,9 +945,9 @@ public class NotificationUtils {
         if (folder.notificationIconResId != 0) {
             resId = folder.notificationIconResId;
         } else if (multipleNew) {
-            resId = R.drawable.ic_notification_multiple_mail_holo_dark;
+            resId = R.drawable.ic_notification_multiple_mail_24dp;
         } else {
-            resId = R.drawable.ic_contact_picture;
+            resId = R.drawable.ic_notification_anonymous_avatar_32dp;
         }
 
         final Bitmap icon = getIcon(context, resId);
@@ -973,6 +992,7 @@ public class NotificationUtils {
         final Resources res = context.getResources();
         final String notificationAccountDisplayName = account.getDisplayName();
         final String notificationAccountEmail = account.getEmailAddress();
+        final boolean multipleUnseen = unseenCount > 1;
 
         LogUtils.i(LOG_TAG, "Showing notification with unreadCount of %d and unseenCount of %d",
                 unreadCount, unseenCount);
@@ -985,7 +1005,7 @@ public class NotificationUtils {
         // Notification label name for user label notifications.
         final String notificationLabelName = isInbox ? null : folder.name;
 
-        if (unseenCount > 1) {
+        if (multipleUnseen) {
             // Build the string that describes the number of new messages
             final String newMessagesString = createTitle(context, unseenCount);
 
@@ -1074,7 +1094,16 @@ public class NotificationUtils {
                             // Adding conversation notification for Wear.
                             NotificationCompat.Builder conversationNotif =
                                     new NotificationCompat.Builder(context);
-                            conversationNotif.setSmallIcon(R.drawable.stat_notify_email);
+
+                            // TODO(shahrk) - fix for multiple mail
+                            // Check that the group's folder is assigned an icon res (one of the
+                            // 4 sections). If it is, we can add the gmail badge. If not, it is
+                            // accompanied by the multiple_mail_24dp icon and we don't want a badge
+                            // if (folder.notificationIconResId != 0) {
+                            conversationNotif.setSmallIcon(R.drawable.ic_notification_mail_16dp);
+
+                            conversationNotif.setColor(
+                                    context.getResources().getColor(R.color.notification_icon_bg_red));
                             conversationNotif.setContentText(digestLine);
                             Intent conversationNotificationIntent = createViewConversationIntent(
                                     context, account, folder, conversationCursor);
@@ -1690,6 +1719,7 @@ public class NotificationUtils {
                 contactIconInfo.icon = new LetterTileProvider(context).getLetterTile(dimensions,
                         displayName, senderAddress);
             }
+            contactIconInfo.icon = cropSquareIconToCircle(contactIconInfo.icon);
         }
 
         if (contactIconInfo.icon == null) {
@@ -1740,8 +1770,8 @@ public class NotificationUtils {
             final int idealIconWidth, final int idealIconHeight,
             final int idealWearableBgWidth, final int idealWearableBgHeight) {
         final ContactIconInfo contactIconInfo = new ContactIconInfo();
-        final List<Long> contactIds = findContacts( context, Arrays.asList(
-                new String[] { senderAddress }));
+        final List<Long> contactIds = findContacts(context, Arrays.asList(
+                new String[]{senderAddress}));
 
         if (contactIds != null) {
             for (final long id : contactIds) {
@@ -1774,6 +1804,28 @@ public class NotificationUtils {
         }
 
         return contactIconInfo;
+    }
+
+    /**
+     * Crop a square bitmap into a circular one. Used for both contact photos and letter tiles.
+     * @param icon Square bitmap to crop
+     * @return Circular bitmap
+     */
+    private static Bitmap cropSquareIconToCircle(Bitmap icon) {
+        final int iconWidth = icon.getWidth();
+        final Bitmap newIcon = Bitmap.createBitmap(iconWidth, iconWidth, Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(newIcon);
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, icon.getWidth(),
+                icon.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        canvas.drawCircle(iconWidth/2, iconWidth/2, iconWidth/2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(icon, rect, rect, paint);
+
+        return newIcon;
     }
 
     private static String getMessageBodyWithoutElidedText(final Message message) {

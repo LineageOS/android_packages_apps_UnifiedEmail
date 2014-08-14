@@ -101,6 +101,7 @@
     <color name="low_spam_warning_background_color">#FFF1A8</color>
 
     <color name="notification_template_icon_low_bg">#0cffffff</color>
+    <color name="notification_icon_gmail_red">#da4336</color>
 
     <!-- Search colors -->
     <color name="search_banner_bg">#f6f6f6</color>
