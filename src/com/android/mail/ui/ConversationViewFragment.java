@@ -1063,6 +1063,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         mTempBodiesHtml = renderCollapsedHeaders(cursor, item);
         mWebView.loadUrl("javascript:replaceSuperCollapsedBlock(" + item.getStart() + ")");
+        mConversationContainer.focusFirstMessageHeader();
     }
 
     private void showNewMessageNotification(NewMessagesInfo info) {
@@ -1169,6 +1170,11 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                     id, isLeft, isRight, isTwoPaneLand)) {
                 return true;
             } else if (isUp || isDown) {
+                // We don't do anything on up/down for overlay
+                if (id == R.id.conversation_topmost_overlay) {
+                    return true;
+                }
+
                 // We manually handle up/down navigation through the overlay items because the
                 // system's default isn't optimal for two-pane landscape since it's not a real list.
                 final int position = mConversationContainer.getViewPosition(mOriginalKeyedView);
@@ -1188,6 +1194,19 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                         }
                     }
                     return true;
+                } else {
+                    // Special case two end points
+                    // Start is marked as index 1 because we are currently not allowing focus on
+                    // conversation view header.
+                    if ((position == mConversationContainer.getOverlayCount() - 1 && isDown) ||
+                            (position == 1 && isUp)) {
+                        mTopmostOverlay.requestFocus();
+                        // Scroll to the the top if we hit the first item
+                        if (isUp) {
+                            mWebView.scrollTo(0, 0);
+                        }
+                        return true;
+                    }
                 }
             }
 
@@ -1201,6 +1220,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                     id == R.id.conversation_topmost_overlay) {
                 if (isActionUp) {
                     mConversationContainer.focusFirstMessageHeader();
+                    mWebView.scrollTo(0, 0);
                 }
                 return true;
             }
