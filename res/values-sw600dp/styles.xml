@@ -16,19 +16,6 @@
      limitations under the License.
 -->
 <resources>
-
-    <style name="MailActivityTheme" parent="@style/UnifiedEmailTheme.Appcompat" />
-
-    <!-- todo - comment out when theme exists -->
-    <!--<style name="ShortcutWidgetTheme" parent="@style/Theme.Appcompat.Light.Dialog.MinWidth">-->
-        <!--<item name="actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>-->
-        <!--<item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>-->
-    <!--</style>-->
-
-    <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme.Appcompat">
-        <item name="android:windowBackground">@color/vacation_responder_background</item>
-    </style>
-
     <style name="VacationResponderStyle">
         <item name="android:paddingLeft">@dimen/vacation_responder_padding_horizontal_wide</item>
         <item name="android:paddingRight">@dimen/vacation_responder_padding_horizontal_wide</item>

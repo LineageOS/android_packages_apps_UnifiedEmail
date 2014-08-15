@@ -53,7 +53,6 @@
         <item name="android:paddingBottom">20dp</item>
     </style>
 
-
     <style name="ComposeSubjectView" parent="@style/ComposeEditTextView">
         <item name="android:hint">@string/subject_hint</item>
         <item name="android:imeOptions">actionDone|flagNoExtractUi|flagNoFullscreen</item>
@@ -86,9 +85,7 @@
         <item name="android:textSize">@dimen/compose_header_text_size</item>
      </style>
 
-    <style name="ComposeFieldLayoutBase" />
-
-    <style name="ComposeFieldLayout" parent="@style/ComposeFieldLayoutBase">
+    <style name="ComposeFieldLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:addStatesFromChildren">true</item>
@@ -127,6 +124,32 @@
 
     <style name="ComposeFieldButton" parent="@style/BaseComposeFieldButton">
         <item name="android:layout_marginLeft">@dimen/compose_header_btn_padding</item>
+    </style>
+
+    <style name="AbstractComposeArea">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:animateLayoutChanges">true</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="AbstractComposeAreaWithRtl" parent="@style/AbstractComposeArea">
+        <item name="android:paddingLeft">@dimen/compose_area_start_padding</item>
+        <item name="android:paddingRight">@dimen/compose_area_end_padding</item>
+    </style>
+
+    <style name="ComposeArea" parent="AbstractComposeAreaWithRtl" />
+
+    <style name="ComposeAreaWrapper">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:paddingLeft">@dimen/compose_wrapper_side_padding</item>
+        <item name="android:paddingRight">@dimen/compose_wrapper_side_padding</item>
+        <item name="android:paddingTop">@dimen/compose_wrapper_top_padding</item>
+    </style>
+
+    <style name="ComposeAttachmentTileTextEndStyle">
+        <item name="android:paddingRight">@dimen/compose_attachment_tile_text_end_padding</item>
     </style>
 
     <style name="AttachmentContainer">
@@ -416,23 +439,6 @@
         <item name="android:layout_marginTop">16dip</item>
     </style>
 
-    <style name="ShortcutWidgetTheme" parent="@style/UnifiedEmailTheme.Appcompat" />
-
-    <style name="ComposeTheme" parent="@style/UnifiedEmailTheme.Appcompat">
-        <item name="android:colorBackground">@android:color/white</item>
-        <item name="android:colorBackgroundCacheHint">@android:color/white</item>
-        <item name="android:dropDownListViewStyle">@style/ComposeDropdownListViewStyle</item>
-        <item name="android:windowBackground">@android:color/white</item>
-    </style>
-
-    <style name="ComposeDropdownListViewStyle">
-        <item name="android:dividerHeight">0dp</item>
-    </style>
-
-    <style name="InvisibleShortcutWidgetTheme" parent="@style/ShortcutWidgetTheme">
-        <item name="android:windowNoDisplay">true</item>
-    </style>
-
     <style name="OverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_overflow_24dp</item>
     </style>
@@ -445,38 +451,8 @@
         <item name="android:src">@drawable/ic_menu_moreoverflow_mtrl_alpha</item>
     </style>
 
-    <style name="ActionBarStyle"  parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <style name="ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/actionbar_color</item>
-    </style>
-
-    <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
-        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
-        <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
-    </style>
-
-
-    <style name="UnifiedEmailTheme.Appcompat" parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        <item name="actionModeBackground">@color/action_mode_background</item>
-        <item name="actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle.Appcompat</item>
-        <item name="colorPrimary">@color/actionbar_color</item>
-        <!-- Used by the StatusBar and NavBar (currently broken?) -->
-        <item name="colorPrimaryDark">@color/statusbar_color</item>
-        <item name="colorAccent">@color/accent_blue</item>
-        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
-    </style>
-
-    <style name="UnifiedEmailTheme.Appcompat.Toolbar" parent="@style/UnifiedEmailTheme.Appcompat">
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowActionModeOverlay">true</item>
-    </style>
-
-    <style name="MailActivityTheme" parent="@style/UnifiedEmailTheme.Appcompat.Toolbar" />
-
-    <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme.Appcompat">
     </style>
 
     <style name="WaitFragmentTitleBase" parent="@android:style/Widget.Holo.TextView" />
@@ -957,32 +933,6 @@
 
     <style name="SpinnerAccountAddressStyle" parent="ComposeFromTextViewStyle">
         <item name="android:paddingLeft">@dimen/custom_from_inner_padding</item>
-    </style>
-
-    <style name="AbstractComposeArea">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:animateLayoutChanges">true</item>
-        <item name="android:background">@android:color/white</item>
-    </style>
-
-    <style name="AbstractComposeAreaWithRtl" parent="@style/AbstractComposeArea">
-        <item name="android:paddingLeft">@dimen/compose_area_start_padding</item>
-        <item name="android:paddingRight">@dimen/compose_area_end_padding</item>
-    </style>
-
-    <style name="ComposeArea" parent="AbstractComposeAreaWithRtl" />
-
-    <style name="ComposeAreaWrapper">
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:paddingLeft">@dimen/compose_wrapper_side_padding</item>
-        <item name="android:paddingRight">@dimen/compose_wrapper_side_padding</item>
-        <item name="android:paddingTop">@dimen/compose_wrapper_top_padding</item>
-    </style>
-
-    <style name="ComposeAttachmentTileTextEndStyle">
-        <item name="android:paddingRight">@dimen/compose_attachment_tile_text_end_padding</item>
     </style>
 
     <style name="FolderTeaserLabelMarginStyle">
