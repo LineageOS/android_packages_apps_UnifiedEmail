@@ -362,6 +362,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         boolean showMarkNotSpam = false;
         boolean showMarkAsPhishing = false;
 
+        // TODO(shahrk): Clean up these dirty calls using Utils.setMenuItemVisibility(...) or
+        // in another way
+
         for (Conversation conversation : conversations) {
             if (!conversation.starred) {
                 showStar = true;
@@ -408,6 +411,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         removeFolder.setVisible(showRemoveFolder);
         moveTo.setVisible(showMoveTo);
         moveToInbox.setVisible(showMoveToInbox);
+
+        final MenuItem changeFolders = menu.findItem(R.id.change_folders);
+        changeFolders.setVisible(mAccount.supportsCapability(
+                UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV));
 
         if (mFolder != null && showRemoveFolder) {
             removeFolder.setTitle(mActivity.getActivityContext().getString(R.string.remove_folder,
