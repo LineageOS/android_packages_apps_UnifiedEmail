@@ -1560,7 +1560,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 // distinguish ours from theirs
                 // new messages from the account owner should not trigger a
                 // notification
-                if (mAccount.ownsFromAddress(from.getAddress())) {
+                if (from == null || mAccount.ownsFromAddress(from.getAddress())) {
                     LogUtils.i(LOG_TAG, "found message from self: %s", m.uri);
                     info.countFromSelf++;
                     continue;
