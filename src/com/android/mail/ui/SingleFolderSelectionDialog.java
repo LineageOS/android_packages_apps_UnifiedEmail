@@ -82,21 +82,27 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog {
                         dialog.getListView().setAdapter(null);
 
                         mAdapter.clearSections();
-                        // TODO(mindyp) : bring this back in UR8 when Email providers
-                        // will have divided folder sections.
-                        // Currently, the number of adapters are assumed to match the
-                        // number of headers in the string array.
-                        mAdapter.addSection(new SystemFolderSelectorAdapter(context, data,
-                                R.layout.single_folders_view, mCurrentFolder));
 
-                        // TODO(mindyp): we currently do not support frequently moved to
-                        // folders, at headers[1]; need to define what that means.*/
+                        // Create a system folder adapter and an adapter for hierarchical
+                        // and user folders. If there are no folders added to either of them,
+                        // do not add as a section since a 0-count adapter will result in an
+                        // IndexOutOfBoundsException.
+                        SystemFolderSelectorAdapter sysFolderAdapter =
+                                new SystemFolderSelectorAdapter(context, data,
+                                    R.layout.single_folders_view, mCurrentFolder);
+                        if (sysFolderAdapter.getCount() > 0) {
+                            mAdapter.addSection(sysFolderAdapter);
+                        }
+
                         // TODO(pwestbro): determine if we need to call filterFolders
                         // if filterFolders is not necessary, remove the method decl with one arg.
-                        mAdapter.addSection(
+                        UserFolderHierarchicalFolderSelectorAdapter hierarchicalAdapter =
                                 new UserFolderHierarchicalFolderSelectorAdapter(context,
-                                AddableFolderSelectorAdapter.filterFolders(data),
-                                R.layout.single_folders_view, mCurrentFolder));
+                                    AddableFolderSelectorAdapter.filterFolders(data),
+                                    R.layout.single_folders_view, mCurrentFolder);
+                        if (hierarchicalAdapter.getCount() > 0) {
+                            mAdapter.addSection(hierarchicalAdapter);
+                        }
 
                         dialog.getListView().setAdapter(mAdapter);
                     }
