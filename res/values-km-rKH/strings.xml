@@ -18,384 +18,384 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="to" msgid="4392614766835725698">"ជូន​ចំពោះ"</string>
-    <string name="cc" msgid="7017720927911078193">"ចម្លង​ជូន"</string>
-    <string name="bcc" msgid="3098643138241111579">"ចម្លង​ជា​សម្ងាត់​ជូន"</string>
-    <string name="subject_hint" msgid="7253964583324677128">"ប្រធានបទ"</string>
-    <string name="body_hint" msgid="4279864165439577668">"តែង​អ៊ីមែល"</string>
-    <string name="add_file_attachment" msgid="2203398371671979481">"ភ្ជាប់​​ឯកសារ"</string>
-    <string name="add_photo_attachment" msgid="3738882100645552858">"ភ្ជាប់​រូបភាព"</string>
-    <string name="add_video_attachment" msgid="8916625983712820173">"ភ្ជាប់​វីដេអូ"</string>
-    <string name="save_draft" msgid="5555744208032445632">"រក្សាទុក​សេចក្ដី​ព្រាង"</string>
-    <string name="discard" msgid="1714960202994370243">"បោះបង់"</string>
-    <string name="compose" msgid="1473559896062432878">"តែង"</string>
+    <string name="to" msgid="3971614275716830581">"ទៅ"</string>
+    <string name="cc" msgid="8768828862207919684">"ចម្លង​ជូន"</string>
+    <string name="bcc" msgid="519303553518479171">"ចម្លង​ជា​សម្ងាត់​ជូន"</string>
+    <string name="subject_hint" msgid="2136470287303571827">"ប្រធានបទ"</string>
+    <string name="body_hint" msgid="6478994981747057817">"សរសេរ​អ៊ីមែល"</string>
+    <string name="add_file_attachment" msgid="2604880054248593993">"ភ្ជាប់​ឯកសារ"</string>
+    <string name="add_photo_attachment" msgid="7163589794940909528">"ភ្ជាប់​រូបភាព"</string>
+    <string name="add_video_attachment" msgid="1505667005898320360">"ភ្ជាប់​វីដេអូ"</string>
+    <string name="save_draft" msgid="2669523480789672118">"រក្សា​ទុក​សេចក្តី​ព្រាង"</string>
+    <string name="discard" msgid="4905982179911608430">"បោះបង់"</string>
+    <string name="compose" msgid="2602861958391035523">"សរសេរ​សារ"</string>
   <string-array name="compose_modes">
-    <item msgid="8631190144210933782">"ឆ្លើយតប"</item>
-    <item msgid="4085029907540221568">"ឆ្លើយតប​ទាំងអស់"</item>
-    <item msgid="857480048798815437">"បញ្ជូន​បន្ត"</item>
+    <item msgid="9000553538766397816">"ឆ្លើយតប"</item>
+    <item msgid="2767793214788399009">"ឆ្លើយតប​ទាំងអស់"</item>
+    <item msgid="2758162027982270607">"បញ្ជូន​បន្ត"</item>
   </string-array>
-    <string name="reply_attribution" msgid="717207316577386788">"នៅ <xliff:g id="DATE">%s</xliff:g>, <xliff:g id="PERSON">%s</xliff:g> បាន​សរសេរ៖"</string>
-    <string name="forward_attribution" msgid="1498936339458535158">"---------- បាន​​បញ្ជូន​សារ​​បន្ត ----------&lt;br&gt; ពី៖ <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt; កាលបរិច្ឆេទ៖ <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt; ប្រធានបទ៖ <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt; ជូន​ចំពោះ៖ <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
-    <string name="forward_attribution_no_headers" msgid="3239825787227110752">"---------- សារ​​បញ្ជូន​បន្ត ----------"</string>
-    <string name="cc_attribution" msgid="374493748526504562">"ចម្លង​ជូន៖ <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
-    <string name="select_attachment_type" msgid="4711524151968942082">"ជ្រើស​ប្រភេទ​ឯកសារ​ភ្ជាប់"</string>
-    <string name="too_large_to_attach_single" msgid="2996733972478212136">"មិន​អាច​ភ្ជាប់​ឯកសារ​ដែល​ធំជាង <xliff:g id="MAXSIZE">%1$s</xliff:g> ។"</string>
-    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"មិន​បាន​ភ្ជាប់​ឯកសារ​មួយ ​ឬ​ច្រើន​។ ​កំណត់ <xliff:g id="MAXSIZE">%1$s</xliff:g> ។"</string>
-    <string name="too_large_to_attach_additional" msgid="3366607594339390249">"មិន​បាន​ភ្ជាប់​ឯកសារ​​។ បាន​ដល់​ដែន​កំណត់ <xliff:g id="MAXSIZE">%1$s</xliff:g> ។"</string>
-    <string name="generic_attachment_problem" msgid="8775959340559458709">"មិន​អាច​ភ្ជាប់​ឯកសារ​។"</string>
-    <string name="recipient_needed" msgid="999037027358925655">"បន្ថែម​​​អ្នក​ទទួល​យ៉ាង​ហោច​ណាស់​ម្នាក់។"</string>
-    <string name="recipient_error_dialog_title" msgid="6051694305498669180">"កំហុស​អ្នក​ទទួល"</string>
-    <string name="confirm_send_title" msgid="5663602035452564062">"ផ្ញើ​សារ?"</string>
-    <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"មិន​មាន​អត្ថបទ​នៅ​ក្នុង​ប្រធានបទ​សារ​​​។"</string>
-    <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"មិន​មាន​អត្ថបទ​នៅ​ក្នុង​តួ​​សេចក្ដី​សារ​ទេ​។"</string>
-    <string name="confirm_send_message" msgid="3221546155385562874">"ផ្ញើ​រ​សារ​នេះ​?"</string>
-    <string name="message_discarded" msgid="5079975378884765445">"បាន​បោះបង់​សារ។"</string>
-    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <string name="custom_from_account_label" msgid="5069652141632649722">"ផ្ញើ​អ៊ីមែល​ជា៖"</string>
-    <string name="send" msgid="8242003661397555986">"ផ្ញើ"</string>
-    <string name="mark_read" msgid="8438349154394313195">"សម្គាល់​ថា​អាន​រួច"</string>
-    <string name="mark_unread" msgid="6231373939351125713">"សម្គាល់​ថា​មិន​ទាន់​អាន"</string>
-    <string name="mute" msgid="1995954983688603977">"ស្ងាត់"</string>
-    <string name="add_star" msgid="2866003744391266498">"ដាក់​ផ្កាយ"</string>
-    <string name="remove_star" msgid="4372327933122106128">"ដក​ផ្កាយ​ចេញ"</string>
-    <string name="remove_folder" msgid="4906542720439865413">"លុប​ចេញ​ពី <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
-    <string name="archive" msgid="847250094775910499">"ប័ណ្ណសារ"</string>
-    <string name="report_spam" msgid="6467567747975393907">"រាយការណ៍​​សារ​​ឥត​បាន​ការ"</string>
-    <string name="mark_not_spam" msgid="694891665407228160">"របាយការណ៍​មិន​មែន​ជា​សារ​ឥត​បាន​ការ"</string>
-    <string name="report_phishing" msgid="5714205737453138338">"រាយការណ៍​ការ​បន្លំ"</string>
-    <string name="delete" msgid="844871204175957681">"លុប"</string>
-    <string name="discard_drafts" msgid="6862272443470085375">"បោះបង់​សេចក្ដី​ព្រាង"</string>
-    <string name="refresh" msgid="490989798005710951">"ផ្ទុក​ឡើងវិញ"</string>
-    <string name="reply" msgid="2032052598496088561">"ឆ្លើយតប"</string>
-    <string name="reply_all" msgid="7257248094625487557">"ឆ្លើយតប​ទាំងអស់"</string>
-    <string name="resume_draft" msgid="6450150180834092146">"កែ"</string>
-    <string name="forward" msgid="6822914459902983767">"បញ្ជូន​បន្ត"</string>
-    <string name="menu_compose" msgid="6274193058224230645">"តែង"</string>
-    <string name="menu_change_folders" msgid="1542713666608888717">"ប្ដូរ​​​ថត"</string>
-    <string name="menu_move_to" msgid="9138296669516358542">"ផ្លាស់ទី​ទៅ"</string>
-    <string name="menu_move_to_inbox" msgid="3201472943201077389">"ផ្លាស់ទី​ទៅ​ប្រអប់​ទទួល"</string>
-    <string name="menu_manage_folders" msgid="6755623004628177492">"ការ​កំណត់​ថត"</string>
-    <string name="menu_show_original" msgid="4227060689700765828">"ត្រឡប់​ទៅ​​ការ​ប្ដូរ​ទំហំ​ស្វ័យ​ប្រវត្តិ"</string>
-    <string name="menu_folder_options" msgid="8897520487430647932">"ការ​កំណត់​ថត"</string>
-    <string name="menu_settings" msgid="6007027046949837282">"ការ​កំណត់"</string>
-    <string name="menu_search" msgid="5297197523031943248">"ស្វែងរក"</string>
-    <string name="mark_important" msgid="6904096897104265870">"សម្គាល់​​ថា​សំខាន់"</string>
-    <string name="mark_not_important" msgid="4550967327747977068">"សម្គាល់​ថា​មិន​សំខាន់"</string>
-    <string name="add_cc_label" msgid="504861315425773180">"បន្ថែម ចម្លង​ជូន/​ចម្លង​ជា​សម្ងាត់​ជូន"</string>
-    <string name="add_bcc_label" msgid="7432027645493843336">"បន្ថែម​ចម្លង​ជា​សម្ងាត់​ជូន"</string>
-    <string name="feedback" msgid="79365993169715049">"ផ្ញើ​មតិ​​ត្រឡប់"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"ជំនួយ"</string>
-    <string name="quoted_text" msgid="7250749398672037355">"បញ្ចូល​​​អត្ថបទ​ដកស្រង់"</string>
-    <string name="quoted_text_label" msgid="541007446961960617">"អត្ថបទ​សម្រង់"</string>
-    <string name="respond_inline" msgid="6797117334768201180">"ឆ្លើយ​តប​ក្នុង​តួ"</string>
-    <string name="bytes" msgid="874874279846496468">"<xliff:g id="COUNT">%s</xliff:g> បៃ"</string>
-    <string name="kilobytes" msgid="9191949758901349712">"<xliff:g id="COUNT">%s</xliff:g> គីឡូបៃ"</string>
-    <string name="megabytes" msgid="130431176022837380">"<xliff:g id="COUNT">%s</xliff:g> មេកាបៃ"</string>
-    <string name="attachment_image" msgid="3832985223906528449">"រូបភាព"</string>
-    <string name="attachment_video" msgid="7526134752988603154">"វីដេអូ​"</string>
-    <string name="attachment_audio" msgid="135527133955622936">"សំឡេង"</string>
-    <string name="attachment_text" msgid="5544874374971562759">"អត្ថបទ"</string>
-    <string name="attachment_application_msword" msgid="2326909450865637910">"ឯកសារ"</string>
-    <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"បទ​បង្ហាញ"</string>
-    <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"សៀវភៅ​បញ្ជី"</string>
-    <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
-    <string name="attachment_unknown" msgid="6005445955982153931">"ឯកសារ <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
-    <string name="preview_attachment" msgid="6934911143603455393">"មើល​ជាមុន"</string>
-    <string name="save_attachment" msgid="5360128849867863132">"រក្សាទុក"</string>
-    <string name="cancel_attachment" msgid="4651201258272223650">"បោះ​បង់​"</string>
-    <string name="download_again" msgid="7418568915429156518">"ទាញ​យក​ម្ដងទៀត"</string>
-    <string name="more_info_attachment" msgid="717244337981816703">"ព័ត៌មាន"</string>
-    <string name="attachment_type_blocked" msgid="7878184764428642891">"គួរឲ្យ​ស្ដាយ អ្នក​មិន​អាច​រក្សា​ទុក ​ឬ​បើក​ប្រភេទ​នៃ​ឯកសារ​ភ្ជាប់​នេះ​។"</string>
-    <string name="no_application_found" msgid="1945184804521392093">"គ្មាន​កម្មវិធី​អាច​បើក​ឯកសារ​ភ្ជាប់​នេះ​ ដើម្បី​មើល។"</string>
-    <string name="fetching_attachment" msgid="2599763030649526179">"កំពុង​ទៅ​ប្រមូល​យក​ឯកសារ​ភ្ជាប់"</string>
-    <string name="please_wait" msgid="8797634225088247121">"សូម​រង់ចាំ…"</string>
-    <string name="saved" msgid="6660844285730790469">"បាន​រក្សាទុក  <xliff:g id="SIZE">%s</xliff:g>"</string>
-    <string name="download_failed" msgid="442019281547315527">"មិន​អាច​ទាញ​យក​។ ប៉ះ​ដើម្បី​ព្យាយាម​ម្ដង​ទៀត​។"</string>
-    <string name="attachments_header" msgid="6459475590011460229">"ឯកសារ​ភ្ជាប់"</string>
-    <string name="menu_photo_save_all" msgid="4295226099481995348">"រក្សា​ទុក​ទាំងអស់"</string>
-    <string name="menu_photo_share" msgid="2214772815165829079">"ចែករំលែក​"</string>
-    <string name="menu_photo_share_all" msgid="4577299400844129078">"ចែក​រំលែក​ទាំងអស់"</string>
-    <string name="saving" msgid="925514721138014677">"កំពុង​រក្សាទុក..."</string>
-    <string name="choosertitle_sharevia" msgid="6142681649048665134">"ចែករំលែក​តាម"</string>
-    <string name="contextmenu_openlink" msgid="2176176524824953775">"បើក​ក្នុង​កម្មវិធី​អ៊ីនធឺណិត"</string>
-    <string name="contextmenu_copy" msgid="4604170699444153037">"ចម្លង"</string>
-    <string name="contextmenu_copylink" msgid="3580131515400610839">"ចម្លង URL របស់​តំណ"</string>
-    <string name="contextmenu_dial_dot" msgid="9104426720103729453">"ហៅ…"</string>
-    <string name="contextmenu_sms_dot" msgid="6481040539501081547">"សារ SMS…"</string>
-    <string name="contextmenu_add_contact" msgid="8395100913366045250">"បន្ថែម​ទំនាក់ទំនង"</string>
-    <string name="contextmenu_send_mail" msgid="8301941130009797208">"ផ្ញើ​អ៊ីមែល"</string>
-    <string name="contextmenu_map" msgid="7721544518698532954">"ផែនទី"</string>
-    <string name="contextmenu_sharelink" msgid="6213520416250245200">"ចែករំលែក​តំណ"</string>
-    <string name="contextmenu_help" msgid="4651718679842414097">"ជំនួយ"</string>
-    <string name="contextmenu_feedback" msgid="4429118420169571473">"ផ្ញើ​មតិ​​ត្រឡប់"</string>
-    <!-- no translation found for num_selected (5723323585692387843) -->
+    <string name="reply_attribution" msgid="1114972798797833259">"នៅ <xliff:g id="DATE">%s</xliff:g>, <xliff:g id="PERSON">%s</xliff:g> បាន​សរសេរ៖"</string>
+    <string name="forward_attribution" msgid="597850048345475752">"----------សារ​បាន​បញ្ជូន​បន្ត ----------&lt;br&gt;ពី៖ <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;កាល​បរិច្ឆេទ៖ <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;ប្រធាន​បទ៖ <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;ជូន​ចំពោះ៖ <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
+    <string name="forward_attribution_no_headers" msgid="1828826576779486239">"---------- សារ​បា​ន​បញ្ជូន​បន្ត ----------"</string>
+    <string name="cc_attribution" msgid="2928584226469388899">"ចម្លង​ជូន៖ <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
+    <string name="select_attachment_type" msgid="353236686616663062">"ជ្រើស​ប្រភេទ​ឯកសារ​ភ្ជាប់"</string>
+    <string name="too_large_to_attach_single" msgid="2669897137966512530">"មិន​អាច​ភ្ជាប់​ឯកសារ​ដែល​ធំជាង <xliff:g id="MAXSIZE">%1$s</xliff:g> ។"</string>
+    <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"មិន​បាន​ភ្ជាប់​ឯកសារ​មួយ ​ឬ​ច្រើន​។ ​កំណត់ <xliff:g id="MAXSIZE">%1$s</xliff:g> ។"</string>
+    <string name="too_large_to_attach_additional" msgid="4964155563465970480">"មិន​បាន​ភ្ជាប់​ឯកសារ​​។ បាន​ដល់​ដែន​កំណត់ <xliff:g id="MAXSIZE">%1$s</xliff:g> ។"</string>
+    <string name="generic_attachment_problem" msgid="4683974765387240723">"មិន​អាច​ភ្ជាប់​ឯកសារ​បាន​ទេ​។"</string>
+    <string name="recipient_needed" msgid="319816879398937214">"បន្ថែម​​​អ្នក​ទទួល​យ៉ាង​ហោច​ណាស់​ម្នាក់។"</string>
+    <string name="recipient_error_dialog_title" msgid="760741480291963706">"កំហុស​អ្នក​ទទួល"</string>
+    <string name="confirm_send_title" msgid="4664971589247101530">"ផ្ញើ​សារ?"</string>
+    <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"មិន​មាន​​អត្ថបទ​នៅ​ក្នុង​ប្រធានបទ​សារ​ឡើយ។"</string>
+    <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"មិន​មាន​អក្សរ​នៅ​ក្នុង​តួ​​សារ​ទេ​។"</string>
+    <string name="confirm_send_message" msgid="6211518590166222735">"ផ្ញើ​​សារ​នេះ​?"</string>
+    <string name="message_discarded" msgid="6792661321962262024">"សារ​ដែល​ត្រូវ​បាន​បោះបង់​ចោល។"</string>
+    <string name="signature" msgid="3172144541947408374">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
+    <string name="custom_from_account_label" msgid="5042317430007736322">"ផ្ញើ​អ៊ីមែល​ជា៖"</string>
+    <string name="send" msgid="4269810089682120826">"ផ្ញើ"</string>
+    <string name="mark_read" msgid="579388143288052493">"សម្គាល់​ថា​បាន​អាន"</string>
+    <string name="mark_unread" msgid="6245060538061533191">"សម្គាល់​ថា​មិន​ទាន់​អាន"</string>
+    <string name="mute" msgid="9164839998562321569">"បិទ​សំឡេង"</string>
+    <string name="add_star" msgid="3275117671153616270">"បន្ថែម​ផ្កាយ"</string>
+    <string name="remove_star" msgid="9126690774161840733">"ដក​​ផ្កាយ​ចេញ"</string>
+    <string name="remove_folder" msgid="2379905457788576297">"លុប​ចេញ​ពី <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+    <string name="archive" msgid="5978663590021719939">"ប័ណ្ណសារ"</string>
+    <string name="report_spam" msgid="4106897677959987340">"រាយការណ៍​​សារ​​ឥត​បាន​ការ"</string>
+    <string name="mark_not_spam" msgid="8617774236231366651">"រាយការណ៍​​មិន​មែន​ជា​សារ​ឥត​បាន​ការ"</string>
+    <string name="report_phishing" msgid="8454666464488413739">"រាយការណ៍​ការ​បន្លំ"</string>
+    <string name="delete" msgid="6784262386780496958">"លុប"</string>
+    <string name="discard_drafts" msgid="5881484193628472105">"បោះបង់​សេចក្ដី​ព្រាង"</string>
+    <string name="refresh" msgid="1533748989749277511">"ផ្ទុក​ឡើង​វិញ"</string>
+    <string name="reply" msgid="8337757482824207118">"ឆ្លើយតប"</string>
+    <string name="reply_all" msgid="5366796103758360957">"ឆ្លើយតប​ទាំងអស់"</string>
+    <string name="resume_draft" msgid="1272723181782570649">"កែប្រែ"</string>
+    <string name="forward" msgid="4397585145490426320">"បញ្ជូន​បន្ត"</string>
+    <string name="menu_compose" msgid="4575025207594709432">"សរសេរ​សារ"</string>
+    <string name="menu_change_folders" msgid="2194946192901276625">"ប្ដូរ​ថត"</string>
+    <string name="menu_move_to" msgid="7948877550284452830">"ផ្លាស់ទី​ទៅ"</string>
+    <string name="menu_move_to_inbox" msgid="258554178236001444">"ផ្លាស់ទី​ទៅ​ប្រអប់​ទទួល"</string>
+    <string name="menu_manage_folders" msgid="8486398523679534519">"ការ​កំណត់​ថត"</string>
+    <string name="menu_show_original" msgid="2330398228979616661">"ត្រឡប់​ទៅ​​ការ​ប្ដូរ​ទំហំ​ដោយ​ស្វ័យ​ប្រវត្តិ"</string>
+    <string name="menu_folder_options" msgid="4759618069999684241">"ការ​កំណត់​ថត"</string>
+    <string name="menu_settings" msgid="7993485401501778040">"ការ​កំណត់"</string>
+    <string name="menu_search" msgid="1949652467806052768">"ស្វែងរក"</string>
+    <string name="mark_important" msgid="8781680450177768820">"សម្គាល់​​ថា​សំខាន់"</string>
+    <string name="mark_not_important" msgid="3342258155408116917">"សម្គាល់​ថា​មិន​សំខាន់"</string>
+    <string name="add_cc_label" msgid="2249679001141195213">"បន្ថែម​ចម្លង​ជូន/ចម្លង​​ជា​សម្ងាត់​ជូន"</string>
+    <string name="add_bcc_label" msgid="963745641238037813">"បន្ថែម​ចម្លង​ជា​សម្ងាត់​ជូន"</string>
+    <string name="feedback" msgid="204247008751740034">"ផ្ញើ​មតិ​ប្រតិកម្ម"</string>
+    <string name="help_and_info" msgid="3708286489943154681">"ជំនួយ"</string>
+    <string name="quoted_text" msgid="977782904293216533">"បញ្ចូល​​​អត្ថបទ​សម្រង់"</string>
+    <string name="quoted_text_label" msgid="2296807722849923934">"អត្ថបទ​សម្រង់"</string>
+    <string name="respond_inline" msgid="6609746292081928078">"ឆ្លើយ​តប​ក្នុង​តួ"</string>
+    <string name="bytes" msgid="651011686747499628">"<xliff:g id="COUNT">%s</xliff:g> បៃ"</string>
+    <string name="kilobytes" msgid="1523463964465770347">"<xliff:g id="COUNT">%s</xliff:g> គីឡូបៃ"</string>
+    <string name="megabytes" msgid="4309397368708773323">"<xliff:g id="COUNT">%s</xliff:g> មេកាបៃ"</string>
+    <string name="attachment_image" msgid="6375306026208274564">"រូបភាព"</string>
+    <string name="attachment_video" msgid="7119476472603939848">"វីដេអូ"</string>
+    <string name="attachment_audio" msgid="7097658089301809284">"សំឡេង"</string>
+    <string name="attachment_text" msgid="3485853714965922173">"អត្ថបទ"</string>
+    <string name="attachment_application_msword" msgid="2110108876623152162">"ឯកសារ"</string>
+    <string name="attachment_application_vnd_ms_powerpoint" msgid="425353008963359230">"បទ​បង្ហាញ"</string>
+    <string name="attachment_application_vnd_ms_excel" msgid="5585781311136609103">"សៀវភៅ​បញ្ជី"</string>
+    <string name="attachment_application_pdf" msgid="4207340200944655970">"PDF"</string>
+    <string name="attachment_unknown" msgid="3360536730101083926">"ឯកសារ <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
+    <string name="preview_attachment" msgid="6265457626086113833">"មើល​ជាមុន"</string>
+    <string name="save_attachment" msgid="375685179032130033">"រក្សាទុក"</string>
+    <string name="cancel_attachment" msgid="6900093625792891122">"បោះបង់"</string>
+    <string name="download_again" msgid="8195787340878328119">"ទាញ​យក​ម្ដងទៀត"</string>
+    <string name="more_info_attachment" msgid="2899691682394864507">"ព័ត៌មាន"</string>
+    <string name="attachment_type_blocked" msgid="2995431444935815943">"គួរឲ្យ​ស្ដាយ អ្នក​មិន​អាច​រក្សា​ទុក ​ឬ​បើក​ប្រភេទ​នៃ​ឯកសារ​ភ្ជាប់​នេះ​បាន​ឡើយ។"</string>
+    <string name="no_application_found" msgid="7309485680354949680">"គ្មាន​កម្មវិធី​អាច​បើក​ឯកសារ​ភ្ជាប់​នេះ​ដើម្បី​មើល​ឡើយ។"</string>
+    <string name="fetching_attachment" msgid="2286628490159574159">"ទៅ​​​យក​ឯកសារ​ភ្ជាប់"</string>
+    <string name="please_wait" msgid="3953824147776128899">"សូម​រង់ចាំ…"</string>
+    <string name="saved" msgid="161536102236967534">"បាន​រក្សាទុក  <xliff:g id="SIZE">%s</xliff:g>"</string>
+    <string name="download_failed" msgid="3878373998269062395">"មិន​អាច​ទាញ​យក​។ ប៉ះ​ដើម្បី​ព្យាយាម​ម្ដង​ទៀត​។"</string>
+    <string name="attachments_header" msgid="6752739514995620140">"ឯកសារ​ភ្ជាប់"</string>
+    <string name="menu_photo_save_all" msgid="2742869476474613396">"រក្សា​ទុក​ទាំងអស់"</string>
+    <string name="menu_photo_share" msgid="6410980274832639330">"ចែក​រំលែក"</string>
+    <string name="menu_photo_share_all" msgid="3049053252719665320">"ចែក​រំលែក​ទាំងអស់"</string>
+    <string name="saving" msgid="6274238733828387433">"កំពុង​រក្សាទុក…"</string>
+    <string name="choosertitle_sharevia" msgid="3539537264873337959">"ចែករំលែក​តាម"</string>
+    <string name="contextmenu_openlink" msgid="6952228183947135362">"បើក​ក្នុង​កម្មវិធី​រុករក"</string>
+    <string name="contextmenu_copy" msgid="2584243784216385180">"ចម្លង"</string>
+    <string name="contextmenu_copylink" msgid="8659897702269320063">"ចម្លង​តំណ URL"</string>
+    <string name="contextmenu_dial_dot" msgid="8881095692316726628">"ហៅ…"</string>
+    <string name="contextmenu_sms_dot" msgid="5319737001771622657">"សារ​ខ្លី…"</string>
+    <string name="contextmenu_add_contact" msgid="2310064151427072475">"បន្ថែម​ទំនាក់ទំនង"</string>
+    <string name="contextmenu_send_mail" msgid="3834654593200105396">"ផ្ញើ​អ៊ីមែល"</string>
+    <string name="contextmenu_map" msgid="5118951927399465521">"ផែនទី"</string>
+    <string name="contextmenu_sharelink" msgid="8670940060477758709">"ចែករំលែក​តំណ"</string>
+    <string name="contextmenu_help" msgid="4209674157707873384">"ជំនួយ"</string>
+    <string name="contextmenu_feedback" msgid="8319100902136337085">"ផ្ញើ​មតិ​ប្រតិកម្ម"</string>
+    <!-- no translation found for num_selected (7990204488812654380) -->
     <skip />
   <plurals name="move_conversation">
-    <item quantity="one" msgid="3657821200245019288">"ផ្លាស់ទី​ការ​សន្ទនា"</item>
-    <item quantity="other" msgid="1685896770174368261">"ផ្លាស់ទី​ការ​សន្ទនា <xliff:g id="ID_1">%1$d</xliff:g>"</item>
+    <item quantity="one" msgid="237882018518207244">"ផ្លាស់ទី​ការ​សន្ទនា"</item>
+    <item quantity="other" msgid="6639576653114141743">"ផ្លាស់ទី​ការ​សន្ទនា <xliff:g id="ID_1">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="content_description" msgid="5191020413686786341">"<xliff:g id="SENDER">%1$s</xliff:g> អំពី <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> នៅ​​ <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
-    <string name="content_description_today" msgid="2303358176694038320">"<xliff:g id="SENDER">%1$s</xliff:g> អំពី <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> នៅ <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
-    <string name="read_string" msgid="219566857950091332">"អាន​ការ​សន្ទនា"</string>
-    <string name="unread_string" msgid="588180203444398297">"ការ​សន្ទនា​មិន​ទាន់​​អាន"</string>
-    <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
+    <string name="content_description" msgid="5876259803684380456">"<xliff:g id="SENDER">%1$s</xliff:g> អំពី <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> នៅ​​ <xliff:g id="DATE">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="5364494347264210992">"<xliff:g id="SENDER">%1$s</xliff:g> អំពី <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> នៅ <xliff:g id="TIME">%4$s</xliff:g>, <xliff:g id="READSTATE">%5$s</xliff:g>"</string>
+    <string name="read_string" msgid="5495929677508576520">"អាន​ការ​សន្ទនា"</string>
+    <string name="unread_string" msgid="7342558841698083381">"ការ​សន្ទនា​មិន​ទាន់​​អាន"</string>
+    <string name="filtered_tag" msgid="721666921386074505">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="subject_and_snippet" msgid="1622509850811764782">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
-    <item quantity="one" msgid="333591132893648383">"សេចក្ដី​ព្រាង"</item>
-    <item quantity="other" msgid="6961049507579977505">"សេចក្ដី​ព្រាង"</item>
+    <item quantity="one" msgid="6717535677167943402">"សេចក្ដី​ព្រាង"</item>
+    <item quantity="other" msgid="1335781147509740039">"សេចក្ដី​ព្រាង"</item>
   </plurals>
-    <string name="sending" msgid="8214361929125649771">"កំពុង​ផ្ញើ…"</string>
-    <string name="send_failed" msgid="750908595144529579">"មិន​បាន​ផ្ញើ​សារ។"</string>
-    <string name="me_object_pronun" msgid="7668994569594901571">"ខ្ញុំ"</string>
-    <string name="me_subject_pronun" msgid="1088657349831581116">"ខ្ញុំ"</string>
-    <string name="inbox_folders_heading" msgid="3960094746248976565">"ប្រអប់​ទទួល"</string>
+    <string name="sending" msgid="5600034886763930499">"កំពុង​ផ្ញើ..."</string>
+    <string name="send_failed" msgid="2186285547449865010">"សារ​មិន​ត្រូវ​បាន​ផ្ញើ​ឡើយ។"</string>
+    <string name="me_object_pronun" msgid="6821876078858926931">"ខ្ញុំ"</string>
+    <string name="me_subject_pronun" msgid="2575942385386480787">"ខ្ញុំ"</string>
+    <string name="inbox_folders_heading" msgid="6534923118688156523">"ប្រអប់​ទទួល"</string>
   <plurals name="confirm_delete_conversation">
-    <item quantity="one" msgid="3731948757247905508">"លុប​ការ​សន្ទនា​នេះ​​?"</item>
-    <item quantity="other" msgid="930334208937121234">"លុប​ការ​សន្ទនា​ទាំង​ <xliff:g id="COUNT">%1$d</xliff:g> ​នេះ?"</item>
+    <item quantity="one" msgid="7605755011865575440">"លុប​ការ​សន្ទនា​នេះ​​?"</item>
+    <item quantity="other" msgid="1585660381208712562">"លុប​ការ​សន្ទនា​ទាំង​ <xliff:g id="COUNT">%1$d</xliff:g> ​នេះ?"</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
-    <item quantity="one" msgid="2990537295519552069">"ទុក​​ការ​សន្ទនា​​នេះ​ក្នុង​ប័ណ្ណសារ​​​​?"</item>
-    <item quantity="other" msgid="4713469868399246772">"ទុក​ការ​សន្ទនា​ទាំង <xliff:g id="COUNT">%1$d</xliff:g> នេះ​ក្នុង​ប័ណ្ណសារ?"</item>
+    <item quantity="one" msgid="9105551557653306945">"ទុក​​ការ​សន្ទនា​​នេះ​ក្នុង​ប័ណ្ណសារ​​​​?"</item>
+    <item quantity="other" msgid="2001972798185641108">"ទុក​ការ​សន្ទនា​ទាំង <xliff:g id="COUNT">%1$d</xliff:g> នេះ​ក្នុង​ប័ណ្ណសារ?"</item>
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one" msgid="5974090449454432874">"បោះបង់​​​សេចក្ដី​ព្រាង​ពី​​ការ​សន្ទនា​នេះ​?"</item>
-    <item quantity="other" msgid="4173815457177336569">"បោះបង់​សេចក្ដី​ព្រាង​​ពី​ការ​សន្ទនា​ទាំង <xliff:g id="COUNT">%1$d</xliff:g> នេះ?"</item>
+    <item quantity="one" msgid="4443734623205467997">"បោះបង់​​​សេចក្ដី​ព្រាង​ពី​​ការ​សន្ទនា​នេះ​?"</item>
+    <item quantity="other" msgid="46196806254799852">"បោះបង់​សេចក្ដី​ព្រាង​​ពី​ការ​សន្ទនា​ទាំង <xliff:g id="COUNT">%1$d</xliff:g> នេះ?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="1149834186404614612">"បោះបង់​សារ​នេះ​?"</string>
-    <string name="loading_conversations" msgid="2649440958602369555">"កំពុង​ផ្ទុក..."</string>
-    <string name="no_conversations" msgid="35400008890372241">"គ្មាន​ការសន្ទនា​។"</string>
-    <string name="undo" msgid="6070869718469782251">"​មិន​​ធ្វើ​វិញ"</string>
+    <string name="confirm_discard_text" msgid="5172680524418848519">"បោះបង់​សារ​នេះ​?"</string>
+    <string name="loading_conversations" msgid="7255732786298655246">"កំពុង​ផ្ទុក…"</string>
+    <string name="no_conversations" msgid="7485099626567904573">"មិន​មាន​​ការសន្ទនា​។"</string>
+    <string name="undo" msgid="8256285267701059609">"មិន​ធ្វើ​វិញ"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="8315328190288744398">"មិន​ដាក់​ផ្កាយ​ការ​សន្ទនា <xliff:g id="COUNT">%1$d</xliff:g> ​។"</item>
-    <item quantity="other" msgid="2222365088907519938">"ដាក់​ផ្កាយ​ការ​សន្ទនា <xliff:g id="COUNT">%1$d</xliff:g> ។"</item>
+    <item quantity="one" msgid="839233699150563831">"មិន​ដាក់​ផ្កាយ​ការ​សន្ទនា <xliff:g id="COUNT">%1$d</xliff:g> ​។"</item>
+    <item quantity="other" msgid="7677305734833709789">"មិន​ដាក់​ផ្កាយ​ការ​សន្ទនា <xliff:g id="COUNT">%1$d</xliff:g> ។"</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"បាន​លុប &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ។"</item>
-    <item quantity="other" msgid="1941193356069303587">"បាន​លុប &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ​។"</item>
+    <item quantity="one" msgid="3339638225564408438">"បាន​ដកចេញ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;។"</item>
+    <item quantity="other" msgid="4276111931404654219">"បាន​​ដកចេញ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ។"</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; បាន​រាយការណ៍​ថា​ជា​សារ​ឥត​បាន​ការ​។"</item>
-    <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; បាន​រាយការណ៍​ជា​សារ​ឥត​បាន​ការ។"</item>
+    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; បាន​រាយការណ៍​ថា​ជា​សារ​ឥត​បាន​ការ។"</item>
+    <item quantity="other" msgid="5900913789259199137">"បាន​រាយការណ៍​ថា​ជា​សារ​ឥត​បានការ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ។"</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"បាន​រាយការណ៍​ការ​សន្ទនា &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ថា​មិនមែន​​ជា​​សារ​ឥត​បាន​ការ។"</item>
-    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; បាន​រាយការណ៍​ថា​​មិន​មែន​ជា​សារ​ឥត​បាន​ការ​។"</item>
+    <item quantity="one" msgid="2294904093653094150">"បាន​រាយការណ៍​មិន​មែន​ជា​សារ​ឥត​បាន​ការ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;។"</item>
+    <item quantity="other" msgid="4966164423991098144">"បាន​រាយការណ៍​មិន​មែន​ជា​សារ​ឥត​បាន​ការ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;។"</item>
   </plurals>
   <plurals name="conversation_not_important">
-    <item quantity="one" msgid="788387259924027833">"បាន​សម្គាល់​ការ​សន្ទនា &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ថា​មិន​សំខាន់។"</item>
-    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; បាន​សម្គាល់​ថា​​មិន​សំខាន់។"</item>
+    <item quantity="one" msgid="3824809189993339030">"បាន​សម្គាល់​ថា​មិន​សំខាន់ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
+    <item quantity="other" msgid="1215472798075869124">"បាន​សម្គាល់​ថា​មិន​សំខាន់ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"បាន​រាយការណ៍​ការ​សន្ទនា &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ថា​ជា​ការ​បន្លំ។"</item>
-    <item quantity="other" msgid="3678624994662639442">"បាន​រាយការណ៍​កា​រ​សន្ទនា &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ថា​ជា​ការ​បន្លំ។"</item>
+    <item quantity="one" msgid="4330095881258771201">"បាន​រាយការណ៍​ថា​ជា​ការ​បន្លំ​ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;។"</item>
+    <item quantity="other" msgid="9218674052779504277">"បាន​រាយការណ៍​ថា​ជា​ការ​បន្លំ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;។"</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="5457612502965117672">"បាន​ទុក​ក្នុង​ប័ណ្ណសារ​ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ។"</item>
-    <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; បាន​ទុក​ក្នុង​ប័ណ្ណសារ។"</item>
+    <item quantity="one" msgid="4127890884907503696">"បាន​ទុក​ក្នុង​ប័ណ្ណសារ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
+    <item quantity="other" msgid="7789480176789922968">"បាន​ទុក​ក្នុង​ប័ណ្ណសារ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"បាន​លុប &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ។"</item>
-    <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; បាន​លុប។"</item>
+    <item quantity="one" msgid="5591889079235938982">"បាន​លុប &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;។"</item>
+    <item quantity="other" msgid="7060256058737892078">"បាន​លុប &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;។"</item>
   </plurals>
-    <string name="deleted" msgid="2757349161107268029">"បាន​លុប"</string>
-    <string name="archived" msgid="7533995360704366325">"ទុក​ក្នុង​ប័ណ្ណសារ"</string>
-    <string name="folder_removed" msgid="1047474677580149436">"បាន​លុប​ចេញ​ពី <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+    <string name="deleted" msgid="7378013910782008375">"បាន​លុប"</string>
+    <string name="archived" msgid="6283673603512713022">"ប័ណ្ណសារ"</string>
+    <string name="folder_removed" msgid="5656281444688183676">"បាន​យក​ចេញ​ពី <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_folder_changed">
-    <item quantity="one" msgid="4930161390461457462">"បាន​ប្ដូរ​ថត។"</item>
-    <item quantity="other" msgid="8918589141287976985">"បាន​ប្ដូរ​ថត។"</item>
+    <item quantity="one" msgid="6463727361987396734">"បាន​ប្ដូរ​ថត។"</item>
+    <item quantity="other" msgid="8815390494333090939">"បាន​ប្ដូរ​ថត។"</item>
   </plurals>
-    <string name="conversation_folder_moved" msgid="297469098857964678">"បាន​ផ្លាស់​ទី​ទៅ <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
-    <string name="search_results_header" msgid="4669917471897026269">"លទ្ធផល"</string>
-    <string name="search_unsupported" msgid="4654227193354052607">"មិន​គាំទ្រ​ការ​ស្វែងរក​​នៅ​លើ​គណនី​នេះ​។"</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"កំពុង​​ស្វែងរក..."</string>
-    <string name="add_label" msgid="6060201715848652940">"បន្ថែម​ថត"</string>
-    <string name="new_incoming_messages_one" msgid="164529476439626369">"សារ​ថ្មី​ពី <xliff:g id="SENDER">%s</xliff:g>។ បង្ហាញ​។"</string>
+    <string name="conversation_folder_moved" msgid="6475872337373081683">"បាន​ផ្លាស់​ទី​ទៅ <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
+    <string name="search_results_header" msgid="1529438451150580188">"លទ្ធផល"</string>
+    <string name="search_unsupported" msgid="2873920566477359177">"មិន​គាំទ្រ​ការ​ស្វែងរក​​នៅ​លើ​គណនី​នេះ​។"</string>
+    <string name="search_results_searching_header" msgid="3392653086144553566">"កំពុង​​ស្វែងរក..."</string>
+    <string name="add_label" msgid="3285338046038610902">"បន្ថែម​ថត"</string>
+    <string name="new_incoming_messages_one" msgid="5270464754299469220">"សារ​ថ្មី​ពី <xliff:g id="SENDER">%s</xliff:g>។ បង្ហាញ​។"</string>
   <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="6028908826781946980">"សារ​ថ្មី <xliff:g id="COUNT">%1$d</xliff:g> ។ បង្ហាញ​។"</item>
+    <item quantity="other" msgid="180629893235773364">"សារ​ថ្មី <xliff:g id="COUNT">%1$d</xliff:g> ។ បង្ហាញ​។"</item>
   </plurals>
-    <string name="expand_recipient_details" msgid="2266544827446346880">"ពង្រីក​សេចក្ដី​លម្អិត​របស់​អ្នក​ទទួល"</string>
-    <string name="collapse_recipient_details" msgid="3608892454869745927">"បញ្ចូល​​ព័ត៌មាន​លម្អិត​អ្នក​ទទួល"</string>
-    <string name="contact_info_string" msgid="6911322458329265644">"បង្ហាញ​ព័ត៌មាន​ទំនាក់ទំនង​សម្រាប់ <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="contact_info_string_default" msgid="596531738469809159">"បង្ហាញ​ព័ត៌មាន​ទំនាក់ទំនង"</string>
+    <string name="expand_recipient_details" msgid="217154640209500953">"ពង្រីក​​ព័ត៌មាន​​លម្អិត​​អ្នក​ទទួល"</string>
+    <string name="collapse_recipient_details" msgid="5490273497889315948">"បង្រួម​ព័ត៌មាន​លម្អិត​អ្នក​ទទួល"</string>
+    <string name="contact_info_string" msgid="6484930184867405276">"បង្ហាញ​ព័ត៌មាន​ទំនាក់ទំនង​សម្រាប់ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="contact_info_string_default" msgid="6204228921864816351">"បង្ហាញ​ព័ត៌មាន​ទំនាក់​ទំនង"</string>
   <plurals name="show_messages_read">
-    <item quantity="other" msgid="7439716291751085801">"សារ​ចាស់​ជាង <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+    <item quantity="other" msgid="5285673397387128129">"សារ​ចាស់​ជាង <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="from_heading" msgid="2454519463223197231">"ពី៖ "</string>
-    <string name="replyto_heading" msgid="8563992423173220512">"ឆ្លើយតប​​៖ "</string>
-    <string name="to_heading" msgid="1142876841308812954">"ជូន​ចំពោះ៖ "</string>
-    <string name="cc_heading" msgid="52678613787360092">"ចម្លង​ជូន៖ "</string>
-    <string name="bcc_heading" msgid="4698055226318660420">"ចម្លង​ជា​សម្ងាត់​ជូន៖ "</string>
-    <string name="date_heading" msgid="2086174555097691910">"កាល​បរិច្ឆេទ៖ "</string>
-    <string name="show_images" msgid="1875700481186331432">"បង្ហាញ​រូបភាព"</string>
-    <string name="always_show_images" msgid="5966408990164581801">"បង្ហាញ​រូបភាព​ជានិច្ច​​​ពី​អ្នក​ផ្ញើ​នេះ"</string>
-    <string name="always_show_images_toast" msgid="6218061921546973716">"នឹង​បង្ហាញ​រូបភាព​ពី​អ្នក​ផ្ញើ​នេះ​​​ស្វ័យ​ប្រវត្តិ​។"</string>
-    <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
-    <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> តាម​រយៈ <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
-    <string name="message_saved" msgid="7073947895562277576">"សារ​​បាន​រក្សា​ទុក​ជា​សេចក្ដី​ព្រាង។"</string>
-    <string name="sending_message" msgid="1498583163419122128">"កំពុង​ផ្ញើ​សារ…"</string>
-    <string name="invalid_recipient" msgid="2161317422860961623">"អាសយដ្ឋាន <xliff:g id="WRONGEMAIL">%s</xliff:g> ​មិន​ត្រឹមត្រូវ​។"</string>
-    <string name="show_elided" msgid="5255917904110437886">"▶​បង្ហាញ​អត្ថបទ​​ដកស្រង់"</string>
-    <string name="hide_elided" msgid="8907305605854960737">"▼​លាក់​អត្ថបទ​ដកស្រង់"</string>
-    <string name="message_invite_title" msgid="6757287288611722175">"ប្រតិទិន​អញ្ជើញ"</string>
-    <string name="message_invite_calendar_view" msgid="1898326841767645665">"មើល​ក្នុង​ប្រតិទិន"</string>
-    <string name="message_invite_label_attending" msgid="7378806613557157546">"ចូលរួម?"</string>
-    <string name="message_invite_accept" msgid="869753811259793266">"បាទ/ចាស"</string>
-    <string name="message_invite_tentative" msgid="3898050756490962079">"ប្រហែល"</string>
-    <string name="message_invite_decline" msgid="4524135969656266758">"ទេ"</string>
-    <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="yes" msgid="7474216525286833848">"បាទ/ចាស"</string>
-    <string name="no" msgid="427548507197604096">"ទេ"</string>
-    <string name="ok" msgid="8339355733816891026">"យល់​ព្រម​"</string>
-    <string name="done" msgid="3079981801778027540">"ធ្វើ​រួច"</string>
-    <string name="cancel" msgid="8762981157252199115">"បោះ​បង់​"</string>
-    <string name="clear" msgid="3184687982186479442">"សម្អាត"</string>
+    <string name="from_heading" msgid="2775887942189267175">"ពី៖ "</string>
+    <string name="replyto_heading" msgid="5534516892715802486">"ឆ្លើយតប​ទៅ៖ "</string>
+    <string name="to_heading" msgid="3495203282540398336">"ទៅ៖ "</string>
+    <string name="cc_heading" msgid="6763721176436396543">"ចម្លង​ជូន៖ "</string>
+    <string name="bcc_heading" msgid="651417364041280390">"ចម្លង​ជា​សម្ងាត់​ជូន៖ "</string>
+    <string name="date_heading" msgid="3884879920519209775">"កាលបរិច្ឆេទ៖ "</string>
+    <string name="show_images" msgid="436044894053204084">"បង្ហាញ​រូបភាព"</string>
+    <string name="always_show_images" msgid="556087529413707819">"បង្ហាញ​រូបភាព​ជានិច្ច​​​ពី​អ្នក​ផ្ញើ​នេះ"</string>
+    <string name="always_show_images_toast" msgid="3763157294047555051">"រូបភាព​ពី​អ្នក​ផ្ញើ​នេះ​នឹង​ត្រូវ​បាន​បង្ហាញ​ដោយ​​ស្វ័យ​ប្រវត្តិ​។"</string>
+    <string name="address_display_format" msgid="2098008376913966177">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
+    <string name="address_display_format_with_via_domain" msgid="8108294635074750048">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> តាម​រយៈ <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
+    <string name="message_saved" msgid="3291655042310241793">"សារ​ត្រូវ​បាន​រក្សា​ទុក​​​ជា​សេចក្ដី​ព្រាង។"</string>
+    <string name="sending_message" msgid="2487846954946637084">"កំពុង​ផ្ញើ​សារ…"</string>
+    <string name="invalid_recipient" msgid="9157434699389936584">"អាសយដ្ឋាន <xliff:g id="WRONGEMAIL">%s</xliff:g> ​មិន​ត្រឹមត្រូវ​។"</string>
+    <string name="show_elided" msgid="2018701348723796769">"▶​បង្ហាញ​អត្ថបទ​​​សម្រង់"</string>
+    <string name="hide_elided" msgid="5768235486834692733">"▼​លាក់​អត្ថបទ​សម្រង់"</string>
+    <string name="message_invite_title" msgid="5985161025144867256">"ប្រតិទិន​អញ្ជើញ"</string>
+    <string name="message_invite_calendar_view" msgid="9181966650840809197">"មើល​ក្នុង​ប្រតិទិន"</string>
+    <string name="message_invite_label_attending" msgid="4194264767870003397">"ចូលរួម?"</string>
+    <string name="message_invite_accept" msgid="8002758842580134835">"បាទ/ចាស"</string>
+    <string name="message_invite_tentative" msgid="3199418731566655887">"ប្រហែល"</string>
+    <string name="message_invite_decline" msgid="6331040872447290777">"ទេ"</string>
+    <string name="enumeration_comma" msgid="2848850136844740850">", "</string>
+    <string name="yes" msgid="6599620339424784581">"បាទ/ចាស"</string>
+    <string name="no" msgid="9140142738509136091">"ទេ"</string>
+    <string name="ok" msgid="6178802457914802336">"យល់​ព្រម"</string>
+    <string name="done" msgid="344354738335270292">"រួចរាល់"</string>
+    <string name="cancel" msgid="4831678293149626190">"បោះបង់"</string>
+    <string name="clear" msgid="765949970989448022">"សម្អាត"</string>
   <string-array name="sync_status">
-    <item msgid="2446076619901049026">"ជោគជ័យ"</item>
-    <item msgid="7109065688039971961">"គ្មាន​ការ​​ភ្ជាប់​។"</item>
-    <item msgid="8437496123716232060">"មិន​អាច​ចូល។"</item>
-    <item msgid="1651266301325684887">"កំហុស​​​សុវត្ថិភាព។"</item>
-    <item msgid="1461520171154288533">"មិន​អាច​​ធ្វើ​សម​កាល​កម្ម​។"</item>
-    <item msgid="4779810016424303449">"កំហុស​ខាង​ក្នុង"</item>
+    <item msgid="4600303222943450797">"ជោគជ័យ"</item>
+    <item msgid="2972425114100316260">"គ្មាន​​តំណ​​​ភ្ជាប់​។"</item>
+    <item msgid="8594593386776437871">"មិន​អាច​ចូល។"</item>
+    <item msgid="1375193906551623606">"កំហុស​​​សុវត្ថិភាព។"</item>
+    <item msgid="195177374927979967">"មិន​អាច​​ធ្វើ​សម​កាល​កម្ម​។"</item>
+    <item msgid="8026148967150231130">"កំហុស​ខាង​ក្នុង"</item>
   </string-array>
-    <string name="tap_to_configure" msgid="1181356242354390930">"ប៉ះ​ ដើម្បី​រៀបចំ"</string>
-    <string name="non_synced_folder_description" msgid="6059194125558004080">"ដើម្បី​មើល​ការ​សន្ទនា​, ធ្វើ​សម​កាល​កម្ម​ថត​នេះ​។"</string>
-    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"ធ្វើ​សម​កាល​កម្ម​ថត"</string>
-    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <string name="tap_to_configure" msgid="137172348280050643">"ប៉ះ​ដើម្បី​​រៀបចំ"</string>
+    <string name="non_synced_folder_description" msgid="3044618511909304701">"ដើម្បី​មើល​ការ​សន្ទនា​ ធ្វើ​សម​កាល​កម្ម​ថត​នេះ​។"</string>
+    <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"ថត​សម​កាល​កម្ម"</string>
+    <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="6210217540181960613">"មិន​ទាន់​អាន <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+    <item quantity="other" msgid="3863201473731766006">"មិន​ទាន់​អាន <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="2780005218279965391">"<xliff:g id="COUNT">%1$d</xliff:g>+ ​មិន​ទាន់​អាន"</string>
-    <string name="view_more_conversations" msgid="3151067626309674344">"មើល​ការ​សន្ទនា​​​​ច្រើន"</string>
-    <string name="loading_conversation" msgid="489160038366067983">"កំពុង​ផ្ទុក..."</string>
-    <string name="activity_mailbox_selection" msgid="6876105223659297603">"ជ្រើស​គណនី"</string>
-    <string name="activity_folder_selection" msgid="5161845867397316052">"ជ្រើស​ថត"</string>
-    <string name="folder_shortcut_widget_label" msgid="6700454062559797794">"ថត​អ៊ីមែល"</string>
-    <string name="change_folders_selection_dialog_title" msgid="8640832109613405534">"ប្ដូរ​ថត"</string>
-    <string name="move_to_selection_dialog_title" msgid="1230762892675507608">"ផ្លាស់ទី​ទៅ"</string>
-    <string name="search_hint" msgid="3625734263059221350">"ស្វែងរក​អ៊ីមែល"</string>
-    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <string name="actionbar_large_unread_count" msgid="753635978542372792">"មិន​​ទាន់​អាន <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
+    <string name="view_more_conversations" msgid="8377920000247101901">"មើល​ការ​សន្ទនា​​​ច្រើន​​ទៀត"</string>
+    <string name="loading_conversation" msgid="7931600025861500397">"កំពុង​ផ្ទុក…"</string>
+    <string name="activity_mailbox_selection" msgid="7489813868539767701">"ជ្រើស​គណនី"</string>
+    <string name="activity_folder_selection" msgid="8375243281001234750">"ជ្រើស​ថត"</string>
+    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"ថត​អ៊ីមែល"</string>
+    <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"ប្ដូរ​ថត"</string>
+    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"ផ្លាស់ទី​ទៅ"</string>
+    <string name="search_hint" msgid="4916671414132334289">"ស្វែងរក​អ៊ីមែល"</string>
+    <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
-    <string name="network_error" msgid="2125579009654728299">"គ្មាន​ការ​តភ្ជាប់"</string>
-    <string name="retry" msgid="4515885444824418022">"ព្យាយាម​ម្ដងទៀត"</string>
-    <string name="load_more" msgid="420892447103014683">"ផ្ទុក​ច្រើន​ទៀត"</string>
-    <!-- no translation found for load_attachment (6181745283445986413) -->
+    <string name="network_error" msgid="5931164247644972255">"គ្មាន​ការ​តភ្ជាប់"</string>
+    <string name="retry" msgid="916102442074217293">"ព្យាយាម​ឡើង​វិញ"</string>
+    <string name="load_more" msgid="8702691358453560575">"ផ្ទុក​ច្រើន​ទៀត"</string>
+    <!-- no translation found for load_attachment (3894318473827290350) -->
     <skip />
-    <string name="shortcut_name_title" msgid="8220482314700618391">"ដាក់​ឈ្មោះ​ផ្លូវកាត់​ថត"</string>
-    <string name="wait_for_sync_title" msgid="2767841242539238015">"រង់ចាំ​ធ្វើ​សម​កាល​កម្ម"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"អ៊ីមែល​របស់​អ្នក​នឹង​​លេចឡើង​​បន្តិច​ទៀត។"</string>
-    <string name="not_synced_title" msgid="794279749170198599">"មិន​បាន​ធ្វើ​សម​កាល​កម្ម​គណនី"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"គណនី​នេះ​មិន​ត្រូវ​បាន​រៀបចំ ​​ដើម្បី​ធ្វើ​​សម​កាល​កម្ម​​ស្វ័យ​ប្រវត្តិ​។ \n ប៉ះ "<b>" ដើម្បី​ធ្វើ​សម​កាល​កម្ម​ឥឡូវ​នេះ "</b>" ​សំបុត្រ ​ឬ "<b>" ប្ដូរ​ការ​កំណត់​ការ​ធ្វើ​សម​កាល​កម្ម "</b>" ដើម្បី​រៀបចំ​គណនី​​នេះ​ត្រូវ​ធ្វើ​​សម​កាល​កម្ម​សំបុត្រ​​ស្វ័យ​ប្រវត្តិ​។"</string>
-    <string name="manual_sync" msgid="6743983544685622800">"ធ្វើ​សម​កាល​កម្ម​ឥឡូវ​នេះ"</string>
-    <string name="change_sync_settings" msgid="5514293926214426577">"ប្ដូរ​ការ​កំណត់​​ធ្វើ​សម​កាល​កម្ម"</string>
-    <string name="photo_load_failed" msgid="8811324070219403896">"មិន​អាច​ផ្ទុក​រូបភាព"</string>
-    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"មិន​អាច​ផ្លាស់ទី​ដោយ​សារ​តែ​ការ​ជ្រើស​​​មាន​គណនី​ជា​ច្រើន​​។"</string>
-    <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <string name="ignore_spam_warning" msgid="1554651881128904262">"មិន​អើ​ពើ ខ្ញុំ​ទុកចិត្ត​សារ​នេះ"</string>
-    <string name="via_domain" msgid="380109230928079350">"តាម​រយៈ <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
+    <string name="shortcut_name_title" msgid="1562534040126088628">"ដាក់​ឈ្មោះ​ផ្លូវកាត់​ថត"</string>
+    <string name="wait_for_sync_title" msgid="4577632826912823075">"រង់ចាំ​ធ្វើ​សម​កាល​កម្ម"</string>
+    <string name="wait_for_sync_body" msgid="6029990582751672920">"អ៊ីមែល​របស់​អ្នក​នឹង​​​​​បង្ហាញ​ក្នុង​ពេល​ឆាប់​ៗ​នេះ។"</string>
+    <string name="not_synced_title" msgid="3600180500934086346">"គណនី​មិន​ត្រូវ​បាន​​ធ្វើ​សម​កាល​កម្ម​ឡើយ"</string>
+    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"គណនី​នេះ​មិន​ត្រូវ​បាន​កំណត់​រចនា​សម្ព័ន្ធ​ ដើម្បី​​ធ្វើ​សម​កាល​កម្ម​ដោយ​ស្វ័យ​ប្រវត្តិ​​ទេ​។ \n ប៉ះ "<b>"ធ្វើ​សម​កាល​កម្ម​ឥឡូវ​នេះ "</b>" ដើម្បី​ធ្វើ​សម​កាល​កម្ម​សំបុត្រ​​ម្ដង​ឬ "<b>" ​ផ្លាស់​ប្ដូរ​​ការ​កំណត់​​ធ្វើ​សម​កាល​កម្ម "</b>" ដើម្បី​កំណត់​​​គណនី​នេះ​ ឲ្យ​ធ្វើ​សម​កាល​កម្ម​សំបុត្រ​​ដោយ​ស្វ័យ​ប្រវត្តិ​។"</string>
+    <string name="manual_sync" msgid="2271479734895537848">"ធ្វើសម​កាល​កម្មឥឡូវ"</string>
+    <string name="change_sync_settings" msgid="3615852118397055361">"ប្ដូរ​ការ​កំណត់​​ធ្វើ​សម​កាល​កម្ម"</string>
+    <string name="photo_load_failed" msgid="577471721679146999">"មិន​អាច​ផ្ទុក​រូបភាព"</string>
+    <string name="cant_move_or_change_labels" msgid="4155490583610926755">"មិន​អាច​ផ្លាស់ទី​ដោយ​សារ​តែ​ការ​ជ្រើស​​​មាន​គណនី​ជា​ច្រើន​​។"</string>
+    <string name="multiple_new_message_notification_item" msgid="1386588046275174918"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="2170154732664242904">"<xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="ignore_spam_warning" msgid="8760314545535838430">"មិន​អើ​ពើ ខ្ញុំ​ទុកចិត្ត​សារ​នេះ"</string>
+    <string name="via_domain" msgid="537951148511529082">"តាម​រយៈ <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
-    <item msgid="6984976603137892898">"ប្រព័ន្ធ"</item>
-    <item msgid="6593672292311851204">"បាន​ប្រើ​ជា​ញឹកញាប់"</item>
-    <item msgid="3584541772344786752">"ថត​ទាំងអស់"</item>
+    <item msgid="1365053735282560403">"ប្រព័ន្ធ"</item>
+    <item msgid="2218492999199978523">"បាន​ប្រើ​ជា​ញឹកញាប់"</item>
+    <item msgid="4277538370886009801">"ថត​ទាំងអស់"</item>
   </string-array>
-    <string name="signin" msgid="8958889809095796177">"ចូល"</string>
-    <string name="info" msgid="6009817562073541204">"ព័ត៌មាន"</string>
-    <string name="report" msgid="5417082746232614958">"របាយការណ៍"</string>
-    <string name="sync_error" msgid="7368819509040597851">"មិន​អាច​ធ្វើ​​សម​កាល​កម្ម"</string>
-    <string name="sync_error_message" msgid="5367907194753034375">"ឧបករណ៍​​របស់​អ្នក​មិន​មាន​ទំហំ​គ្រប់គ្រាន់​ ដើម្បី​ផ្ទុក​សម្រាប់​ធ្វើ​​សម​កាល​កម្ម​។"</string>
-    <string name="storage" msgid="3262760336059073446">"ឧបករណ៍​ផ្ទុក"</string>
-    <string name="senders_split_token" msgid="5895854795157860258">", "</string>
-    <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
-    <string name="all_folders_heading" msgid="2506843494725730618">"ថត​ទាំងអស់"</string>
-    <string name="recent_folders_heading" msgid="8613621794529777406">"ថត​ថ្មីៗ"</string>
-    <string name="message_details_title" msgid="2183394728494962332">"ព័ត៌មាន​លម្អិត​សារ"</string>
-    <string name="auto_advance_label" msgid="3192951873988392119">"ទៅមុខ​​ស្វ័យ​ប្រវត្តិ"</string>
-    <string name="auto_advance_summary" msgid="573927628806250719">"ជ្រើស​អេក្រង់​ត្រូវ​បង្ហាញ​បន្ទាប់​ពី​អ្នក​លុប​សារ"</string>
-    <string name="auto_advance_help_title" msgid="8091541690538426090">"កំណត់​ចំណូល​ចិត្ត​​ស្វ័យ​ប្រវត្តិ \n (បន្ទាប់​ពី​អ្នក​លុប ។ល។)"</string>
+    <string name="signin" msgid="4699091478139791244">"ចូល"</string>
+    <string name="info" msgid="1357564480946178121">"ព័ត៌មាន"</string>
+    <string name="report" msgid="4318141326014579036">"រាយការណ៍"</string>
+    <string name="sync_error" msgid="1795794969006241678">"មិន​អាច​​ធ្វើ​សម​កាល​កម្ម​។"</string>
+    <string name="sync_error_message" msgid="4182644657243736635">"ឧបករណ៍​​របស់​អ្នក​មិន​មាន​ទំហំ​គ្រប់គ្រាន់​ ដើម្បី​ផ្ទុក​សម្រាប់​ធ្វើ​​សម​កាល​កម្ម​។"</string>
+    <string name="storage" msgid="4783683938444150638">"ការ​ផ្ទុក"</string>
+    <string name="senders_split_token" msgid="6549228851819460081">", "</string>
+    <string name="draft_count_format" msgid="9122583199850209286">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
+    <string name="all_folders_heading" msgid="9023770187629170967">"ថត​ទាំងអស់"</string>
+    <string name="recent_folders_heading" msgid="8943134955788867702">"ថត​ថ្មីៗ"</string>
+    <string name="message_details_title" msgid="60771875776494764">"ព័ត៌មាន​លម្អិត​សារ"</string>
+    <string name="auto_advance_label" msgid="3166987545692982786">"កម្រិត​ខ្ពស់​ដោយ​ស្វ័យ​ប្រវត្តិ"</string>
+    <string name="auto_advance_summary" msgid="7877529385545237247">"ជ្រើស​​អេក្រង់​ដែល​ត្រូវ​បង្ហាញ​​​បន្ទាប់​ពី​អ្នក​លុប​សារ"</string>
+    <string name="auto_advance_help_title" msgid="607364391278351424">"កំណត់​ចំណូល​ចិត្ត​កម្រិត​ខ្ពស់​ដោយ​ស្វ័យ​ប្រវត្តិ \n (បន្ទាប់​ពី​អ្នក​លុប ។ល។)"</string>
   <string-array name="prefEntries_autoAdvance">
-    <item msgid="3400401085256526376">"ថ្មី​ជាង"</item>
-    <item msgid="5562093094216840213">"ចាស់​ជាង"</item>
-    <item msgid="3331655314944797957">"បញ្ជី​សម្រាប់​​សន្ទនា"</item>
+    <item msgid="1505450878799459652">"ថ្មី​ជាង"</item>
+    <item msgid="8000986144872247139">"ចាស់​ជាង"</item>
+    <item msgid="8015001161633421314">"បញ្ជី​​​​សន្ទនា"</item>
   </string-array>
   <string-array name="prefSummaries_autoAdvance">
-    <item msgid="6389534341359835440">"បង្ហាញ​ការ​សន្ទនា​ថ្មី​បន្ទាប់​ពី​អ្នក​លុប"</item>
-    <item msgid="732746454445519134">"បង្ហាញ​ការ​សន្ទនា​ចាស់​ជាង​បន្ទាប់​ពី​អ្នក​លុប"</item>
-    <item msgid="2189929276292165301">"បង្ហាញ​បញ្ជី​​ការ​សន្ទនា​​បន្ទាប់​ពី​អ្នក​លុប"</item>
+    <item msgid="8221665977497655719">"បង្ហាញ​ការ​សន្ទនា​ថ្មី​ជាង​បន្ទាប់​ពី​អ្នក​លុប"</item>
+    <item msgid="1721869262893378141">"បង្ហាញ​ការ​សន្ទនា​ចាស់​ជាង​បន្ទាប់​ពី​អ្នក​លុប"</item>
+    <item msgid="880913657385630195">"បង្ហាញ​បញ្ជី​ការ​សន្ទនា​​បន្ទាប់​ពី​អ្នក​លុប"</item>
   </string-array>
-    <string name="clear_display_images_whitelist_title" msgid="7120575487854245735">"សម្អាត​ករ​អនុញ្ញាត​រូបភាព?"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="3190704164490442683">"សម្អាត​ការ​អនុញ្ញាត​រូបភាព?"</string>
-    <string name="clear_display_images_whitelist_dialog_message" msgid="1169152185612117654">"បញ្ឈប់​ការ​បង្ហាញ​រូបភាព​ក្នុង​តួ​ពី​អ្នក​ផ្ញើ​ដែល​អ្នក​​បាន​អនុញ្ញាត​ពី​មុន​។"</string>
-    <string name="sender_whitelist_cleared" msgid="917434007919176024">"រូបភាព​នឹង​មិន​ត្រូវ​បាន​បង្ហាញ​ដោយ​ស្វ័យ​ប្រវត្តិ​។"</string>
-    <string name="preferences_signature_title" msgid="888167074398030574">"ហត្ថលេខា"</string>
-    <string name="preferences_signature_dialog_title" msgid="5112192919923401319">"ហត្ថលេខា"</string>
-    <string name="preferences_signature_summary_not_set" msgid="2830886980620445857">"មិនបាន​កំណត់"</string>
-    <string name="notification_action_reply" msgid="6015299134424685297">"ឆ្លើយតប"</string>
-    <string name="notification_action_reply_all" msgid="20020468410400912">"ឆ្លើយតប​ទាំងអស់"</string>
-    <string name="notification_action_archive" msgid="81978513898440040">"ប័ណ្ណសារ"</string>
-    <string name="notification_action_remove_label" msgid="5852730267411032291">"លុប​ស្លាក​ចេញ"</string>
-    <string name="notification_action_delete" msgid="327773454111551791">"លុប"</string>
-    <string name="notification_action_undo_archive" msgid="7280710366587361219">"ទុក​ក្នុង​ប័ណ្ណសារ"</string>
-    <string name="notification_action_undo_remove_label" msgid="1425192858683932457">"បាន​លុប​ស្លាក"</string>
-    <string name="notification_action_undo_delete" msgid="3105611327110905438">"បាន​លុប"</string>
-    <string name="veiled_address" msgid="1209670815434513191"></string>
-    <string name="veiled_alternate_text" msgid="7370933826442034211"></string>
-    <string name="veiled_alternate_text_unknown_person" msgid="5132515097905273819"></string>
-    <string name="veiled_summary_unknown_person" msgid="4030928895738205054"></string>
-    <string name="label_notification_ticker" msgid="1684732605316462621">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-    <string name="new_messages" msgid="4419173946074516420">"សារ​ថ្មី <xliff:g id="COUNT">%1$d</xliff:g>"</string>
-    <string name="single_new_message_notification_title" msgid="4138237430881084155">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
-    <string name="silent_ringtone" msgid="5856834572357761687">"ស្ងាត់"</string>
-    <string name="preference_removal_action_title" msgid="6585232628422090835">"ប័ណ្ណសារ &amp; សកម្មភាព​លុប"</string>
+    <string name="clear_display_images_whitelist_title" msgid="2012677202404471778">"សម្អាត​ករ​អនុញ្ញាត​រូបភាព?"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"សម្អាត​ការ​អនុញ្ញាត​រូបភាព?"</string>
+    <string name="clear_display_images_whitelist_dialog_message" msgid="3952553078559373729">"បញ្ឈប់​ការ​បង្ហាញ​រូបភាព​ក្នុង​តួ​ពី​អ្នក​ផ្ញើ​ដែល​អ្នក​​បាន​អនុញ្ញាត​ពី​មុន​។"</string>
+    <string name="sender_whitelist_cleared" msgid="2490984995927904030">"រូបភាព​នឹង​មិន​ត្រូវ​បាន​បង្ហាញ​ដោយ​ស្វ័យ​ប្រវត្តិ​ឡើយ។"</string>
+    <string name="preferences_signature_title" msgid="2318034745474929902">"ហត្ថលេខា"</string>
+    <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"ហត្ថលេខា"</string>
+    <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"មិនកំណត់"</string>
+    <string name="notification_action_reply" msgid="8378725460102575919">"ឆ្លើយតប"</string>
+    <string name="notification_action_reply_all" msgid="5693469099941000037">"ឆ្លើយតប​ទាំងអស់"</string>
+    <string name="notification_action_archive" msgid="2884874164831039047">"ប័ណ្ណសារ"</string>
+    <string name="notification_action_remove_label" msgid="3714785653186750981">"យក​ស្លាក​ចេញ"</string>
+    <string name="notification_action_delete" msgid="3201627482564624132">"លុប"</string>
+    <string name="notification_action_undo_archive" msgid="600186958134073582">"បាន​ដាក់​ក្នុង​ប័ណ្ណសារ"</string>
+    <string name="notification_action_undo_remove_label" msgid="8341924850540100690">"បាន​លុប​ស្លាក"</string>
+    <string name="notification_action_undo_delete" msgid="6915612337413587103">"បាន​លុប"</string>
+    <string name="veiled_address" msgid="2670378260196977266"></string>
+    <string name="veiled_alternate_text" msgid="6343564357099807582"></string>
+    <string name="veiled_alternate_text_unknown_person" msgid="6728323554307952217"></string>
+    <string name="veiled_summary_unknown_person" msgid="2122359944161241551"></string>
+    <string name="label_notification_ticker" msgid="323232821061341014">"<xliff:g id="LABEL">%s</xliff:g>៖ <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
+    <string name="new_messages" msgid="8824054940630616921">"សារ​ថ្មី <xliff:g id="COUNT">%1$d</xliff:g>"</string>
+    <string name="single_new_message_notification_title" msgid="7954710563222504868">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="silent_ringtone" msgid="1570794756474381886">"ស្ងាត់"</string>
+    <string name="preference_removal_action_title" msgid="4703834472477137634">"ប័ណ្ណសារ &amp; សកម្មភាព​លុប"</string>
   <string-array name="prefEntries_removal_action">
-    <item msgid="1938422987822134657">"បង្ហាញ​​​តែ​ប័ណ្ណសារ"</item>
-    <item msgid="5737880287951287278">"បង្ហាញ​​តែ​បាន​លុប"</item>
-    <item msgid="4279948809971752573">"បង្ហាញ​ប័ណ្ណសារ &amp; លុប"</item>
+    <item msgid="954772302016538814">"បង្ហាញ​​​តែ​ប័ណ្ណសារ"</item>
+    <item msgid="7212690302706180254">"បង្ហាញ​​តែ​បាន​លុប"</item>
+    <item msgid="2539051197590685708">"បង្ហាញ​ប័ណ្ណសារ &amp; លុប"</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="492039800376391677">"បង្ហាញ​​​តែ​ប័ណ្ណសារ"</item>
-    <item msgid="8350973578419775975">"បង្ហាញ​​តែ​លុប"</item>
-    <item msgid="2967059853409454648">"បង្ហាញ​ប័ណ្ណសារ &amp; លុប"</item>
+    <item msgid="6877416142040695022">"បង្ហាញ​​​តែ​ប័ណ្ណសារ"</item>
+    <item msgid="1510017057984222376">"បង្ហាញ​​តែ​បាន​លុប"</item>
+    <item msgid="3196207224108008441">"បង្ហាញ​ប័ណ្ណសារ &amp; លុប"</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="6225642737241938453">"ប័ណ្ណសារ &amp; លុប​សកម្មភាព"</string>
-    <string name="preferences_default_reply_all_title" msgid="7088691949152598569">"ឆ្លើយតប​ទាំងអស់"</string>
-    <string name="preferences_default_reply_all_summary" msgid="7389395579918128940">"ប្រើ​ជា​លំនាំ​ដើម​ សម្រាប់​ការ​ឆ្លើយ​តប​សារ"</string>
-    <string name="preference_swipe_title_archive" msgid="1178014339238995814">"អូស​ ដើម្បី​ទុក​ក្នុង​ប័ណ្ណសារ"</string>
-    <string name="preference_swipe_title_delete" msgid="8611320022727435597">"អូស​ ​ដើម្បី​លុប"</string>
-    <string name="preference_swipe_description" msgid="5132683510510041028">"នៅ​ក្នុង​បញ្ជី​សន្ទនា"</string>
-    <string name="preference_sender_image_title" msgid="2441320893522058724">"រូបភាព​អ្នក​ផ្ញើ"</string>
-    <string name="preference_sender_image_description" msgid="7126493917536558232">"បង្ហាញ​ក្បែរ​ឈ្មោះ​នៅ​ក្នុង​បញ្ជី​​សន្ទនា"</string>
-    <string name="swipe_down_to_refresh" msgid="6401908905820786227">"អូស​ចុះ​ក្រោយ​​ ដើម្បី​ផ្ទុក​ឡើង​វិញ"</string>
-    <string name="checking_for_mail" msgid="2301797903350897130">"កំពុង​ពិនិត្យ​មើល​​សំបុត្រ"</string>
-    <string name="empty_trash" msgid="652435297593538512">"សម្អាត​ធុង​សំរាម"</string>
-    <string name="empty_spam" msgid="6064497180615519589">"សម្អាត​សារ​ឥត​បាន​ការ"</string>
-    <string name="empty_trash_dialog_title" msgid="3248644791068595150">"សម្អាត​ធុង​សំរាម?"</string>
-    <string name="empty_spam_dialog_title" msgid="8091014690336479280">"សម្អាត​សារ​ឥត​បាន​ការ?"</string>
+    <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"សកម្មភាព​ប័ណ្ណសារ &amp; លុប"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ឆ្លើយតប​ទាំងអស់"</string>
+    <string name="preferences_default_reply_all_summary" msgid="5568820994718143596">"ប្រើ​ជា​លំនាំ​ដើម​សម្រាប់​ការ​ឆ្លើយ​តប​សារ"</string>
+    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"អូស​ដើម្បី​ទុក​ក្នុង​ប័ណ្ណសារ"</string>
+    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"អូស​ដើម្បី​លុប"</string>
+    <string name="preference_swipe_description" msgid="3036560323237015010">"នៅ​ក្នុង​បញ្ជី​សន្ទនា"</string>
+    <string name="preference_sender_image_title" msgid="7890813537985591865">"រូបភាព​អ្នក​ផ្ញើ"</string>
+    <string name="preference_sender_image_description" msgid="3586817690132199889">"បង្ហាញ​ឈ្មោះ​នៅ​ចំហៀង​នៅ​ក្នុង​បញ្ជី​​សន្ទនា"</string>
+    <string name="swipe_down_to_refresh" msgid="4334778154734252878">"អូស​ចុះ​ក្រោម​ដើម្បី​ផ្ទុក​ឡើង​វិញ"</string>
+    <string name="checking_for_mail" msgid="1332029674731044859">"កំពុង​ពិនិត្យ​មើល​​សំបុត្រ"</string>
+    <string name="empty_trash" msgid="3385937024924728399">"សម្អាត​ធុង​សំរាម"</string>
+    <string name="empty_spam" msgid="2911988289997281371">"សម្អាត​សារ​ឥត​បាន​ការ"</string>
+    <string name="empty_trash_dialog_title" msgid="2104898489663621508">"សម្អាត​ធុង​សំរាម?"</string>
+    <string name="empty_spam_dialog_title" msgid="1130319045917820569">"សម្អាត​សារ​ឥត​បាន​ការ?"</string>
   <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="7530191630810420066">"សារ <xliff:g id="COUNT">%1$d</xliff:g> ​​នឹង​ត្រូវ​បាន​លុប​ជា​អចិន្ត្រៃយ៍។"</item>
-    <item quantity="other" msgid="2182899395748020953">"សារ <xliff:g id="COUNT">%1$d</xliff:g> ​នឹង​ត្រូវ​បាន​លុប​ជា​​អចិន្ត្រៃយ៍។"</item>
+    <item quantity="one" msgid="3315412388217832914">"សារ <xliff:g id="COUNT">%1$d</xliff:g> ​​នឹង​ត្រូវ​បាន​លុប​ជា​អចិន្ត្រៃយ៍។"</item>
+    <item quantity="other" msgid="263840304486020101">"សារ <xliff:g id="COUNT">%1$d</xliff:g> ​នឹង​ត្រូវ​បាន​លុប​ជា​​អចិន្ត្រៃយ៍។"</item>
   </plurals>
-    <string name="drawer_open" msgid="6074646853178471940">"បើក​កា​រ​រុករក​​ថត"</string>
-    <string name="drawer_close" msgid="2764774620737876943">"បិទ​ការ​រុករក​ថត​"</string>
-    <string name="conversation_photo_welcome_text" msgid="4274875219447670662">"ប៉ះ​រូបភាព​របស់​អ្នក​ផ្ញើ ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​នោះ​។"</string>
-    <string name="long_press_to_select_tip" msgid="9205666839837250150">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ការ​សន្ទនា​មួយ បន្ទាប់​មក​ប៉ះ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​ច្រើន​ទៀត។​"</string>
-    <string name="folder_icon_desc" msgid="1500547397347480618">"រូប​តំណាង​ថត"</string>
-    <string name="add_account" msgid="2162808366829269770">"បន្ថែម​គណនី"</string>
-    <string name="attached_message" msgid="4267189489654642035">"សារ​ដែល​បាន​ភ្ជាប់"</string>
-    <string name="date_message_received" msgid="6302308934790266050">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
-    <string name="date_message_received_today" msgid="7923108495669251362">"ថ្ងៃ​នេះ <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="date_message_received_yesterday" msgid="2240669381396206434">"​ម្សិល​មិញ <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="dismiss_tip_hover_text" msgid="1930345936314578166">"បោះបង់​ព័ត៌មាន​ជំនួយ"</string>
-    <string name="auto_sync_off" msgid="7185342309138211107">"​បិទ​ការ​ធ្វើ​សម​កាល​កម្ម​ដោយ​ស្វ័យ​ប្រវត្តិ​។"</string>
-    <string name="tap_to_enable_sync" msgid="3334767826332383085">"ប៉ះ​​ ដើម្បី​បើក។"</string>
-    <string name="account_sync_off" msgid="5699548271856775808">"​បិទ​សម​កាល​កម្ម​គណនី​។"</string>
-    <string name="enable_sync_in_account_settings" msgid="7707227409018294927">"បើក​នៅ​ក្នុង <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> ។"</string>
-    <string name="account_settings_param" msgid="5277032997773498476">"ការ​កំណត់​គណនី"</string>
-    <string name="unsent_messages_in_outbox" msgid="8754987959475577698">"មិន​បាន​ផ្ញើ <xliff:g id="NUMBER">%1$s</xliff:g> ក្នុង <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
-    <string name="turn_auto_sync_on_dialog_title" msgid="8981949974921704813">"បើក​សម​កាល​កម្ម​ដោយ​ស្វ័យ​ប្រវត្តិ​ឬ?"</string>
-    <string name="turn_auto_sync_on_dialog_body" msgid="5070811094706347971">"ការ​ផ្លាស់​ប្ដូរ​ដែល​អ្នក​បាន​ធ្វើ​​លើ​​កម្មវិធី​ទាំង​អស់​ និង​គណនី​មិន​មែន​គ្រាន់​តែ​ជា​ Gmail ទេ ​នឹង​ត្រូវ​បាន​ធ្វើ​សម​កាល​កម្ម​រវាង​បណ្ដាញ​ឧបករណ៍​ផ្សេង​ទៀត​​ ​និង​ <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> របស់​អ្នក។"</string>
-    <string name="phone" msgid="5171715391553213328">"ទូរស័ព្ទ"</string>
-    <string name="tablet" msgid="7956969657216748522">"កុំព្យូទ័រ​បន្ទះ"</string>
-    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="1445158420197688714">"បើក"</string>
-    <string name="show_n_more_folders" msgid="337747297817699776">"បង្ហាញ​ថត​ <xliff:g id="NUMBER">%1$s</xliff:g> ទៀត"</string>
-    <string name="hide_folders" msgid="7473552966537131652">"លាក់​ថត"</string>
+    <string name="drawer_open" msgid="2285557278907103851">"បើក​ផ្ទាំង​បញ្ជីកម្មវិធី"</string>
+    <string name="drawer_close" msgid="2065829742127544297">"បិទ​​​ផ្ទាំង​​​បញ្ជី​កម្មវិធី"</string>
+    <string name="conversation_photo_welcome_text" msgid="836483155429003787">"ប៉ះ​រូបភាព​របស់​អ្នក​ផ្ញើ ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​នោះ​។"</string>
+    <string name="long_press_to_select_tip" msgid="1660881999120625177">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ការ​សន្ទនា​មួយ បន្ទាប់​មក​ប៉ះ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​ច្រើន​ទៀត។"</string>
+    <string name="folder_icon_desc" msgid="6272938864914794739">"រូប​តំណាង​ថត"</string>
+    <string name="add_account" msgid="5905863370226612377">"បន្ថែម​គណនី"</string>
+    <string name="attached_message" msgid="4514369068177801675">"សារ​ដែល​បាន​ភ្ជាប់"</string>
+    <string name="date_message_received" msgid="3721276493944670901">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g>, <xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="date_message_received_today" msgid="3769680453201829218">"ថ្ងៃ​នេះ <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="date_message_received_yesterday" msgid="5743068290465605055">"​ម្សិល​មិញ <xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"បោះបង់​ព័ត៌មាន​ជំនួយ"</string>
+    <string name="auto_sync_off" msgid="3664082916022670831">"ការ​ធ្វើ​សម​កាល​កម្ម​ដោយ​ស្វ័យ​ប្រវត្តិ​បាន​បិទ។"</string>
+    <string name="tap_to_enable_sync" msgid="30588010316606899">"ប៉ះ​​ដើម្បី​បើក។"</string>
+    <string name="account_sync_off" msgid="1351286883806741348">"សម​កាល​កម្ម​គណនី​បាន​បិទ។"</string>
+    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"បើក​នៅ​ក្នុង <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>។"</string>
+    <string name="account_settings_param" msgid="3649244241101156660">"ការ​កំណត់​គណនី"</string>
+    <string name="unsent_messages_in_outbox" msgid="146722891559469589">"មិន​បាន​ផ្ញើ <xliff:g id="NUMBER">%1$s</xliff:g> ក្នុងមិនផ្ញើនៅ​ក្នុង <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
+    <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"បើក​សម​កាល​កម្ម​ដោយ​ស្វ័យ​ប្រវត្តិ​ឬ?"</string>
+    <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"ការ​ផ្លាស់​ប្ដូរ​ដែល​អ្នក​បាន​ធ្វើ​​លើ​​កម្មវិធី​ទាំង​អស់​ និង​គណនី​មិន​មែន​គ្រាន់​តែ​ជា​ Gmail ទេ ​នឹង​ត្រូវ​បាន​ធ្វើ​សម​កាល​កម្ម​រវាង​បណ្ដាញ​ឧបករណ៍​ផ្សេង​ទៀត​​ ​និង​ <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> របស់​អ្នក។"</string>
+    <string name="phone" msgid="4142617042507912053">"ទូរស័ព្ទ"</string>
+    <string name="tablet" msgid="4593581125469224791">"ថេប្លេត"</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="7239160845196929866">"បើក"</string>
+    <string name="show_n_more_folders" msgid="5769610839632786654">"បង្ហាញ​ថត​ <xliff:g id="NUMBER">%1$s</xliff:g> ទៀត"</string>
+    <string name="hide_folders" msgid="7618891933409521283">"លាក់​ថត"</string>
 </resources>
