@@ -205,10 +205,6 @@
         <item name="android:layout_marginEnd">@dimen/folder_selection_margin_end</item>
     </style>
 
-    <style name="FolderColorBoxStyle" parent="AbstractFolderColorBoxStyle">
-        <item name="android:layout_alignParentStart">true</item>
-    </style>
-
     <style name="FolderListIconStyle">
         <item name="android:layout_marginStart">@dimen/folder_list_item_start_margin</item>
         <item name="android:layout_alignParentStart">true</item>
