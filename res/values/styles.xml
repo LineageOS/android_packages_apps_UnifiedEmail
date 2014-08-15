@@ -378,11 +378,11 @@
     </style>
 
     <style name="FolderColorBoxStyle" parent="AbstractFolderColorBoxStyle">
-        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_gravity">top|start</item>
     </style>
 
     <style name="AbstractFolderSelectionItemStyle">
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_marginTop">4dp</item>
         <item name="android:layout_marginBottom">4dp</item>
