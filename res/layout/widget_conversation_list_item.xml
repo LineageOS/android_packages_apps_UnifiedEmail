@@ -29,12 +29,12 @@
         android:id="@+id/widget_unread_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/widget_conversation_unread_selector" />
+        android:background="@drawable/conversation_item_background_selector" />
     <ImageView
         android:id="@+id/widget_read_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/widget_conversation_read_selector" />
+        android:background="@drawable/conversation_item_background_selector" />
     <LinearLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
