@@ -34,10 +34,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
         android:layout_gravity="center_vertical"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        style="@style/AccountItemNameStyle" >
 
         <TextView
             android:id="@+id/account_display_name"

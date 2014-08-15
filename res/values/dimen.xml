@@ -224,4 +224,7 @@
 
     <!-- Standard height for all dividers -->
     <dimen name="divider_height">0.5dp</dimen>
+
+    <dimen name="account_item_name_start_padding">16dp</dimen>
+    <dimen name="account_item_name_end_padding">8dp</dimen>
 </resources>
