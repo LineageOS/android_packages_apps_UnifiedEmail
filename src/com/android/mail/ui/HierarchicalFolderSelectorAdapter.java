@@ -117,8 +117,12 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
                 display.append(mContext.getResources().getString(R.string.hierarchical_folder_top,
                         topParentName));
             }
-            display.setSpan(new ForegroundColorSpan(R.color.hierarchical_folder_parent_color), 0,
-                    display.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            // If there is nothing appended to display, don't try to setSpan.
+            if (display.length() > 0) {
+                display.setSpan(new ForegroundColorSpan(R.color.hierarchical_folder_parent_color),
+                        0, display.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             display.append(folderName);
         }
         return display;
