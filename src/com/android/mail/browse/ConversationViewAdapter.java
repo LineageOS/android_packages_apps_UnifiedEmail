@@ -789,6 +789,10 @@ public class ConversationViewAdapter extends BaseAdapter {
                 }
             }
         }
+        // Special case two end points
+        if ((position == 0 && !isDown) || (position == mItems.size() - 1 && isDown)) {
+
+        }
         return null;
     }
 

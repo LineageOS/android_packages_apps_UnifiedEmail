@@ -999,6 +999,10 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         mOverlayAdapter.focusFirstMessageHeader();
     }
 
+    public int getOverlayCount() {
+        return mOverlayAdapter.getCount();
+    }
+
     public int getViewPosition(View v) {
         return mOverlayAdapter.getViewPosition(v);
     }
