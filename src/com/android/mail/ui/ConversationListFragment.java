@@ -641,16 +641,10 @@ public final class ConversationListFragment extends Fragment implements
         } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
             if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                 final int position = list.getSelectedItemPosition();
-                final ConversationCursor cursor =
-                        (ConversationCursor) getAnimatedAdapter().getItem(position);
-
-                if (cursor != null) {
-                    final Conversation conv = cursor.getConversation();
+                final Object item = getAnimatedAdapter().getItem(position);
+                if (item != null && item instanceof ConversationCursor) {
+                    final Conversation conv = ((ConversationCursor) item).getConversation();
                     mCallbacks.onConversationFocused(conv);
-                } else {
-                    LogUtils.e(LOG_TAG,
-                            "unable to find conv at cursor pos=%s cursor=%s getPositionOffset=%s",
-                            position, cursor, getAnimatedAdapter().getPositionOffset(position));
                 }
             }
         }
