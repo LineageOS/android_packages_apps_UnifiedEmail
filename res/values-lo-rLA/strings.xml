@@ -251,7 +251,7 @@
     <string name="message_invite_tentative" msgid="3199418731566655887">"ອາດຈະ"</string>
     <string name="message_invite_decline" msgid="6331040872447290777">"ບໍ່"</string>
     <string name="enumeration_comma" msgid="2848850136844740850">", "</string>
-    <string name="send_anyway" msgid="2727576121007079643">"ສົ່ງ​"</string>
+    <string name="send_anyway" msgid="2727576121007079643">"ສົ່ງ"</string>
     <string name="ok" msgid="6178802457914802336">"ຕົກລົງ"</string>
     <string name="done" msgid="344354738335270292">"ແລ້ວໆ"</string>
     <string name="cancel" msgid="4831678293149626190">"ຍົກເລີກ"</string>
@@ -420,7 +420,7 @@
     <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"ຂໍ້ຄວາມ"</string>
     <string name="send_to_contacts_text" msgid="124432913980620545">"ສົ່ງໃຫ້ຜູ່ທີ່ຢູ່ໃນ​ລາຍຊື່ຜູ່ຕິດຕໍ່​ຂອງຂ້ອຍ​ເທົ່ານັ້ນ"</string>
     <string name="send_to_domain_text" msgid="5064559546745918393">"ສົ່ງ​ໃຫ້ສະເພາະ <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
-    <string name="pick_start_date_title" msgid="2274665037355224165">"ມື້ເລີ່ມ​"</string>
+    <string name="pick_start_date_title" msgid="2274665037355224165">"ມື້ເລີ່ມ"</string>
     <string name="pick_end_date_title" msgid="733396083649496600">"ມື້ສິ້ນ​ສຸດ (ເປັນທາງເລືອກ​)"</string>
     <string name="date_not_set" msgid="3251555782945051904">"ຍັງບໍ່ໄດ້ຕັ້ງ"</string>
     <string name="set_end_date_dialog_title" msgid="7543009262788808443">"ມື້ສ​ິ້ນ​ສຸດ (ເປັນທາງເລືອກ)"</string>

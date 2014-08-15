@@ -65,7 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"举报网上诱骗行为"</string>
     <string name="delete" msgid="6784262386780496958">"删除"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"舍弃草稿"</string>
-    <string name="discard_failed" msgid="7520780769812210279">"舍弃未发送成功的邮件"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"舍弃未成功发送的邮件"</string>
     <string name="refresh" msgid="1533748989749277511">"刷新"</string>
     <string name="reply" msgid="8337757482824207118">"回复"</string>
     <string name="reply_all" msgid="5366796103758360957">"全部回复"</string>

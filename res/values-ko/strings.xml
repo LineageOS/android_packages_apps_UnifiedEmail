@@ -65,7 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"피싱 신고"</string>
     <string name="delete" msgid="6784262386780496958">"삭제"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"임시보관 메일 삭제"</string>
-    <string name="discard_failed" msgid="7520780769812210279">"전송 실패 메시지 삭제"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"전송 실패 메일 삭제"</string>
     <string name="refresh" msgid="1533748989749277511">"새로고침"</string>
     <string name="reply" msgid="8337757482824207118">"답장"</string>
     <string name="reply_all" msgid="5366796103758360957">"전체답장"</string>
