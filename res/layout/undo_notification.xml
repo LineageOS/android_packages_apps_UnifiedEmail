@@ -31,7 +31,7 @@
         android:layout_height="@android:dimen/notification_large_icon_height"
         android:background="@color/notification_template_icon_low_bg"
         android:scaleType="center"
-        android:src="@drawable/ic_notification_mail_16dp" />
+        android:src="@drawable/ic_notification_mail_24dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

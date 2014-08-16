@@ -637,7 +637,7 @@ public class NotificationUtils {
             }
             // TODO(shahrk) - fix for multiple mail
             // if(folder.notificationIconResId != 0 || unseenCount <=  2)
-            notification.setSmallIcon(R.drawable.ic_notification_mail_16dp);
+            notification.setSmallIcon(R.drawable.ic_notification_mail_24dp);
             notification.setTicker(account.getDisplayName());
             notification.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
 
@@ -877,7 +877,7 @@ public class NotificationUtils {
         // TODO(shahrk) - fix for multiple mail
         // If the folder is a special label or only has 1 unseen, tack on the badge
         // if (folder.notificationIconResId != 0 || !multipleUnseen) {
-        builder.setSmallIcon(R.drawable.ic_notification_mail_16dp);
+        builder.setSmallIcon(R.drawable.ic_notification_mail_24dp);
 
 
         return builder.build();
@@ -1106,7 +1106,7 @@ public class NotificationUtils {
                             // 4 sections). If it is, we can add the gmail badge. If not, it is
                             // accompanied by the multiple_mail_24dp icon and we don't want a badge
                             // if (folder.notificationIconResId != 0) {
-                            conversationNotif.setSmallIcon(R.drawable.ic_notification_mail_16dp);
+                            conversationNotif.setSmallIcon(R.drawable.ic_notification_mail_24dp);
 
                             if (com.android.mail.utils.Utils.isRunningLOrLater()) {
                                 conversationNotif.setColor(
