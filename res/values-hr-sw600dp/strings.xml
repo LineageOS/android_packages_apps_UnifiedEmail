@@ -18,8 +18,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="add_cc_label" msgid="6156834609108442458">"+ Kopija/skriv. kop."</string>
-    <string name="add_bcc_label" msgid="7648769906379235693">"+ Skrivena kopija"</string>
-    <string name="menu_manage_folders" msgid="7574962882483466700">"Upravljanje mapama"</string>
-    <string name="preferences_default_reply_all_summary" msgid="5318418012992612729">"Upotrijebi kao zadano za odgovore na obavijesti o porukama"</string>
+    <string name="add_cc_label" msgid="5504248178750252553">"+ Kopija/skriv. kop."</string>
+    <string name="add_bcc_label" msgid="2464329024392383408">"+ Skrivena kopija"</string>
+    <string name="menu_manage_folders" msgid="2575462565700103317">"Upravljanje mapama"</string>
+    <string name="preferences_default_reply_all_summary" msgid="6407854387225415499">"Upotrijebi kao zadano za odgovore na obavijesti o porukama"</string>
 </resources>

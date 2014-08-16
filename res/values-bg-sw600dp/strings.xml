@@ -18,8 +18,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="add_cc_label" msgid="6156834609108442458">"+ Як/Ск"</string>
-    <string name="add_bcc_label" msgid="7648769906379235693">"+ Ск"</string>
-    <string name="menu_manage_folders" msgid="7574962882483466700">"Управление на папките"</string>
-    <string name="preferences_default_reply_all_summary" msgid="5318418012992612729">"Използване като стандартна опция за отговори на известия за съобщения"</string>
+    <string name="add_cc_label" msgid="5504248178750252553">"+ Як/Ск"</string>
+    <string name="add_bcc_label" msgid="2464329024392383408">"+ Ск"</string>
+    <string name="menu_manage_folders" msgid="2575462565700103317">"Управление на папките"</string>
+    <string name="preferences_default_reply_all_summary" msgid="6407854387225415499">"Използване като стандартна опция за отговори на известия за съобщения"</string>
 </resources>

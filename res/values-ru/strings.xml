@@ -197,8 +197,8 @@
     <item quantity="other" msgid="9218674052779504277">"Цепочек, помеченных как фишинг: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="4127890884907503696">"Архивировано (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
-    <item quantity="other" msgid="7789480176789922968">"Архивировано (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
+    <item quantity="one" msgid="4127890884907503696">"Архивировано: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="other" msgid="7789480176789922968">"Архивировано: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="5591889079235938982">"Удалено цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
