@@ -567,6 +567,8 @@ public class ActionBarController implements ViewMode.ModeChangeListener,
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION));
         Utils.setMenuItemVisibility(menu, R.id.move_to_inbox, mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_MOVE_TO_INBOX));
+        Utils.setMenuItemVisibility(menu, R.id.change_folders, mAccount.supportsCapability(
+                UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV));
 
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
         if (mFolder != null && removeFolder != null) {
