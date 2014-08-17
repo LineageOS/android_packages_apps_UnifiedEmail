@@ -58,10 +58,6 @@ public class ConversationItemViewCoordinates {
     static final int GADGET_CONTACT_PHOTO = 1;
     static final int GADGET_CHECKBOX = 2;
 
-    // For combined views
-    private static int COLOR_BLOCK_WIDTH = -1;
-    private static int COLOR_BLOCK_HEIGHT = -1;
-
     /**
      * Simple holder class for an item's abstract configuration state. ListView binding creates an
      * instance per item, and {@link #forConfig(Context, Config, CoordinatesCache)} uses it to
@@ -223,6 +219,8 @@ public class ConversationItemViewCoordinates {
     final float snippetFontSize;
 
     // Folders.
+    final int folderLayoutWidth;
+    final int folderCellWidth;
     final int foldersLeft;
     final int foldersRight;
     final int foldersY;
@@ -266,28 +264,17 @@ public class ConversationItemViewCoordinates {
     final int contactImagesX;
     final int contactImagesY;
 
+
     /**
      * The smallest item width for which we use the "wide" layout.
      */
     private final int mMinListWidthForWide;
-    /**
-     * The smallest item width for which we use the "spacious" variant of the normal layout,
-     * if the normal version is used at all. Larger than {@link #mMinListWidthForWide}, we use
-     * wide mode anyway, and this value is unused.
-     */
-    private final int mMinListWidthIsSpacious;
-    private final int mFolderCellWidth;
-    private final int mFolderMinimumWidth;
 
     private ConversationItemViewCoordinates(final Context context, final Config config,
             final CoordinatesCache cache) {
         Utils.traceBeginSection("CIV coordinates constructor");
         final Resources res = context.getResources();
-        mFolderCellWidth = res.getDimensionPixelSize(R.dimen.folder_cell_width);
         mMinListWidthForWide = res.getDimensionPixelSize(R.dimen.list_min_width_is_wide);
-        mMinListWidthIsSpacious = res.getDimensionPixelSize(
-                R.dimen.list_normal_mode_min_width_is_spacious);
-        mFolderMinimumWidth = res.getDimensionPixelSize(R.dimen.folder_minimum_width);
 
         mMode = calculateMode(res, config);
 
@@ -335,6 +322,12 @@ public class ConversationItemViewCoordinates {
 
         view.measure(widthSpec, heightSpec);
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+        // Once the view is measured, let's calculate the dynamic width variables.
+        folderLayoutWidth = (int) (view.getWidth() *
+                res.getInteger(R.integer.folder_max_width_proportion) / 100.0);
+        folderCellWidth = (int) (view.getWidth() *
+                res.getInteger(R.integer.folder_cell_max_width_proportion) / 100.0);
 
 //        Utils.dumpViewTree((ViewGroup) view);
 
@@ -534,35 +527,6 @@ public class ConversationItemViewCoordinates {
         }
     }
 
-    @Deprecated
-    public static int getColorBlockWidth(Context context) {
-        Resources res = context.getResources();
-        if (COLOR_BLOCK_WIDTH <= 0) {
-            COLOR_BLOCK_WIDTH = res.getDimensionPixelSize(R.dimen.color_block_width);
-        }
-        return COLOR_BLOCK_WIDTH;
-    }
-
-    @Deprecated
-    public static int getColorBlockHeight(Context context) {
-        Resources res = context.getResources();
-        if (COLOR_BLOCK_HEIGHT <= 0) {
-            COLOR_BLOCK_HEIGHT = res.getDimensionPixelSize(R.dimen.color_block_height);
-        }
-        return COLOR_BLOCK_HEIGHT;
-    }
-
-    public static boolean displaySendersInline(int mode) {
-        switch (mode) {
-            case WIDE_MODE:
-                return false;
-            case NORMAL_MODE:
-                return true;
-            default:
-                throw new IllegalArgumentException("Unknown conversation header view mode " + mode);
-        }
-    }
-
     /**
      * Returns coordinates for elements inside a conversation header view given
      * the view width.
@@ -578,22 +542,5 @@ public class ConversationItemViewCoordinates {
         coordinates = new ConversationItemViewCoordinates(context, config, cache);
         cache.put(cacheKey, coordinates);
         return coordinates;
-    }
-
-    /**
-     * Return the minimum width of a folder cell with no text. Essentially this is the left+right
-     * intra-cell margin within cells.
-     *
-     */
-    public int getFolderCellWidth() {
-        return mFolderCellWidth;
-    }
-
-    /**
-     * Return the minimum width of a folder cell, period. This will affect the
-     * maximum number of folders we can display.
-     */
-    public int getFolderMinimumWidth() {
-        return mFolderMinimumWidth;
     }
 }

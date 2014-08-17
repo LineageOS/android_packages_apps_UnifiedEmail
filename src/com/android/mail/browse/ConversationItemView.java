@@ -94,7 +94,6 @@ import com.android.mail.utils.ViewUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -202,6 +201,9 @@ public class ConversationItemView extends View
     private int mGadgetMode;
 
     private static int sFoldersStartPadding;
+    private static int sFoldersInnerPadding;
+    private static int sFoldersMaxCount;
+    private static int sFoldersOverflowGradientPadding;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static TextAppearanceSpan sBadgeTextSpan;
@@ -266,24 +268,89 @@ public class ConversationItemView extends View
             return mFoldersCount > 0;
         }
 
-        private int measureFolders(int availableSpace, int cellSize) {
-            int totalWidth = 0;
-            boolean firstTime = true;
-            for (Folder f : mFoldersSortedSet) {
-                final String folderString = f.name;
-                int width = (int) sFoldersPaint.measureText(folderString) + cellSize;
-                if (firstTime) {
-                    firstTime = false;
-                } else {
-                    width += sFoldersStartPadding;
-                }
-                totalWidth += width;
-                if (totalWidth > availableSpace) {
-                    break;
-                }
+        /**
+         * Helper function to calculate exactly how much space the displayed folders should take.
+         * @return an array of integers that signifies the length in dp.
+         */
+        private MeasurementWrapper measureFolderDimen(ConversationItemViewCoordinates coordinates) {
+            // This signifies the absolute max for each folder cell, no exceptions.
+            final int maxCellWidth = coordinates.folderCellWidth;
+
+            final int numDisplayedFolders = Math.min(sFoldersMaxCount, mFoldersSortedSet.size());
+            if (numDisplayedFolders == 0) {
+                return new MeasurementWrapper(new int[0], new boolean[0]);
             }
 
-            return totalWidth;
+            // This variable is calculated based on the number of folders we are displaying
+            final int maxAllowedCellSize = Math.min(maxCellWidth, (coordinates.folderLayoutWidth -
+                    (numDisplayedFolders - 1) * sFoldersStartPadding) / numDisplayedFolders);
+            final int[] measurements = new int[numDisplayedFolders];
+            final boolean[] overflow = new boolean[numDisplayedFolders];
+            final MeasurementWrapper result = new MeasurementWrapper(measurements, overflow);
+
+            int count = 0;
+            int missingWidth = 0;
+            int extraWidth = 0;
+            for (Folder f : mFoldersSortedSet) {
+                if (count > numDisplayedFolders - 1) {
+                    break;
+                }
+
+                final String folderString = f.name;
+                final int neededWidth = (int) sFoldersPaint.measureText(folderString) +
+                        2 * sFoldersInnerPadding;
+
+                if (neededWidth > maxAllowedCellSize) {
+                    // What we can take from others is the minimum of the width we need to borrow
+                    // and the width we are allowed to borrow.
+                    final int borrowedWidth = Math.min(neededWidth - maxAllowedCellSize,
+                            maxCellWidth - maxAllowedCellSize);
+                    final int extraWidthLeftover = extraWidth - borrowedWidth;
+                    if (extraWidthLeftover >= 0) {
+                        measurements[count] = Math.min(neededWidth, maxCellWidth);
+                        extraWidth = extraWidthLeftover;
+                    } else {
+                        measurements[count] = maxAllowedCellSize + extraWidth;
+                        extraWidth = 0;
+                    }
+                    missingWidth = -extraWidthLeftover;
+                    overflow[count] = neededWidth > measurements[count];
+                } else {
+                    extraWidth = maxAllowedCellSize - neededWidth;
+                    measurements[count] = neededWidth;
+                    if (missingWidth > 0) {
+                        if (extraWidth >= missingWidth) {
+                            measurements[count - 1] += missingWidth;
+                            extraWidth -= missingWidth;
+                            overflow[count - 1] = false;
+                        } else {
+                            measurements[count - 1] += extraWidth;
+                            extraWidth = 0;
+                        }
+                    }
+                    missingWidth = 0;
+                }
+
+                count++;
+            }
+
+            return result;
+        }
+
+        /**
+         * @return how much total space the folders list requires.
+         */
+        private int measureFolders(ConversationItemViewCoordinates coordinates) {
+            int[] sizes = measureFolderDimen(coordinates).measurements;
+            return sumWidth(sizes);
+        }
+
+        private int sumWidth(int[] arr) {
+            int sum = 0;
+            for (int i = 0; i < arr.length; i++) {
+                sum += arr[i];
+            }
+            return sum + (arr.length - 1) * sFoldersStartPadding;
         }
 
         public void drawFolders(
@@ -291,7 +358,11 @@ public class ConversationItemView extends View
             if (mFoldersCount == 0) {
                 return;
             }
-            final int left = coordinates.foldersLeft;
+
+            final MeasurementWrapper wrapper = measureFolderDimen(coordinates);
+            final int[] measurements = wrapper.measurements;
+            final boolean[] overflow = wrapper.overflow;
+
             final int right = coordinates.foldersRight;
             final int y = coordinates.foldersY;
             final int height = coordinates.foldersHeight;
@@ -301,75 +372,58 @@ public class ConversationItemView extends View
             sFoldersPaint.setTypeface(coordinates.foldersTypeface);
 
             // Initialize space and cell size based on the current mode.
-            int availableSpace = right - left;
-            int maxFoldersCount = availableSpace / coordinates.getFolderMinimumWidth();
-            int foldersCount = Math.min(mFoldersCount, maxFoldersCount);
-            int averageWidth = availableSpace / foldersCount;
-            int cellSize = coordinates.getFolderCellWidth();
+            final int foldersCount = measurements.length;
+            final int width = sumWidth(measurements);
+            int xLeft = (isRtl) ?  right - coordinates.folderLayoutWidth : right - width;
 
-            // TODO(ath): sFoldersPaint.measureText() is done 3x in this method. stop that.
-            // Extra credit: maybe cache results across items as long as font size doesn't change.
-
-            final int totalWidth = measureFolders(availableSpace, cellSize);
-            int xLeft = (isRtl) ? left : right - Math.min(availableSpace, totalWidth);
-            final boolean overflow = totalWidth > availableSpace;
-
-            // Second pass to draw folders.
-            int i = 0;
-            for (Iterator<Folder> it = isRtl ?
-                    mFoldersSortedSet.descendingIterator() : mFoldersSortedSet.iterator();
-                    it.hasNext();) {
-                final Folder f = it.next();
-                if (availableSpace <= 0) {
+            int index = 0;
+            for (Folder f : mFoldersSortedSet) {
+                if (index > foldersCount - 1) {
                     break;
                 }
+
                 final String folderString = f.name;
                 final int fgColor = f.getForegroundColor(mDefaultFgColor);
                 final int bgColor = f.getBackgroundColor(mDefaultBgColor);
-                boolean labelTooLong = false;
-                final int textW = (int) sFoldersPaint.measureText(folderString);
-                int width = textW + cellSize + sFoldersStartPadding;
-
-                if (overflow && width > averageWidth) {
-                    if (i < foldersCount - 1) {
-                        width = averageWidth;
-                    } else {
-                        // allow the last label to take all remaining space
-                        // (and don't let it make room for padding)
-                        width = availableSpace + sFoldersStartPadding;
-                    }
-                    labelTooLong = true;
-                }
 
                 // Draw the box.
                 sFoldersPaint.setColor(bgColor);
                 sFoldersPaint.setStyle(Paint.Style.FILL);
                 final RectF rect =
-                        new RectF(xLeft, y, xLeft + width - sFoldersStartPadding, y + height);
+                        new RectF(xLeft, y, xLeft + measurements[index], y + height);
                 canvas.drawRoundRect(rect, sFolderRoundedCornerRadius, sFolderRoundedCornerRadius,
                         sFoldersPaint);
 
                 // Draw the text.
-                final int padding = cellSize / 2;
                 sFoldersPaint.setColor(fgColor);
                 sFoldersPaint.setStyle(Paint.Style.FILL);
-                if (labelTooLong) {
-                    // todo - take RTL into account for fade
-                    final int rightBorder = xLeft + width - sFoldersStartPadding - padding;
-                    final Shader shader = new LinearGradient(rightBorder - padding, y,
-                            rightBorder, y, fgColor, Utils.getTransparentColor(fgColor),
-                            Shader.TileMode.CLAMP);
+                if (overflow[index]) {
+                    final int rightBorder = xLeft + measurements[index];
+                    final int x0 = (isRtl) ? xLeft + sFoldersOverflowGradientPadding :
+                            rightBorder - sFoldersOverflowGradientPadding;
+                    final int x1 = (isRtl) ?  xLeft + sFoldersInnerPadding :
+                            rightBorder - sFoldersInnerPadding;
+                    final Shader shader = new LinearGradient(x0, y, x1, y, fgColor,
+                            Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
                     sFoldersPaint.setShader(shader);
                 }
-                canvas.drawText(folderString, xLeft + padding, y + height - textBottomPadding,
-                        sFoldersPaint);
-                if (labelTooLong) {
+                canvas.drawText(folderString, xLeft + sFoldersInnerPadding,
+                        y + height - textBottomPadding, sFoldersPaint);
+                if (overflow[index]) {
                     sFoldersPaint.setShader(null);
                 }
 
-                availableSpace -= width;
-                xLeft += width;
-                i++;
+                xLeft += measurements[index++] + sFoldersStartPadding;
+            }
+        }
+
+        private static class MeasurementWrapper {
+            final int[] measurements;
+            final boolean[] overflow;
+
+            public MeasurementWrapper(int[] m, boolean[] o) {
+                measurements = m;
+                overflow = o;
             }
         }
     }
@@ -475,6 +529,10 @@ public class ConversationItemView extends View
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
             sFoldersStartPadding = res.getDimensionPixelOffset(R.dimen.folders_start_padding);
+            sFoldersInnerPadding = res.getDimensionPixelOffset(R.dimen.folder_cell_content_padding);
+            sFoldersMaxCount = res.getInteger(R.integer.conversation_list_max_folder_count);
+            sFoldersOverflowGradientPadding =
+                    res.getDimensionPixelOffset(R.dimen.folders_gradient_padding);
             sCabAnimationDuration = res.getInteger(R.integer.conv_item_view_cab_anim_duration);
             sBadgePaddingExtraWidth = res.getDimensionPixelSize(R.dimen.badge_padding_extra_width);
             sBadgeRoundedCornerRadius =
@@ -931,9 +989,7 @@ public class ConversationItemView extends View
         final Spannable displayedStringBuilder = new SpannableString(snippet);
 
         // measure the width of the folders which overlap the snippet view
-        final int availableFolderSpace = mCoordinates.foldersRight - mCoordinates.foldersLeft;
-        final int folderWidth = mHeader.folderDisplayer.measureFolders(availableFolderSpace,
-                mCoordinates.getFolderCellWidth());
+        final int folderWidth = mHeader.folderDisplayer.measureFolders(mCoordinates);
 
         // size the snippet view by subtracting the folder width from the maximum snippet width
         final int snippetWidth = mCoordinates.maxSnippetWidth - folderWidth;

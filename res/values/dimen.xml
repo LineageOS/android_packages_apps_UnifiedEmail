@@ -24,9 +24,7 @@
     <dimen name="two_pane_tl_side">24dp</dimen>
     <dimen name="two_pane_tl_top">16dp</dimen>
     <dimen name="list_min_width_is_wide">720dp</dimen>
-    <dimen name="list_normal_mode_min_width_is_spacious">600dp</dimen>
     <dimen name="senders_font_size">18sp</dimen>
-    <dimen name="folders_text_bottom_padding">4dip</dimen>
     <dimen name="attachment_tile_min_size">120dp</dimen>
     <dimen name="attachment_tile_max_size">164dp</dimen>
     <dimen name="attachment_tile_padding">8dp</dimen>
@@ -37,8 +35,13 @@
     <dimen name="star_touch_slop">16dip</dimen>
     <dimen name="sender_image_touch_slop">8dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
-    <dimen name="folder_cell_width">32dip</dimen>
-    <dimen name="folders_start_padding">8dip</dimen>
+
+    <!-- TL folder chips -->
+    <dimen name="folders_text_bottom_padding">3dp</dimen>
+    <dimen name="folder_cell_content_padding">6dp</dimen>
+    <dimen name="folders_start_padding">6dp</dimen>
+    <dimen name="folders_gradient_padding">8dp</dimen>
+
     <dimen name="conversation_page_gutter">16dp</dimen>
     <dimen name="conversation_message_content_margin_side">16dp</dimen>
     <dimen name="conversation_view_margin_side">16dp</dimen>
@@ -112,9 +115,6 @@
     <dimen name="tile_letter_font_size">24dp</dimen>
     <dimen name="tile_letter_font_size_small">16dp</dimen>
     <dimen name="tile_divider_width">1dp</dimen>
-
-    <dimen name="folder_minimum_width">48dip</dimen>
-
     <dimen name="dismiss_button_padding_start">20dip</dimen>
     <dimen name="dismiss_button_padding_end">28dip</dimen>
     <dimen name="checked_text_padding">16dip</dimen>
