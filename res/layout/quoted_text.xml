@@ -17,57 +17,49 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/quoted_text_area"
-    android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <View android:id="@+id/upper_quotedtext_divider_bar"
-        android:layout_width="match_parent"
-        android:layout_height="2dip"
-        android:background="#babebe"
-        android:visibility="gone" />
+        android:visibility="gone"
+        style="@style/RecipientComposeFieldSpacer" />
 
     <LinearLayout android:id="@+id/quoted_text_button_bar"
         android:layout_width="match_parent"
-        android:layout_height="48dip" >
+        android:layout_height="48dp"
+        android:minHeight="0dp"
+        style="@style/ComposeFieldContent">
 
         <CheckBox android:id="@+id/hide_quoted_text"
-            android:layout_width="0dip"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:contentDescription="@string/quoted_text"
-            android:drawablePadding="@dimen/quoted_text_header_padding"
+            android:drawablePadding="12dp"
             android:ellipsize="end"
-            android:gravity="center_vertical"
             android:text="@string/quoted_text_label"
-            android:textAllCaps="true"
-            android:textColor="@color/quoted_text_color"
-            android:textSize="12sp" />
-
-        <View
-            android:layout_width="2dip"
-            android:layout_height="match_parent"
-            android:background="#babebe"
-            android:layout_marginTop="12dip"
-            android:layout_marginBottom="12dip"
-            android:layout_gravity="center_vertical"/>
+            android:textColor="@color/compose_label_text"
+            android:textSize="14sp"
+            style="@style/QuotedTextCheckbox" />
 
         <!--  Respond Inline -->
         <Button android:id="@+id/respond_inline_button"
-            style="@style/RespondInlineButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
             android:text="@string/respond_inline"
             android:textAllCaps="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"/>
+            android:textColor="@color/respond_inline_color"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="2dip"
-        android:background="#babebe"
-        android:id="@+id/divider_bar" />
+        android:id="@+id/divider_bar"
+        style="@style/RecipientComposeFieldSpacer" />
 
     <WebView android:id="@+id/quoted_text_web_view"
         android:layout_height="wrap_content"

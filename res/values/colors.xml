@@ -59,13 +59,11 @@
     <color name="compose_label_text">@color/text_color_grey</color>
     <color name="compose_user_text">@color/text_color_black</color>
     <color name="compose_label_hint">@color/light_gray</color>
-    <color name="quoted_text_color">@color/gray_text_color</color>
     <color name="compose_divider_color">@color/light_gray</color>
-    <string name="quoted_text_background_color_string" translatable="false">@android:color/white</string>
     <!-- Must match the quoted_text_background_color_string -->
     <color name="compose_background_color">@android:color/white</color>
-    <string name="quoted_text_font_color_string" translatable="false">@color/gray_text_color</string>
-    <color name="quotedTextColor">@color/gray_text_color</color>
+    <string name="quoted_text_font_color_string" translatable="false">@color/text_color_grey</string>
+    <color name="respond_inline_color">#00bfd8</color>
 
     <color name="conv_header_add_label_text">@android:color/black</color>
     <color name="conv_header_add_label_background">#eeeeee</color>
