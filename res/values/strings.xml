@@ -798,26 +798,23 @@
     <string name="silent_ringtone">Silent</string>
 
     <!-- Settings screen, preference name for archive vs. delete [CHAR LIMIT=50] -->
-    <string name="preference_removal_action_title">Archive &amp; delete actions</string>
+    <string name="preference_removal_action_title">Default action</string>
     <!-- Options to select from for whether to have archive or delete as the remove action [CHAR LIMIT=50] -->
     <string-array name="prefEntries_removal_action">
-        <item>Show archive only</item>
-        <item>Show delete only</item>
-        <item>Show archive &amp; delete</item>
+        <item>Archive</item>
+        <item>Delete</item>
     </string-array>
     <!-- Description of currently selected option of whether to use archive or delete as remove action [CHAR LIMIT=200] -->
     <string-array name="prefSummaries_removal_action_summary">
-        <item>Show archive only</item>
-        <item>Show delete only</item>
-        <item>Show archive &amp; delete</item>
+        <item>Archive</item>
+        <item>Delete</item>
     </string-array>
     <string-array translatable="false" name="prefValues_removal_action">
         <item>archive</item>
         <item>delete</item>
-        <item>archive-and-delete</item>
     </string-array>
     <!-- Dialog title for the choosing whether to use archive or delete as remove action [CHAR LIMIT=150] -->
-    <string name="prefDialogTitle_removal_action">Archive &amp; delete actions</string>
+    <string name="prefDialogTitle_removal_action">Default action</string>
     <!-- The default value -->
     <string translatable="false" name="prefDefault_removal_action">archive</string>
 
@@ -828,10 +825,8 @@
     <!--  DO NOT TRANSLATE THE BELOW STRING - In order to allow overriding of this for K tablets (but not pre-K tablets), we use an indirection with the actual string defined above. -->
     <string name="preferences_default_reply_all_summary" translatable="false">@string/preferences_default_reply_all_summary_impl</string>
 
-    <!-- Preference name for swipe action when action is archive [CHAR LIMIT=100]-->
-    <string name="preference_swipe_title_archive">Swipe to archive</string>
-    <!-- Preference name for swipe action when action is delete [CHAR LIMIT=100]-->
-    <string name="preference_swipe_title_delete">Swipe to delete</string>
+    <!-- Preference name for swipe actions preference [CHAR LIMIT=100]-->
+    <string name="preference_swipe_title">Swipe actions</string>
     <!-- Preference description swiping in conversation list option [CHAR LIMIT=100] -->
     <string name="preference_swipe_description">In conversation list</string>
 

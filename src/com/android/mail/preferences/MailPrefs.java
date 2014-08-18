@@ -20,6 +20,7 @@ package com.android.mail.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.StringDef;
+import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
@@ -143,13 +144,13 @@ public final class MailPrefs extends VersionedPrefs {
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
             RemovalActions.ARCHIVE,
-            RemovalActions.ARCHIVE_AND_DELETE,
             RemovalActions.DELETE
     })
     public @interface RemovalActionTypes {}
     public static final class RemovalActions {
         public static final String ARCHIVE = "archive";
         public static final String DELETE = "delete";
+        @Deprecated
         public static final String ARCHIVE_AND_DELETE = "archive-and-delete";
     }
 
@@ -243,8 +244,13 @@ public final class MailPrefs extends VersionedPrefs {
         }
 
         final SharedPreferences sharedPreferences = getSharedPreferences();
+        final String removalAction =
+                sharedPreferences.getString(PreferenceKeys.REMOVAL_ACTION, null);
+        if (TextUtils.equals(removalAction, RemovalActions.ARCHIVE_AND_DELETE)) {
+            return RemovalActions.ARCHIVE;
+        }
         return sharedPreferences.getString(PreferenceKeys.REMOVAL_ACTION,
-                RemovalActions.ARCHIVE_AND_DELETE);
+                RemovalActions.ARCHIVE);
     }
 
     /**
