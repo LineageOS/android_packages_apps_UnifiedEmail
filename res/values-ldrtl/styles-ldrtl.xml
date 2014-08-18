@@ -396,4 +396,9 @@
         <item name="android:paddingStart">@dimen/undo_icon_padding_start</item>
         <item name="android:paddingEnd">@dimen/undo_icon_padding_end</item>
     </style>
+
+    <style name="AccountItemNameStyle">
+        <item name="android:paddingStart">@dimen/account_item_name_start_padding</item>
+        <item name="android:paddingEnd">@dimen/account_item_name_end_padding</item>
+    </style>
 </resources>
