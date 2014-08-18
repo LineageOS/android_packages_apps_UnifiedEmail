@@ -221,8 +221,7 @@
     <!-- Browse list item styles -->
     <style name="ConversationListFadeBase" parent="android:Widget.Holo.Light.ListView" />
     <style name="ConversationListFade" parent="@style/ConversationListFadeBase">
-        <item name="android:divider">@android:color/transparent</item>
-        <item name="android:dividerHeight">0dip</item>
+        <item name="android:divider">@null</item>
     </style>
     <!-- End browse list item styles -->
 

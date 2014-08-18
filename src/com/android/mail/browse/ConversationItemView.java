@@ -147,11 +147,16 @@ public class ConversationItemView extends View
     private static int sBadgePaddingExtraWidth;
     private static int sBadgeRoundedCornerRadius;
     private static int sFolderRoundedCornerRadius;
+    private static int sDividerColor;
 
     // Static paints.
     private static final TextPaint sPaint = new TextPaint();
     private static final TextPaint sFoldersPaint = new TextPaint();
     private static final Paint sCheckBackgroundPaint = new Paint();
+    private static final Paint sDividerPaint = new Paint();
+
+    private static int sDividerInset;
+    private static int sDividerHeight;
 
     private static BroadcastReceiver sConfigurationChangedReceiver;
 
@@ -539,6 +544,9 @@ public class ConversationItemView extends View
                     res.getDimensionPixelSize(R.dimen.badge_rounded_corner_radius);
             sFolderRoundedCornerRadius =
                     res.getDimensionPixelOffset(R.dimen.folder_rounded_corner_radius);
+            sDividerColor = res.getColor(R.color.conversation_list_divider_color);
+            sDividerInset = res.getDimensionPixelSize(R.dimen.conv_list_divider_inset);
+            sDividerHeight = res.getDimensionPixelSize(R.dimen.divider_height);
         }
     }
 
@@ -1358,6 +1366,12 @@ public class ConversationItemView extends View
                 VISIBLE_CONVERSATION_HIGHLIGHT.draw(canvas);
             }
         }
+
+        // draw the inset divider
+        sDividerPaint.setColor(sDividerColor);
+        final int dividerBottomY = getHeight();
+        final int dividerTopY = dividerBottomY - sDividerHeight;
+        canvas.drawRect(sDividerInset, dividerTopY, getWidth(), dividerBottomY, sDividerPaint);
         Utils.traceEndSection();
     }
 
@@ -1413,10 +1427,8 @@ public class ConversationItemView extends View
         final int background;
         if (mBackgroundOverrideResId > 0) {
             background = mBackgroundOverrideResId;
-        } else if (mHeader.unread) {
-            background = R.drawable.conversation_unread_selector;
         } else {
-            background = R.drawable.conversation_read_selector;
+            background = R.drawable.conversation_item_background_selector;
         }
         setBackgroundResource(background);
     }
