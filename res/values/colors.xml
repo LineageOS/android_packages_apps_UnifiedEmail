@@ -174,4 +174,7 @@
 
     <color name="snack_bar_background_color">#323232</color>
     <color name="snack_bar_action_text_color">#f4b400</color>
+
+    <color name="conversation_item_blue_background">#e5f8fb</color>
+    <color name="conversation_list_divider_color">#b2b2b2</color>
 </resources>
