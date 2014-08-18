@@ -450,10 +450,10 @@
     <string name="reply_choice_ok" msgid="7881073621845053152">"확인"</string>
     <string name="reply_choice_hehe" msgid="6054314968043050748">"하하"</string>
     <string name="reply_choice_thanks" msgid="4978961954288364694">"감사합니다"</string>
-    <string name="reply_choice_i_agree" msgid="2496652737796884298">"동의"</string>
+    <string name="reply_choice_i_agree" msgid="2496652737796884298">"동의합니다"</string>
     <string name="reply_choice_nice" msgid="4465894941302838676">"좋아요"</string>
-    <string name="reply_on_my_way" msgid="5645003971107444269">"가는 중입니다."</string>
-    <string name="reply_choice_later" msgid="4629219072859486413">"나중에 연락드리겠습니다."</string>
+    <string name="reply_on_my_way" msgid="5645003971107444269">"가는 중입니다"</string>
+    <string name="reply_choice_later" msgid="4629219072859486413">"나중에 연락드리겠습니다"</string>
     <string name="reply_choice_smiling_face" msgid="1772253938506548631">":)"</string>
     <string name="reply_choice_frowning_face" msgid="6260338807944002651">":("</string>
     <string name="preference_header_action_confirmations" msgid="3922674681156121948">"액션 확인"</string>
