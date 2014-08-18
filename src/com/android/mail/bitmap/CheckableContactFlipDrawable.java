@@ -146,7 +146,7 @@ public class CheckableContactFlipDrawable extends FlipDrawable implements Animat
 
         public CheckmarkDrawable(final Resources res) {
             if (CHECKMARK == null) {
-                CHECKMARK = BitmapFactory.decodeResource(res, R.drawable.ic_avatar_check);
+                CHECKMARK = BitmapFactory.decodeResource(res, R.drawable.ic_check_wht_24dp);
                 sBackgroundColor = res.getColor(R.color.checkmark_tile_background_color);
             }
             mPaint = new Paint();
