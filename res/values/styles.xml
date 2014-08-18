@@ -77,8 +77,8 @@
     <style name="ComposeHeading">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">56dp</item>
         <item name="android:minWidth">56dp</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:textColor">@color/compose_label_text</item>
@@ -117,7 +117,6 @@
     <style name="BaseComposeFieldButton">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">@dimen/compose_header_min_height</item>
-        <item name="android:layout_gravity">center_vertical</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
         <item name="android:padding">12dp</item>
     </style>
