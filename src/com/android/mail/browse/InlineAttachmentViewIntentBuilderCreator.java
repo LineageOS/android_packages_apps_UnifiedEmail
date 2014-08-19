@@ -17,6 +17,7 @@
 
 package com.android.mail.browse;
 
+import com.android.mail.providers.Account;
 
 /**
  * Creates {@link InlineAttachmentViewIntentBuilder}s. Only one
@@ -25,5 +26,5 @@ package com.android.mail.browse;
  */
 public interface InlineAttachmentViewIntentBuilderCreator {
     InlineAttachmentViewIntentBuilder createInlineAttachmentViewIntentBuilder(
-            String account, long conversationId);
+            Account account, long conversationId);
 }
