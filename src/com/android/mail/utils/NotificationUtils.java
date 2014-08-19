@@ -98,6 +98,7 @@ public class NotificationUtils {
     public static final String EXTRA_UNREAD_COUNT = "unread-count";
     public static final String EXTRA_UNSEEN_COUNT = "unseen-count";
     public static final String EXTRA_GET_ATTENTION = "get-attention";
+    private static final int PUBLIC_NOTIFICATIONS_VISIBLE_CHARS = 4;
 
     /** Contains a list of <(account, label), unread conversations> */
     private static NotificationMap sActiveNotificationMap = null;
@@ -635,9 +636,12 @@ public class NotificationUtils {
                 notification.setColor(
                         context.getResources().getColor(R.color.notification_icon_gmail_red));
             }
-            // TODO(shahrk) - fix for multiple mail
-            // if(folder.notificationIconResId != 0 || unseenCount <=  2)
-            notification.setSmallIcon(R.drawable.ic_notification_mail_24dp);
+
+            if(unseenCount > 1) {
+                notification.setSmallIcon(R.drawable.ic_notification_multiple_mail_24dp);
+            } else {
+                notification.setSmallIcon(R.drawable.ic_notification_mail_24dp);
+            }
             notification.setTicker(account.getDisplayName());
             notification.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
 
@@ -852,13 +856,13 @@ public class NotificationUtils {
     private static Notification createPublicNotification(Context context, Account account,
             Folder folder, long when, int unseenCount, int unreadCount, PendingIntent clickIntent) {
         final boolean multipleUnseen = unseenCount > 1;
-        final Bitmap largeIcon = getDefaultNotificationIcon(context, folder, multipleUnseen);
+
+        String publicDisplayName = getPublicDisplayName(account.getDisplayName());
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle(createTitle(context, unseenCount))
-                .setContentText(account.getDisplayName())
+                .setContentText(publicDisplayName)
                 .setContentIntent(clickIntent)
-                .setLargeIcon(largeIcon)
                 .setNumber(unreadCount)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setWhen(when);
@@ -872,15 +876,34 @@ public class NotificationUtils {
         if (multipleUnseen) {
             builder.setGroup(createGroupKey(account, folder));
             builder.setGroupSummary(true);
+            builder.setSmallIcon(R.drawable.ic_notification_multiple_mail_24dp);
+        } else {
+            builder.setSmallIcon(R.drawable.ic_notification_mail_24dp);
         }
 
-        // TODO(shahrk) - fix for multiple mail
-        // If the folder is a special label or only has 1 unseen, tack on the badge
-        // if (folder.notificationIconResId != 0 || !multipleUnseen) {
-        builder.setSmallIcon(R.drawable.ic_notification_mail_24dp);
-
-
         return builder.build();
+    }
+
+    /**
+     * Censor displayName for public notifications. Only show the first few characters and star out
+     * the rest of them.
+     *
+     * @param displayName account display name
+     * @return hidden account display name (first four characters visible)
+     */
+    private static String getPublicDisplayName(String displayName) {
+        final StringBuilder nameBuilder = new StringBuilder(displayName);
+        final int displayNameLength = displayName.length();
+
+        if (displayNameLength > PUBLIC_NOTIFICATIONS_VISIBLE_CHARS) {
+            char[] asterisks = new char[displayNameLength - PUBLIC_NOTIFICATIONS_VISIBLE_CHARS];
+            Arrays.fill(asterisks, '*');
+            String censoredSuffix = new String(asterisks);
+
+            nameBuilder.replace(PUBLIC_NOTIFICATIONS_VISIBLE_CHARS, displayNameLength,
+                    censoredSuffix);
+        }
+        return nameBuilder.toString();
     }
 
     /**
@@ -945,26 +968,6 @@ public class NotificationUtils {
         return intent;
     }
 
-    private static Bitmap getDefaultNotificationIcon(
-            final Context context, final Folder folder, final boolean multipleNew) {
-        final int resId;
-        if (folder.notificationIconResId != 0) {
-            resId = folder.notificationIconResId;
-        } else if (multipleNew) {
-            resId = R.drawable.ic_notification_multiple_mail_24dp;
-        } else {
-            resId = R.drawable.ic_notification_anonymous_avatar_32dp;
-        }
-
-        final Bitmap icon = getIcon(context, resId);
-
-        if (icon == null) {
-            LogUtils.e(LOG_TAG, "Couldn't decode notif icon res id %d", resId);
-        }
-
-        return icon;
-    }
-
     private static Bitmap getIcon(final Context context, final int resId) {
         final Bitmap cachedIcon = sNotificationIcons.get(resId);
         if (cachedIcon != null) {
@@ -1014,10 +1017,6 @@ public class NotificationUtils {
         if (multipleUnseen) {
             // Build the string that describes the number of new messages
             final String newMessagesString = createTitle(context, unseenCount);
-
-            // Use the default notification icon
-            notification.setLargeIcon(
-                    getDefaultNotificationIcon(context, folder, true /* multiple new messages */));
 
             // The ticker initially start as the new messages string.
             notificationTicker = newMessagesString;
@@ -1101,12 +1100,8 @@ public class NotificationUtils {
                             NotificationCompat.Builder conversationNotif =
                                     new NotificationCompat.Builder(context);
 
-                            // TODO(shahrk) - fix for multiple mail
-                            // Check that the group's folder is assigned an icon res (one of the
-                            // 4 sections). If it is, we can add the gmail badge. If not, it is
-                            // accompanied by the multiple_mail_24dp icon and we don't want a badge
-                            // if (folder.notificationIconResId != 0) {
-                            conversationNotif.setSmallIcon(R.drawable.ic_notification_mail_24dp);
+                            conversationNotif.setSmallIcon(
+                                    R.drawable.ic_notification_multiple_mail_24dp);
 
                             if (com.android.mail.utils.Utils.isRunningLOrLater()) {
                                 conversationNotif.setColor(
@@ -1305,10 +1300,6 @@ public class NotificationUtils {
                 notification.setSubText(isInbox ?
                         notificationAccountDisplayName : notificationLabelName);
 
-                if (multipleUnseenThread) {
-                    notification.setLargeIcon(
-                            getDefaultNotificationIcon(context, folder, true));
-                }
                 final NotificationCompat.BigTextStyle bigText =
                         new NotificationCompat.BigTextStyle(notification);
 
@@ -1732,9 +1723,9 @@ public class NotificationUtils {
         }
 
         if (contactIconInfo.icon == null) {
-            // Icon should be the default mail icon.
-            contactIconInfo.icon = getDefaultNotificationIcon(context, folder,
-                    false /* single new message */);
+            // Use anonymous icon due to lack of sender
+            contactIconInfo.icon = getIcon(context,
+                    R.drawable.ic_notification_anonymous_avatar_32dp);
         }
 
         if (contactIconInfo.wearableBg == null) {
