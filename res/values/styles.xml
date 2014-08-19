@@ -915,6 +915,16 @@
     <style name="ConversationListSpaciousStarStyle">
         <item name="android:layout_marginRight">@dimen/conv_list_spacious_star_padding_end</item>
     </style>
+
+    <style name="ConversationListDividerStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/divider_height</item>
+        <item name="android:background">@color/conversation_list_divider_color</item>
+    </style>
+
+    <style name="ConversationListDividerStyleIndented" parent="ConversationListDividerStyle">
+        <item name="android:layout_marginLeft">@dimen/folder_teaser_start_margin</item>
+    </style>
     <!-- END Conversation list styles -->
 
     <style name="BadgeTextStyle">
@@ -927,13 +937,11 @@
         <item name="android:paddingLeft">@dimen/custom_from_inner_padding</item>
     </style>
 
-    <style name="FolderTeaserLabelMarginStyle">
-        <item name="android:layout_marginLeft">@dimen/folder_teaser_label_start_padding</item>
-        <item name="android:layout_marginRight">@dimen/folder_teaser_label_end_padding</item>
-    </style>
-
-    <style name="FolderTeaserMarginStartStyle">
-        <item name="android:layout_marginLeft">@dimen/folder_teaser_start_padding</item>
+    <style name="FolderTeaserCountTextStyle">
+        <item name="android:gravity">center_vertical|end</item>
+        <item name="android:minWidth">@dimen/folder_teaser_count_textview_min_width</item>
+        <item name="android:textColor">@color/folder_teaser_sub_text</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="FolderTeaserMarginEndStyle">

@@ -130,7 +130,6 @@ public class ConversationItemView extends View
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
     private static Bitmap STATE_CALENDAR_INVITE;
     private static Drawable VISIBLE_CONVERSATION_HIGHLIGHT;
-    private static Drawable RIGHT_EDGE_TABLET;
 
     private static String sSendersSplitToken;
     private static String sElidedPaddingToken;
@@ -508,7 +507,6 @@ public class ConversationItemView extends View
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
             VISIBLE_CONVERSATION_HIGHLIGHT = res.getDrawable(
                     R.drawable.visible_conversation_highlight);
-            RIGHT_EDGE_TABLET = res.getDrawable(R.drawable.list_edge_tablet);
 
             // Initialize colors.
             sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(
@@ -1348,24 +1346,6 @@ public class ConversationItemView extends View
             canvas.drawBitmap(getStarBitmap(), mCoordinates.starX, mCoordinates.starY, sPaint);
         }
 
-        // right-side edge effect when in tablet conversation mode and the list is not collapsed
-        final boolean isRtl = ViewUtils.isViewRtl(this);
-        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible,
-                mConfig.getViewMode())) {
-            RIGHT_EDGE_TABLET.setBounds(
-                    (isRtl) ? 0 : getWidth() - RIGHT_EDGE_TABLET.getIntrinsicWidth(), 0,
-                    (isRtl) ? RIGHT_EDGE_TABLET.getIntrinsicWidth() : getWidth(), getHeight());
-            RIGHT_EDGE_TABLET.draw(canvas);
-
-            if (isActivated()) {
-                final int w = VISIBLE_CONVERSATION_HIGHLIGHT.getIntrinsicWidth();
-                VISIBLE_CONVERSATION_HIGHLIGHT.setBounds(
-                        (isRtl) ? getWidth() - w : 0, 0,
-                        (isRtl) ? getWidth() : w, getHeight());
-                VISIBLE_CONVERSATION_HIGHLIGHT.draw(canvas);
-            }
-        }
-
         // the divider is not drawn below advertisements (only messages)
         final boolean drawDivider = mHeader.conversation.conversationBaseUri != null;
         if (drawDivider) {
@@ -1374,6 +1354,7 @@ public class ConversationItemView extends View
                     0 : sDividerInset;
 
             // respect RTL and LTR when placing the inset (if one exists)
+            final boolean isRtl = ViewUtils.isViewRtl(this);
             final int dividerStartX = isRtl ? 0 : dividerInset;
             final int dividerEndX = isRtl ? (getWidth() - dividerInset) : getWidth();
             final int dividerBottomY = getHeight();

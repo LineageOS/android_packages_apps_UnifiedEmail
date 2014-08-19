@@ -76,12 +76,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
     private int mReasonSyncOff = ReasonSyncOff.NONE;
 
-    private View mTeaserRightEdge;
-    /** Whether we are on a tablet device or not */
-    private final boolean mTabletDevice;
-    /** When in conversation mode, true if the list is hidden */
-    private final boolean mListCollapsible;
-
     public interface ReasonSyncOff {
         // Background sync is enabled for current account, do not display this tip
         public static final int NONE = 0;
@@ -141,9 +135,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
                 index,
                 index + subString.length(),
                 0);
-
-        mTabletDevice = Utils.useTabletUI(resources);
-        mListCollapsible = resources.getBoolean(R.bool.list_collapsible);
     }
 
     public void bindAccount(Account account, ControllableActivity activity) {
@@ -171,8 +162,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
                 dismiss();
             }
         });
-
-        mTeaserRightEdge = findViewById(R.id.teaser_right_edge);
     }
 
     @Override
@@ -388,13 +377,6 @@ public class ConversationSyncDisabledTipView extends FrameLayout
 
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible,
-                mAdapter.getViewMode())) {
-            mTeaserRightEdge.setVisibility(VISIBLE);
-        } else {
-            mTeaserRightEdge.setVisibility(GONE);
-        }
-
         if (mAnimatedHeight == -1) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         } else {

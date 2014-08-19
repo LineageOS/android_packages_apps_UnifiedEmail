@@ -136,13 +136,10 @@
     <color name="message_header_background_color">@android:color/white</color>
 
     <!-- The color of the section name text in the folder teaser -->
-    <color name="folder_teaser_main_text">#212121</color>
+    <color name="folder_teaser_main_text">@color/text_color_black</color>
+    <color name="folder_teaser_sub_text">@color/text_color_grey</color>
     <!-- The color of the icon background in the teaser -->
     <color name="folder_teaser_icon_background">#eeeeee</color>
-    <!-- The color of the senders text in the teaser -->
-    <color name="folder_teaser_senders_text">#757575</color>
-    <!-- The color of the count text in the teaser -->
-    <color name="folder_teaser_count_text">@android:color/black</color>
 
     <color name="vacation_responder_foreground">@android:color/white</color>
     <color name="vacation_responder_background">#ffe9e9e9</color>
