@@ -343,7 +343,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         // For EML files, we want to open our dedicated
         // viewer rather than let any activity open it.
         if (MimeType.isEmlMimeType(contentType)) {
-            intent.setClass(getContext().getApplicationContext(), EmlViewerActivity.class);
+            intent.setPackage(getContext().getPackageName());
             intent.putExtra(AccountFeedbackActivity.EXTRA_ACCOUNT_URI,
                     mAccount != null ? mAccount.uri : null);
         }

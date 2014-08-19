@@ -114,7 +114,7 @@ public abstract class AccountFeedbackActivity extends ActionBarActivity
         } else if (itemId == R.id.settings) {
             Utils.showSettings(this, mAccount);
         } else if (itemId == R.id.help_info_menu_item) {
-            Utils.showHelp(this, mAccount, getString(R.string.main_help_context));
+            showHelp(getString(R.string.main_help_context));
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -125,5 +125,9 @@ public abstract class AccountFeedbackActivity extends ActionBarActivity
     @Override
     public Account getAccount() {
         return mAccount;
+    }
+
+    protected void showHelp(String helpContext) {
+        Utils.showHelp(this, mAccount, helpContext);
     }
 }
