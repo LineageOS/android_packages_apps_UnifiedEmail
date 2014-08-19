@@ -165,6 +165,9 @@ public class ComposeActivity extends ActionBarActivity
     private static final String EXTRA_SUBJECT = "subject";
 
     private static final String EXTRA_BODY = "body";
+    private static final String EXTRA_TEXT_CHANGED ="extraTextChanged";
+
+    private static final String EXTRA_SKIP_PARSING_BODY = "extraSkipParsingBody";
 
     /**
      * Expected to be html formatted text.
@@ -834,6 +837,9 @@ public class ComposeActivity extends ActionBarActivity
         if (mRespondedInline) {
             mQuotedTextView.setVisibility(View.GONE);
         }
+
+        mTextChanged = (savedInstanceState != null) ?
+                savedInstanceState.getBoolean(EXTRA_TEXT_CHANGED) : false;
     }
 
     private static boolean hadSavedInstanceStateMessage(final Bundle savedInstanceState) {
@@ -1054,6 +1060,11 @@ public class ComposeActivity extends ActionBarActivity
                 EXTRA_ATTACHMENT_PREVIEWS, mAttachmentsView.getAttachmentPreviews());
 
         state.putParcelable(EXTRA_VALUES, mExtraValues);
+
+        state.putBoolean(EXTRA_TEXT_CHANGED, mTextChanged);
+        // On configuration changes, we don't actually need to parse the body html ourselves because
+        // the framework can correctly restore the body EditText to its exact original state.
+        state.putBoolean(EXTRA_SKIP_PARSING_BODY, isChangingConfigurations());
     }
 
     private int getMode() {
@@ -1492,6 +1503,7 @@ public class ComposeActivity extends ActionBarActivity
         mDraftId = message.id;
         mSubject.setText(message.subject);
         mForward = message.draftType == UIProvider.DraftType.FORWARD;
+
         final List<String> toAddresses = Arrays.asList(message.getToAddressesUnescaped());
         addToAddresses(toAddresses);
         addCcAddresses(Arrays.asList(message.getCcAddressesUnescaped()), toAddresses);
@@ -1502,6 +1514,14 @@ public class ComposeActivity extends ActionBarActivity
                 addAttachmentAndUpdateView(a);
             }
         }
+
+        // If we don't need to re-populate the body, and the quoted text will be restored from
+        // ref message. So we can skip rest of this code.
+        if (mInnerSavedState != null && mInnerSavedState.getBoolean(EXTRA_SKIP_PARSING_BODY)) {
+            LogUtils.i(LOG_TAG, "Skipping manually populating body and quoted text from draft.");
+            return;
+        }
+
         int quotedTextIndex = message.appendRefMessageContent ? message.quotedTextOffset : -1;
         // Set the body
         CharSequence quotedText = null;
