@@ -357,7 +357,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         this.lastSyncResult = lastSyncResult;
         this.type = type;
         this.iconResId = iconResId;
-        this.notificationIconResId = notificationIconResId;
         this.bgColor = bgColor;
         this.fgColor = fgColor;
         if (bgColor != null) {
@@ -397,7 +396,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         lastSyncResult = cursor.getInt(UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN);
         type = cursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
         iconResId = cursor.getInt(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
-        notificationIconResId = cursor.getInt(UIProvider.FOLDER_NOTIFICATION_ICON_RES_ID_COLUMN);
         bgColor = cursor.getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
         fgColor = cursor.getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
         if (bgColor != null) {
@@ -456,7 +454,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         lastSyncResult = in.readInt();
         type = in.readInt();
         iconResId = in.readInt();
-        notificationIconResId = in.readInt();
         bgColor = in.readString();
         fgColor = in.readString();
         if (bgColor != null) {
@@ -493,7 +490,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         dest.writeInt(lastSyncResult);
         dest.writeInt(type);
         dest.writeInt(iconResId);
-        dest.writeInt(notificationIconResId);
         dest.writeString(bgColor);
         dest.writeString(fgColor);
         dest.writeParcelable(loadMoreUri, 0);
