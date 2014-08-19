@@ -57,14 +57,12 @@
         <item name="android:hint">@string/subject_hint</item>
         <item name="android:imeOptions">actionDone|flagNoExtractUi|flagNoFullscreen</item>
         <item name="android:inputType">textEmailSubject|textAutoCorrect|textCapSentences|textImeMultiLine|textMultiLine</item>
-        <item name="android:textAlignment">viewStart</item>
         <item name="android:textColorHint">@color/compose_label_hint</item>
     </style>
 
     <style name="ComposeBodyView" parent="@style/ComposeEditTextView">
         <item name="android:imeOptions">flagNoFullscreen|actionDone|flagNoEnterAction</item>
         <item name="android:inputType">textLongMessage|textMultiLine|textAutoCorrect|textCapSentences</item>
-        <item name="android:textAlignment">viewStart</item>
         <item name="android:textColorHint">@color/compose_label_hint</item>
     </style>
 
