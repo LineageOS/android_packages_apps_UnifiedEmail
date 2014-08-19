@@ -147,7 +147,6 @@ public class ConversationItemView extends View
     private static int sBadgePaddingExtraWidth;
     private static int sBadgeRoundedCornerRadius;
     private static int sFolderRoundedCornerRadius;
-    private static int sDividerColor;
 
     // Static paints.
     private static final TextPaint sPaint = new TextPaint();
@@ -544,7 +543,7 @@ public class ConversationItemView extends View
                     res.getDimensionPixelSize(R.dimen.badge_rounded_corner_radius);
             sFolderRoundedCornerRadius =
                     res.getDimensionPixelOffset(R.dimen.folder_rounded_corner_radius);
-            sDividerColor = res.getColor(R.color.conversation_list_divider_color);
+            sDividerPaint.setColor(res.getColor(R.color.conversation_list_divider_color));
             sDividerInset = res.getDimensionPixelSize(R.dimen.conv_list_divider_inset);
             sDividerHeight = res.getDimensionPixelSize(R.dimen.divider_height);
         }
@@ -1350,9 +1349,9 @@ public class ConversationItemView extends View
         }
 
         // right-side edge effect when in tablet conversation mode and the list is not collapsed
+        final boolean isRtl = ViewUtils.isViewRtl(this);
         if (Utils.getDisplayListRightEdgeEffect(mTabletDevice, mListCollapsible,
                 mConfig.getViewMode())) {
-            final boolean isRtl = ViewUtils.isViewRtl(this);
             RIGHT_EDGE_TABLET.setBounds(
                     (isRtl) ? 0 : getWidth() - RIGHT_EDGE_TABLET.getIntrinsicWidth(), 0,
                     (isRtl) ? RIGHT_EDGE_TABLET.getIntrinsicWidth() : getWidth(), getHeight());
@@ -1367,11 +1366,16 @@ public class ConversationItemView extends View
             }
         }
 
-        // draw the inset divider
-        sDividerPaint.setColor(sDividerColor);
+        // the divider includes an inset only if sender images are present
+        final int dividerInset = mGadgetMode == ConversationItemViewCoordinates.GADGET_NONE ? 0 :
+                sDividerInset;
+
+        // respect RTL and LTR when placing the inset (if one exists)
+        final int dividerStartX = isRtl ? 0 : dividerInset;
+        final int dividerEndX = isRtl ? (getWidth() - dividerInset) : getWidth();
         final int dividerBottomY = getHeight();
         final int dividerTopY = dividerBottomY - sDividerHeight;
-        canvas.drawRect(sDividerInset, dividerTopY, getWidth(), dividerBottomY, sDividerPaint);
+        canvas.drawRect(dividerStartX, dividerTopY, dividerEndX, dividerBottomY, sDividerPaint);
         Utils.traceEndSection();
     }
 
