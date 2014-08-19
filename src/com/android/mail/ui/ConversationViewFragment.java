@@ -313,7 +313,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 InlineAttachmentViewIntentBuilderCreatorHolder.
                 getInlineAttachmentViewIntentCreator();
         final WebViewContextMenu contextMenu = new WebViewContextMenu(getActivity(),
-                creator.createInlineAttachmentViewIntentBuilder(mAccount.getEmailAddress(),
+                creator.createInlineAttachmentViewIntentBuilder(mAccount,
                 mConversation != null ? mConversation.id : -1));
         contextMenu.setCallbacks(this);
         mWebView.setOnCreateContextMenuListener(contextMenu);
