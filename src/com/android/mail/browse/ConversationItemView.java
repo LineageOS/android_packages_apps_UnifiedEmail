@@ -1366,16 +1366,20 @@ public class ConversationItemView extends View
             }
         }
 
-        // the divider includes an inset only if sender images are present
-        final int dividerInset = mGadgetMode == ConversationItemViewCoordinates.GADGET_NONE ? 0 :
-                sDividerInset;
+        // the divider is not drawn below advertisements (only messages)
+        final boolean drawDivider = mHeader.conversation.conversationBaseUri != null;
+        if (drawDivider) {
+            // the divider includes an inset only if sender images are present
+            final int dividerInset = mGadgetMode == ConversationItemViewCoordinates.GADGET_NONE ?
+                    0 : sDividerInset;
 
-        // respect RTL and LTR when placing the inset (if one exists)
-        final int dividerStartX = isRtl ? 0 : dividerInset;
-        final int dividerEndX = isRtl ? (getWidth() - dividerInset) : getWidth();
-        final int dividerBottomY = getHeight();
-        final int dividerTopY = dividerBottomY - sDividerHeight;
-        canvas.drawRect(dividerStartX, dividerTopY, dividerEndX, dividerBottomY, sDividerPaint);
+            // respect RTL and LTR when placing the inset (if one exists)
+            final int dividerStartX = isRtl ? 0 : dividerInset;
+            final int dividerEndX = isRtl ? (getWidth() - dividerInset) : getWidth();
+            final int dividerBottomY = getHeight();
+            final int dividerTopY = dividerBottomY - sDividerHeight;
+            canvas.drawRect(dividerStartX, dividerTopY, dividerEndX, dividerBottomY, sDividerPaint);
+        }
         Utils.traceEndSection();
     }
 
