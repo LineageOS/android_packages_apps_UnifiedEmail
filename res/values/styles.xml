@@ -421,6 +421,10 @@
         <item name="android:layout_marginRight">@dimen/folder_selection_margin_end</item>
     </style>
 
+    <style name="SingleFolderSelectionItemStyle" parent="FolderSelectionItemStyle">
+         <item name="android:padding">@dimen/single_folder_list_item_padding</item>
+    </style>
+
     <!-- Widget styles -->
     <style name="WidgetTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:singleLine">true</item>
@@ -608,6 +612,10 @@
         <item name="android:paddingBottom">18dp</item>
         <item name="android:paddingLeft">20dp</item>
         <item name="android:paddingRight">20dp</item>
+    </style>
+
+    <style name="SingleFolderListIconStyle">
+        <item name="android:layout_marginLeft">@dimen/single_folder_list_item_start_margin</item>
     </style>
 
     <style name="FolderListItemStartStyle">

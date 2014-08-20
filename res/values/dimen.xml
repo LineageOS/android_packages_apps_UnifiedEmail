@@ -88,6 +88,9 @@
     <dimen name="folder_list_item_start_margin">16dp</dimen>
     <dimen name="folder_list_item_text_start_margin">32dp</dimen>
     <dimen name="folder_list_item_end_margin">8dp</dimen>
+    <dimen name="single_folder_list_item_height">48sp</dimen>
+    <dimen name="single_folder_list_item_start_margin">24dp</dimen>
+    <dimen name="single_folder_list_item_padding">0dp</dimen>
     <!-- Let's try to keep this consistent with color_block_height above, unless there's a good reason not to. -->
     <dimen name="folder_swatch_height">6dip</dimen>
     <dimen name="folder_list_popup_width">200dip</dimen>
