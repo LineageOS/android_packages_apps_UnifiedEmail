@@ -1499,6 +1499,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Set the body
         CharSequence quotedText = null;
         if (!TextUtils.isEmpty(message.bodyHtml)) {
+            String body = message.bodyHtml;
             if (quotedTextIndex > -1) {
                 // Find the offset in the html text of the actual quoted text and strip it out.
                 // Note that the actual quotedTextOffset in the message has not changed as
@@ -1507,13 +1508,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // to see the differences.
                 quotedTextIndex = QuotedTextView.findQuotedTextIndex(message.bodyHtml);
                 if (quotedTextIndex > -1) {
-                    new HtmlToSpannedTask().execute(message.bodyHtml.substring(0, quotedTextIndex));
+                    body = message.bodyHtml.substring(0, quotedTextIndex);
                     quotedText = message.bodyHtml.subSequence(quotedTextIndex,
                             message.bodyHtml.length());
                 }
-            } else {
-                new HtmlToSpannedTask().execute(message.bodyHtml);
             }
+            new HtmlToSpannedTask().execute(body);
         } else {
             final String body = message.bodyText;
             final CharSequence bodyText;
