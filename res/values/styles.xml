@@ -221,6 +221,10 @@
     <style name="ConversationListFade" parent="@style/ConversationListFadeBase">
         <item name="android:divider">@null</item>
     </style>
+    <style name="WidgetConversationListFade" parent="@style/ConversationListFadeBase">
+        <item name="android:divider">@color/widget_conversation_list_divider_color</item>
+        <item name="android:dividerHeight">@dimen/divider_height</item>
+    </style>
     <!-- End browse list item styles -->
 
     <style name="AbstractFloatingActionButtonStyle">

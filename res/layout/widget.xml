@@ -83,7 +83,7 @@
         android:layout_weight="1"
         android:cacheColorHint="#00000000"
         android:background="@drawable/gradient_bg_widget_holo"
-        style="@style/ConversationListFade" />
+        style="@style/WidgetConversationListFade" />
     <TextView
         android:id="@+id/empty_conversation_list"
         android:layout_width="match_parent"

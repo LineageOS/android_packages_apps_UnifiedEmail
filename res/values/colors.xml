@@ -82,6 +82,7 @@
 
     <!-- Widget colors -->
     <color name="widget_header_bg_color">#da4336</color>
+    <color name="widget_conversation_list_divider_color">#e5e5e5</color>
 
     <!--  Color of the semi-transparent shadow box on attachment tiles -->
     <color name="attachment_tile_shadow_box_color">#7F000000</color>
