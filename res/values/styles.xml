@@ -538,7 +538,7 @@
     <style name="FailedTextAppearance" parent="@style/DraftTextAppearance"></style>
 
     <style name="LinksInTipTextAppearance">
-        <item name="android:textColor">?android:attr/textColorLink</item>
+        <item name="android:textColor">@color/tip_teaser_link</item>
     </style>
 
     <style name="AbstractNewMessageButtonStyleBase" parent="@android:style/Widget.Holo.Light.Button" />
@@ -554,11 +554,6 @@
     <style name="NewMessageButtonStyle" parent="AbstractNewMessageButtonStyle">
         <item name="android:layout_marginLeft">@dimen/toast_bar_margin</item>
         <item name="android:layout_marginRight">@dimen/toast_bar_margin</item>
-    </style>
-
-    <style name="DismissButtonStyle">
-        <item name="android:paddingLeft">@dimen/dismiss_button_padding_start</item>
-        <item name="android:paddingRight">@dimen/dismiss_button_padding_end</item>
     </style>
 
     <style name="MessageDetailsHeaderStyle">
@@ -649,7 +644,7 @@
         <item name="android:layout_marginLeft">@dimen/dismiss_separator_padding</item>
     </style>
 
-    <style name="TeaserTextStyle">
+    <style name="TeaserStartMargin">
         <item name="android:layout_marginLeft">@dimen/teaser_text_padding</item>
     </style>
 

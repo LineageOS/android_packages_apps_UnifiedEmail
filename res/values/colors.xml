@@ -129,6 +129,11 @@
     <!-- The color of the section name text in the teaser -->
     <color name="teaser_main_text">@color/dark_gray_text_color</color>
 
+    <!-- tip teaser colors -->
+    <color name="tip_teaser_bg">#e5e5e5</color>
+    <color name="tip_teaser_link">@color/text_color_blue</color>
+    <color name="tip_teaser_red_text">#da4336</color>
+
     <!-- swipe to refresh text color, this matches the color in
         progressbar_solid_holo.png -->
     <color name="swipe_to_refresh_text_color">#0099cc</color>
