@@ -200,6 +200,10 @@
         <item name="android:paddingEnd">@dimen/snack_bar_margin_horizontal</item>
     </style>
 
+    <style name="SingleFolderListIconStyle">
+        <item name="android:layout_marginStart">@dimen/single_folder_list_item_start_margin</item>
+    </style>
+
     <style name="FolderSelectionItemStyle" parent="AbstractFolderSelectionItemStyle">
         <item name="android:layout_marginStart">@dimen/folder_selection_margin_start</item>
         <item name="android:layout_marginEnd">@dimen/folder_selection_margin_end</item>
