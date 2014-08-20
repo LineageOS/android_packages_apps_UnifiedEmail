@@ -30,11 +30,9 @@
             android:layout_height="wrap_content"/>
     <TextView
             android:id="@+id/empty_text"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/empty_view_text_width"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/empty_view_space"
-            android:paddingLeft="@dimen/empty_view_space"
-            android:paddingRight="@dimen/empty_view_space"
             android:fontFamily="sans-serif-light"
             android:textAlignment="center"
             android:textColor="#80000000"
