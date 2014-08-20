@@ -67,15 +67,6 @@
             android:title="@string/preference_advance_to_title"
             gm:entrySummaries="@array/prefSummaries_autoAdvance" />
 
-    <com.android.mail.ui.settings.FancySummaryListPreference
-            android:dialogTitle="@string/preferences_disable_snap_headers_title"
-            android:entries="@array/prefEntries_snapHeader"
-            android:entryValues="@array/prefValues_snapHeader"
-            android:key="snap-header-mode-widget"
-            android:persistent="false"
-            android:title="@string/preferences_disable_snap_headers_title"
-            gm:entrySummaries="@array/prefSummaries_snapHeader" />
-
     <PreferenceCategory
             android:title="@string/preference_header_action_confirmations"
             android:key="removal-actions-group">
