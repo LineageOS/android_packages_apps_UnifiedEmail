@@ -224,7 +224,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * (such as one that does not rely on account and/or conversation.
      */
     protected void setBaseUri() {
-        mBaseUri = buildBaseUri(mContext, mAccount, mConversation);
+        mBaseUri = buildBaseUri(getContext(), mAccount, mConversation);
     }
 
     public static String buildBaseUri(Context context, Account account, Conversation conversation) {
