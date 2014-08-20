@@ -40,6 +40,7 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.support.v4.text.BidiFormatter;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.text.Layout.Alignment;
@@ -249,10 +250,12 @@ public class ConversationItemView extends View
      */
     static class ConversationItemFolderDisplayer extends FolderDisplayer {
 
+        private final BidiFormatter mFormatter;
         private int mFoldersCount;
 
-        public ConversationItemFolderDisplayer(Context context) {
+        public ConversationItemFolderDisplayer(Context context, BidiFormatter formatter) {
             super(context);
+            mFormatter = formatter;
         }
 
         @Override
@@ -398,21 +401,23 @@ public class ConversationItemView extends View
                 canvas.drawRoundRect(rect, sFolderRoundedCornerRadius, sFolderRoundedCornerRadius,
                         sFoldersPaint);
 
-                // Draw the text.
+                // Draw the text based on the language locale.
+                final boolean isTextRtl = mFormatter.isRtl(folderString);
                 sFoldersPaint.setColor(fgColor);
                 sFoldersPaint.setStyle(Paint.Style.FILL);
                 if (overflow[index]) {
                     final int rightBorder = xLeft + measurements[index];
-                    final int x0 = (isRtl) ? xLeft + sFoldersOverflowGradientPadding :
+                    final int x0 = (isTextRtl) ? xLeft + sFoldersOverflowGradientPadding :
                             rightBorder - sFoldersOverflowGradientPadding;
-                    final int x1 = (isRtl) ?  xLeft + sFoldersInnerPadding :
+                    final int x1 = (isTextRtl) ?  xLeft + sFoldersInnerPadding :
                             rightBorder - sFoldersInnerPadding;
                     final Shader shader = new LinearGradient(x0, y, x1, y, fgColor,
                             Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
                     sFoldersPaint.setShader(shader);
                 }
-                canvas.drawText(folderString, xLeft + sFoldersInnerPadding,
-                        y + height - textBottomPadding, sFoldersPaint);
+                final int textX = (isTextRtl) ? xLeft + measurements[index] - sFoldersInnerPadding :
+                        xLeft + sFoldersInnerPadding;
+                canvas.drawText(folderString, textX, y + height - textBottomPadding, sFoldersPaint);
                 if (overflow[index]) {
                     sFoldersPaint.setShader(null);
                 }
@@ -631,7 +636,8 @@ public class ConversationItemView extends View
         Utils.traceBeginSection("folder displayer");
         // Initialize folder displayer.
         if (mHeader.folderDisplayer == null) {
-            mHeader.folderDisplayer = new ConversationItemFolderDisplayer(mContext);
+            mHeader.folderDisplayer = new ConversationItemFolderDisplayer(mContext,
+                    mAdapter.getBidiFormatter());
         } else {
             mHeader.folderDisplayer.reset();
         }
