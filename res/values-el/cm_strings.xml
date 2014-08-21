@@ -16,6 +16,4 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Πατήστε εδώ για να φορτώσετε το υπόλοιπο μήνυμα</string>
-  <string name="fetching_message">Λήψη μηνύματος\u2026</string>
 </resources>

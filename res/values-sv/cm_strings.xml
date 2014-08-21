@@ -16,6 +16,4 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Tryck här för att hämta resten av meddelandet</string>
-  <string name="fetching_message">Hämtar meddelande\u2026</string>
 </resources>
