@@ -577,11 +577,18 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             layoutOverlay(mAdditionalBottomBorder, lastBottom, containerHeight);
         } else {
             if (mAdditionalBottomBorder != null && mAdditionalBottomBorderAdded) {
-                removeViewInLayout(mAdditionalBottomBorder);
+                if (postAddView) {
+                    post(mRemoveAdditionalBottomBorderRunnable);
+                } else {
+                    mRemoveAdditionalBottomBorderRunnable.run();
+                }
                 mAdditionalBottomBorderAdded = false;
             }
         }
     }
+
+    private final RemoveViewRunnable mRemoveAdditionalBottomBorderRunnable =
+            new RemoveViewRunnable(mAdditionalBottomBorder);
 
     private void setAdditionalBottomBorderHeight(int speculativeHeight) {
         LayoutParams params = mAdditionalBottomBorder.getLayoutParams();
@@ -871,7 +878,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     private class AddViewRunnable implements Runnable {
-        public final View mView;
+        private final View mView;
 
         public AddViewRunnable(View view) {
             mView = view;
@@ -883,6 +890,19 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             addViewInLayout(mView, index, mView.getLayoutParams(), true /* preventRequestLayout */);
         }
     };
+
+    private class RemoveViewRunnable implements Runnable {
+        private final View mView;
+
+        private RemoveViewRunnable(View view) {
+            mView = view;
+        }
+
+        @Override
+        public void run() {
+            removeViewInLayout(mView);
+        }
+    }
 
     private boolean isSnapEnabled() {
         if (mAccountController == null || mAccountController.getAccount() == null
