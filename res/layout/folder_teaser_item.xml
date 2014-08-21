@@ -63,10 +63,16 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/count_textView"
+            android:id="@+id/unread_count_textView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            style="@style/FolderTeaserCountTextStyle" />
+            style="@style/FolderTeaserUnreadCountTextStyle" />
+
+        <TextView
+            android:id="@+id/unseen_count_textView"
+            android:layout_width="57sp"
+            android:layout_height="20sp"
+            style="@style/FolderTeaserUnseenCountTextStyle" />
 
     </LinearLayout>
 

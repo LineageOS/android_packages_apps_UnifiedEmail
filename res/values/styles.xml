@@ -955,10 +955,19 @@
         <item name="android:paddingLeft">@dimen/custom_from_inner_padding</item>
     </style>
 
-    <style name="FolderTeaserCountTextStyle">
+    <style name="FolderTeaserUnreadCountTextStyle">
         <item name="android:gravity">center_vertical|end</item>
         <item name="android:minWidth">@dimen/folder_teaser_count_textview_min_width</item>
+        <item name="android:visibility">gone</item>
         <item name="android:textColor">@color/folder_teaser_sub_text</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="FolderTeaserUnseenCountTextStyle">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
     </style>
 
