@@ -84,15 +84,6 @@ public class MessageCursor extends ObjectCursor<ConversationMessage> {
         return false;
     }
 
-    public boolean isConversationLoaded() {
-        int pos = -1;
-        while (moveToPosition(++pos)) {
-            if (!getMessage().loaded) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public boolean isConversationRead() {
         int pos = -1;
@@ -169,9 +160,9 @@ public class MessageCursor extends ObjectCursor<ConversationMessage> {
             }
             sb.append(String.format(
                     "[Message #%d hash=%s uri=%s id=%s serverId=%s from='%s' draftType=%d" +
-                    " isSending=%s loaded=%s read=%s starred=%s attUris=%s]\n",
+                    " isSending=%s read=%s starred=%s attUris=%s]\n",
                     pos, m.getStateHashCode(), m.uri, m.id, m.serverId, m.getFrom(), m.draftType,
-                    m.isSending, m.loaded, m.read, m.starred, attUris));
+                    m.isSending, m.read, m.starred, attUris));
         }
         return sb.toString();
     }

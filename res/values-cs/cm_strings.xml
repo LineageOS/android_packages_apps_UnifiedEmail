@@ -16,6 +16,4 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Dotykem zde načíst zbývající část zprávy</string>
-  <string name="fetching_message">Načítání zprávy\u2026</string>
 </resources>

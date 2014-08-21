@@ -16,6 +16,4 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Apăsați aici pentru a încărca restul mesajului</string>
-  <string name="fetching_message">Preluarea mesajului\u2026</string>
 </resources>

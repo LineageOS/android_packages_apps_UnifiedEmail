@@ -16,6 +16,4 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Raak hier om res van boodskap te laai</string>
-  <string name="fetching_message">Laai boodskap\u2026</string>
 </resources>
