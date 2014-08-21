@@ -16,6 +16,4 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Mesajın tamamını görmek için buraya dokunun</string>
-  <string name="fetching_message">Mesaj alınıyor\u2026</string>
 </resources>
