@@ -857,11 +857,9 @@ public class NotificationUtils {
             Folder folder, long when, int unseenCount, int unreadCount, PendingIntent clickIntent) {
         final boolean multipleUnseen = unseenCount > 1;
 
-        String publicDisplayName = getPublicDisplayName(account.getDisplayName());
-
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle(createTitle(context, unseenCount))
-                .setContentText(publicDisplayName)
+                .setContentText(account.getDisplayName())
                 .setContentIntent(clickIntent)
                 .setNumber(unreadCount)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -882,28 +880,6 @@ public class NotificationUtils {
         }
 
         return builder.build();
-    }
-
-    /**
-     * Censor displayName for public notifications. Only show the first few characters and star out
-     * the rest of them.
-     *
-     * @param displayName account display name
-     * @return hidden account display name (first four characters visible)
-     */
-    private static String getPublicDisplayName(String displayName) {
-        final StringBuilder nameBuilder = new StringBuilder(displayName);
-        final int displayNameLength = displayName.length();
-
-        if (displayNameLength > PUBLIC_NOTIFICATIONS_VISIBLE_CHARS) {
-            char[] asterisks = new char[displayNameLength - PUBLIC_NOTIFICATIONS_VISIBLE_CHARS];
-            Arrays.fill(asterisks, '*');
-            String censoredSuffix = new String(asterisks);
-
-            nameBuilder.replace(PUBLIC_NOTIFICATIONS_VISIBLE_CHARS, displayNameLength,
-                    censoredSuffix);
-        }
-        return nameBuilder.toString();
     }
 
     /**
