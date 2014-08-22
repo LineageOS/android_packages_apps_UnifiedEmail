@@ -40,7 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            style="@style/FolderTeaserMarginEndStyle">
 
             <TextView
                 android:id="@+id/folder_textView"
