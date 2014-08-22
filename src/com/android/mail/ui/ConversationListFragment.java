@@ -1215,7 +1215,7 @@ public final class ConversationListFragment extends Fragment implements
         return ConversationCursor.isCursorReadyToShow(getConversationListCursor());
     }
 
-    public ListView getListView() {
+    public SwipeableListView getListView() {
         return mListView;
     }
 
