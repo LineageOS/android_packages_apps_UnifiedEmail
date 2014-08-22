@@ -919,20 +919,41 @@ public class FolderListFragment extends ListFragment implements
                 }
                 return itemList;
             }
-
-            if (!mIsDivided) {
+            if (mIsDivided) {
+                //Choose an adapter for a divided list with sections
+                return recalculateDividedListFolders(itemList);
+            } else {
                 // Adapter for a flat list. Everything is a FOLDER_OTHER, and there are no headers.
-                do {
-                    final Folder f = mCursor.getModel();
-                    if (!isFolderTypeExcluded(f)) {
-                        itemList.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_OTHER));
-                    }
-                } while (mCursor.moveToNext());
-
-                return itemList;
+                return recalculateFlatListFolders(itemList);
             }
+        }
 
-            // Otherwise, this is an adapter for a divided list.
+        // Recalculate folder list intended to be flat (no hearders or sections shown).
+        // This is commonly used for the widget or other simple folder selections
+        private List<DrawerItem> recalculateFlatListFolders(List<DrawerItem> itemList) {
+            final List<DrawerItem> inboxFolders = new ArrayList<DrawerItem>();
+            final List<DrawerItem> allFoldersList = new ArrayList<DrawerItem>();
+            do {
+                final Folder f = mCursor.getModel();
+                if (!isFolderTypeExcluded(f)) {
+                    // Prioritize inboxes
+                    if (f.isInbox()) {
+                        inboxFolders.add(DrawerItem.ofFolder(
+                                mActivity, f, DrawerItem.FOLDER_OTHER));
+                    } else {
+                        allFoldersList.add(
+                                DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_OTHER));
+                    }
+                }
+            } while (mCursor.moveToNext());
+            itemList.addAll(inboxFolders);
+            itemList.addAll(allFoldersList);
+            return itemList;
+        }
+
+        // Recalculate folder list divided by sections (inboxes, recents, all, etc...)
+        // This is primarily used by the drawer
+        private List<DrawerItem> recalculateDividedListFolders(List<DrawerItem> itemList) {
             final List<DrawerItem> allFoldersList = new ArrayList<DrawerItem>();
             final List<DrawerItem> inboxFolders = new ArrayList<DrawerItem>();
             do {
