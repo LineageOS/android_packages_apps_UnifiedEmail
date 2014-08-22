@@ -714,7 +714,7 @@ public abstract class AbstractActivityController implements ActivityController,
         if (accountChanged) {
             commitDestructiveActions(false);
         }
-        Analytics.getInstance().setEmailAddress(emailAddress);
+
         // Change the account here
         setAccount(account);
         // And carry out associated actions.
@@ -2282,6 +2282,9 @@ public abstract class AbstractActivityController implements ActivityController,
         }
         LogUtils.d(LOG_TAG, "AbstractActivityController.setAccount(): account = %s", account.uri);
         mAccount = account;
+
+        Analytics.getInstance().setEmail(account.getEmailAddress(), account.getType());
+
         // Only change AAC state here. Do *not* modify any other object's state. The object
         // should listen on account changes.
         restartOptionalLoader(LOADER_RECENT_FOLDERS, mFolderCallbacks, Bundle.EMPTY);
@@ -2383,7 +2386,7 @@ public abstract class AbstractActivityController implements ActivityController,
             final boolean isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
 
             if (intent.getBooleanExtra(Utils.EXTRA_FROM_NOTIFICATION, false)) {
-                Analytics.getInstance().setEmailAddress(mAccount.getEmailAddress());
+                Analytics.getInstance().setEmail(mAccount.getEmailAddress(), mAccount.getType());
                 Analytics.getInstance().sendEvent("notification_click",
                         isConversationMode ? "conversation" : "conversation_list", null, 0);
             }
