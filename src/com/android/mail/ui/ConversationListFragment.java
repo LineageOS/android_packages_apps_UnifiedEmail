@@ -636,25 +636,27 @@ public final class ConversationListFragment extends Fragment implements
 
     @Override
     public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-        SwipeableListView list = (SwipeableListView) view;
-        // Don't need to handle ENTER because it's auto-handled as a "click".
-        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-            if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                if (mKeyInitiatedFromList) {
-                    onListItemSelected(list.getSelectedView(), list.getSelectedItemPosition());
+        if (view instanceof  SwipeableListView) {
+            SwipeableListView list = (SwipeableListView) view;
+            // Don't need to handle ENTER because it's auto-handled as a "click".
+            if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                    if (mKeyInitiatedFromList) {
+                        onListItemSelected(list.getSelectedView(), list.getSelectedItemPosition());
+                    }
+                    mKeyInitiatedFromList = false;
+                } else if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    mKeyInitiatedFromList = true;
                 }
-                mKeyInitiatedFromList = false;
-            } else if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                mKeyInitiatedFromList = true;
-            }
-            return true;
-        } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-            if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-                final int position = list.getSelectedItemPosition();
-                final Object item = getAnimatedAdapter().getItem(position);
-                if (item != null && item instanceof ConversationCursor) {
-                    final Conversation conv = ((ConversationCursor) item).getConversation();
-                    mCallbacks.onConversationFocused(conv);
+                return true;
+            } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                    final int position = list.getSelectedItemPosition();
+                    final Object item = getAnimatedAdapter().getItem(position);
+                    if (item != null && item instanceof ConversationCursor) {
+                        final Conversation conv = ((ConversationCursor) item).getConversation();
+                        mCallbacks.onConversationFocused(conv);
+                    }
                 }
             }
         }
