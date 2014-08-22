@@ -154,7 +154,6 @@ public class ConversationItemView extends View
     private static final Paint sCheckBackgroundPaint = new Paint();
     private static final Paint sDividerPaint = new Paint();
 
-    private static int sDividerInset;
     private static int sDividerHeight;
 
     private static BroadcastReceiver sConfigurationChangedReceiver;
@@ -193,6 +192,7 @@ public class ConversationItemView extends View
     private Folder mDisplayedFolder;
     private boolean mStarEnabled;
     private boolean mSwipeEnabled;
+    private boolean mDividerEnabled;
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
@@ -546,8 +546,7 @@ public class ConversationItemView extends View
                     res.getDimensionPixelSize(R.dimen.badge_rounded_corner_radius);
             sFolderRoundedCornerRadius =
                     res.getDimensionPixelOffset(R.dimen.folder_rounded_corner_radius);
-            sDividerPaint.setColor(res.getColor(R.color.conversation_list_divider_color));
-            sDividerInset = res.getDimensionPixelSize(R.dimen.conv_list_divider_inset);
+            sDividerPaint.setColor(res.getColor(R.color.divider_color));
             sDividerHeight = res.getDimensionPixelSize(R.dimen.divider_height);
         }
     }
@@ -562,7 +561,7 @@ public class ConversationItemView extends View
                 null /* conversationItemAreaClickListener */,
                 set, folder, checkboxOrSenderImage, swipeEnabled, importanceMarkersEnabled,
                 showChevronsEnabled, adapter, -1 /* backgroundOverrideResId */,
-                null /* photoBitmap */, false /* useFullMargins */);
+                null /* photoBitmap */, false /* useFullMargins */, true /* mDividerEnabled */);
         Utils.traceEndSection();
     }
 
@@ -575,7 +574,8 @@ public class ConversationItemView extends View
         bind(conversationItemViewModel, activity, conversationItemAreaClickListener, null /* set */,
                 folder, checkboxOrSenderImage, true /* swipeEnabled */,
                 false /* importanceMarkersEnabled */, false /* showChevronsEnabled */,
-                adapter, backgroundOverrideResId, photoBitmap, true /* useFullMargins */);
+                adapter, backgroundOverrideResId, photoBitmap, true /* useFullMargins */,
+                false /* mDividerEnabled */);
         Utils.traceEndSection();
     }
 
@@ -586,10 +586,11 @@ public class ConversationItemView extends View
             boolean swipeEnabled, final boolean importanceMarkersEnabled,
             final boolean showChevronsEnabled, final AnimatedAdapter adapter,
             final int backgroundOverrideResId, final Bitmap photoBitmap,
-            final boolean useFullMargins) {
+            final boolean useFullMargins, final boolean dividerEnabled) {
         mBackgroundOverrideResId = backgroundOverrideResId;
         mPhotoBitmap = photoBitmap;
         mConversationItemAreaClickListener = conversationItemAreaClickListener;
+        mDividerEnabled = dividerEnabled;
 
         if (mHeader != null) {
             Utils.traceBeginSection("unbind");
@@ -1347,25 +1348,16 @@ public class ConversationItemView extends View
             canvas.drawBitmap(mHeader.paperclip, mPaperclipX, mCoordinates.paperclipY, sPaint);
         }
 
+        // Star.
         if (mStarEnabled) {
-            // Star.
             canvas.drawBitmap(getStarBitmap(), mCoordinates.starX, mCoordinates.starY, sPaint);
         }
 
-        // the divider is not drawn below advertisements (only messages)
-        final boolean drawDivider = mHeader.conversation.conversationBaseUri != null;
-        if (drawDivider) {
-            // the divider includes an inset only if sender images are present
-            final int dividerInset = mGadgetMode == ConversationItemViewCoordinates.GADGET_NONE ?
-                    0 : sDividerInset;
-
-            // respect RTL and LTR when placing the inset (if one exists)
-            final boolean isRtl = ViewUtils.isViewRtl(this);
-            final int dividerStartX = isRtl ? 0 : dividerInset;
-            final int dividerEndX = isRtl ? (getWidth() - dividerInset) : getWidth();
+        // Divider.
+        if (mDividerEnabled) {
             final int dividerBottomY = getHeight();
             final int dividerTopY = dividerBottomY - sDividerHeight;
-            canvas.drawRect(dividerStartX, dividerTopY, dividerEndX, dividerBottomY, sDividerPaint);
+            canvas.drawRect(0, dividerTopY, getWidth(), dividerBottomY, sDividerPaint);
         }
         Utils.traceEndSection();
     }
