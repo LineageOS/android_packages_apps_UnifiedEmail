@@ -941,7 +941,7 @@
     <style name="ConversationListDividerStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/divider_height</item>
-        <item name="android:background">@color/conversation_list_divider_color</item>
+        <item name="android:background">@color/divider_color</item>
     </style>
 
     <style name="ConversationListDividerStyleIndented" parent="ConversationListDividerStyle">
