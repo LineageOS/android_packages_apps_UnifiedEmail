@@ -821,6 +821,10 @@
         <item name="android:paddingRight">@dimen/widget_attachment_padding_end</item>
     </style>
 
+    <style name="WidgetHeaderStartMargin">
+        <item name="android:paddingLeft">16dp</item>
+    </style>
+
     <style name="SearchTextStyle">
         <item name="android:textColor">@color/search_banner_text</item>
         <item name="android:textSize">@dimen/search_banner_text_size</item>
