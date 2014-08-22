@@ -67,8 +67,8 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
     }
 
     public void focusSearchBar(boolean hasFocus) {
-        mQueryText.requestFocus();
         if (hasFocus) {
+            mQueryText.requestFocus();
             mImm.showSoftInput(mQueryText, 0);
         } else {
             mImm.hideSoftInputFromWindow(mQueryText.getWindowToken(), 0);
