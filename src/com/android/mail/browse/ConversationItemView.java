@@ -1257,6 +1257,11 @@ public class ConversationItemView extends View
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (mCoordinates == null) {
+            LogUtils.e(LOG_TAG, "null coordinates in ConversationItemView#onDraw");
+            return;
+        }
+
         Utils.traceBeginSection("CIVC.draw");
 
         // Contact photo
