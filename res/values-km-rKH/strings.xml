@@ -92,7 +92,7 @@
     <string name="kilobytes" msgid="1523463964465770347">"<xliff:g id="COUNT">%s</xliff:g> គីឡូបៃ"</string>
     <string name="megabytes" msgid="4309397368708773323">"<xliff:g id="COUNT">%s</xliff:g> មេកាបៃ"</string>
     <string name="attachment_image" msgid="6375306026208274564">"រូបភាព"</string>
-    <string name="attachment_video" msgid="7119476472603939848">"វីដេអូ"</string>
+    <string name="attachment_video" msgid="7119476472603939848">"វីដេអូ​"</string>
     <string name="attachment_audio" msgid="7097658089301809284">"សំឡេង"</string>
     <string name="attachment_text" msgid="3485853714965922173">"អត្ថបទ"</string>
     <string name="attachment_application_msword" msgid="2110108876623152162">"ឯកសារ"</string>
@@ -113,7 +113,7 @@
     <string name="download_failed" msgid="3878373998269062395">"មិន​អាច​ទាញ​យក​។ ប៉ះ​ដើម្បី​ព្យាយាម​ម្ដង​ទៀត​។"</string>
     <string name="attachments_header" msgid="6752739514995620140">"ឯកសារ​ភ្ជាប់"</string>
     <string name="menu_photo_save_all" msgid="2742869476474613396">"រក្សា​ទុក​ទាំងអស់"</string>
-    <string name="menu_photo_share" msgid="6410980274832639330">"ចែក​រំលែក"</string>
+    <string name="menu_photo_share" msgid="6410980274832639330">"ចែក​រំលែក​"</string>
     <string name="menu_photo_share_all" msgid="3049053252719665320">"ចែក​រំលែក​ទាំងអស់"</string>
     <string name="saving" msgid="6274238733828387433">"កំពុង​រក្សាទុក…"</string>
     <string name="choosertitle_sharevia" msgid="3539537264873337959">"ចែករំលែក​តាម"</string>
@@ -148,7 +148,7 @@
     <string name="send_failed" msgid="2186285547449865010">"សារ​មិន​ត្រូវ​បាន​ផ្ញើ​ឡើយ។"</string>
     <string name="me_object_pronun" msgid="6821876078858926931">"ខ្ញុំ"</string>
     <string name="me_subject_pronun" msgid="2575942385386480787">"ខ្ញុំ"</string>
-    <string name="inbox_folders_heading" msgid="6534923118688156523">"ប្រអប់​ទទួល"</string>
+    <string name="inbox_folders_heading" msgid="6534923118688156523">"ប្រអប់​ទទួល​"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="7605755011865575440">"លុប​ការ​សន្ទនា​នេះ​​?"</item>
     <item quantity="other" msgid="1585660381208712562">"លុប​ការ​សន្ទនា​ទាំង​ <xliff:g id="COUNT">%1$d</xliff:g> ​នេះ?"</item>
@@ -245,7 +245,7 @@
     <string name="enumeration_comma" msgid="2848850136844740850">", "</string>
     <string name="yes" msgid="6599620339424784581">"បាទ/ចាស"</string>
     <string name="no" msgid="9140142738509136091">"ទេ"</string>
-    <string name="ok" msgid="6178802457914802336">"យល់​ព្រម"</string>
+    <string name="ok" msgid="6178802457914802336">"យល់​ព្រម​"</string>
     <string name="done" msgid="344354738335270292">"រួចរាល់"</string>
     <string name="cancel" msgid="4831678293149626190">"បោះបង់"</string>
     <string name="clear" msgid="765949970989448022">"សម្អាត"</string>
@@ -259,7 +259,7 @@
   </string-array>
     <string name="tap_to_configure" msgid="137172348280050643">"ប៉ះ​ដើម្បី​​រៀបចំ"</string>
     <string name="non_synced_folder_description" msgid="3044618511909304701">"ដើម្បី​មើល​ការ​សន្ទនា​ ធ្វើ​សម​កាល​កម្ម​ថត​នេះ​។"</string>
-    <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"ថត​សម​កាល​កម្ម"</string>
+    <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"ថត​សម​កាល​កម្ម​"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"មិន​ទាន់​អាន <xliff:g id="COUNT">%1$d</xliff:g>"</item>
@@ -309,8 +309,8 @@
     <string name="all_folders_heading" msgid="9023770187629170967">"ថត​ទាំងអស់"</string>
     <string name="recent_folders_heading" msgid="8943134955788867702">"ថត​ថ្មីៗ"</string>
     <string name="message_details_title" msgid="60771875776494764">"ព័ត៌មាន​លម្អិត​សារ"</string>
-    <string name="auto_advance_label" msgid="3166987545692982786">"កម្រិត​ខ្ពស់​ដោយ​ស្វ័យ​ប្រវត្តិ"</string>
-    <string name="auto_advance_summary" msgid="7877529385545237247">"ជ្រើស​​អេក្រង់​ដែល​ត្រូវ​បង្ហាញ​​​បន្ទាប់​ពី​អ្នក​លុប​សារ"</string>
+    <string name="auto_advance_label" msgid="3166987545692982786">"កម្រិត​ខ្ពស់​ដោយ​ស្វ័យ​ប្រវត្តិ​"</string>
+    <string name="auto_advance_summary" msgid="7877529385545237247">"ជ្រើស​​អេក្រង់​ដែល​ត្រូវ​បង្ហាញ​​​បន្ទាប់​ពី​អ្នក​លុប​សារ​​"</string>
     <string name="auto_advance_help_title" msgid="607364391278351424">"កំណត់​ចំណូល​ចិត្ត​កម្រិត​ខ្ពស់​ដោយ​ស្វ័យ​ប្រវត្តិ \n (បន្ទាប់​ពី​អ្នក​លុប ។ល។)"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="1505450878799459652">"ថ្មី​ជាង"</item>
@@ -377,7 +377,7 @@
     <string name="drawer_open" msgid="2285557278907103851">"បើក​ផ្ទាំង​បញ្ជីកម្មវិធី"</string>
     <string name="drawer_close" msgid="2065829742127544297">"បិទ​​​ផ្ទាំង​​​បញ្ជី​កម្មវិធី"</string>
     <string name="conversation_photo_welcome_text" msgid="836483155429003787">"ប៉ះ​រូបភាព​របស់​អ្នក​ផ្ញើ ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​នោះ​។"</string>
-    <string name="long_press_to_select_tip" msgid="1660881999120625177">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ការ​សន្ទនា​មួយ បន្ទាប់​មក​ប៉ះ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​ច្រើន​ទៀត។"</string>
+    <string name="long_press_to_select_tip" msgid="1660881999120625177">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ការ​សន្ទនា​មួយ បន្ទាប់​មក​ប៉ះ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​ច្រើន​ទៀត។​"</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"រូប​តំណាង​ថត"</string>
     <string name="add_account" msgid="5905863370226612377">"បន្ថែម​គណនី"</string>
     <string name="attached_message" msgid="4514369068177801675">"សារ​ដែល​បាន​ភ្ជាប់"</string>
