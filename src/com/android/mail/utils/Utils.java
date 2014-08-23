@@ -35,6 +35,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
+import android.support.v4.text.TextUtilsCompat;
+import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -63,7 +65,6 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
 import com.android.mail.ui.HelpActivity;
-import com.android.mail.ui.ViewMode;
 import com.google.android.mail.common.html.parser.HtmlDocument;
 import com.google.android.mail.common.html.parser.HtmlParser;
 import com.google.android.mail.common.html.parser.HtmlTree;
@@ -1156,5 +1157,10 @@ public class Utils {
                 ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return (networkInfo != null) && networkInfo.isConnected();
+    }
+
+    public static boolean isCurrentLocaleRtl() {
+        return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) ==
+                ViewCompat.LAYOUT_DIRECTION_RTL;
     }
 }
