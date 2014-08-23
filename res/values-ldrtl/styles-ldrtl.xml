@@ -382,10 +382,6 @@
         <item name="android:layout_marginEnd">@dimen/folder_teaser_end_padding</item>
     </style>
 
-    <style name="ConversationListDividerStyleIndented" parent="ConversationListDividerStyle">
-        <item name="android:layout_marginStart">@dimen/folder_teaser_start_margin</item>
-    </style>
-
     <style name="ArrowStyle">
         <item name="android:layout_marginStart">@dimen/teaser_arrow_margin_start</item>
         <item name="android:layout_marginEnd">@dimen/teaser_arrow_margin_end</item>
