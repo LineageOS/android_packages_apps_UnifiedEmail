@@ -97,8 +97,6 @@
     <dimen name="folder_list_folder_color_width">36dip</dimen>
     <dimen name="folder_list_item_minimum_height">48dip</dimen>
     <dimen name="folder_list_item_left_offset">9dp</dimen>
-    <dimen name="account_item_margin_start">14dp</dimen>
-    <dimen name="account_item_margin_end">8dp</dimen>
     <dimen name="account_item_minimum_height">48dip</dimen>
     <dimen name="account_item_swatch_height">8dip</dimen>
     <dimen name="account_item_folder_color_width">36dip</dimen>

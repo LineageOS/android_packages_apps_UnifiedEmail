@@ -379,16 +379,6 @@
     </style>
     <!-- End conversation view message header styles -->
 
-    <!-- Account Item (Folder List) styles -->
-    <style name="AbstractAccountItemIcon">
-        <item name="android:layout_height">@dimen/account_item_swatch_height</item>
-        <item name="android:layout_width">@dimen/account_item_folder_color_width</item>
-    </style>
-
-    <style name="AccountItemIcon" parent="AbstractAccountItemIcon">
-        <item name="android:layout_alignParentLeft">true</item>
-    </style>
-
     <!-- Folder styles -->
     <style name="AbstractFolderColorBoxStyle">
         <item name="android:layout_height">@dimen/folder_swatch_height</item>
@@ -678,15 +668,6 @@
 
     <style name="UnseenCountWithMarginEndStyle" parent="UnseenCount">
         <item name="android:layout_marginRight">@dimen/folder_list_item_end_margin</item>
-    </style>
-
-    <style name="AccountRadioButtonStyle">
-        <item name="android:layout_marginLeft">@dimen/account_item_margin_start</item>
-    </style>
-
-    <style name="AccountUnreadCountStyle" parent="UnreadCountRelativeLayout">
-        <item name="android:layout_marginRight">@dimen/account_item_margin_end</item>
-        <item name="android:layout_alignParentRight">true</item>
     </style>
 
     <style name="CustomActionButtonBase" parent="@style/Widget.AppCompat.Light.ActionButton" />
