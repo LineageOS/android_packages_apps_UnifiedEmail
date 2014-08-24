@@ -39,9 +39,9 @@
     <string name="forward_attribution_no_headers" msgid="1828826576779486239">"---------- अग्रेषित संदेश ----------"</string>
     <string name="cc_attribution" msgid="2928584226469388899">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="353236686616663062">"अटैचमेंट का प्रकार चुनें"</string>
-    <string name="too_large_to_attach_single" msgid="2669897137966512530">"<xliff:g id="MAXSIZE">%1$s</xliff:g> से बड़ी फ़ाइल संलग्न नहीं कर सकते."</string>
-    <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"एक या अधिक फ़ाइलें संलग्न नहीं हुईं. सीमा <xliff:g id="MAXSIZE">%1$s</xliff:g> की है."</string>
-    <string name="too_large_to_attach_additional" msgid="4964155563465970480">"फ़ाइल संलग्न नहीं हुई. <xliff:g id="MAXSIZE">%1$s</xliff:g> सीमा पूरी हो गई."</string>
+    <string name="too_large_to_attach_single" msgid="2669897137966512530">"<xliff:g id="MAXSIZE">%1$s</xliff:g> से बड़ी फ़ाइल अटैचमेंट नहीं कर सकते."</string>
+    <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"एक या अधिक फ़ाइलें अटैचमेंट नहीं हुईं. सीमा <xliff:g id="MAXSIZE">%1$s</xliff:g> की है."</string>
+    <string name="too_large_to_attach_additional" msgid="4964155563465970480">"फ़ाइल अटैचमेंट नहीं हुई. <xliff:g id="MAXSIZE">%1$s</xliff:g> सीमा पूरी हो गई."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"फ़ाइल अनुलग्न नहीं की जा सकी."</string>
     <string name="recipient_needed" msgid="319816879398937214">"कम से कम एक प्राप्तकर्ता जोड़ें."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"प्राप्तकर्ता त्रुटि"</string>
@@ -107,7 +107,7 @@
     <string name="download_again" msgid="8195787340878328119">"पुनः डाउनलोड करें"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"जानकारी"</string>
     <string name="no_application_found" msgid="7309485680354949680">"कोई भी ऐप्स  इस अटैचमेंट को देखने के लिए नहीं खोल सकता."</string>
-    <string name="fetching_attachment" msgid="2286628490159574159">"अनुलग्‍नक फ़ेच कर रहा है"</string>
+    <string name="fetching_attachment" msgid="2286628490159574159">"अटैचमेंट फ़ेच कर रहा है"</string>
     <string name="please_wait" msgid="3953824147776128899">"कृपया प्रतीक्षा करें…"</string>
     <string name="saved" msgid="161536102236967534">"सहेजा गया, <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="3878373998269062395">"डाउनलोड नहीं हो सका. पुनर्प्रयास हेतु स्पर्श करें."</string>

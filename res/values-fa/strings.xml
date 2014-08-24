@@ -65,7 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"گزارش فیشینگ"</string>
     <string name="delete" msgid="6784262386780496958">"حذف"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"صرفنظر کردن از پیش‌نویس‌ها"</string>
-    <string name="discard_failed" msgid="7520780769812210279">"نادیده گرفته نشد"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"صرف‌نظر انجام نشد"</string>
     <string name="refresh" msgid="1533748989749277511">"بازخوانی"</string>
     <string name="reply" msgid="8337757482824207118">"پاسخ"</string>
     <string name="reply_all" msgid="5366796103758360957">"پاسخ به همه"</string>
