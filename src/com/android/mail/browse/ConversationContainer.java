@@ -580,17 +580,16 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         } else {
             if (mAdditionalBottomBorder != null && mAdditionalBottomBorderAdded) {
                 if (postAddView) {
-                    post(mRemoveAdditionalBottomBorderRunnable);
+                    post(mRemoveBorderRunnable);
                 } else {
-                    mRemoveAdditionalBottomBorderRunnable.run();
+                    mRemoveBorderRunnable.run();
                 }
                 mAdditionalBottomBorderAdded = false;
             }
         }
     }
 
-    private final RemoveViewRunnable mRemoveAdditionalBottomBorderRunnable =
-            new RemoveViewRunnable(mAdditionalBottomBorder);
+    private final RemoveBorderRunnable mRemoveBorderRunnable = new RemoveBorderRunnable();
 
     private void setAdditionalBottomBorderHeight(int speculativeHeight) {
         LayoutParams params = mAdditionalBottomBorder.getLayoutParams();
@@ -893,16 +892,10 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
     };
 
-    private class RemoveViewRunnable implements Runnable {
-        private final View mView;
-
-        private RemoveViewRunnable(View view) {
-            mView = view;
-        }
-
+    private class RemoveBorderRunnable implements Runnable {
         @Override
         public void run() {
-            removeViewInLayout(mView);
+            removeViewInLayout(mAdditionalBottomBorder);
         }
     }
 
