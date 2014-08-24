@@ -1608,9 +1608,6 @@ public abstract class AbstractActivityController implements ActivityController,
             showEmptyDialog();
         } else if (id == R.id.empty_spam) {
             showEmptyDialog();
-        } else if (id == R.id.search) {
-            mSearchViewController.showSearchActionBar(
-                    MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE);
         } else {
             handled = false;
         }

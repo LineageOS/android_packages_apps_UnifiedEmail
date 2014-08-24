@@ -519,4 +519,15 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean shouldShowSearchBarByDefault() {
         return mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST;
     }
+
+    @Override
+    public boolean shouldShowSearchMenuItem() {
+        return mViewMode.getMode() == ViewMode.CONVERSATION_LIST;
+    }
+
+    @Override
+    public void setConversationListLayoutListener(
+            TwoPaneLayout.ConversationListLayoutListener listener) {
+        // Do nothing
+    }
 }

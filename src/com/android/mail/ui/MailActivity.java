@@ -29,7 +29,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -172,13 +171,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
         setContentView(mController.getContentViewResource());
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.mail_toolbar);
-        // Toolbar is currently only used on phone layout, so this is expected to be null
-        // on tablets
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            toolbar.setNavigationOnClickListener(mController.getNavigationViewClickListener());
-        }
+        final CustomViewToolbar toolbar = (CustomViewToolbar) findViewById(R.id.mail_toolbar);
+        toolbar.setController(this, mController, mViewMode);
+        mController.setConversationListLayoutListener(toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(mController.getNavigationViewClickListener());
 
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

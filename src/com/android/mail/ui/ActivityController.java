@@ -338,5 +338,18 @@ public interface ActivityController extends LayoutListener,
 
     View.OnClickListener getNavigationViewClickListener();
 
+    /**
+     * If the search bar should always be visible on top of the screen (e.g. search result list).
+     */
     boolean shouldShowSearchBarByDefault();
+
+    /**
+     * If we should show the search menu item.
+     */
+    boolean shouldShowSearchMenuItem();
+
+    /**
+     * Attach layout listener so our custom toolbar can listen to thread list layout events.
+     */
+    void setConversationListLayoutListener(TwoPaneLayout.ConversationListLayoutListener listener);
 }
