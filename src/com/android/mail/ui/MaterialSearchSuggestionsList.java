@@ -96,6 +96,15 @@ public class MaterialSearchSuggestionsList extends LinearLayout
     }
 
     @Override
+    public void setVisibility(int visibility) {
+        if (!isShown() && visibility == VISIBLE) {
+            // When we go from gone to visible, re-query for suggestions in case they changed.
+            setQuery(mQuery);
+        }
+        super.setVisibility(visibility);
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         mController.onSearchPerformed(mSuggestions.get(position).suggestion);
     }
