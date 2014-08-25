@@ -24,6 +24,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.util.Log;
 import android.view.View;
 
 import com.android.mail.R;
@@ -33,6 +34,7 @@ import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -41,6 +43,7 @@ import com.android.mail.utils.Utils;
  * currently disabled on this account.
  */
 public class ConversationSyncDisabledTipView extends ConversationTipView {
+    public static final String LOG_TAG = LogTag.getLogTag();
     private Account mAccount = null;
     private Folder mFolder = null;
     private final MailPrefs mMailPrefs;
@@ -162,9 +165,17 @@ public class ConversationSyncDisabledTipView extends ConversationTipView {
                             R.string.account_sync_off, subString);
                     final SpannableString spannableString = new SpannableString(entireString);
                     final int index = entireString.indexOf(subString);
-                    spannableString.setSpan(
-                            new TextAppearanceSpan(getContext(), R.style.LinksInTipTextAppearance),
-                            index, index + subString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    if (index >= 0) {
+                        spannableString.setSpan(
+                                new TextAppearanceSpan(
+                                        getContext(), R.style.LinksInTipTextAppearance),
+                                index,
+                                index + subString.length(),
+                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else {
+                        LogUtils.wtf(LOG_TAG,
+                                "Translation bug: account_settings missing in account_sync_off");
+                    }
                     setText(spannableString);
                     break;
                 default:
