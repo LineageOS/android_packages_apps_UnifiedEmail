@@ -90,8 +90,6 @@ public class AnalyticsUtils {
             s = "send_message";
         } else if (id == R.id.discard) {
             s = "compose_discard_draft";
-        } else if (id == R.id.search) {
-            s = "search";
         } else if (id == R.id.print_all) {
             s = "print_all";
         } else if (id == R.id.print_message) {
