@@ -72,6 +72,11 @@
         <item name="android:layout_alignParentEnd">true</item>
     </style>
 
+    <style name="FolderListItemStyle">
+        <item name="android:layout_marginStart">@dimen/folder_list_item_text_start_margin</item>
+        <item name="android:layout_marginEnd">@dimen/folder_list_item_end_margin</item>
+    </style>
+
     <style name="DrawerFooterListItemStyle">
         <item name="android:paddingStart">@dimen/drawer_footer_text_padding_start</item>
     </style>
