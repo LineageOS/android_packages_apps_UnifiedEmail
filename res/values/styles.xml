@@ -623,7 +623,7 @@
         <item name="android:layout_alignParentLeft">true</item>
     </style>
 
-    <style name="FolderParentIconStyle">
+    <style name="FolderParentIconStyle" parent="AutoMirroredImageView">
         <item name="android:layout_alignParentRight">true</item>
     </style>
 
@@ -981,5 +981,9 @@
     <style name="AccountItemNameStyle">
         <item name="android:paddingLeft">@dimen/account_item_name_start_padding</item>
         <item name="android:paddingRight">@dimen/account_item_name_end_padding</item>
+    </style>
+
+    <style name="AutoMirroredImageView">
+        <item name="android:scaleX">1</item>
     </style>
 </resources>
