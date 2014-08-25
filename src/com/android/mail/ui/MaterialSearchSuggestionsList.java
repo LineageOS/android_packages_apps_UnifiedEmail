@@ -22,13 +22,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,7 +51,7 @@ public class MaterialSearchSuggestionsList extends LinearLayout
 
     private View mDummyHolder;
     private ListView mListView;
-    private QuantumSearchViewListAdapter mAdapter;
+    private MaterialSearchViewListAdapter mAdapter;
     private QuerySuggestionsTask mQueryTask;
 
     public MaterialSearchSuggestionsList(Context context) {
@@ -91,7 +89,7 @@ public class MaterialSearchSuggestionsList extends LinearLayout
         mDummyHolder.setOnClickListener(this);
 
         // set up the adapter
-        mAdapter = new QuantumSearchViewListAdapter(getContext(), R.layout.search_suggestion_item);
+        mAdapter = new MaterialSearchViewListAdapter(getContext(), R.layout.search_suggestion_item);
         mListView.setAdapter(mAdapter);
     }
 
@@ -163,12 +161,12 @@ public class MaterialSearchSuggestionsList extends LinearLayout
     }
 
     // Custom adapter to populate our list
-    private class QuantumSearchViewListAdapter extends BaseAdapter {
+    private class MaterialSearchViewListAdapter extends BaseAdapter {
         private final Context mContext;
         private final int mResId;
         private LayoutInflater mInflater;
 
-        public QuantumSearchViewListAdapter(Context context, int resource) {
+        public MaterialSearchViewListAdapter(Context context, int resource) {
             super();
             mContext = context;
             mResId = resource;
