@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -171,8 +172,10 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     public void onSearchPerformed(String query) {
-        mSearchActionView.clearSearchQuery();
-        mController.executeSearch(query);
+        if (!TextUtils.isEmpty(query)) {
+            mSearchActionView.clearSearchQuery();
+            mController.executeSearch(query);
+        }
     }
 
     public void onVoiceSearch() {
