@@ -37,7 +37,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:maxLines="2"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:textColor="@color/tip_teaser_red_text"
