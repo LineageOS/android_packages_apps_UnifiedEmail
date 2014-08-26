@@ -33,8 +33,9 @@ public interface Tracker {
     void setCustomDimension(int index, String value);
     /**
      * Sets the email address of the account being tracked,
+     * @param accountManagerType The accountManagerType of account in account manager.
      */
-    public void setEmailAddress(String emailAddress);
+    public void setEmail(String emailAddress, String accountManagerType);
 
     void setCustomMetric(int index, Long value);
 
