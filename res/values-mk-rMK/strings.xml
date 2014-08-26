@@ -389,11 +389,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"Икона на папка"</string>
     <string name="add_account" msgid="5905863370226612377">"Додај сметка"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Отфрли совет"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"Автоматското синхронизирање е исклучено."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"Допри за да вклучиш."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"Синхронизацијата на сметка е исклучена"</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"Вклучете во <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"Поставки на сметка"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="NUMBER">%1$s</xliff:g> не се испратени во <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"Вклучи автоматско синхронизирање?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Промените што ги правите на сите апликации и сметки, не само на Gmail, ќе се синхронизираат на интернет, на останатите ваши уреди и на вашиот <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>

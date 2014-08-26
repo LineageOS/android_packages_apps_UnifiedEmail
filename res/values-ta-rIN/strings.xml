@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"கோப்புறை ஐகான்"</string>
     <string name="add_account" msgid="5905863370226612377">"கணக்கைச் சேர்"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"உதவிக்குறிப்பை நிராகரி"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"தானாக ஒத்திசைப்பது முடக்கப்பட்டுள்ளது."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"இயக்க தொடவும்."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"கணக்கு ஒத்திசைவு முடக்கப்பட்டுள்ளது."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> இல் இயக்கவும்."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"கணக்கு அமைப்புகள்"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g> இல் <xliff:g id="NUMBER">%1$s</xliff:g> அனுப்பப்படாத செய்திகள் உள்ளன"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"தானாக ஒத்திசைப்பதை இயக்கவா?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"நீங்கள் மாற்றங்களைச் செய்யும் எல்லா பயன்பாடுகளும், கணக்குகளும், Gmail மட்டுமில்லாமல், இணையம், உங்களது பிற சாதனங்கள் மற்றும் உங்கள் <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> ஆகிவற்றிற்கு இடையே ஒத்திசைக்கப்படும்."</string>

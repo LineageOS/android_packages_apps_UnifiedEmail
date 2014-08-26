@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"Karpetaren ikonoa"</string>
     <string name="add_account" msgid="5905863370226612377">"Gehitu kontua"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Baztertu aholkua"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"Sinkronizazio automatikoa desaktibatuta dago."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"Ukitu aktibatzeko."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"Kontuaren sinkronizazioa desaktibatuta dago."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"Aktibatu <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> atalean."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"Kontuaren ezarpenak"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"Bidali gabeko <xliff:g id="NUMBER">%1$s</xliff:g> mezu daude <xliff:g id="OUTBOX">%2$s</xliff:g>n"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"Sinkronizazio automatikoa aktibatu nahi duzu?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Aplikazio eta kontu guztietan (ez soilik Gmail) egiten dituzun aldaketak webgunearekin, zure beste gailuekin eta <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>rekin sinkronizatuko dira."</string>

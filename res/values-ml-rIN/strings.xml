@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"ഫോൾഡർ ഐക്കൺ"</string>
     <string name="add_account" msgid="5905863370226612377">"അക്കൗണ്ട് ചേർക്കുക"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"നുറുങ്ങ് നിരസിക്കുക"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"യാന്ത്രിക സമന്വയം ഓഫാണ്."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"ഓണാക്കാൻ സ്‌പർശിക്കുക."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"അക്കൗണ്ട് സമന്വയം ഓഫാണ്."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> എന്നതിൽ ഓണാക്കുക."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"അക്കൗണ്ട് ക്രമീകരണങ്ങൾ"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g>-ൽ <xliff:g id="NUMBER">%1$s</xliff:g> എണ്ണം അയച്ചിട്ടില്ല"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"യാന്ത്രിക സമന്വയം ഓൺ ചെയ്യണോ?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"എല്ലാ അപ്ലിക്കേഷനുകളിലും അക്കൗണ്ടുകളിലും നിങ്ങൾ വരുത്തുന്ന മാറ്റങ്ങൾ Gmail-ൽ മാത്രമല്ല, വെബിലും മറ്റ് ഉപകരങ്ങൾക്കും നിങ്ങളുടെ <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> എന്നതിനിടയിലും സമന്വയിപ്പിക്കപ്പെടും."</string>
