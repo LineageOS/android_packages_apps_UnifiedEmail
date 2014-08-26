@@ -65,7 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"피싱 신고"</string>
     <string name="delete" msgid="6784262386780496958">"삭제"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"임시보관 메일 삭제"</string>
-    <string name="discard_failed" msgid="7520780769812210279">"전송 실패 메시지 삭제"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"전송 실패 메일 삭제"</string>
     <string name="refresh" msgid="1533748989749277511">"새로고침"</string>
     <string name="reply" msgid="8337757482824207118">"답장"</string>
     <string name="reply_all" msgid="5366796103758360957">"전체답장"</string>
@@ -450,10 +450,10 @@
     <string name="reply_choice_ok" msgid="7881073621845053152">"확인"</string>
     <string name="reply_choice_hehe" msgid="6054314968043050748">"하하"</string>
     <string name="reply_choice_thanks" msgid="4978961954288364694">"감사합니다"</string>
-    <string name="reply_choice_i_agree" msgid="2496652737796884298">"동의"</string>
+    <string name="reply_choice_i_agree" msgid="2496652737796884298">"동의합니다"</string>
     <string name="reply_choice_nice" msgid="4465894941302838676">"좋아요"</string>
-    <string name="reply_on_my_way" msgid="5645003971107444269">"가는 중입니다."</string>
-    <string name="reply_choice_later" msgid="4629219072859486413">"나중에 연락드리겠습니다."</string>
+    <string name="reply_on_my_way" msgid="5645003971107444269">"가는 중입니다"</string>
+    <string name="reply_choice_later" msgid="4629219072859486413">"나중에 연락드리겠습니다"</string>
     <string name="reply_choice_smiling_face" msgid="1772253938506548631">":)"</string>
     <string name="reply_choice_frowning_face" msgid="6260338807944002651">":("</string>
     <string name="preference_header_action_confirmations" msgid="3922674681156121948">"액션 확인"</string>
