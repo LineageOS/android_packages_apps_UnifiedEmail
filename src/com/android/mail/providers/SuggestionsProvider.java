@@ -39,10 +39,6 @@ import java.util.ArrayList;
  */
 public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
     /**
-     * Mode used in the constructor of SuggestionsProvider.
-     */
-    public final static int MODE = DATABASE_MODE_QUERIES;
-    /**
      * Columns over the contacts database that we return in the {@link ContactsCursor}.
      */
     private static final String[] CONTACTS_COLUMNS = new String[] {
@@ -64,7 +60,7 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
 
     public SuggestionsProvider(Context context) {
         super(context);
-        setupSuggestions(MODE);
+        setupSuggestions();
     }
 
     @Override
