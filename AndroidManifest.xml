@@ -44,7 +44,7 @@
             android:name=".ui.MailActivity"
             android:launchMode="singleTop"
             android:theme="@style/MailActivityTheme"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
