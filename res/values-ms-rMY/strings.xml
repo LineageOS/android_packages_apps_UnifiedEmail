@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"Ikon folder"</string>
     <string name="add_account" msgid="5905863370226612377">"Tambah akaun"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Ketepikan petua"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"Auto penyegerakan dimatikan."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"Sentuh untuk menghidupkan."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"Penyegerakan akaun dimatikan."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"Hidupkan dalam <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"Tetapan akaun"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="NUMBER">%1$s</xliff:g> tidak dihantar dalam <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"Hidupkan auto segerak?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Perubahan yang anda lakukan kepada semua apl dan akaun, bukan hanya Gmail, akan disegerakkan antara web, peranti anda yang lain dan <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> anda."</string>
