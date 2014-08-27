@@ -18,30 +18,24 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/search_suggestion_height"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/search_suggestion_padding"
+    android:paddingBottom="@dimen/search_suggestion_padding">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:paddingRight="16dp">
+    <ImageView
+        android:id="@+id/search_overlay_item_icon"
+        android:layout_width="@dimen/search_leading_button_width"
+        android:layout_height="wrap_content"
+        style="@style/SearchViewLeadingButton" />
 
-        <ImageView
-            android:id="@+id/search_overlay_item_icon"
-            android:layout_width="@dimen/search_leading_button_width"
-            android:layout_height="match_parent"
-            style="@style/SearchViewLeadingButton" />
-
-        <TextView
-            android:id="@+id/search_overlay_item_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:textColor="@color/search_suggestion_item_text"
-            android:textSize="16sp" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/search_overlay_item_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:textColor="@color/search_suggestion_item_text"
+        android:textSize="16sp"
+        style="@style/SearchSuggestionTextStyle" />
 
 </LinearLayout>
