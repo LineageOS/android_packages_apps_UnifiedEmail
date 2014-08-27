@@ -2024,10 +2024,8 @@ public abstract class AbstractActivityController implements ActivityController,
             }
         };
 
-        if (!showNextConversation(target, operation)) {
-            // This method will be called again if the user selects an autoadvance option
-            return;
-        }
+        showNextConversation(target, operation);
+
         // If the conversation is in the selected set, remove it from the set.
         // Batch selections are cleared in the end of the action, so not done for batch actions.
         if (!isBatch) {
