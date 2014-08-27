@@ -47,9 +47,6 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     // we have to show the search actionbar on top while the user is not interacting with it.
     public static final int SEARCH_VIEW_STATE_ONLY_ACTIONBAR = 2;
 
-    /** Code returned from voice search intent */
-    public static final int VOICE_SEARCH_REQUEST_CODE = 4;
-
     private static final String EXTRA_VIEW_STATE = "extraSearchViewControllerViewState";
 
     private final MailActivity mActivity;
@@ -185,7 +182,8 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
         // Some devices do not support the voice-to-speech functionality.
         try {
-            mActivity.startActivityForResult(intent, VOICE_SEARCH_REQUEST_CODE);
+            mActivity.startActivityForResult(intent,
+                    AbstractActivityController.VOICE_SEARCH_REQUEST_CODE);
         } catch (ActivityNotFoundException e) {
             final String toast =
                     mActivity.getResources().getString(R.string.voice_search_not_supported);

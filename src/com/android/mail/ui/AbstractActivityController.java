@@ -449,6 +449,9 @@ public abstract class AbstractActivityController implements ActivityController,
      *  or account */
     private static final int CHANGE_NAVIGATION_REQUEST_CODE = 3;
 
+    /** Code returned from voice search intent */
+    public static final int VOICE_SEARCH_REQUEST_CODE = 4;
+
     public static final String EXTRA_FOLDER = "extra-folder";
     public static final String EXTRA_ACCOUNT = "extra-account";
 
@@ -1129,7 +1132,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     }
                 }
                 break;
-            case MaterialSearchViewController.VOICE_SEARCH_REQUEST_CODE:
+            case VOICE_SEARCH_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     final ArrayList<String> matches = data.getStringArrayListExtra(
                             RecognizerIntent.EXTRA_RESULTS);
@@ -2761,7 +2764,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
         // 1. current account is already set and is in allAccounts:
         //    1a. It has changed -> load the updated account.
-        //    2b. It is unchanged -> no-op
+        //    1b. It is unchanged -> no-op
         // 2. current account is set and is not in allAccounts -> pick first (acct was deleted?)
         // 3. saved preference has an account -> pick that one
         // 4. otherwise just pick first
@@ -3606,7 +3609,6 @@ public abstract class AbstractActivityController implements ActivityController,
                                 mAccountObservers.notifyChanged();
                             }
                             perhapsEnterWaitMode();
-                            perhapsStartWelcomeTour();
                         } else {
                             LogUtils.e(LOG_TAG, "Got update for account: %s with current account:"
                                     + " %s", updatedAccount.uri, mAccount.uri);
@@ -3623,39 +3625,6 @@ public abstract class AbstractActivityController implements ActivityController,
         public void onLoaderReset(Loader<ObjectCursor<Account>> loader) {
             // Do nothing. In onLoadFinished() we copy the relevant data from the cursor.
         }
-    }
-
-    /**
-     * Loads the preference that tells whether the welcome tour should be displayed,
-     * and calls the callback with this value.
-     * For this to function, the account must have been synced.
-     */
-    private void perhapsStartWelcomeTour() {
-        new AsyncTask<Void, Void, Boolean>() {
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                if (mActivity.wasLatestWelcomeTourShownOnDeviceForAllAccounts()) {
-                    // No need to go through the WelcomeStateLoader machinery.
-                    return false;
-                }
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result) {
-                if (result) {
-                    if (mAccount != null && mAccount.isAccountReady()) {
-                        LoaderManager.LoaderCallbacks<?> welcomeLoaderCallbacks =
-                                mActivity.getWelcomeCallbacks();
-                        if (welcomeLoaderCallbacks != null) {
-                            // The callback is responsible for showing the tour when appropriate.
-                            mActivity.getLoaderManager().initLoader(LOADER_WELCOME_TOUR_ACCOUNTS,
-                                    Bundle.EMPTY, welcomeLoaderCallbacks);
-                        }
-                    }
-                }
-            }
-        }.execute();
     }
 
     /**
