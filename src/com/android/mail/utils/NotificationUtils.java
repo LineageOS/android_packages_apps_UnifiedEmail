@@ -26,14 +26,11 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
 import android.graphics.Rect;
-import android.graphics.Shader;
 import android.net.Uri;
 import android.os.Looper;
 import android.provider.ContactsContract;
@@ -1102,6 +1099,7 @@ public class NotificationUtils {
                                     (Long.MAX_VALUE - conversation.orderKey));
                             conversationNotif.setGroup(notificationGroupKey);
                             conversationNotif.setSortKey(groupSortKey);
+                            conversationNotif.setWhen(conversation.dateMs);
 
                             int conversationNotificationId = getNotificationId(
                                     summaryNotificationId, conversation.hashCode());
