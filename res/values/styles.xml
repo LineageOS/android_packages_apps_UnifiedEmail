@@ -792,6 +792,10 @@
         <item name="android:maxLength">@integer/vacation_responder_body_length</item>
     </style>
 
+    <style name="VacationResponderActionBarStyle" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="contentInsetStart">0dp</item>
+    </style>
+
     <style name="MessageAttachmentBarMarginEndStyle">
         <item name="android:layout_marginRight">@dimen/message_attachment_bar_padding</item>
     </style>
