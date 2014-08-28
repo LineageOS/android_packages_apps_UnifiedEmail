@@ -64,6 +64,9 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     private int mViewMode;
     private int mViewState;
 
+    private boolean mSavePending;
+    private boolean mNeedToDestroyProvider;
+
     public MaterialSearchViewController(MailActivity activity, ActivityController controller,
             Intent intent, Bundle savedInstanceState) {
         mActivity = activity;
@@ -91,8 +94,10 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     public void onDestroy() {
-        mSuggestionsProvider.cleanup();
-        mSuggestionsProvider = null;
+        mNeedToDestroyProvider = mSavePending;
+        if (!mSavePending) {
+            mSuggestionsProvider.cleanup();
+        }
         mActivity.getViewMode().removeListener(this);
     }
 
@@ -195,13 +200,30 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
         }
     }
 
-    public void saveRecentQuery(final String query) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                mSuggestionsProvider.saveRecentQuery(query);
-                return null;
+    public void saveRecentQuery(String query) {
+        new SaveRecentQueryTask().execute(query);
+    }
+
+    // static asynctask to save the query in the background.
+    class SaveRecentQueryTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            mSavePending = true;
+        }
+
+        @Override
+        protected Void doInBackground(String... args) {
+            mSuggestionsProvider.saveRecentQuery(args[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mSavePending = false;
+            if (mNeedToDestroyProvider) {
+                mSuggestionsProvider.cleanup();
             }
-        }.execute();
+        }
     }
 }
