@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1b2928_33fef46b",
+        "filename": "src/com/android/mail/compose/ComposeActivity.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 9045
+      },
+      "writtenOn": "2014-08-28T07:00:12Z",
+      "side": 1,
+      "message": "resolves to nothing currently",
+      "revId": "65fd4885c58baf8277c9346f4d579bc550bea0f5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
