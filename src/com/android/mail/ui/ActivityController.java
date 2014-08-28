@@ -227,7 +227,7 @@ public interface ActivityController extends LayoutListener,
      * an empty set if no conversation is currently selected.
      * @return
      */
-    public ConversationSelectionSet getSelectedSet();
+    public ConversationCheckedSet getCheckedSet();
 
     /**
      * Start search mode if the account being view supports the search capability.

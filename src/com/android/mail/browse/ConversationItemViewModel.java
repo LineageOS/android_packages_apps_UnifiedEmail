@@ -237,40 +237,6 @@ public class ConversationItemViewModel {
     }
 
     /**
-     * Describes the style of a Senders fragment.
-     */
-    static class SenderFragment {
-        // Indices that determine which substring of mSendersText we are
-        // displaying.
-        int start;
-        int end;
-
-        // The style to apply to the TextPaint object.
-        CharacterStyle style;
-
-        // Width of the fragment.
-        int width;
-
-        // Ellipsized text.
-        String ellipsizedText;
-
-        // Whether the fragment is fixed or not.
-        boolean isFixed;
-
-        // Should the fragment be displayed or not.
-        boolean shouldDisplay;
-
-        SenderFragment(int start, int end, CharSequence sendersText, CharacterStyle style,
-                boolean isFixed) {
-            this.start = start;
-            this.end = end;
-            this.style = style;
-            this.isFixed = isFixed;
-        }
-    }
-
-
-    /**
      * Reset the content description; enough content has changed that we need to
      * regenerate it.
      */

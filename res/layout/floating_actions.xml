@@ -24,6 +24,7 @@
     <ImageButton
         android:id="@+id/compose_button"
         android:contentDescription="@string/compose"
+        android:focusable="false"
         style="@style/FloatingActionButtonStyle" />
 
     <com.android.mail.ui.ActionableToastBar
