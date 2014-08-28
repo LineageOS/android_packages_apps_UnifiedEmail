@@ -42,6 +42,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
@@ -116,6 +117,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -258,15 +260,18 @@ public class ComposeActivity extends ActionBarActivity
 
     private static final String KEY_INNER_SAVED_STATE = "compose_state";
 
-    /**
-     * A single thread for running tasks in the background.
-     */
-    private final static Handler SEND_SAVE_TASK_HANDLER;
+    // A single thread for running tasks in the background.
+    private static final Handler SEND_SAVE_TASK_HANDLER;
+    // String representing the uri of the data directory (used for attachment uri checking).
+    private static final String DATA_DIRECTORY_ROOT;
+
+    // Static initializations
     static {
         HandlerThread handlerThread = new HandlerThread("Send Message Task Thread");
         handlerThread.start();
-
         SEND_SAVE_TASK_HANDLER = new Handler(handlerThread.getLooper());
+
+        DATA_DIRECTORY_ROOT = Environment.getDataDirectory().toString();
     }
 
     private ScrollView mScrollView;
@@ -1797,77 +1802,22 @@ public class ComposeActivity extends ActionBarActivity
         if (!mAttachmentsChanged) {
             long totalSize = 0;
             if (extras.containsKey(EXTRA_ATTACHMENTS)) {
-                String[] uris = (String[]) extras.getSerializable(EXTRA_ATTACHMENTS);
-                for (String uriString : uris) {
-                    final Uri uri = Uri.parse(uriString);
-                    long size = 0;
-                    try {
-                        if (handleSpecialAttachmentUri(uri)) {
-                            continue;
-                        }
-
-                        final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
-                        size = mAttachmentsView.addAttachment(mAccount, a);
-
-                        Analytics.getInstance().sendEvent("send_intent_attachment",
-                                Utils.normalizeMimeType(a.getContentType()), null, size);
-
-                    } catch (AttachmentFailureException e) {
-                        LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                        showAttachmentTooBigToast(e.getErrorRes());
-                    }
-                    totalSize += size;
+                final String[] uris = (String[]) extras.getSerializable(EXTRA_ATTACHMENTS);
+                final ArrayList<Uri> parsedUris = Lists.newArrayListWithCapacity(uris.length);
+                for (String uri : uris) {
+                    parsedUris.add(Uri.parse(uri));
                 }
+                totalSize += handleAttachmentUrisFromIntent(parsedUris);
             }
             if (extras.containsKey(Intent.EXTRA_STREAM)) {
                 if (Intent.ACTION_SEND_MULTIPLE.equals(action)) {
                     final ArrayList<Uri> uris = extras
                             .getParcelableArrayList(Intent.EXTRA_STREAM);
-                    ArrayList<Attachment> attachments = new ArrayList<Attachment>();
-                    for (Uri uri : uris) {
-                        if (uri == null) {
-                            continue;
-                        }
-                        try {
-                            if (handleSpecialAttachmentUri(uri)) {
-                                continue;
-                            }
-
-                            final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
-                            attachments.add(a);
-
-                            Analytics.getInstance().sendEvent("send_intent_attachment",
-                                    Utils.normalizeMimeType(a.getContentType()), null, a.size);
-
-                        } catch (AttachmentFailureException e) {
-                            LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                            String maxSize = AttachmentUtils.convertToHumanReadableSize(
-                                    getApplicationContext(),
-                                    mAccount.settings.getMaxAttachmentSize());
-                            showErrorToast(getString
-                                    (R.string.generic_attachment_problem, maxSize));
-                        }
-                    }
-                    totalSize += addAttachments(attachments);
+                    totalSize += handleAttachmentUrisFromIntent(uris);
                 } else {
                     final Uri uri = extras.getParcelable(Intent.EXTRA_STREAM);
-                    if (uri != null) {
-                        long size = 0;
-                        try {
-                            if (!handleSpecialAttachmentUri(uri)) {
-                                final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
-                                size = mAttachmentsView.addAttachment(mAccount, a);
-
-                                Analytics.getInstance().sendEvent("send_intent_attachment",
-                                        Utils.normalizeMimeType(a.getContentType()), null, size);
-                            }
-
-                        } catch (AttachmentFailureException e) {
-                            LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                            showAttachmentTooBigToast(e.getErrorRes());
-                        }
-                        totalSize += size;
-                    }
+                    final ArrayList<Uri> uris = Lists.newArrayList(uri);
+                    totalSize += handleAttachmentUrisFromIntent(uris);
                 }
             }
 
@@ -1879,6 +1829,41 @@ public class ComposeActivity extends ActionBarActivity
                         Integer.toString(getAttachments().size()), null, totalSize);
             }
         }
+    }
+
+    /**
+     * Helper function to handle a list of uris to attach.
+     * @return the total size of all successfully attached files.
+     */
+    private long handleAttachmentUrisFromIntent(List<Uri> uris) {
+        ArrayList<Attachment> attachments = Lists.newArrayList();
+        for (Uri uri : uris) {
+            try {
+                if (uri != null) {
+                    if ("file".equals(uri.getScheme())) {
+                        final File f = new File(uri.getPath());
+                        // We should not be attaching any files from the data directory.
+                        if (f.getCanonicalPath().startsWith(DATA_DIRECTORY_ROOT)) {
+                            showErrorToast(getString(R.string.attachment_permission_denied));
+                            continue;
+                        }
+                    }
+                    if (!handleSpecialAttachmentUri(uri)) {
+                        final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
+                        attachments.add(a);
+
+                        Analytics.getInstance().sendEvent("send_intent_attachment",
+                                Utils.normalizeMimeType(a.getContentType()), null, a.size);
+                    }
+                }
+            } catch (AttachmentFailureException e) {
+                LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                showAttachmentTooBigToast(e.getErrorRes());
+            } catch (IOException | SecurityException e) {
+                showErrorToast(getString(R.string.attachment_permission_denied));
+            }
+        }
+        return addAttachments(attachments);
     }
 
     protected void initQuotedText(CharSequence quotedText, boolean shouldQuoteText) {
