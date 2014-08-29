@@ -159,7 +159,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
             return false;
         }
         mLayout.setConversationListLayoutListener(mConversationListLayoutListener);
-        mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
+        mLayout.setController(this);
         mActivity.getWindow().setBackgroundDrawable(null);
         mIsTabletLandscape = mActivity.getResources().getBoolean(R.bool.is_tablet_landscape);
 
