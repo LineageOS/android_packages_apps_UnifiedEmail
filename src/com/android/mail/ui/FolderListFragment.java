@@ -1121,11 +1121,9 @@ public class FolderListFragment extends ListFragment implements
         private static final int CHILD = 1;
         private final FolderUri mParentUri;
         private final Folder mParent;
-        private final FolderItemView.DropHandler mDropHandler;
 
         public HierarchicalFolderListAdapter(ObjectCursor<Folder> c, Folder parentFolder) {
             super(mActivity.getActivityContext(), R.layout.folder_item);
-            mDropHandler = mActivity;
             mParent = parentFolder;
             mParentUri = parentFolder.folderUri;
             setCursor(c);
@@ -1155,7 +1153,7 @@ public class FolderListFragment extends ListFragment implements
                 folderItemView = (FolderItemView) LayoutInflater.from(
                         mActivity.getActivityContext()).inflate(resId, null);
             }
-            folderItemView.bind(folder, mDropHandler);
+            folderItemView.bind(folder);
             if (folder.folderUri.equals(mSelectedFolderUri)) {
                 final ListView listView = getListView();
                 listView.setItemChecked((mAccountsAdapter != null ?
