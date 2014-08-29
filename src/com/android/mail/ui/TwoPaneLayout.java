@@ -90,12 +90,15 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private TwoPaneController mController;
     private LayoutListener mListener;
     private ConversationListLayoutListener mConversationListLayoutListener;
-    private boolean mIsSearchResult;
 
     private View mMiscellaneousView;
     private View mConversationView;
     private View mFoldersView;
     private View mListView;
+    private View mFloatingActionButton;
+
+    private int mFloatingActionButtonEndMargin;
+    private int mPrevConvX;
 
     public static final int MISCELLANEOUS_VIEW_ID = R.id.miscellaneous_pane;
 
@@ -119,6 +122,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         // don't show the conversation list, but in landscape we do.  This information is stored
         // in the constants
         mListCollapsible = !res.getBoolean(R.bool.is_tablet_landscape);
+        mFloatingActionButtonEndMargin =
+                res.getDimensionPixelOffset(R.dimen.floating_action_bar_margin);
 
         mDrawerWidthMini = res.getDimensionPixelSize(R.dimen.two_pane_drawer_width_mini);
         mDrawerWidthOpen = res.getDimensionPixelSize(R.dimen.two_pane_drawer_width_open);
@@ -140,6 +145,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView = findViewById(R.id.conversation_list_pane);
         mConversationView = findViewById(R.id.conversation_pane);
         mMiscellaneousView = findViewById(MISCELLANEOUS_VIEW_ID);
+        mFloatingActionButton = findViewById(R.id.compose_button);
 
         // all panes start GONE in initial UNKNOWN mode to avoid drawing misplaced panes
         mCurrentMode = ViewMode.UNKNOWN;
@@ -150,10 +156,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     }
 
     @VisibleForTesting
-    public void setController(TwoPaneController controller, boolean isSearchResult) {
+    public void setController(TwoPaneController controller) {
         mController = controller;
         mListener = controller;
-        mIsSearchResult = isSearchResult;
 
         ((ConversationViewFrame) mConversationView).setDownEventListener(mController);
     }
@@ -195,6 +200,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      * @param width
      */
     private void positionPanes(int width) {
+        // Always reset the FAB position to previous X (in case of rotation)
+        mFloatingActionButton.setX(computeFloatingActionButtonX(mPrevConvX));
+
         final int convX, listX, foldersX;
         final boolean isRtl = ViewUtils.isViewRtl(this);
 
@@ -253,6 +261,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
 
         mPositionedMode = mCurrentMode;
+        mPrevConvX = convX;
     }
 
     private final AnimatorListenerAdapter mPaneAnimationListener = new AnimatorListenerAdapter() {
@@ -288,7 +297,14 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView.animate()
             .x(listX)
             .setListener(mPaneAnimationListener);
-        configureAnimations(mConversationView, mFoldersView, mListView, mMiscellaneousView);
+        mFloatingActionButton.animate().x(computeFloatingActionButtonX(convX));
+
+        configureAnimations(mConversationView, mFoldersView, mListView, mMiscellaneousView,
+                mFloatingActionButton);
+    }
+
+    private int computeFloatingActionButtonX(int convX) {
+        return convX - mFloatingActionButton.getWidth() - mFloatingActionButtonEndMargin;
     }
 
     private void configureAnimations(View... views) {
