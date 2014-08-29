@@ -3063,6 +3063,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         // Start the activity to pick the recipient.
         Intent intent = new Intent(ACTION_MULTI_PICK_EMAIL);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setType(Contacts.CONTENT_TYPE);
         startActivityForResult(intent, requestCode);
 
