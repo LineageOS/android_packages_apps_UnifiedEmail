@@ -135,6 +135,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public static final int FORWARD_DROP_UNLOADED_ATTS = 3;
     public static final int EDIT_DRAFT = 4;
 
+    // Match MultiPickContactActivity
+    public static final String IS_SELECT_ALL_DISALLOWED = "is_select_all_disallowed";
+
     // Integer extra holding one of the above compose action
     protected static final String EXTRA_ACTION = "action";
 
@@ -3066,6 +3069,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setType(Contacts.CONTENT_TYPE);
+        intent.putExtra(IS_SELECT_ALL_DISALLOWED, true);
         startActivityForResult(intent, requestCode);
 
         // Set the focus to body view.
