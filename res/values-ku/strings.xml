@@ -100,7 +100,7 @@
   <string name="attachment_application_pdf">کتێبی ئه‌لیکترۆنی</string>
   <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> په‌ڕگه‌</string>
   <string name="preview_attachment">دەرخستن</string>
-  <string name="save_attachment">پاشەکەوتکردن</string>
+  <string name="save_attachment">پاشەکەوت</string>
   <string name="cancel_attachment">هەڵوەشاندنەوە</string>
   <string name="download_again">دووباره‌ داگرتن</string>
   <string name="more_info_attachment">زانیاری</string>
@@ -115,7 +115,7 @@
   <string name="menu_photo_share">هاوبه‌شیکردن</string>
   <string name="menu_photo_share_all">به‌شداریپێکردنی هه‌مووی</string>
   <string name="saving">پاشه‌که‌وتکردن&#8230;</string>
-  <string name="choosertitle_sharevia">به‌شداریپێکردن له‌ ڕێگه‌ی</string>
+  <string name="choosertitle_sharevia">په‌رشیکه‌ له‌ڕێی</string>
   <string name="contextmenu_openlink">کردنه‌وه‌ له‌ وێبگه‌</string>
   <string name="contextmenu_copy">لەبەرگرتنەوە</string>
   <string name="contextmenu_copylink">لەبەرگرتنەوەی بەستەرەیURL</string>
@@ -198,7 +198,7 @@
   <string name="yes">بەڵێ</string>
   <string name="no">نەخێر</string>
   <string name="ok">باشه‌</string>
-  <string name="done">ئه‌نجامدرا</string>
+  <string name="done">ئه‌نجام درا</string>
   <string name="cancel">هەڵوەشاندنەوە</string>
   <string name="clear">پاچالاککردن</string>
   <string-array name="sync_status">
