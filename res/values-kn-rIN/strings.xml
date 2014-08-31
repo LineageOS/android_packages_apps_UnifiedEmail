@@ -29,6 +29,7 @@
     <string name="save_draft" msgid="2669523480789672118">"ಡ್ರಾಫ್ಟ್‌‌  ಉಳಿಸಿ"</string>
     <string name="discard" msgid="4905982179911608430">"ತಿರಸ್ಕರಿಸು"</string>
     <string name="compose" msgid="2602861958391035523">"ರಚಿಸಿ"</string>
+    <string name="compose_title" msgid="5673376086133995913">"ರಚಿಸಿ"</string>
   <string-array name="compose_modes">
     <item msgid="9000553538766397816">"ಪ್ರತ್ಯುತ್ತರ"</item>
     <item msgid="2767793214788399009">"ಎಲ್ಲರಿಗೂ ಪ್ರತ್ಯುತ್ತರಿಸು"</item>
@@ -43,6 +44,8 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"ಒಂದು ಅಥವಾ ಹೆಚ್ಚಿನ ಫೈಲ್‍ಗಳನ್ನು ಲಗತ್ತಿಸಲಾಗಿಲ್ಲ. ಮಿತಿ <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"ಫೈಲ್ ಅನ್ನು ಲಗತ್ತಿಸಲಾಗಿಲ್ಲ. <xliff:g id="MAXSIZE">%1$s</xliff:g> ಮಿತಿಯನ್ನು ತಲುಪಿದೆ."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"ಫೈಲ್ ಅನ್ನು ಲಗತ್ತಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."</string>
+    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
+    <skip />
     <string name="recipient_needed" msgid="319816879398937214">"ಕನಿಷ್ಠ ಒಬ್ಬ ಸ್ವೀಕೃತದಾರರನ್ನಾದರೂ ಸೇರಿಸಿ"</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"ಸ್ವೀಕರಿಸುವವರ ದೋಷ"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"ಸಂದೇಶ ಕಳುಹಿಸುವುದೇ?"</string>
@@ -131,10 +134,6 @@
     <string name="contextmenu_feedback" msgid="8319100902136337085">"ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ"</string>
     <!-- no translation found for num_selected (7990204488812654380) -->
     <skip />
-  <plurals name="move_conversation">
-    <item quantity="one" msgid="237882018518207244">"ಸಂವಾದವನ್ನು ಸರಿಸು"</item>
-    <item quantity="other" msgid="6639576653114141743">"<xliff:g id="ID_1">%1$d</xliff:g> ಸಂವಾದಗಳನ್ನು ಸರಿಸು"</item>
-  </plurals>
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g> ರಂದು <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> ಕುರಿತು"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g> ಗೆ <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> ಕುರಿತು"</string>
     <string name="read_string" msgid="5495929677508576520">"ಸಂವಾದವನ್ನು ಓದಿದೆ"</string>
@@ -222,11 +221,13 @@
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;View details&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"ವಿವರಗಳನ್ನು ಮರೆಮಾಡಿ"</string>
     <string name="to_message_header" msgid="3954385178027011919">"<xliff:g id="RECIPIENTS">%1$s</xliff:g> ಅವರಿಗೆ"</string>
+    <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"bcc: "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"<xliff:g id="NAME">%1$s</xliff:g> ಗಾಗಿ ಸಂಪರ್ಕ ಮಾಹಿತಿಯನ್ನು ತೋರಿಸು"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"ಸಂಪರ್ಕ ಮಾಹಿತಿ ತೋರಿಸು"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> ಹಳೆಯ ಸಂದೇಶಗಳು"</item>
   </plurals>
+    <!-- no translation found for super_collapsed_loading_content_description:other (678491885491918982) -->
     <string name="from_heading" msgid="48290556829713090">"ಇವರಿಂದ:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"ಇದಕ್ಕೆ-ಪ್ರತ್ಯುತ್ತರಿಸಿ"</string>
     <string name="to_heading" msgid="3495203282540398336">"ಗೆ: "</string>
@@ -284,9 +285,10 @@
     <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"ಇಮೇಲ್ ಫೋಲ್ಡರ್"</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"ಫೋಲ್ಡರ್‍ಗಳನ್ನು ಬದಲಿಸಿ"</string>
     <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"ಇದಕ್ಕೆ ವರ್ಗಾಯಿಸು"</string>
-    <string name="search_hint" msgid="4916671414132334289">"ಮೇಲ್ ಹುಡುಕಿ"</string>
+    <string name="search_hint" msgid="7060626585689391003">"ಹುಡುಕಿ"</string>
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
+    <string name="voice_search_not_supported" msgid="8493517060419469738">"ಈ ಸಾಧನದಲ್ಲಿ ಧ್ವನಿ ಹುಡುಕಾಟವನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."</string>
     <string name="network_error" msgid="5931164247644972255">"ಯಾವುದೇ ಸಂಪರ್ಕವಿಲ್ಲ"</string>
     <string name="retry" msgid="916102442074217293">"ಮರುಪ್ರಯತ್ನಿಸಿ"</string>
     <string name="load_more" msgid="8702691358453560575">"ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ"</string>
@@ -353,22 +355,19 @@
   </plurals>
     <string name="single_new_message_notification_title" msgid="7954710563222504868">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="1570794756474381886">"ಶಾಂತ"</string>
-    <string name="preference_removal_action_title" msgid="4703834472477137634">"ಆರ್ಕೈವ್ &amp; ಕ್ರಿಯೆಗಳನ್ನು ಅಳಿಸಿ"</string>
+    <string name="preference_removal_action_title" msgid="3128186577060329884">"ಡೀಫಾಲ್ಟ್ ಕ್ರಮ"</string>
   <string-array name="prefEntries_removal_action">
-    <item msgid="954772302016538814">"ಆರ್ಕೈವ್ ಮಾತ್ರ ತೋರಿಸು"</item>
-    <item msgid="7212690302706180254">"ಅಳಿಸು ಮಾತ್ರ ತೋರಿಸು"</item>
-    <item msgid="2539051197590685708">"ಆರ್ಕೈವ್ &amp; ಅಳಿಸು ಅನ್ನು ತೋರಿಸು"</item>
+    <item msgid="7381624742404593351">"ಆರ್ಕೈವ್"</item>
+    <item msgid="2567465476369142505">"ಅಳಿಸು"</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="6877416142040695022">"ಆರ್ಕೈವ್ ಮಾತ್ರ ತೋರಿಸು"</item>
-    <item msgid="1510017057984222376">"ಅಳಿಸು ಮಾತ್ರ ತೋರಿಸು"</item>
-    <item msgid="3196207224108008441">"ಆರ್ಕೈವ್ ತೋರಿಸು &amp; ಅಳಿಸು"</item>
+    <item msgid="4080896545573973751">"ಆರ್ಕೈವ್"</item>
+    <item msgid="6088164268501960435">"ಅಳಿಸು"</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"ಕ್ರಿಯೆಗಳನ್ನು ಆರ್ಕೈವ್ ಮಾಡಿ &amp; ಅಳಿಸಿ"</string>
+    <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"ಡೀಫಾಲ್ಟ್ ಕ್ರಮ"</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ಎಲ್ಲರಿಗೂ ಪ್ರತ್ಯುತ್ತರಿಸು"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"ಸಂದೇಶ ಪ್ರತ್ಯುತ್ತರಗಳಿಗಾಗಿ ಡೀಫಾಲ್ಟ್ ಆಗಿ ಬಳಸಿ"</string>
-    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"ಆರ್ಕೈವ್ ಮಾಡಲು ಸ್ವೈಪ್ ಮಾಡಿ"</string>
-    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"ಅಳಿಸಲು ಸ್ವೈಪ್ ಮಾಡಿ"</string>
+    <string name="preference_swipe_title" msgid="2073613840893904205">"ಸ್ವೈಪ್ ಕ್ರಮಗಳು"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"ಸಂವಾದ ಪಟ್ಟಿಯಲ್ಲಿ"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"ಕಳುಹಿಸಿದವರ ಚಿತ್ರ"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"ಸಂವಾದ ಪಟ್ಟಿಯಲ್ಲಿ ಪಕ್ಕದಲ್ಲಿನ ಹೆಸರನ್ನು ತೋರಿಸು"</string>
@@ -387,13 +386,15 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"ಫೋಲ್ಡರ್ ಐಕಾನ್"</string>
     <string name="add_account" msgid="5905863370226612377">"ಖಾತೆಯನ್ನು ಸೇರಿಸಿ"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"ಸಲಹೆ ವಜಾಗೊಳಿಸು"</string>
+    <string name="auto_sync_off" msgid="3691189864057581214">"ಸ್ವಯಂಚಾಲಿತ ಸಿಂಕ್ ಆಫ್ ಆಗಿದೆ. ಆನ್ ಮಾಡಲು ಸ್ಪರ್ಶಿಸಿ."</string>
+    <string name="account_sync_off" msgid="5720018952998097061">"ಖಾತೆ ಸಿಂಕ್ ಆಫ್ ಆಗಿದೆ. &lt; href=\'http://www.example.com\'&gt;Account settings.&lt;/a&gt; ನಲ್ಲಿ ಆನ್ ಮಾಡಿ"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g> ನಲ್ಲಿ <xliff:g id="NUMBER">%1$s</xliff:g> ಕಳುಹಿಸದಿರುವ"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"ಸ್ವಯಂ-ಸಿಂಕ್‌ ಆನ್‌‌ ಮಾಡುವುದೇ?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"ಕೇವಲ Gmail ಮಾತ್ರವಲ್ಲ, ಎಲ್ಲಾ ಅಪ್ಲಿಕೇಶನ್‍‍ಗಳು ಮತ್ತು ಖಾತೆಗಳಿಗೆ ನೀವು ಮಾಡುವ ಬದಲಾವಣೆಗಳು, ವೆಬ್, ನಿಮ್ಮ ಇತರೆ ಸಾಧನಗಳು, ಮತ್ತು ನಿಮ್ಮ <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> ನ ಮದ್ಯ ಸಿಂಕ್ರೊನೈಜ್ ಆಗುತ್ತವೆ."</string>
     <string name="phone" msgid="4142617042507912053">"ಫೋನ್"</string>
     <string name="tablet" msgid="4593581125469224791">"ಟ್ಯಾಬ್ಲೆಟ್‌‌"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="7239160845196929866">"ಆನ್ ಮಾಡು"</string>
-    <string name="show_n_more_folders" msgid="5769610839632786654">"<xliff:g id="NUMBER">%1$s</xliff:g> ಹೆಚ್ಚಿನ ಫೋಲ್ಡರ್‍ಗಳನ್ನು ತೋರಿಸು"</string>
+    <string name="show_n_more_folders" msgid="1005879825500056552">"<xliff:g id="NUMBER">%1$s</xliff:g> ಫೋಲ್ಡರ್‌ಗಳನ್ನು ತೋರಿಸು"</string>
     <string name="hide_folders" msgid="7618891933409521283">"ಫೋಲ್ಡರ್‍ಗಳನ್ನು ಮರೆಮಾಡಿ"</string>
     <string name="print" msgid="7987949243936577207">"ಮುದ್ರಿಸು"</string>
     <string name="print_all" msgid="4011022762279519941">"ಎಲ್ಲವನ್ನೂ ಮುದ್ರಿಸು"</string>
@@ -475,4 +476,5 @@
     <string name="manage_accounts_menu_item" msgid="4734660452395086786">"ಖಾತೆಗಳನ್ನು ನಿರ್ವಹಿಸು"</string>
     <string name="general_preferences_title" msgid="4212138728220418162">"ಸಾಮಾನ್ಯ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="overflow_description" msgid="7886090597023240426">"ಇನ್ನಷ್ಟು ಆಯ್ಕೆಗಳು"</string>
 </resources>
