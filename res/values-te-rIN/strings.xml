@@ -29,6 +29,7 @@
     <string name="save_draft" msgid="2669523480789672118">"చిత్తుప్రతిని సేవ్ చేయి"</string>
     <string name="discard" msgid="4905982179911608430">"విస్మరించు"</string>
     <string name="compose" msgid="2602861958391035523">"కంపోజ్ చేయండి"</string>
+    <string name="compose_title" msgid="5673376086133995913">"కంపోజ్ చేయండి"</string>
   <string-array name="compose_modes">
     <item msgid="9000553538766397816">"ప్రత్యుత్తరం పంపండి"</item>
     <item msgid="2767793214788399009">"అందరికీ ప్రత్యు."</item>
@@ -43,6 +44,8 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"ఒకటి లేదా అంతకంటే ఎక్కువ ఫైల్‌లు జోడించబడలేదు. పరిమితి <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"ఫైల్ జోడించబడలేదు. <xliff:g id="MAXSIZE">%1$s</xliff:g> పరిమితి చేరుకుంది."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"ఫైల్‌ను జోడించడం సాధ్యపడలేదు."</string>
+    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
+    <skip />
     <string name="recipient_needed" msgid="319816879398937214">"కనీసం ఒక స్వీకర్తను జోడించండి."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"స్వీకర్త లోపం"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"సందేశం పంపాలా?"</string>
@@ -131,10 +134,6 @@
     <string name="contextmenu_feedback" msgid="8319100902136337085">"అభిప్రాయం పంపండి"</string>
     <!-- no translation found for num_selected (7990204488812654380) -->
     <skip />
-  <plurals name="move_conversation">
-    <item quantity="one" msgid="237882018518207244">"సంభాషణను తరలించండి"</item>
-    <item quantity="other" msgid="6639576653114141743">"<xliff:g id="ID_1">%1$d</xliff:g> సంభాషణలను తరలించండి"</item>
-  </plurals>
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> <xliff:g id="SUBJECT">%3$s</xliff:g> గురించి, <xliff:g id="SNIPPET">%4$s</xliff:g> <xliff:g id="DATE">%5$s</xliff:g>న, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> <xliff:g id="SUBJECT">%3$s</xliff:g> గురించి, <xliff:g id="SNIPPET">%4$s</xliff:g> <xliff:g id="TIME">%5$s</xliff:g>కి, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="read_string" msgid="5495929677508576520">"సంభాషణ చదవబడింది"</string>
@@ -222,11 +221,13 @@
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;వివరాలు వీక్షించండి&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"వివరాలను దాచు"</string>
     <string name="to_message_header" msgid="3954385178027011919">"<xliff:g id="RECIPIENTS">%1$s</xliff:g>కి"</string>
+    <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"bcc: "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"<xliff:g id="NAME">%1$s</xliff:g> యొక్క సంప్రదింపు సమాచారాన్ని చూపు"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"సంప్రదింపు సమాచారాన్ని చూపు"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> పాత సందేశాలు"</item>
   </plurals>
+    <!-- no translation found for super_collapsed_loading_content_description:other (678491885491918982) -->
     <string name="from_heading" msgid="48290556829713090">"వీరి నుండి:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"వీరికి ప్రత్యుత్తరం:"</string>
     <string name="to_heading" msgid="3495203282540398336">"వీరికి: "</string>
@@ -284,9 +285,10 @@
     <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"ఇమెయిల్ ఫోల్డర్"</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"ఫోల్డర్‌లను మార్చండి"</string>
     <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"దీనికి తరలించండి"</string>
-    <string name="search_hint" msgid="4916671414132334289">"మెయిల్ శోధన"</string>
+    <string name="search_hint" msgid="7060626585689391003">"శోధించండి"</string>
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
+    <string name="voice_search_not_supported" msgid="8493517060419469738">"వాయిస్ శోధనకి ఈ పరికరంలో మద్దతు లేదు."</string>
     <string name="network_error" msgid="5931164247644972255">"కనెక్షన్ లేదు"</string>
     <string name="retry" msgid="916102442074217293">"మళ్లీ ప్రయత్నించు"</string>
     <string name="load_more" msgid="8702691358453560575">"మరిన్ని లోడ్ చేయి"</string>
@@ -353,22 +355,19 @@
   </plurals>
     <string name="single_new_message_notification_title" msgid="7954710563222504868">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="1570794756474381886">"నిశ్శబ్దం"</string>
-    <string name="preference_removal_action_title" msgid="4703834472477137634">"ఆర్కైవ్ &amp; తొలగింపు చర్యలు"</string>
+    <string name="preference_removal_action_title" msgid="3128186577060329884">"డిఫాల్ట్ చర్య"</string>
   <string-array name="prefEntries_removal_action">
-    <item msgid="954772302016538814">"ఆర్కైవ్‌ను మాత్రమే చూపు"</item>
-    <item msgid="7212690302706180254">"తొలగింపు మాత్రమే చూపు"</item>
-    <item msgid="2539051197590685708">"ఆర్కైవ్ &amp; తొలగింపు చూపు"</item>
+    <item msgid="7381624742404593351">"ఆర్కైవ్ చేయి"</item>
+    <item msgid="2567465476369142505">"తొలగించు"</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="6877416142040695022">"ఆర్కైవ్‌ను మాత్రమే చూపు"</item>
-    <item msgid="1510017057984222376">"తొలగింపు మాత్రమే చూపు"</item>
-    <item msgid="3196207224108008441">"ఆర్కైవ్ &amp; తొలగింపు చూపు"</item>
+    <item msgid="4080896545573973751">"ఆర్కైవ్ చేస్తుంది"</item>
+    <item msgid="6088164268501960435">"తొలగిస్తుంది"</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"ఆర్కైవ్ &amp; తొలగింపు చర్యలు"</string>
+    <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"డిఫాల్ట్ చర్య"</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"అందరికీ ప్రత్యుత్తరం పంపండి"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"సందేశ ప్రత్యుత్తరాల కోసం డిఫాల్ట్‌గా ఉపయోగించు"</string>
-    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"ఆర్కైవ్ చేయడానికి స్వైప్ చేయండి"</string>
-    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"తొలగించడానికి స్వైప్ చేయండి"</string>
+    <string name="preference_swipe_title" msgid="2073613840893904205">"స్వైప్ చర్యలు"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"సంభాషణ జాబితాలో"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"పంపినవారి చిత్రం"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"సంభాషణ జాబితాలో పేరుకి ప్రక్కన చూపు"</string>
@@ -387,13 +386,15 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"ఫోల్డర్ చిహ్నం"</string>
     <string name="add_account" msgid="5905863370226612377">"ఖాతాను జోడించు"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"చిట్కాను తీసివేయి"</string>
+    <string name="auto_sync_off" msgid="3691189864057581214">"స్వీయ-సమకాలీకరణ ఆఫ్‌లో ఉంది. ఆన్ చేయడానికి తాకండి."</string>
+    <string name="account_sync_off" msgid="5720018952998097061">"ఖాతా సమకాలీకరణ ఆఫ్‌లో ఉంది. &lt;a href=\'http://www.example.com\'&gt;ఖాతా సెట్టింగ్‌ల&lt;/a&gt;లో దాన్ని ఆన్ చేయండి."</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g>లో <xliff:g id="NUMBER">%1$s</xliff:g> పంపనివి ఉన్నాయి"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"స్వయం-సమకాలీకరణను ప్రారంభించాలా?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"మీరు Gmail మాత్రమే కాకుండా అన్ని అనువర్తనాలకు మరియు ఖాతాలకు చేసే మార్పులు వెబ్, మీ ఇతర పరికరాలు మరియు మీ <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> మధ్య సమకాలీకరించబడతాయి."</string>
     <string name="phone" msgid="4142617042507912053">"ఫోన్"</string>
     <string name="tablet" msgid="4593581125469224791">"టాబ్లెట్"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="7239160845196929866">"ప్రారంభించు"</string>
-    <string name="show_n_more_folders" msgid="5769610839632786654">"మరో <xliff:g id="NUMBER">%1$s</xliff:g> ఫోల్డర్‌లను చూపు"</string>
+    <string name="show_n_more_folders" msgid="1005879825500056552">"<xliff:g id="NUMBER">%1$s</xliff:g> ఫోల్డర్‌లను చూపు"</string>
     <string name="hide_folders" msgid="7618891933409521283">"ఫోల్డర్‌లను దాచు"</string>
     <string name="print" msgid="7987949243936577207">"ముద్రించు"</string>
     <string name="print_all" msgid="4011022762279519941">"అన్నీ ముద్రించు"</string>
@@ -475,4 +476,5 @@
     <string name="manage_accounts_menu_item" msgid="4734660452395086786">"ఖాతాలను నిర్వహించు"</string>
     <string name="general_preferences_title" msgid="4212138728220418162">"సాధారణ సెట్టింగ్‌లు"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"సెట్టింగ్‌లు"</string>
+    <string name="overflow_description" msgid="7886090597023240426">"మరిన్ని ఎంపికలు"</string>
 </resources>

@@ -30,6 +30,8 @@
     <string name="save_draft" msgid="2669523480789672118">"Qoralamani saqlash"</string>
     <string name="discard" msgid="4905982179911608430">"Bekor qilish"</string>
     <string name="compose" msgid="2602861958391035523">"Xat yozish"</string>
+    <!-- no translation found for compose_title (5673376086133995913) -->
+    <skip />
   <string-array name="compose_modes">
     <item msgid="9000553538766397816">"Javob berish"</item>
     <item msgid="2767793214788399009">"Barchasiga"</item>
@@ -44,6 +46,8 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"Bir yoki undan ortiq fayllar biriktirilmadi: cheklovdan (<xliff:g id="MAXSIZE">%1$s</xliff:g>) oshib ketdi."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"Faylni biriktirib bo‘lmadi: cheklovdan (<xliff:g id="MAXSIZE">%1$s</xliff:g>) oshib ketdi."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"Faylni biriktirib bo‘lmadi."</string>
+    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
+    <skip />
     <string name="recipient_needed" msgid="319816879398937214">"Kamida bitta qabul qiluvchini ko‘rsating."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"Qabul qiluvchi bilan bog‘liq xatolik"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"Xabar yuborilsinmi?"</string>
@@ -133,10 +137,6 @@
     <string name="contextmenu_feedback" msgid="8319100902136337085">"Fikr va mulohaza yuborish"</string>
     <!-- no translation found for num_selected (7990204488812654380) -->
     <skip />
-  <plurals name="move_conversation">
-    <item quantity="one" msgid="237882018518207244">"Suhbatni ko‘chirish"</item>
-    <item quantity="other" msgid="6639576653114141743">"<xliff:g id="ID_1">%1$d</xliff:g> ta suhbatni ko‘chirish"</item>
-  </plurals>
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g>: <xliff:g id="PARTICIPANT">%2$s</xliff:g>. Mavzu: <xliff:g id="SUBJECT">%3$s</xliff:g>. Lavha: <xliff:g id="SNIPPET">%4$s</xliff:g>. <xliff:g id="READSTATE">%6$s</xliff:g>: <xliff:g id="DATE">%5$s</xliff:g>."</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g>: <xliff:g id="PARTICIPANT">%2$s</xliff:g>. Mavzu: <xliff:g id="SUBJECT">%3$s</xliff:g>. Lavha: <xliff:g id="SNIPPET">%4$s</xliff:g>. <xliff:g id="READSTATE">%6$s</xliff:g>: <xliff:g id="TIME">%5$s</xliff:g>."</string>
     <string name="read_string" msgid="5495929677508576520">"suhbat o‘qilgan"</string>
@@ -224,11 +224,14 @@
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Tafsilotlarni ko‘rish&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"Tafsilotlarni yashirish"</string>
     <string name="to_message_header" msgid="3954385178027011919">"Kimga: <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
+    <!-- no translation found for bcc_header_for_recipient_summary (1834716758549842454) -->
+    <skip />
     <string name="contact_info_string" msgid="6484930184867405276">"<xliff:g id="NAME">%1$s</xliff:g> foydalanuvchisining aloqa ma’lumotlarini ko‘rsatish"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"Aloqa ma’lumotlarini ko‘rsatish"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> ta eski xabar"</item>
   </plurals>
+    <!-- no translation found for super_collapsed_loading_content_description:other (678491885491918982) -->
     <string name="from_heading" msgid="48290556829713090">"Kimdan:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Javob berish:"</string>
     <string name="to_heading" msgid="3495203282540398336">"Kimga: "</string>
@@ -286,8 +289,11 @@
     <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"E-pochta jildi"</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"Jildlarni o‘zgartirish"</string>
     <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"Ko‘chirish"</string>
-    <string name="search_hint" msgid="4916671414132334289">"E-pochtadan qidirish"</string>
+    <!-- no translation found for search_hint (7060626585689391003) -->
+    <skip />
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
+    <skip />
+    <!-- no translation found for voice_search_not_supported (8493517060419469738) -->
     <skip />
     <string name="network_error" msgid="5931164247644972255">"Internetga ulanmagan"</string>
     <string name="retry" msgid="916102442074217293">"Qayta urinish"</string>
@@ -355,22 +361,18 @@
   </plurals>
     <string name="single_new_message_notification_title" msgid="7954710563222504868">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="1570794756474381886">"Ovozsiz"</string>
-    <string name="preference_removal_action_title" msgid="4703834472477137634">"Arxivlash va o‘chirish amallari"</string>
-  <string-array name="prefEntries_removal_action">
-    <item msgid="954772302016538814">"Faqat arxivni ko‘rsatish"</item>
-    <item msgid="7212690302706180254">"Faqat o‘chirish"</item>
-    <item msgid="2539051197590685708">"Arxivlash yoki o‘chirish"</item>
-  </string-array>
-  <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="6877416142040695022">"Faqat arxivni ko‘rsatish"</item>
-    <item msgid="1510017057984222376">"Faqat o‘chirish"</item>
-    <item msgid="3196207224108008441">"Arxivlash yoki o‘chirish"</item>
-  </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"Arxivlash va o‘chirish amallari"</string>
+    <!-- no translation found for preference_removal_action_title (3128186577060329884) -->
+    <skip />
+    <!-- no translation found for prefEntries_removal_action:0 (7381624742404593351) -->
+    <!-- no translation found for prefEntries_removal_action:1 (2567465476369142505) -->
+    <!-- no translation found for prefSummaries_removal_action_summary:0 (4080896545573973751) -->
+    <!-- no translation found for prefSummaries_removal_action_summary:1 (6088164268501960435) -->
+    <!-- no translation found for prefDialogTitle_removal_action (7914272565548361304) -->
+    <skip />
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Barchasiga javob berish"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"Barcha javoblar uchun standart sifatida foydalanish"</string>
-    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"Arxivlash uchun surish"</string>
-    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"O‘chirib tashlash uchun suring"</string>
+    <!-- no translation found for preference_swipe_title (2073613840893904205) -->
+    <skip />
     <string name="preference_swipe_description" msgid="3036560323237015010">"Suhbatlar ro‘yxatida"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Yuboruvchining rasmi"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"Suhbatlar ro‘yxatida ismlar yonida ko‘rsatish"</string>
@@ -389,13 +391,18 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"Jild ikonkasi"</string>
     <string name="add_account" msgid="5905863370226612377">"Hisob qo‘shish"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Maslahatni yopish"</string>
+    <!-- no translation found for auto_sync_off (3691189864057581214) -->
+    <skip />
+    <!-- no translation found for account_sync_off (5720018952998097061) -->
+    <skip />
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"“<xliff:g id="OUTBOX">%2$s</xliff:g>” jildidagi yuborilmagan xabarlar soni: <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"Avto-sinxronlash yoqilsinmi?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Barcha ilova va hisoblarga (nafaqat Gmail) kiritgan o‘zgartirishlaringiz Internet, boshqa qurilmalaringiz va <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> o‘rtasida sinxronlanadi."</string>
     <string name="phone" msgid="4142617042507912053">"telefon"</string>
     <string name="tablet" msgid="4593581125469224791">"planshet"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="7239160845196929866">"Yoqish"</string>
-    <string name="show_n_more_folders" msgid="5769610839632786654">"Yana <xliff:g id="NUMBER">%1$s</xliff:g> ta jildni ko‘rsatish"</string>
+    <!-- no translation found for show_n_more_folders (1005879825500056552) -->
+    <skip />
     <string name="hide_folders" msgid="7618891933409521283">"Jildlarni yashirish"</string>
     <string name="print" msgid="7987949243936577207">"Chop qilish"</string>
     <string name="print_all" msgid="4011022762279519941">"Barchasini chop qilish"</string>
@@ -477,4 +484,6 @@
     <string name="manage_accounts_menu_item" msgid="4734660452395086786">"Hisoblarni boshqarish"</string>
     <string name="general_preferences_title" msgid="4212138728220418162">"Umumiy sozlamalar"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"Sozlamalar"</string>
+    <!-- no translation found for overflow_description (7886090597023240426) -->
+    <skip />
 </resources>
