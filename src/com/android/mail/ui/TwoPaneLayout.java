@@ -99,7 +99,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private View mFloatingActionButton;
 
     private int mFloatingActionButtonEndMargin;
-    private int mPrevConvX;
+    private int mPrevComposeEdgeX = -1;
 
     public static final int MISCELLANEOUS_VIEW_ID = R.id.miscellaneous_pane;
 
@@ -202,14 +202,14 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      * @param width
      */
     private void positionPanes(int width) {
+        final boolean isRtl = ViewUtils.isViewRtl(this);
         // Always reset the FAB position to previous X (in case of rotation)
-        if (mPrevConvX != 0) {
-            mFloatingActionButton.setX(computeFloatingActionButtonX(mPrevConvX));
+        if (mPrevComposeEdgeX >= 0) {
+            mFloatingActionButton.setX(computeFloatingActionButtonX(mPrevComposeEdgeX, isRtl));
             mFloatingActions.setVisibility(VISIBLE);
         }
 
         final int convX, listX, foldersX;
-        final boolean isRtl = ViewUtils.isViewRtl(this);
 
         final int foldersW = isDrawerOpen() ? mDrawerWidthOpen : mDrawerWidthMini;
         final int listW = getPaneWidth(mListView);
@@ -253,11 +253,14 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             }
         }
 
-        animatePanes(foldersX, listX, convX);
+        animatePanes(foldersX, listX, convX, isRtl);
 
         // For views that are not on the screen, let's set their visibility for accessibility.
-        mFoldersView.setVisibility(foldersX >= 0 ? VISIBLE : INVISIBLE);
-        mListView.setVisibility(listX >= 0 ? VISIBLE : INVISIBLE);
+        final boolean folderVisible = isRtl ?
+                foldersX + mFoldersView.getWidth() >= 0 : foldersX >= 0;
+        final boolean listVisible = isRtl ? listX + mListView.getWidth() >= 0 : listX >= 0;
+        mFoldersView.setVisibility(folderVisible ? VISIBLE : INVISIBLE);
+        mListView.setVisibility(listVisible ? VISIBLE : INVISIBLE);
         mConversationView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
         mMiscellaneousView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
 
@@ -266,7 +269,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
 
         mPositionedMode = mCurrentMode;
-        mPrevConvX = convX;
+        mPrevComposeEdgeX = isRtl ? listX : convX;
     }
 
     private final AnimatorListenerAdapter mPaneAnimationListener = new AnimatorListenerAdapter() {
@@ -276,7 +279,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
     };
 
-    private void animatePanes(int foldersX, int listX, int convX) {
+    private void animatePanes(int foldersX, int listX, int convX, boolean isRtl) {
         // If positioning has not yet happened, we don't need to animate panes into place.
         // This happens on first layout, rotate, and when jumping straight to a conversation from
         // a view intent.
@@ -302,14 +305,16 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView.animate()
             .x(listX)
             .setListener(mPaneAnimationListener);
-        mFloatingActionButton.animate().x(computeFloatingActionButtonX(convX));
+        mFloatingActionButton.animate()
+                .x(computeFloatingActionButtonX(isRtl ? listX : convX, isRtl));
 
         configureAnimations(mConversationView, mFoldersView, mListView, mMiscellaneousView,
                 mFloatingActionButton);
     }
 
-    private int computeFloatingActionButtonX(int convX) {
-        return convX - mFloatingActionButton.getWidth() - mFloatingActionButtonEndMargin;
+    private int computeFloatingActionButtonX(int edgeX, boolean isRtl) {
+        return isRtl ? edgeX + mFloatingActionButtonEndMargin :
+                edgeX - mFloatingActionButton.getWidth() - mFloatingActionButtonEndMargin;
     }
 
     private void configureAnimations(View... views) {
