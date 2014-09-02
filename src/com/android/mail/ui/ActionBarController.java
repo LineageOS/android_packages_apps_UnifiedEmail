@@ -272,6 +272,10 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
                 // is added.
                 setConversationModeOptions(menu);
                 break;
+            case ViewMode.CONVERSATION_LIST:
+                // The search menu item should only be visible for non-tablet devices
+                Utils.setMenuItemVisibility(menu, R.id.search,
+                        mAccount.supportsSearch() && !mIsOnTablet);
             case ViewMode.SEARCH_RESULTS_LIST:
                 // Hide compose and search
                 Utils.setMenuItemVisibility(menu, R.id.compose, false);
