@@ -1151,15 +1151,15 @@ public class FolderListFragment extends ListFragment implements
         public View getView(int position, View convertView, ViewGroup parent) {
             final FolderItemView folderItemView;
             final Folder folder = getItem(position);
-            boolean isParent = folder.folderUri.equals(mParentUri);
+
             if (convertView != null) {
                 folderItemView = (FolderItemView) convertView;
             } else {
-                int resId = isParent ? R.layout.folder_item : R.layout.child_folder_item;
                 folderItemView = (FolderItemView) LayoutInflater.from(
-                        mActivity.getActivityContext()).inflate(resId, null);
+                        mActivity.getActivityContext()).inflate(R.layout.folder_item, null);
             }
-            folderItemView.bind(folder);
+            folderItemView.bind(folder, mParentUri);
+
             if (folder.folderUri.equals(mSelectedFolderUri)) {
                 final ListView listView = getListView();
                 listView.setItemChecked((mAccountsAdapter != null ?
