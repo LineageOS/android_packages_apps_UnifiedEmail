@@ -44,8 +44,7 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"Bir veya daha fazla dosya eklenmedi. Boyut sınırı: <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"Dosya eklenmedi. <xliff:g id="MAXSIZE">%1$s</xliff:g> sınırına ulaşıldı."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"Dosya eklenemedi."</string>
-    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
-    <skip />
+    <string name="attachment_permission_denied" msgid="2274397783497640486">"Ek için izin reddedildi."</string>
     <string name="recipient_needed" msgid="319816879398937214">"En az bir alıcı ekleyin."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"Alıcı hatası"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"İleti gönderilsin mi?"</string>
@@ -221,8 +220,7 @@
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Ayrıntıları görüntüle&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"Ayrıntıları gizle"</string>
     <string name="to_message_header" msgid="3954385178027011919">"Alıcılar: <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
-    <!-- no translation found for bcc_header_for_recipient_summary (1834716758549842454) -->
-    <skip />
+    <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"bcc: "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"<xliff:g id="NAME">%1$s</xliff:g> iletişim bilgilerini göster"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"İletişim bilgilerini göster"</string>
   <plurals name="show_messages_read">

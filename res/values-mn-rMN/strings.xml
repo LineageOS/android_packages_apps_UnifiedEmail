@@ -44,8 +44,7 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"Нэг буюу хэд хэдэн файл хавсрагдаагүй. Хязгаар <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"Файлыг хавсаргасангүй. <xliff:g id="MAXSIZE">%1$s</xliff:g> хязгаарт хүрсэн."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"Файлыг хавсаргаж чадсангүй."</string>
-    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
-    <skip />
+    <string name="attachment_permission_denied" msgid="2274397783497640486">"Хавсралтын зөвшөөрөл өгөөгүй."</string>
     <string name="recipient_needed" msgid="319816879398937214">"Ядаж нэг хүлээн авагч нэмнэ үү."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"Хүлээн авагчийн алдаа"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"Зурвас илгээх үү?"</string>

@@ -44,8 +44,7 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"ஒன்று அல்லது அதற்கு மேற்பட்ட கோப்புகள் இணைக்கப்படவில்லை. வரம்பு <xliff:g id="MAXSIZE">%1$s</xliff:g> ஆகும்."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"கோப்பு இணைக்கப்படவில்லை. <xliff:g id="MAXSIZE">%1$s</xliff:g> வரம்பு முடிந்தது."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"கோப்பை இணைக்க முடியவில்லை."</string>
-    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
-    <skip />
+    <string name="attachment_permission_denied" msgid="2274397783497640486">"இணைப்பிற்கான அனுமதி மறுக்கப்பட்டது."</string>
     <string name="recipient_needed" msgid="319816879398937214">"குறைந்தது ஒரு பெறுநரையாவது சேர்க்க வேண்டும்."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"பெறுநர் பிழை"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"செய்தியை அனுப்பவா?"</string>

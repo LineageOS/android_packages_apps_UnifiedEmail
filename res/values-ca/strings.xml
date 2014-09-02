@@ -44,8 +44,7 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"No s\'han adjuntat un o més fitxers. Límit: <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"El fitxer no s\'ha adjuntat. Has arribat al límit de <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"No s\'ha pogut adjuntar el fitxer."</string>
-    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
-    <skip />
+    <string name="attachment_permission_denied" msgid="2274397783497640486">"S\'ha denegat el permís per al fitxer adjunt."</string>
     <string name="recipient_needed" msgid="319816879398937214">"Afegeix com a mínim un destinatari."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"Error de destinatari"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"Vols enviar el missatge?"</string>
@@ -227,7 +226,9 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> missatges anteriors"</item>
   </plurals>
-    <!-- no translation found for super_collapsed_loading_content_description:other (678491885491918982) -->
+  <plurals name="super_collapsed_loading_content_description">
+    <item quantity="other" msgid="678491885491918982">"S\'estan carregant <xliff:g id="COUNT">%1$d</xliff:g> missatges antics."</item>
+  </plurals>
     <string name="from_heading" msgid="48290556829713090">"De:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Respon a:"</string>
     <string name="to_heading" msgid="3495203282540398336">"Per a: "</string>

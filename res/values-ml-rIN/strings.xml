@@ -44,8 +44,7 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"ഒന്നോ അതിലധികമോ ഫയലുകൾ അറ്റാച്ചുചെയ്‌തിട്ടില്ല. പരിധി <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"ഫയൽ അറ്റാച്ചുചെയ്‌തില്ല. <xliff:g id="MAXSIZE">%1$s</xliff:g> പരിധിയിലെത്തി."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"ഫയൽ അറ്റാച്ചുചെയ്യാനായില്ല."</string>
-    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
-    <skip />
+    <string name="attachment_permission_denied" msgid="2274397783497640486">"അറ്റാച്ചുമെന്റിനായുള്ള അനുമതി നിരസിച്ചു."</string>
     <string name="recipient_needed" msgid="319816879398937214">"ഒരു സ്വീകർത്താവിനെയെങ്കിലും ചേർക്കുക."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"സ്വീകർത്താവിന്റെ ഭാഗത്തെ പിശക്"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"സന്ദേശം അയയ്‌ക്കണോ?"</string>

@@ -44,8 +44,7 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"ගොනුවක් හෝ කිහිපයක් අමුණ නැත. සිමාව <xliff:g id="MAXSIZE">%1$s</xliff:g>"</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"ගොනුව ඇමිණී නැත. <xliff:g id="MAXSIZE">%1$s</xliff:g> සීමාවට ළඟා විණි."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"ගොනුව ඇමිණිමට නොහැකි විය."</string>
-    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
-    <skip />
+    <string name="attachment_permission_denied" msgid="2274397783497640486">"ඇමිණුම සඳහා අවසරය ප්‍රතික්ෂේප කරන ලදි."</string>
     <string name="recipient_needed" msgid="319816879398937214">"අඩු තරමේ එක් ලබන්නෙක් එක් කරන්න."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"ලබන්නාගේ දෝෂයකි"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"පණිවිඩය යවන්නද?"</string>

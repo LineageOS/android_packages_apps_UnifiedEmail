@@ -44,8 +44,7 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"Satu atau lebih fail tidak dilampirkan. Had <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"Fail tidak dilampirkan. Had <xliff:g id="MAXSIZE">%1$s</xliff:g> telah dicapai."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"Tidak dapat melampirkan fail."</string>
-    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
-    <skip />
+    <string name="attachment_permission_denied" msgid="2274397783497640486">"Kebenaran ditolak untuk lampiran."</string>
     <string name="recipient_needed" msgid="319816879398937214">"Tambahkan sekurang-kurangnya satu penerima."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"Ralat penerima"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"Hantar mesej?"</string>

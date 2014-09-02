@@ -44,8 +44,7 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"Един или повече файла не са прикачени. Ограничението е <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"Файлът не е прикачен. Достигнато е ограничението от <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"Файлът не можа да бъде прикачен."</string>
-    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
-    <skip />
+    <string name="attachment_permission_denied" msgid="2274397783497640486">"За прикачения файл бе отказано разрешение."</string>
     <string name="recipient_needed" msgid="319816879398937214">"Добавете поне един получател."</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"Грешка при получателя"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"Да се изпрати ли съобщението?"</string>
@@ -221,14 +220,15 @@
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Преглед на подробностите&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"Скриване на подробностите"</string>
     <string name="to_message_header" msgid="3954385178027011919">"до <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
-    <!-- no translation found for bcc_header_for_recipient_summary (1834716758549842454) -->
-    <skip />
+    <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"Ск: "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"Показване на информацията за връзка със: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"Показване на информацията за връзка"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> по-стари съобщения"</item>
   </plurals>
-    <!-- no translation found for super_collapsed_loading_content_description:other (678491885491918982) -->
+  <plurals name="super_collapsed_loading_content_description">
+    <item quantity="other" msgid="678491885491918982">"Зареждат се <xliff:g id="COUNT">%1$d</xliff:g> по-стари съобщения"</item>
+  </plurals>
     <string name="from_heading" msgid="48290556829713090">"От:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Отг. до:"</string>
     <string name="to_heading" msgid="3495203282540398336">"До: "</string>

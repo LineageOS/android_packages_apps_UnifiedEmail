@@ -44,8 +44,7 @@
     <string name="too_large_to_attach_multiple" msgid="1620163295709036343">"未能附加一个或多个文件。上限为 <xliff:g id="MAXSIZE">%1$s</xliff:g>。"</string>
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"未能附加文件。已达到上限 (<xliff:g id="MAXSIZE">%1$s</xliff:g>)。"</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"无法附加文件。"</string>
-    <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
-    <skip />
+    <string name="attachment_permission_denied" msgid="2274397783497640486">"没有权限添加附件。"</string>
     <string name="recipient_needed" msgid="319816879398937214">"请至少添加一位收件人。"</string>
     <string name="recipient_error_dialog_title" msgid="760741480291963706">"收件人出错"</string>
     <string name="confirm_send_title" msgid="4664971589247101530">"要发送邮件吗？"</string>
@@ -221,8 +220,7 @@
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g>&lt;a href=\'http://www.example.com\'&gt;查看详情&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"隐藏详细信息"</string>
     <string name="to_message_header" msgid="3954385178027011919">"收件人：<xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
-    <!-- no translation found for bcc_header_for_recipient_summary (1834716758549842454) -->
-    <skip />
+    <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"密送： "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"显示<xliff:g id="NAME">%1$s</xliff:g>的联系人信息"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"显示联系人信息"</string>
   <plurals name="show_messages_read">
@@ -388,7 +386,7 @@
     <string name="add_account" msgid="5905863370226612377">"添加帐户"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"忽略提示"</string>
     <string name="auto_sync_off" msgid="3691189864057581214">"自动同步功能已关闭。触摸即可开启。"</string>
-    <string name="account_sync_off" msgid="5720018952998097061">"帐户同步已关闭。请在&lt;a href=\'http://www.example.com\'&gt;帐户设置&lt;/a&gt;中开启同步。"</string>
+    <string name="account_sync_off" msgid="5720018952998097061">"帐户同步设置已关闭。请在&lt;a href=\'http://www.example.com\'&gt;帐户设置&lt;/a&gt;中开启。"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g>中有<xliff:g id="NUMBER">%1$s</xliff:g>封未发送的邮件"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"要开启自动同步功能吗？"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"您对所有应用和帐户（不只是 Gmail）所做的更改都会在网络、您的其他设备和您的<xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>之间同步。"</string>
