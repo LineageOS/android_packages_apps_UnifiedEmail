@@ -19,23 +19,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Available only for accounts with SERVER_SEARCH and in a folder
-      that supports FOLDER_SERVER_SEARCH -->
-    <item android:id="@+id/search" android:title="@string/menu_search"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_menu_search" />
-
     <!-- Available only in the trash folder, when the account supports emptying it -->
     <item
         android:id="@+id/empty_trash"
         android:title="@string/empty_trash"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="always|withText" />
 
     <!-- Available only in the spam folder, when the account supports emptying it -->
     <item
         android:id="@+id/empty_spam"
         android:title="@string/empty_spam"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="always|withText" />
+
+    <!-- Available only for accounts with SERVER_SEARCH and in a folder
+      that supports FOLDER_SERVER_SEARCH -->
+    <item android:id="@+id/search"
+        android:title="@string/menu_search"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:icon="@drawable/ic_menu_search" />
 
     <!-- These invisible menu item are used to enable keyboard shortcuts -->
     <item
