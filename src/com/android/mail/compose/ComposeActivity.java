@@ -1546,7 +1546,7 @@ public class ComposeActivity extends ActionBarActivity
                     quotedText = body.substring(quotedTextIndex);
                 }
             }
-            mBodyView.setText(bodyText);
+            setBody(bodyText, false);
         }
         if (quotedTextIndex > -1 && quotedText != null) {
             mQuotedTextView.setQuotedTextFromDraft(quotedText, mForward);
@@ -3510,11 +3510,13 @@ public class ComposeActivity extends ActionBarActivity
 
     /**
      * Set the body of the message.
+     * Please try to exclusively use this method instead of calling mBodyView.setText(..) directly.
      *
      * @param text text to set
      * @param withSignature True to append a signature.
      */
     public void setBody(CharSequence text, boolean withSignature) {
+        LogUtils.i(LOG_TAG, "Body populated, len: %d, sig: %b", text.length(), withSignature);
         mBodyView.setText(text);
         if (withSignature) {
             appendSignature();
@@ -3555,7 +3557,7 @@ public class ComposeActivity extends ActionBarActivity
             if (!TextUtils.isEmpty(oldSignature)) {
                 int pos = getSignatureStartPosition(oldSignature, bodyText);
                 if (pos > -1) {
-                    mBodyView.setText(bodyText.substring(0, pos));
+                    setBody(bodyText.substring(0, pos), false);
                 }
             }
             setAccount(mReplyFromAccount.account);
@@ -3895,7 +3897,7 @@ public class ComposeActivity extends ActionBarActivity
         @Override
         protected void onPostExecute(Spanned spanned) {
             mBodyView.removeTextChangedListener(ComposeActivity.this);
-            mBodyView.setText(spanned);
+            setBody(spanned, false);
             mTextChanged = false;
             mBodyView.addTextChangedListener(ComposeActivity.this);
         }
