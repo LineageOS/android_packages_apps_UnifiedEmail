@@ -273,7 +273,6 @@
 
     <style name="ConversationSubjectStyle">
         <item name="android:textColor">@color/conversation_view_text_color_dark</item>
-        <item name="android:textIsSelectable">true</item>
         <item name="android:textSize">@dimen/conversation_header_font_size</item>
     </style>
 
