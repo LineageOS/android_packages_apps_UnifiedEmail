@@ -226,7 +226,9 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"පැරණි පණිවිඩ <xliff:g id="COUNT">%1$d</xliff:g> ක්"</item>
   </plurals>
-    <!-- no translation found for super_collapsed_loading_content_description:other (678491885491918982) -->
+  <plurals name="super_collapsed_loading_content_description">
+    <item quantity="other" msgid="678491885491918982">"පැරණි පණිවිඩ <xliff:g id="COUNT">%1$d</xliff:g> පූරණය කරමින්"</item>
+  </plurals>
     <string name="from_heading" msgid="48290556829713090">"වෙතින්:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"පිළිතුරු යවන්නේ"</string>
     <string name="to_heading" msgid="3495203282540398336">"වෙත: "</string>
