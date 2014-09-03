@@ -45,6 +45,7 @@
     <dimen name="conversation_page_gutter">16dp</dimen>
     <dimen name="conversation_message_content_margin_side">16dp</dimen>
     <dimen name="conversation_view_margin_side">16dp</dimen>
+    <dimen name="conversation_view_snack_bar_margin">0dp</dimen>
     <dimen name="conversation_header_font_size">20sp</dimen>
     <dimen name="conversation_header_padding_side">16dp</dimen>
     <dimen name="conversation_header_star_size">52dp</dimen>
@@ -133,16 +134,12 @@
 
     <dimen name="compose_attachment_text_padding">8dip</dimen>
 
-    <dimen name="toast_bar_margin">4dip</dimen>
-
     <dimen name="vacation_responder_width">800dip</dimen>
     <dimen name="vacation_responder_padding_vertical">16dip</dimen>
     <dimen name="vacation_responder_padding_horizontal">16dip</dimen>
     <dimen name="vacation_responder_padding_horizontal_wide">80dip</dimen>
     <dimen name="vacation_responder_inner_padding">12dip</dimen>
     <dimen name="vacation_responder_padding_between_date_spinners">8dip</dimen>
-
-    <dimen name="new_message_button_padding">24dip</dimen>
 
     <dimen name="message_attachment_bar_padding">8dip</dimen>
 
