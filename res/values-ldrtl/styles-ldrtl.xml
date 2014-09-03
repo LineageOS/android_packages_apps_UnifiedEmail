@@ -63,6 +63,10 @@
         <item name="android:layout_marginEnd">@dimen/toast_bar_margin</item>
     </style>
 
+    <style name="DrawerNavigationStyle">
+        <item name="android:nextFocusLeft">@+id/conversation_list_view</item>
+    </style>
+
     <style name="FolderListItemStartStyle">
         <item name="android:layout_marginStart">@dimen/folder_list_item_text_start_margin</item>
     </style>
