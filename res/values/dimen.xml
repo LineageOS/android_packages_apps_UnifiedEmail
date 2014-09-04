@@ -88,6 +88,7 @@
     <dimen name="folder_list_item_start_margin">16dp</dimen>
     <dimen name="folder_list_item_text_start_margin">32dp</dimen>
     <dimen name="folder_list_item_end_margin">8dp</dimen>
+    <dimen name="nested_folder_space">28dp</dimen>
     <dimen name="single_folder_list_item_height">48sp</dimen>
     <dimen name="single_folder_list_item_start_margin">24dp</dimen>
     <dimen name="single_folder_list_item_padding">0dp</dimen>
