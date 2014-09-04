@@ -45,7 +45,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Button;
 
 import com.android.emailcommon.mail.Address;
 import com.android.mail.FormattedDateBuilder;
@@ -152,7 +151,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
     private ConversationViewProgressController mProgressController;
 
-    private Button mNewMessageBar;
+    private ActionableToastBar mNewMessageBar;
+    private ActionableToastBar.ActionClickedListener mNewMessageBarActionListener;
 
     protected HtmlConversationTemplates mTemplates;
 
@@ -452,14 +452,14 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     protected void setupNewMessageBar() {
-        mNewMessageBar = (Button) mConversationContainer.findViewById(
+        mNewMessageBar = (ActionableToastBar) mConversationContainer.findViewById(
                 R.id.new_message_notification_bar);
-        mNewMessageBar.setOnClickListener(new View.OnClickListener() {
+        mNewMessageBarActionListener = new ActionableToastBar.ActionClickedListener() {
             @Override
-            public void onClick(View v) {
+            public void onActionClicked(Context context) {
                 onNewMessageBarClick();
             }
-        });
+        };
     }
 
     @Override
@@ -1072,12 +1072,12 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private void showNewMessageNotification(NewMessagesInfo info) {
-        mNewMessageBar.setText(info.getNotificationText());
-        mNewMessageBar.setVisibility(View.VISIBLE);
+        mNewMessageBar.show(mNewMessageBarActionListener, info.getNotificationText(), R.string.show,
+                true /* replaceVisibleToast */, false /* autohide */, null /* ToastBarOperation */);
     }
 
     private void onNewMessageBarClick() {
-        mNewMessageBar.setVisibility(View.GONE);
+        mNewMessageBar.hide(true, true);
 
         renderConversation(getMessageCursor()); // mCursor is already up-to-date
                                                 // per onLoadFinished()
@@ -1485,7 +1485,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     private class NewMessagesInfo {
         int count;
         int countFromSelf;
-        String senderAddress;
 
         /**
          * Return the display text for the new message notification overlay. It will be formatted
@@ -1494,15 +1493,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
          * @return display text
          */
         public String getNotificationText() {
-            Resources res = getResources();
-            if (count > 1) {
-                return res.getQuantityString(R.plurals.new_incoming_messages_many, count, count);
-            } else {
-                final Address addr = getAddress(senderAddress);
-                return res.getString(R.string.new_incoming_messages_one,
-                        mBidiFormatter.unicodeWrap(TextUtils.isEmpty(addr.getPersonal())
-                                ? addr.getAddress() : addr.getPersonal()));
-            }
+            return getResources().getQuantityString(R.plurals.new_incoming_messages, count, count);
         }
     }
 
@@ -1604,7 +1595,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 }
 
                 info.count++;
-                info.senderAddress = m.getFrom();
             }
         }
         return info;

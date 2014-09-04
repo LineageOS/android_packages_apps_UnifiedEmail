@@ -602,7 +602,8 @@ public final class TwoPaneController extends AbstractActivityController implemen
                             Utils.convertHtmlToPlainText
                                 (op.getDescription(mActivity.getActivityContext())),
                             R.string.undo,
-                            true,  /* replaceVisibleToast */
+                            true /* replaceVisibleToast */,
+                            true /* autohide */,
                             op);
                 }
         }
