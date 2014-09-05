@@ -85,7 +85,7 @@ public class MiniDrawerView extends LinearLayout {
     }
 
     public void refresh() {
-        if (mController == null) {
+        if (mController == null || !mController.isAdded()) {
             return;
         }
 
