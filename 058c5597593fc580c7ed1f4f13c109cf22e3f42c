@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1b2928_6146c124",
+        "filename": "res/values/cm_strings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 4550
+      },
+      "writtenOn": "2014-09-05T07:22:50Z",
+      "side": 1,
+      "message": "This should be a plural. If it\u0027s not possible, just make it \u0027Message has attachments\u0027",
+      "revId": "058c5597593fc580c7ed1f4f13c109cf22e3f42c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
