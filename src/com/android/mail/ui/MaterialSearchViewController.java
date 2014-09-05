@@ -63,8 +63,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     private int mViewMode;
     private int mViewState;
 
-    private boolean mSavePending;
-    private boolean mNeedToDestroyProvider;
+    private boolean mWaitToDestroyProvider;
 
     public MaterialSearchViewController(MailActivity activity, ActivityController controller,
             Intent intent, Bundle savedInstanceState) {
@@ -92,8 +91,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     public void onDestroy() {
-        mNeedToDestroyProvider = mSavePending;
-        if (!mSavePending) {
+        if (!mWaitToDestroyProvider) {
             mSuggestionsProvider.cleanup();
         }
         mActivity.getViewMode().removeListener(this);
@@ -204,7 +202,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
         @Override
         protected void onPreExecute() {
-            mSavePending = true;
+            mWaitToDestroyProvider = true;
         }
 
         @Override
@@ -215,9 +213,9 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            mSavePending = false;
-            if (mNeedToDestroyProvider) {
+            if (mWaitToDestroyProvider) {
                 mSuggestionsProvider.cleanup();
+                mWaitToDestroyProvider = false;
             }
         }
     }
