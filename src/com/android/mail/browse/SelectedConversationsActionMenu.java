@@ -509,6 +509,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             return;
         }
         updateCount();
+        if (mActionMode != null && mMenu != null) {
+            onPrepareActionMode(mActionMode, mMenu);
+        }
     }
 
     /**
