@@ -16,9 +16,7 @@
 
 package com.android.mail.photomanager;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -59,13 +57,15 @@ public class LetterTileProvider {
     private final char[] mFirstChar = new char[1];
 
     private static final int POSSIBLE_BITMAP_SIZES = 3;
-    private ColorPicker sTileColorPicker;
+    private final ColorPicker mTileColorPicker;
 
-    public LetterTileProvider(Context context) {
-        final Resources res = context.getResources();
-        mTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
-        mTileLetterFontSizeSmall = res
-                .getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
+    public LetterTileProvider(Resources res) {
+        this(res, new ColorPicker.PaletteColorPicker(res));
+    }
+
+    public LetterTileProvider(Resources res, ColorPicker colorPicker) {
+        mTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
+        mTileLetterFontSizeSmall = res.getDimensionPixelSize(R.dimen.tile_letter_font_size_tiny);
         mTileFontColor = res.getColor(R.color.letter_tile_font_color);
         mSansSerifLight = Typeface.create("sans-serif-light", Typeface.NORMAL);
         mBounds = new Rect();
@@ -78,9 +78,7 @@ public class LetterTileProvider {
         mDefaultBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_generic_man);
         mDefaultBitmapCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
 
-        if (sTileColorPicker == null) {
-            sTileColorPicker = new ColorPicker.PaletteColorPicker(res);
-        }
+        mTileColorPicker = colorPicker;
     }
 
     public Bitmap getLetterTile(final Dimensions dimensions, final String displayName,
@@ -98,13 +96,14 @@ public class LetterTileProvider {
 
         final Canvas c = mCanvas;
         c.setBitmap(bitmap);
-        c.drawColor(sTileColorPicker.pickColor(address));
+        c.drawColor(mTileColorPicker.pickColor(address));
 
         // If its a valid English alphabet letter,
         // draw the letter on top of the color
         if (isEnglishLetterOrDigit(firstChar)) {
             mFirstChar[0] = Character.toUpperCase(firstChar);
-            mPaint.setTextSize(getFontSize(dimensions.scale));
+            mPaint.setTextSize(
+                    dimensions.fontSize > 0 ? dimensions.fontSize : getFontSize(dimensions.scale));
             mPaint.getTextBounds(mFirstChar, 0, 1, mBounds);
             c.drawText(mFirstChar, 0, 1, 0 + dimensions.width / 2,
                     0 + dimensions.height / 2 + (mBounds.bottom - mBounds.top) / 2, mPaint);
