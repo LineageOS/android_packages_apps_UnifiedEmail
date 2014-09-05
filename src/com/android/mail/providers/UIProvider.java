@@ -104,6 +104,19 @@ public class UIProvider {
         public static final int INTERNAL_ERROR = 5;
         /** The sync wasn't completed due to an error in the mail server */
         public static final int SERVER_ERROR = 6;
+
+        public static String toString(int result) {
+            switch (result) {
+                case SUCCESS: return "success";
+                case CONNECTION_ERROR: return "connection_error";
+                case AUTH_ERROR: return "auth_error";
+                case SECURITY_ERROR: return "security_error";
+                case STORAGE_ERROR: return "storage_error";
+                case INTERNAL_ERROR: return "internal_error";
+                case SERVER_ERROR: return "server_error";
+                default: throw new IllegalArgumentException("Invalid LastSyncResult: " + result);
+            }
+        }
     }
 
     // The actual content provider should define its own authority
