@@ -29,6 +29,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.android.mail.R;
 import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursorLoader;
 import com.android.mail.providers.UIProvider.FolderType;
@@ -640,7 +641,13 @@ public class Folder implements Parcelable, Comparable<Folder> {
         if (iconView == null) {
             return;
         }
-        final int icon = folder.iconResId;
+        int icon = folder.iconResId;
+
+        // If we're using the default folders, make sure we show the parent icon
+        if (icon == R.drawable.ic_drawer_folder_24dp && folder.hasChildren) {
+            icon = R.drawable.ic_folder_parent_24dp;
+        }
+
         if (icon > 0) {
             final Drawable iconDrawable = iconView.getResources().getDrawable(icon);
             if (iconDrawable != null &&
