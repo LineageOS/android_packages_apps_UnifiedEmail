@@ -54,6 +54,15 @@
         android:textSize="@dimen/super_collapsed_text_size"
         style="@style/MessageHeaderIconStyle" />
 
-    <include layout="@layout/super_collapsed_progress" />
+    <ImageView
+        android:id="@+id/super_collapsed_progress"
+        android:layout_width="40sp"
+        android:layout_height="40sp"
+        android:background="@drawable/super_collapse_circle"
+        android:contentDescription="@null"
+        android:scaleType="center"
+        android:src="@drawable/ic_cv_loading_24dp"
+        android:visibility="gone"
+        style="@style/MessageHeaderIconStyle" />
 
 </com.android.mail.browse.SuperCollapsedBlock>
