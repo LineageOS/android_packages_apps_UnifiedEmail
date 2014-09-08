@@ -22,7 +22,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.android.mail.lib.base.Strings;
 import com.android.mail.providers.UIProvider.AccountColumns.SettingsColumns;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
@@ -32,6 +31,7 @@ import com.android.mail.providers.UIProvider.Swipe;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.android.mail.common.base.Strings;
 import com.google.common.base.Objects;
 
 import org.json.JSONException;
