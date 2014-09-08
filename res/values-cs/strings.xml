@@ -18,7 +18,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="from" msgid="5159056500059912358">"Odesílatel"</string>
+    <string name="from" msgid="5159056500059912358">"Od"</string>
     <string name="to" msgid="3971614275716830581">"Komu"</string>
     <string name="cc" msgid="8768828862207919684">"Kopie"</string>
     <string name="bcc" msgid="519303553518479171">"Skrytá kopie"</string>
@@ -227,7 +227,7 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"Starší zprávy: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="from_heading" msgid="48290556829713090">"Odesílatel:"</string>
+    <string name="from_heading" msgid="48290556829713090">"Od:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Odpovědět:"</string>
     <string name="to_heading" msgid="3495203282540398336">"Komu: "</string>
     <string name="to_heading_no_space" msgid="679167047628308670">"Komu:"</string>
