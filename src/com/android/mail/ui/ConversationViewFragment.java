@@ -130,6 +130,9 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
      */
     private final int LOAD_WAIT_UNTIL_VISIBLE = 2;
 
+    // Default scroll distance when the user tries to scroll with up/down
+    private final int DEFAULT_VERTICAL_SCROLL_DISTANCE_PX = 50;
+
     // Keyboard navigation
     private KeyboardNavigationController mNavigationController;
     // Since we manually control navigation for most of the conversation view due to problems
@@ -1208,24 +1211,25 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
                 // We manually handle up/down navigation through the overlay items because the
                 // system's default isn't optimal for two-pane landscape since it's not a real list.
-                final View next = mConversationContainer.getNextOverlayView(
-                        mOriginalKeyedView, isDown);
+                final View next = mConversationContainer.getNextOverlayView(mOriginalKeyedView,
+                        isDown);
                 if (next != null) {
-                    if (isActionUp) {
-                        // Make sure that v is in view
-                        final int[] coords = new int[2];
-                        next.getLocationOnScreen(coords);
-                        final int bottom = coords[1] + next.getHeight();
-                        if (bottom > mMaxScreenHeight) {
-                            mWebView.scrollBy(0, bottom - mMaxScreenHeight);
-                        } else if (coords[1] < mTopOfVisibleScreen) {
-                            mWebView.scrollBy(0, coords[1] - mTopOfVisibleScreen);
+                    focusAndScrollToView(next);
+                } else if (!isActionUp) {
+                    // Scroll in the direction of the arrow if next view isn't found.
+                    final int currentY = mWebView.getScrollY();
+                    if (isUp && currentY > 0) {
+                        mWebView.scrollBy(0,
+                                -Math.min(currentY, DEFAULT_VERTICAL_SCROLL_DISTANCE_PX));
+                    } else if (isDown) {
+                        final int webviewEnd = (int) (mWebView.getContentHeight() *
+                                mWebView.getScale());
+                        final int currentEnd = currentY + mWebView.getHeight();
+                        if (currentEnd < webviewEnd) {
+                            mWebView.scrollBy(0, Math.min(webviewEnd - currentEnd,
+                                    DEFAULT_VERTICAL_SCROLL_DISTANCE_PX));
                         }
-                        next.requestFocus();
                     }
-                } else {
-                    // If the next view cannot be reached, let's scroll in the direction of the key.
-                    mTopmostOverlay.requestFocus();
                 }
                 return true;
             }
@@ -1246,6 +1250,19 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             }
         }
         return false;
+    }
+
+    private void focusAndScrollToView(View v) {
+        // Make sure that v is in view
+        final int[] coords = new int[2];
+        v.getLocationOnScreen(coords);
+        final int bottom = coords[1] + v.getHeight();
+        if (bottom > mMaxScreenHeight) {
+            mWebView.scrollBy(0, bottom - mMaxScreenHeight);
+        } else if (coords[1] < mTopOfVisibleScreen) {
+            mWebView.scrollBy(0, coords[1] - mTopOfVisibleScreen);
+        }
+        v.requestFocus();
     }
 
     public class ConversationWebViewClient extends AbstractConversationWebViewClient {
