@@ -172,51 +172,51 @@
     <string name="getting_messages" msgid="8403333791332403244">"သင်၏ စာများကို ရယူနေ"</string>
     <string name="undo" msgid="8256285267701059609">"ပြန်ဖျက်ရန်"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="839233699150563831">"စကားဝိုင်း <xliff:g id="COUNT">%1$d</xliff:g> ကို စတားဖြုတ်နေ။"</item>
-    <item quantity="other" msgid="7677305734833709789">"စကားဝိုင်း <xliff:g id="COUNT">%1$d</xliff:g> ခုကို ကြယ်ဖြုတ်နေသည်။"</item>
+    <item quantity="one" msgid="1701235480675303125">"စကားဝိုင်း <xliff:g id="COUNT">%1$d</xliff:g> ခု စတားဖြုတ်နေ"</item>
+    <item quantity="other" msgid="1154441830432477256">"စကားဝိုင်း <xliff:g id="COUNT">%1$d</xliff:g> ခု စတားဖြုတ်နေ"</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3339638225564408438">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; အသံတိတ်ခဲ့သည်။"</item>
-    <item quantity="other" msgid="4276111931404654219">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt အသံတိတ်ခဲ့။"</item>
+    <item quantity="one" msgid="3622533556738049499">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; အသံတိတ်ခဲ့"</item>
+    <item quantity="other" msgid="4559007262578295280">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; အသံတိတ်ခဲ့"</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;စပမ် အဖြစ် အစီရင်ခံခဲ့။"</item>
-    <item quantity="other" msgid="5900913789259199137">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt စပမ် အဖြစ် အစီရင်ခံခဲ့သည်။"</item>
+    <item quantity="one" msgid="1749550834135461470">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; စပမ် အဖြစ် သတင်းပို့ခဲ့"</item>
+    <item quantity="other" msgid="664292592683692920">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; စပမ် အဖြစ် သတင်းပို့ခဲ့"</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="2294904093653094150">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt စပမ် မဟုတ်ဟု အစီရင်ခံခဲ့။"</item>
-    <item quantity="other" msgid="4966164423991098144">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt စပမ် မဟုတ်ဟု အစီရင်ခံခဲ့သည်။"</item>
+    <item quantity="one" msgid="3680479171846552641">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; စပမ် မဟုတ် ဆိုပြီး သတင်းပို့ခဲ့"</item>
+    <item quantity="other" msgid="6351739502184556635">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; စပမ် မဟုတ် ဆိုပြီး သတင်းပို့ခဲ့"</item>
   </plurals>
   <plurals name="conversation_not_important">
-    <item quantity="one" msgid="3824809189993339030">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt ကို အရေးမကြီးဟု မှတ်သားခဲ့သည်။"</item>
-    <item quantity="other" msgid="1215472798075869124">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt ကို အရေးမကြီးဟု မှတ်သားခဲ့သည်။"</item>
+    <item quantity="one" msgid="7432667428974709669">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ကို အရေးမကြီးကြောင်း မှတ်သားခဲ့"</item>
+    <item quantity="other" msgid="4823331037057239763">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ကို အရေးမကြီးကြောင်း မှတ်သားခဲ့"</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="4330095881258771201">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt မျှားယူမှု အဖြစ် အစီရင်ခံခဲ့သည်။"</item>
-    <item quantity="other" msgid="9218674052779504277">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt မျှားယူမှု အဖြစ် အစီရင်ခံခဲ့သည်။"</item>
+    <item quantity="one" msgid="3511804715065046338">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; မျှားယူမှု အဖြစ် သတင်းပို့ခဲ့"</item>
+    <item quantity="other" msgid="8400382886585779414">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; မျှားယူမှု အဖြစ် သတင်းပို့ခဲ့"</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="4127890884907503696">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; မော်ကွန်းတင်ပြီး။"</item>
-    <item quantity="other" msgid="7789480176789922968">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt မော်ကွန်းတင်ပြီး။"</item>
+    <item quantity="one" msgid="4859172326053399351">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; မော်ကွန်းတင်ပြီး။"</item>
+    <item quantity="other" msgid="8520761617935818623">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; မော်ကွန်းတင်ပြီး။"</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="5591889079235938982">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt ကို ဖျက်ပြီး။"</item>
-    <item quantity="other" msgid="7060256058737892078">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&amp;gt ကို ဖျက်ပြီး။"</item>
+    <item quantity="one" msgid="4819167474123685161">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ကို ဖျက်ပြီး။"</item>
+    <item quantity="other" msgid="6287534453625638257">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ကို ဖျက်ပြီး။"</item>
   </plurals>
     <string name="deleted" msgid="7378013910782008375">"ဖျက်ပြီး"</string>
     <string name="archived" msgid="6283673603512713022">"မော်ကွန်းတင်ထား"</string>
     <string name="folder_removed" msgid="5656281444688183676">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> မှ ဖယ်ရှားခဲ့"</string>
   <plurals name="conversation_folder_changed">
-    <item quantity="one" msgid="6463727361987396734">"ပြောင်းထားသည့် ဖိုလ်ဒါ။"</item>
-    <item quantity="other" msgid="8815390494333090939">"ပြောင်းထားသည့် ဖိုလ်ဒါများ။"</item>
+    <item quantity="one" msgid="7787126147584620603">"ပြောင်းထားသည့် ဖိုလ်ဒါ"</item>
+    <item quantity="other" msgid="6307772984911017972">"ပြောင်းထားသည့် ဖိုလ်ဒါများ"</item>
   </plurals>
     <string name="conversation_folder_moved" msgid="6475872337373081683">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> သို့ ရွှေ့ရန်"</string>
     <string name="search_results_header" msgid="1529438451150580188">"ရလဒ်များ"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"ဤအကောင့် ထဲမှာ ရှာဖွေမှုကို ပံ့ပိုးမပေးပါ။"</string>
     <string name="add_label" msgid="3285338046038610902">"ဖိုလ်ဒါကို ထည့်ရန်"</string>
-    <string name="new_incoming_messages_one" msgid="5933087567495998661">"<xliff:g id="SENDER">%s</xliff:g> ထံမှ စာ အသစ်ကို ပြပါ။"</string>
-  <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="4394042684501388790">"စာအသစ် <xliff:g id="COUNT">%1$d</xliff:g> စောင်ကို ပြသပါ။"</item>
+  <plurals name="new_incoming_messages">
+    <item quantity="one" msgid="1532079301006372605">"စာ အသစ် <xliff:g id="COUNT">%1$d</xliff:g> ခု"</item>
+    <item quantity="other" msgid="4085982174357328926">"စာ အသစ် <xliff:g id="COUNT">%1$d</xliff:g> ခု"</item>
   </plurals>
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;သေးစိတ် ကြည့်&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"အသေးစိတ်များ ဝှက်ထားရန်"</string>
@@ -263,10 +263,10 @@
     <string name="previous" msgid="8985379053279804274">"ယခင်"</string>
   <string-array name="sync_status">
     <item msgid="4600303222943450797">"အောင်မြင်"</item>
-    <item msgid="2972425114100316260">"ချိတ်ဆက်မှု မရှိပါ။"</item>
-    <item msgid="8594593386776437871">"လက်မှတ်ထိုး မဝင်နိုင်ခဲ့။"</item>
-    <item msgid="1375193906551623606">"လုံခြုံရေး အမှား။"</item>
-    <item msgid="195177374927979967">"စင့်က်လုပ် မရနိုင်ခဲ့ပါ။"</item>
+    <item msgid="2835492307658712596">"ချိတ်ဆက်မှု မရှိ"</item>
+    <item msgid="5932644761344898987">"လက်မှတ်ထိုး မ၀င်နိုင်ခဲ့ပါ"</item>
+    <item msgid="7335227237106118306">"လုံခြုံရေး အမှား"</item>
+    <item msgid="8148525741623865182">"စင့်က် မလုပ်နိုင်ခဲ့ပါ"</item>
     <item msgid="8026148967150231130">"အင်တာနက် အမှား"</item>
     <item msgid="5442620760791553027">"ဆာဗား အမှား"</item>
   </string-array>
@@ -279,7 +279,6 @@
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"မဖတ်ရသေး <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="753635978542372792">"<xliff:g id="COUNT">%1$d</xliff:g>+ မဖတ်ရသေး"</string>
     <string name="view_more_conversations" msgid="8377920000247101901">"စကားဝိုင်းများ နောက်ထပ် ကြည့်မည်"</string>
     <string name="loading_conversation" msgid="7931600025861500397">"တင်နေ…"</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"အကောင့်ကို ရွေးရန်"</string>
@@ -311,6 +310,7 @@
     <string name="signin" msgid="4699091478139791244">"လက်မှတ်ထိုး ဝင်ရန်"</string>
     <string name="info" msgid="1357564480946178121">"အင်ဖို"</string>
     <string name="report" msgid="4318141326014579036">"အစီရင်ခံရန်"</string>
+    <string name="show" msgid="2874876876336599985">"ပြသရန်"</string>
     <string name="sync_error" msgid="1795794969006241678">"စင့်က်လုပ် မရနိုင်ခဲ့။"</string>
     <string name="sync_error_message" msgid="4182644657243736635">"သင်၏ ကိရိယာ ထဲတွင် စင့်က်လုပ်ရန် နေရာ မလုံလောက်ပါ။"</string>
     <string name="storage" msgid="4783683938444150638">"သိုလှောင်မှု"</string>

@@ -171,51 +171,51 @@
     <string name="getting_messages" msgid="8403333791332403244">"Съобщенията ви се извличат"</string>
     <string name="undo" msgid="8256285267701059609">"Отмяна"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="839233699150563831">"Звездата се премахва от <xliff:g id="COUNT">%1$d</xliff:g> кореспонденция."</item>
-    <item quantity="other" msgid="7677305734833709789">"Звездите се премахват от <xliff:g id="COUNT">%1$d</xliff:g> кореспонденции."</item>
+    <item quantity="one" msgid="1701235480675303125">"Премахва се звездата от <xliff:g id="COUNT">%1$d</xliff:g> кореспонденция"</item>
+    <item quantity="other" msgid="1154441830432477256">"Премахват се звездите от <xliff:g id="COUNT">%1$d</xliff:g> кореспонденции"</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3339638225564408438">"Спряхте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
-    <item quantity="other" msgid="4276111931404654219">"Спряхте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="3622533556738049499">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе спряна"</item>
+    <item quantity="other" msgid="4559007262578295280">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бяха спрени"</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"Подадохте сигнал за спам за &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="5900913789259199137">"Подадохте сигнал за спам за &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="1749550834135461470">"За &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе подаден сигнал за спам"</item>
+    <item quantity="other" msgid="664292592683692920">"За &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе подаден сигнал за спам"</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="2294904093653094150">"Подадохте сигнал „Не е спам“ за &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="4966164423991098144">"Подадохте сигнал „Не е спам“ за &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="3680479171846552641">"За &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе сигнализирано, че не е спам"</item>
+    <item quantity="other" msgid="6351739502184556635">"За &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе сигнализирано, че не са спам"</item>
   </plurals>
   <plurals name="conversation_not_important">
-    <item quantity="one" msgid="3824809189993339030">"Означихте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; като маловажна."</item>
-    <item quantity="other" msgid="1215472798075869124">"Означихте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; като маловажни."</item>
+    <item quantity="one" msgid="7432667428974709669">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе означена като маловажна"</item>
+    <item quantity="other" msgid="4823331037057239763">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бяха означени като маловажни"</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="4330095881258771201">"Подадохте сигнал за фишинг за &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="9218674052779504277">"Подадохте сигнал за фишинг за &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="3511804715065046338">"За &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе подаден сигнал за фишинг"</item>
+    <item quantity="other" msgid="8400382886585779414">"За &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе подаден сигнал за фишинг"</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="4127890884907503696">"Архивирахте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="7789480176789922968">"Архивирахте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="4859172326053399351">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе архивирана"</item>
+    <item quantity="other" msgid="8520761617935818623">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бяха архивирани"</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="5591889079235938982">"Изтрихте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="7060256058737892078">"Изтрихте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="4819167474123685161">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бе изтрита"</item>
+    <item quantity="other" msgid="6287534453625638257">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; бяха изтрити"</item>
   </plurals>
     <string name="deleted" msgid="7378013910782008375">"Изтрита"</string>
     <string name="archived" msgid="6283673603512713022">"Архивирана"</string>
     <string name="folder_removed" msgid="5656281444688183676">"Премахнатa от „<xliff:g id="FOLDERNAME">%1$s</xliff:g>“"</string>
   <plurals name="conversation_folder_changed">
-    <item quantity="one" msgid="6463727361987396734">"Променихте папката."</item>
-    <item quantity="other" msgid="8815390494333090939">"Променихте папките."</item>
+    <item quantity="one" msgid="7787126147584620603">"Папката бе променена"</item>
+    <item quantity="other" msgid="6307772984911017972">"Папките бяха променени"</item>
   </plurals>
     <string name="conversation_folder_moved" msgid="6475872337373081683">"Преместено в/ъв „<xliff:g id="FOLDERNAME">%1$s</xliff:g>“"</string>
     <string name="search_results_header" msgid="1529438451150580188">"Резултати"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"Търсенето не се поддържа за този профил."</string>
     <string name="add_label" msgid="3285338046038610902">"Добавяне на папка"</string>
-    <string name="new_incoming_messages_one" msgid="5933087567495998661">"Показване на ново съобщение от <xliff:g id="SENDER">%s</xliff:g>."</string>
-  <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="4394042684501388790">"Показване на <xliff:g id="COUNT">%1$d</xliff:g> нови съобщения."</item>
+  <plurals name="new_incoming_messages">
+    <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> ново съобщение"</item>
+    <item quantity="other" msgid="4085982174357328926">"<xliff:g id="COUNT">%1$d</xliff:g> нови съобщения"</item>
   </plurals>
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Преглед на подробностите&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"Скриване на подробностите"</string>
@@ -262,10 +262,10 @@
     <string name="previous" msgid="8985379053279804274">"Предишно"</string>
   <string-array name="sync_status">
     <item msgid="4600303222943450797">"Успех"</item>
-    <item msgid="2972425114100316260">"Няма връзка."</item>
-    <item msgid="8594593386776437871">"Не можахте да влезете."</item>
-    <item msgid="1375193906551623606">"Грешка в сигурността."</item>
-    <item msgid="195177374927979967">"Не можа да се синхронизира."</item>
+    <item msgid="2835492307658712596">"Няма връзка"</item>
+    <item msgid="5932644761344898987">"Влизането в профила не бе възможно"</item>
+    <item msgid="7335227237106118306">"Грешка в сигурността"</item>
+    <item msgid="8148525741623865182">"Синхронизирането не бе възможно"</item>
     <item msgid="8026148967150231130">"Вътрешна грешка"</item>
     <item msgid="5442620760791553027">"Грешка в сървъра"</item>
   </string-array>
@@ -278,7 +278,6 @@
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g> непрочетени"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="753635978542372792">"над <xliff:g id="COUNT">%1$d</xliff:g> непрочетени"</string>
     <string name="view_more_conversations" msgid="8377920000247101901">"Преглед на още кореспонденции"</string>
     <string name="loading_conversation" msgid="7931600025861500397">"Зарежда се..."</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"Изберете профил"</string>
@@ -310,6 +309,7 @@
     <string name="signin" msgid="4699091478139791244">"Вход"</string>
     <string name="info" msgid="1357564480946178121">"Информация"</string>
     <string name="report" msgid="4318141326014579036">"Изпращане"</string>
+    <string name="show" msgid="2874876876336599985">"Показване"</string>
     <string name="sync_error" msgid="1795794969006241678">"Не можа да се синхронизира."</string>
     <string name="sync_error_message" msgid="4182644657243736635">"Устройството ви няма достатъчно място в хранилището, за да се извърши синхронизиране."</string>
     <string name="storage" msgid="4783683938444150638">"Хранилище"</string>

@@ -171,51 +171,51 @@
     <string name="getting_messages" msgid="8403333791332403244">"Obteniendo tus mensajes"</string>
     <string name="undo" msgid="8256285267701059609">"Deshacer"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="839233699150563831">"Anulando <xliff:g id="COUNT">%1$d</xliff:g> conversación destacada"</item>
-    <item quantity="other" msgid="7677305734833709789">"Anulando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones destacadas"</item>
+    <item quantity="one" msgid="1701235480675303125">"<xliff:g id="COUNT">%1$d</xliff:g> conversación sin destacar"</item>
+    <item quantity="other" msgid="1154441830432477256">"<xliff:g id="COUNT">%1$d</xliff:g> conversaciones sin destacar"</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3339638225564408438">"Se ha silenciado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación."</item>
-    <item quantity="other" msgid="4276111931404654219">"Se han silenciado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones."</item>
+    <item quantity="one" msgid="3622533556738049499">"Se ha silenciado <xliff:g id="COUNT">%1$d</xliff:g> conversación"</item>
+    <item quantity="other" msgid="4559007262578295280">"Se han silenciado <xliff:g id="COUNT">%1$d</xliff:g> conversaciones"</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"Se han denunciado&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones por spam."</item>
-    <item quantity="other" msgid="5900913789259199137">"Se han marcado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como spam."</item>
+    <item quantity="one" msgid="1749550834135461470">"Se ha informado de &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como spam"</item>
+    <item quantity="other" msgid="664292592683692920">"Se ha informado de &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como spam"</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="2294904093653094150">"Se ha marcado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como deseada."</item>
-    <item quantity="other" msgid="4966164423991098144">"Se han marcado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como deseadas."</item>
+    <item quantity="one" msgid="3680479171846552641">"Se ha informado de que &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación no es spam"</item>
+    <item quantity="other" msgid="6351739502184556635">"Se ha informado de que &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones no son spam"</item>
   </plurals>
   <plurals name="conversation_not_important">
-    <item quantity="one" msgid="3824809189993339030">"Se ha marcado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como no importante."</item>
-    <item quantity="other" msgid="1215472798075869124">"Se han marcado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como no importantes."</item>
+    <item quantity="one" msgid="7432667428974709669">"Se ha marcado <xliff:g id="COUNT">%1$d</xliff:g> conversación como no importante"</item>
+    <item quantity="other" msgid="4823331037057239763">"Se han marcado <xliff:g id="COUNT">%1$d</xliff:g> conversaciones como no importantes"</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="4330095881258771201">"Se ha marcado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como suplantación de identidad."</item>
-    <item quantity="other" msgid="9218674052779504277">"Se han marcado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como suplantación de identidad."</item>
+    <item quantity="one" msgid="3511804715065046338">"Se ha denunciado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación por suplantación de identidad"</item>
+    <item quantity="other" msgid="8400382886585779414">"Se han denunciado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones por suplantación de identidad"</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="4127890884907503696">"Se ha archivado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación."</item>
-    <item quantity="other" msgid="7789480176789922968">"Se han archivado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones."</item>
+    <item quantity="one" msgid="4859172326053399351">"Se ha archivado <xliff:g id="COUNT">%1$d</xliff:g> conversación"</item>
+    <item quantity="other" msgid="8520761617935818623">"Se han archivado <xliff:g id="COUNT">%1$d</xliff:g> conversaciones"</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="5591889079235938982">"Se ha eliminado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación."</item>
-    <item quantity="other" msgid="7060256058737892078">"Se han eliminado &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones."</item>
+    <item quantity="one" msgid="4819167474123685161">"Se ha eliminado <xliff:g id="COUNT">%1$d</xliff:g> conversación"</item>
+    <item quantity="other" msgid="6287534453625638257">"Se han eliminado <xliff:g id="COUNT">%1$d</xliff:g> conversaciones"</item>
   </plurals>
     <string name="deleted" msgid="7378013910782008375">"Eliminada"</string>
     <string name="archived" msgid="6283673603512713022">"Archivada"</string>
     <string name="folder_removed" msgid="5656281444688183676">"Eliminado de <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_folder_changed">
-    <item quantity="one" msgid="6463727361987396734">"Carpeta cambiada"</item>
-    <item quantity="other" msgid="8815390494333090939">"Carpetas cambiadas"</item>
+    <item quantity="one" msgid="7787126147584620603">"Se ha cambiado la carpeta"</item>
+    <item quantity="other" msgid="6307772984911017972">"Se han cambiado las carpetas"</item>
   </plurals>
     <string name="conversation_folder_moved" msgid="6475872337373081683">"Movida a <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="1529438451150580188">"Resultados"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"Esta cuenta no admite la función de búsqueda."</string>
     <string name="add_label" msgid="3285338046038610902">"Añadir carpeta"</string>
-    <string name="new_incoming_messages_one" msgid="5933087567495998661">"Mostrar mensaje nuevo de <xliff:g id="SENDER">%s</xliff:g>."</string>
-  <plurals name="new_incoming_messages_many">
-    <item quantity="other" msgid="4394042684501388790">"Mostrar <xliff:g id="COUNT">%1$d</xliff:g> mensajes nuevos."</item>
+  <plurals name="new_incoming_messages">
+    <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> mensaje nuevo"</item>
+    <item quantity="other" msgid="4085982174357328926">"<xliff:g id="COUNT">%1$d</xliff:g> mensajes nuevos"</item>
   </plurals>
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Detalles&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"Ocultar detalles"</string>
@@ -262,10 +262,10 @@
     <string name="previous" msgid="8985379053279804274">"Anterior"</string>
   <string-array name="sync_status">
     <item msgid="4600303222943450797">"Sin errores"</item>
-    <item msgid="2972425114100316260">"Sin conexión"</item>
-    <item msgid="8594593386776437871">"Error al iniciar sesión"</item>
-    <item msgid="1375193906551623606">"Error de seguridad"</item>
-    <item msgid="195177374927979967">"Error al sincronizar"</item>
+    <item msgid="2835492307658712596">"Sin conexión"</item>
+    <item msgid="5932644761344898987">"Error al iniciar sesión"</item>
+    <item msgid="7335227237106118306">"Error de seguridad"</item>
+    <item msgid="8148525741623865182">"No se ha podido sincronizar"</item>
     <item msgid="8026148967150231130">"Error interno"</item>
     <item msgid="5442620760791553027">"Error del servidor"</item>
   </string-array>
@@ -278,7 +278,6 @@
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g> no leídos"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="753635978542372792">"Más de <xliff:g id="COUNT">%1$d</xliff:g> no leídos"</string>
     <string name="view_more_conversations" msgid="8377920000247101901">"Ver más conversaciones"</string>
     <string name="loading_conversation" msgid="7931600025861500397">"Cargando..."</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"Seleccionar cuenta"</string>
@@ -310,6 +309,7 @@
     <string name="signin" msgid="4699091478139791244">"Iniciar sesión"</string>
     <string name="info" msgid="1357564480946178121">"Información"</string>
     <string name="report" msgid="4318141326014579036">"Informar"</string>
+    <string name="show" msgid="2874876876336599985">"Mostrar"</string>
     <string name="sync_error" msgid="1795794969006241678">"Error al sincronizar"</string>
     <string name="sync_error_message" msgid="4182644657243736635">"No hay suficiente espacio en el dispositivo para sincronizar tu correo"</string>
     <string name="storage" msgid="4783683938444150638">"Almacenamiento"</string>
