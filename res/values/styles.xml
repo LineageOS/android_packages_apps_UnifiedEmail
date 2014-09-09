@@ -459,13 +459,6 @@
         <item name="android:background">@color/actionbar_color</item>
     </style>
 
-    <style name="ActionBarTitleStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
     <style name="ActionBarTextAppearanceLargeStyle" parent="@android:style/TextAppearance.Holo.Widget.PopupMenu.Large">
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
