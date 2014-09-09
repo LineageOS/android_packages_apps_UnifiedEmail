@@ -351,6 +351,9 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public void setMessage(ConversationMessage message) {
             mMessage = message;
+            // setMessage signifies an in-place update to the message, so let's clear out recipient
+            // summary text so the view will refresh it on the next render.
+            recipientSummaryText = null;
         }
 
         public CharSequence getTimestampShort() {
