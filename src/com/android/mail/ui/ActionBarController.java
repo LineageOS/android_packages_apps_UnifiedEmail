@@ -247,6 +247,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.setQwertyMode(true);
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
         LogUtils.d(LOG_TAG, "ActionBarView.onPrepareOptionsMenu().");
