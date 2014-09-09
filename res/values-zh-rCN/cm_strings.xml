@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="confirm_forward_message">"若该邮件含有未下载的附件，如何转发该邮件？"</string>
-  <string name="confirm_forward_normal">"下载完成后发送"</string>
-  <string name="confirm_forward_drop_unloaded">"舍弃未完成的附件"</string>
+  <string name="load_more_summary">点击此处载入剩余信息</string>
+  <string name="fetching_message">正在获取信息\u2026</string>
 </resources>

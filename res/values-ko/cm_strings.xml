@@ -16,4 +16,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="load_more_summary">여기를 탭하여 메시지의 나머지 부분을 로드</string>
+  <string name="fetching_message">메시지 받아오는 중\u2026</string>
 </resources>

@@ -16,4 +16,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="load_more_summary">Az üzenet folytatásának megtekintéséhez érintse meg itt</string>
+  <string name="fetching_message">Üzenet betöltése\u2026</string>
 </resources>

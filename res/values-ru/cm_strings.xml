@@ -16,4 +16,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="load_more_summary">Нажмите, чтобы загрузить оставшуюся часть сообщения</string>
+  <string name="fetching_message">Загрузка сообщения\u2026</string>
 </resources>
