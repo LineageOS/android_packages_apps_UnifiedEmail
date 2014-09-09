@@ -19,6 +19,5 @@
 <resources>
     <style name="TwoPaneConversationList">
         <item name="android:paddingEnd">@dimen/two_pane_tl_side</item>
-        <item name="android:paddingTop">@dimen/two_pane_tl_top</item>
     </style>
 </resources>

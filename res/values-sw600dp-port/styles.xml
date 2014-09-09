@@ -19,6 +19,11 @@
 <resources>
     <style name="TwoPaneConversationList">
         <item name="android:paddingRight">@dimen/two_pane_tl_side</item>
+    </style>
+
+    <style name="ConversationListFade" parent="@style/ConversationListFadeBase">
         <item name="android:paddingTop">@dimen/two_pane_tl_top</item>
+        <item name="android:paddingBottom">@dimen/two_pane_tl_top</item>
+        <item name="android:clipToPadding">false</item>
     </style>
 </resources>
