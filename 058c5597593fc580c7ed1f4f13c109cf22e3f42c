@@ -16,6 +16,23 @@
       "revId": "058c5597593fc580c7ed1f4f13c109cf22e3f42c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1b2928_15f3c79f",
+        "filename": "res/values/cm_strings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 2881
+      },
+      "writtenOn": "2014-09-09T02:29:38Z",
+      "side": 1,
+      "message": "There is no such thing as a \"server copy\" for POP accounts, so forwarding a message and selecting \"Use server copy\" will result in a message without an attachment.\n\nThis string is not correct as it is now.",
+      "revId": "058c5597593fc580c7ed1f4f13c109cf22e3f42c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
