@@ -223,4 +223,6 @@
 
     <dimen name="account_item_name_start_padding">16dp</dimen>
     <dimen name="account_item_name_end_padding">8dp</dimen>
+
+    <dimen name="action_bar_content_inset_start">72dp</dimen>
 </resources>
