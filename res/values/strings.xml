@@ -91,10 +91,6 @@
     <string name="attachment_permission_denied">Permission denied for the attachment.</string>
     <!-- Displayed for one second after trying to send with no recipients in To field [CHAR LIMIT=200]-->
     <string name="recipient_needed">Add at least one recipient.</string>
-    <!-- Title for recipient error dialog [CHAR LIMIT=200]-->
-    <string name="recipient_error_dialog_title">Recipient error</string>
-    <!-- Title for send confirmation dialog [CHAR LIMIT=200]-->
-    <string name="confirm_send_title">Send message?</string>
     <!-- Messages for send confirmation dialog [CHAR LIMIT=100]-->
     <string name="confirm_send_message_with_no_subject">There\'s no text in the message subject.</string>
     <string name="confirm_send_message_with_no_body">There\'s no text in the message body.</string>
@@ -225,12 +221,6 @@
     <string name="preview_attachment">Preview</string>
     <!-- Read email screen, button name. Save an attachment to sd card. [CHAR LIMIT=10] -->
     <string name="save_attachment">Save</string>
-    <!-- Read email screen, button name. Cancel a downloading attachment. [CHAR LIMIT=10] -->
-    <string name="cancel_attachment">Cancel</string>
-    <!-- Read email screen, button name. Open an attachment. [CHAR LIMIT=10] -->
-    <string name="open_attachment">Open</string>
-    <!-- Read email screen, button name. Install an attachment. [CHAR LIMIT=10] -->
-    <string name="install_attachment">Install</string>
     <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
     <string name="download_again">Download again</string>
     <!-- A supplemental option on attachments for apps to override. This string intentionally blank here. [CHAR LIMIT=20] -->
@@ -281,10 +271,6 @@
     <string name="contextmenu_map">Map</string>
     <!-- Menu item to share link  [CHAR LIMIT=50]-->
     <string name="contextmenu_sharelink">Share link</string>
-    <!-- Menu item that displays the help page for Gmail.  [CHAR LIMIT=50]-->
-    <string name="contextmenu_help">Help</string>
-    <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
-    <string name="contextmenu_feedback">Send feedback</string>
 
     <!-- Browse list item strings -->
     <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMIT=250] -->
@@ -468,12 +454,6 @@
          The message count is shown to the right of this text. [CHAR LIMIT=70] -->
     <plurals name="show_messages_read">
         <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
-    </plurals>
-    <!-- This string is used for accessibility purposes only. It is used when the user
-         taps on the collapsed block in collapsed mode when a conversation
-         has more than one read message. [CHAR LIMIT=UNLIMITED] -->
-    <plurals name="super_collapsed_loading_content_description">
-        <item quantity="other">Loading <xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
     </plurals>
     <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
     <string name="from_heading">From:</string>
