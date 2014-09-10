@@ -27,6 +27,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -2449,8 +2450,6 @@ public class ComposeActivity extends ActionBarActivity
 
     private void runSendOrSaveProviderCalls(SendOrSaveMessage sendOrSaveMessage,
             SendOrSaveCallback callback, ReplyFromAccount draftAccount) {
-        callback.initializeSendOrSave();
-
         final ReplyFromAccount selectedAccount = sendOrSaveMessage.mAccount;
         Message message = callback.getMessage();
         long messageId = message != null ? message.id : UIProvider.INVALID_MESSAGE_ID;
@@ -2637,14 +2636,20 @@ public class ComposeActivity extends ActionBarActivity
         private final Bundle mAttachmentFds;
 
         public SendOrSaveMessage(Context context, ReplyFromAccount account, ContentValues values,
-                String refMessageId, List<Attachment> attachments, boolean save) {
+                String refMessageId, List<Attachment> attachments, Bundle optionalAttachmentFds,
+                boolean save) {
             mAccount = account;
             mValues = values;
             mRefMessageId = refMessageId;
             mSave = save;
             mRequestId = mValues.hashCode() ^ hashCode();
 
-            mAttachmentFds = initializeAttachmentFds(context, attachments);
+            // If the attachments are already open for us (pre-JB), then don't open them again
+            if (optionalAttachmentFds != null) {
+                mAttachmentFds = optionalAttachmentFds;
+            } else {
+                mAttachmentFds = initializeAttachmentFds(context, attachments);
+            }
         }
 
         int requestId() {
@@ -2654,54 +2659,54 @@ public class ComposeActivity extends ActionBarActivity
         Bundle attachmentFds() {
             return mAttachmentFds;
         }
+    }
 
-        /**
-         * Opens {@link ParcelFileDescriptor} for each of the attachments.  This method must be
-         * called before the ComposeActivity finishes.
-         * Note: The caller is responsible for closing these file descriptors.
-         */
-        private static Bundle initializeAttachmentFds(final Context context,
-                final List<Attachment> attachments) {
-            if (attachments == null || attachments.size() == 0) {
-                return null;
-            }
-
-            final Bundle result = new Bundle(attachments.size());
-            final ContentResolver resolver = context.getContentResolver();
-
-            for (Attachment attachment : attachments) {
-                if (attachment == null || Utils.isEmpty(attachment.contentUri)) {
-                    continue;
-                }
-
-                ParcelFileDescriptor fileDescriptor;
-                try {
-                    fileDescriptor = resolver.openFileDescriptor(attachment.contentUri, "r");
-                } catch (FileNotFoundException e) {
-                    LogUtils.e(LOG_TAG, e, "Exception attempting to open attachment");
-                    fileDescriptor = null;
-                } catch (SecurityException e) {
-                    // We have encountered a security exception when attempting to open the file
-                    // specified by the content uri.  If the attachment has been cached, this
-                    // isn't a problem, as even through the original permission may have been
-                    // revoked, we have cached the file.  This will happen when saving/sending
-                    // a previously saved draft.
-                    // TODO(markwei): Expose whether the attachment has been cached through the
-                    // attachment object.  This would allow us to limit when the log is made, as
-                    // if the attachment has been cached, this really isn't an error
-                    LogUtils.e(LOG_TAG, e, "Security Exception attempting to open attachment");
-                    // Just set the file descriptor to null, as the underlying provider needs
-                    // to handle the file descriptor not being set.
-                    fileDescriptor = null;
-                }
-
-                if (fileDescriptor != null) {
-                    result.putParcelable(attachment.contentUri.toString(), fileDescriptor);
-                }
-            }
-
-            return result;
+    /**
+     * Opens {@link ParcelFileDescriptor} for each of the attachments.  This method must be
+     * called before the ComposeActivity finishes.
+     * Note: The caller is responsible for closing these file descriptors.
+     */
+    private static Bundle initializeAttachmentFds(final Context context,
+            final List<Attachment> attachments) {
+        if (attachments == null || attachments.size() == 0) {
+            return null;
         }
+
+        final Bundle result = new Bundle(attachments.size());
+        final ContentResolver resolver = context.getContentResolver();
+
+        for (Attachment attachment : attachments) {
+            if (attachment == null || Utils.isEmpty(attachment.contentUri)) {
+                continue;
+            }
+
+            ParcelFileDescriptor fileDescriptor;
+            try {
+                fileDescriptor = resolver.openFileDescriptor(attachment.contentUri, "r");
+            } catch (FileNotFoundException e) {
+                LogUtils.e(LOG_TAG, e, "Exception attempting to open attachment");
+                fileDescriptor = null;
+            } catch (SecurityException e) {
+                // We have encountered a security exception when attempting to open the file
+                // specified by the content uri.  If the attachment has been cached, this
+                // isn't a problem, as even through the original permission may have been
+                // revoked, we have cached the file.  This will happen when saving/sending
+                // a previously saved draft.
+                // TODO(markwei): Expose whether the attachment has been cached through the
+                // attachment object.  This would allow us to limit when the log is made, as
+                // if the attachment has been cached, this really isn't an error
+                LogUtils.e(LOG_TAG, e, "Security Exception attempting to open attachment");
+                // Just set the file descriptor to null, as the underlying provider needs
+                // to handle the file descriptor not being set.
+                fileDescriptor = null;
+            }
+
+            if (fileDescriptor != null) {
+                result.putParcelable(attachment.contentUri.toString(), fileDescriptor);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -3091,7 +3096,8 @@ public class ComposeActivity extends ActionBarActivity
     private int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
             Message message, final Message refMessage, final CharSequence quotedText,
             SendOrSaveCallback callback, boolean save, int composeMode,
-            ReplyFromAccount draftAccount, final ContentValues extraValues) {
+            ReplyFromAccount draftAccount, final ContentValues extraValues,
+            Bundle optionalAttachmentFds) {
         final ContentValues values = new ContentValues();
 
         final String refMessageId = refMessage != null ? refMessage.uri.toString() : "";
@@ -3167,7 +3173,7 @@ public class ComposeActivity extends ActionBarActivity
         }
 
         SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(context, replyFromAccount,
-                values, refMessageId, message.getAttachments(), save);
+                values, refMessageId, message.getAttachments(), optionalAttachmentFds, save);
         runSendOrSaveProviderCalls(sendOrSaveMessage, callback, draftAccount);
 
         LogUtils.i(LOG_TAG, "[compose] SendOrSaveMessage [%s] posted (isSave: %s) - " +
@@ -3244,11 +3250,35 @@ public class ComposeActivity extends ActionBarActivity
 
             @Override
             public void initializeSendOrSave() {
+                final Intent i = new Intent(ComposeActivity.this, EmptyService.class);
+
+                // API 16+ allows for setClipData. For pre-16 we are going to open the fds
+                // on the main thread.
+                if (Utils.isRunningJellybeanOrLater()) {
+                    // Grant the READ permission for the attachments to the service so that
+                    // as long as the service stays alive we won't hit PermissionExceptions.
+                    final ClipDescription desc = new ClipDescription("attachment_uris",
+                            new String[]{ClipDescription.MIMETYPE_TEXT_URILIST});
+                    ClipData clipData = null;
+                    for (Attachment a : mAttachmentsView.getAttachments()) {
+                        if (a != null && !Utils.isEmpty(a.contentUri)) {
+                            final ClipData.Item uriItem = new ClipData.Item(a.contentUri);
+                            if (clipData == null) {
+                                clipData = new ClipData(desc, uriItem);
+                            } else {
+                                clipData.addItem(uriItem);
+                            }
+                        }
+                    }
+                    i.setClipData(clipData);
+                    i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+
                 synchronized (PENDING_SEND_OR_SAVE_TASKS_NUM) {
                     if (PENDING_SEND_OR_SAVE_TASKS_NUM.getAndAdd(1) == 0) {
                         // Start service so we won't be killed if this app is
                         // put in the background.
-                        startService(new Intent(ComposeActivity.this, EmptyService.class));
+                        startService(i);
                     }
                 }
                 if (sTestSendOrSaveCallback != null) {
@@ -3312,13 +3342,23 @@ public class ComposeActivity extends ActionBarActivity
         setAccount(mReplyFromAccount.account);
 
         final Spanned body = removeComposingSpans(mBodyView.getText());
+        callback.initializeSendOrSave();
+
+        // For pre-JB we need to open the fds on the main thread
+        final Bundle attachmentFds;
+        if (!Utils.isRunningJellybeanOrLater()) {
+            attachmentFds = initializeAttachmentFds(this, mAttachmentsView.getAttachments());
+        } else {
+            attachmentFds = null;
+        }
+
         SEND_SAVE_TASK_HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 final Message msg = createMessage(mReplyFromAccount, mRefMessage, getMode(), body);
                 mRequestId = sendOrSaveInternal(ComposeActivity.this, mReplyFromAccount, msg,
                         mRefMessage, mQuotedTextView.getQuotedTextIfIncluded(), callback,
-                        save, mComposeMode, mDraftAccount, mExtraValues);
+                        save, mComposeMode, mDraftAccount, mExtraValues, attachmentFds);
             }
         });
 
