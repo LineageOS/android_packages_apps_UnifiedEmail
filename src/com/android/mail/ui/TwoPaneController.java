@@ -474,7 +474,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null && conversation != null) {
             if (mCurrentConversationJustPeeking) {
-                convList.clearActivated();
+                convList.clearChoicesAndActivated();
             } else {
                 convList.setActivated(conversation.position, different);
             }

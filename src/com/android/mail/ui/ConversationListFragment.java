@@ -755,10 +755,10 @@ public final class ConversationListFragment extends Fragment implements
         return isScrolling;
     }
 
-    private void clearChoicesAndActivated() {
+    protected void clearChoicesAndActivated() {
         final int currentChecked = mListView.getCheckedItemPosition();
         if (currentChecked != ListView.INVALID_POSITION) {
-            mListView.setItemChecked(mListView.getCheckedItemPosition(), false);
+            mListView.setItemChecked(currentChecked, false);
         }
     }
 
@@ -831,17 +831,7 @@ public final class ConversationListFragment extends Fragment implements
         }
 
         final int position = cursorPosition + mListAdapter.getPositionOffset(cursorPosition);
-
         setRawActivated(position, different);
-    }
-
-    public void clearActivated() {
-        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_SINGLE) {
-            final int pos = mListView.getCheckedItemPosition();
-            if (pos >= 0) {
-                mListView.setItemChecked(pos, false);
-            }
-        }
     }
 
     /**
