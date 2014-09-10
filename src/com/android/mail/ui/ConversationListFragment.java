@@ -65,6 +65,7 @@ import com.android.mail.utils.KeyboardUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.ViewUtils;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
@@ -160,7 +161,6 @@ public final class ConversationListFragment extends Fragment implements
     // Tracks if a onKey event was initiated from the listview (received ACTION_DOWN before
     // ACTION_UP). If not, the listview only receives ACTION_UP.
     private boolean mKeyInitiatedFromList;
-    private boolean mIsRtl;
 
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
@@ -469,7 +469,6 @@ public final class ConversationListFragment extends Fragment implements
         mListView.setOnKeyListener(this);
         mListView.setOnItemClickListener(this);
 
-        mIsRtl = Utils.isCurrentLocaleRtl();
         // For tablets, the default left focus is the mini-drawer
         if (mTabletDevice && mNextFocusStartId == 0) {
             mNextFocusStartId = R.id.current_account_avatar;
@@ -640,7 +639,7 @@ public final class ConversationListFragment extends Fragment implements
         if (view instanceof  SwipeableListView) {
             SwipeableListView list = (SwipeableListView) view;
             // Don't need to handle ENTER because it's auto-handled as a "click".
-            if (KeyboardUtils.isKeycodeDirectionEnd(keyCode, mIsRtl)) {
+            if (KeyboardUtils.isKeycodeDirectionEnd(keyCode, ViewUtils.isViewRtl(list))) {
                 if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                     if (mKeyInitiatedFromList) {
                         onListItemSelected(list.getSelectedView(), list.getSelectedItemPosition());
@@ -732,14 +731,6 @@ public final class ConversationListFragment extends Fragment implements
         }
         if (mFooterView != null) {
             mFooterView.onViewModeChanged(newMode);
-        }
-
-        // Set default navigation
-        if (ViewMode.isListMode(newMode)) {
-            mListView.setNextFocusRightId(R.id.conversation_list_view);
-        } else if (ViewMode.isConversationMode(newMode)) {
-            // This would only happen in two_pane
-            mListView.setNextFocusRightId(R.id.conversation_pager);
         }
     }
 
