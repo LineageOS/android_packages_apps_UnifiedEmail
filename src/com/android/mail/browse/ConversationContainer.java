@@ -1012,8 +1012,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        mOverlayAdapter.focusFirstMessageHeader();
-        return true;
+        if (mOverlayAdapter != null) {
+            mOverlayAdapter.focusFirstMessageHeader();
+            return true;
+        }
+        return false;
     }
 
     public void focusFirstMessageHeader() {
