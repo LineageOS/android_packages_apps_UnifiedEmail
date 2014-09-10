@@ -1117,9 +1117,4 @@ public class Utils {
         final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return (networkInfo != null) && networkInfo.isConnected();
     }
-
-    public static boolean isCurrentLocaleRtl() {
-        return TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) ==
-                ViewCompat.LAYOUT_DIRECTION_RTL;
-    }
 }
