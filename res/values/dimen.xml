@@ -225,4 +225,6 @@
     <dimen name="account_item_name_end_padding">8dp</dimen>
 
     <dimen name="action_bar_content_inset_start">72dp</dimen>
+    <dimen name="security_hold_text_width">240dp</dimen>
+    <dimen name="security_hold_view_text_size">18sp</dimen>
 </resources>
