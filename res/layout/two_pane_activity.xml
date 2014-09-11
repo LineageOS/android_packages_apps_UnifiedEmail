@@ -52,14 +52,14 @@
                 android:id="@+id/conversation_list_pane"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="left"
-                style="@style/TwoPaneConversationList" />
+                android:layout_gravity="left" />
 
             <com.android.mail.ui.ConversationViewFrame
                 android:id="@+id/conversation_pane"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="left">
+                android:layout_gravity="left"
+                android:foreground="@drawable/ic_vertical_shadow_end_4dp" >
 
                 <include layout="@layout/conversation_pager"
                     android:layout_width="match_parent"
@@ -71,7 +71,8 @@
                 android:id="@+id/miscellaneous_pane"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="left" />
+                android:layout_gravity="left"
+                android:foreground="@drawable/ic_vertical_shadow_end_4dp" />
 
             <include layout="@layout/floating_actions" />
 
