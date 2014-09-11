@@ -130,6 +130,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -218,8 +219,10 @@ public class ComposeActivity extends ActionBarActivity
     // the previously instantiated map.  If ComposeActivity.onCreate() is called, with a bundle
     // (restoring data from a previous instance), and the map hasn't been created, we will attempt
     // to populate the map with data stored in shared preferences.
-    // FIXME: values in this map are never read.
-    private static ConcurrentHashMap<Integer, Long> sRequestMessageIdMap = null;
+    private static final ConcurrentHashMap<Integer, Long> sRequestMessageIdMap =
+            new ConcurrentHashMap<Integer, Long>(10);
+    private static final Random sRandom = new Random(System.currentTimeMillis());
+
     /**
      * Notifies the {@code Activity} that the caller is an Email
      * {@code Activity}, so that the back behavior may be modified accordingly.
@@ -331,7 +334,7 @@ public class ComposeActivity extends ActionBarActivity
     protected Bundle mInnerSavedState;
     private ContentValues mExtraValues = null;
 
-    // FIXME: this variable is never read. related to sRequestMessageIdMap.
+    // This is used to track pending requests, refer to sRequestMessageIdMap
     private int mRequestId;
     private String mSignature;
     private Account[] mAccounts;
@@ -526,6 +529,16 @@ public class ComposeActivity extends ActionBarActivity
             quotedText = savedState.getCharSequence(EXTRA_QUOTED_TEXT);
 
             mExtraValues = savedState.getParcelable(EXTRA_VALUES);
+
+            // Get the draft id from the request id if there is one.
+            if (savedState.containsKey(EXTRA_REQUEST_ID)) {
+                final int requestId = savedState.getInt(EXTRA_REQUEST_ID);
+                if (sRequestMessageIdMap.containsKey(requestId)) {
+                    synchronized (mDraftLock) {
+                        mDraftId = sRequestMessageIdMap.get(requestId);
+                    }
+                }
+            }
         } else {
             account = obtainAccount(intent);
             action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
@@ -1513,10 +1526,17 @@ public class ComposeActivity extends ActionBarActivity
     }
 
     private void initFromDraftMessage(Message message) {
-        LogUtils.d(LOG_TAG, "Intializing draft from previous draft message: %s", message);
+        LogUtils.d(LOG_TAG, "Initializing draft from previous draft message: %s", message);
 
-        mDraft = message;
-        mDraftId = message.id;
+        synchronized (mDraftLock) {
+            // Draft id might already be set by the request to id map, if so we don't need to set it
+            if (mDraftId == UIProvider.INVALID_MESSAGE_ID) {
+                mDraftId = message.id;
+            } else {
+                message.id = mDraftId;
+            }
+            mDraft = message;
+        }
         mSubject.setText(message.subject);
         mForward = message.draftType == UIProvider.DraftType.FORWARD;
 
@@ -2444,27 +2464,26 @@ public class ComposeActivity extends ActionBarActivity
     public interface SendOrSaveCallback {
         void initializeSendOrSave();
         void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage, Message message);
-        Message getMessage();
+        long getMessageId();
         void sendOrSaveFinished(SendOrSaveMessage message, boolean success);
     }
 
     private void runSendOrSaveProviderCalls(SendOrSaveMessage sendOrSaveMessage,
-            SendOrSaveCallback callback, ReplyFromAccount draftAccount) {
-        final ReplyFromAccount selectedAccount = sendOrSaveMessage.mAccount;
-        Message message = callback.getMessage();
-        long messageId = message != null ? message.id : UIProvider.INVALID_MESSAGE_ID;
+            SendOrSaveCallback callback, ReplyFromAccount currReplyFromAccount,
+            ReplyFromAccount originalReplyFromAccount) {
+        long messageId = callback.getMessageId();
         // If a previous draft has been saved, in an account that is different
         // than what the user wants to send from, remove the old draft, and treat this
         // as a new message
-        if (draftAccount != null
-                && !selectedAccount.account.uri.equals(draftAccount.account.uri)) {
+        if (originalReplyFromAccount != null
+                && !currReplyFromAccount.account.uri.equals(originalReplyFromAccount.account.uri)) {
             if (messageId != UIProvider.INVALID_MESSAGE_ID) {
                 ContentResolver resolver = getContentResolver();
                 ContentValues values = new ContentValues();
                 values.put(BaseColumns._ID, messageId);
-                if (draftAccount.account.expungeMessageUri != null) {
+                if (originalReplyFromAccount.account.expungeMessageUri != null) {
                     new ContentProviderTask.UpdateTask()
-                            .run(resolver, draftAccount.account.expungeMessageUri,
+                            .run(resolver, originalReplyFromAccount.account.expungeMessageUri,
                                     values, null, null);
                 } else {
                     // TODO(mindyp) delete the conversation.
@@ -2475,7 +2494,7 @@ public class ComposeActivity extends ActionBarActivity
         }
 
         final long messageIdToSave = messageId;
-        sendOrSaveMessage(callback, messageIdToSave, sendOrSaveMessage, selectedAccount);
+        sendOrSaveMessage(callback, messageIdToSave, sendOrSaveMessage, currReplyFromAccount);
 
         if (!sendOrSaveMessage.mSave) {
             incrementRecipientsTimesContacted(
@@ -2627,22 +2646,20 @@ public class ComposeActivity extends ActionBarActivity
 
     @VisibleForTesting
     public static class SendOrSaveMessage {
-        final ReplyFromAccount mAccount;
+        final int mRequestId;
         final ContentValues mValues;
         final String mRefMessageId;
         @VisibleForTesting
         public final boolean mSave;
-        final int mRequestId;
         private final Bundle mAttachmentFds;
 
-        public SendOrSaveMessage(Context context, ReplyFromAccount account, ContentValues values,
+        public SendOrSaveMessage(Context context, int requestId, ContentValues values,
                 String refMessageId, List<Attachment> attachments, Bundle optionalAttachmentFds,
                 boolean save) {
-            mAccount = account;
+            mRequestId = requestId;
             mValues = values;
             mRefMessageId = refMessageId;
             mSave = save;
-            mRequestId = mValues.hashCode() ^ hashCode();
 
             // If the attachments are already open for us (pre-JB), then don't open them again
             if (optionalAttachmentFds != null) {
@@ -2650,10 +2667,6 @@ public class ComposeActivity extends ActionBarActivity
             } else {
                 mAttachmentFds = initializeAttachmentFds(context, attachments);
             }
-        }
-
-        int requestId() {
-            return mRequestId;
         }
 
         Bundle attachmentFds() {
@@ -3093,10 +3106,10 @@ public class ComposeActivity extends ActionBarActivity
         return mSubject.getText().toString();
     }
 
-    private int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
-            Message message, final Message refMessage, final CharSequence quotedText,
-            SendOrSaveCallback callback, boolean save, int composeMode,
-            ReplyFromAccount draftAccount, final ContentValues extraValues,
+    private void sendOrSaveInternal(Context context, int requestId,
+            ReplyFromAccount currReplyFromAccount, ReplyFromAccount originalReplyFromAccount,
+            Message message, Message refMessage, CharSequence quotedText,
+            SendOrSaveCallback callback, boolean save, int composeMode, ContentValues extraValues,
             Bundle optionalAttachmentFds) {
         final ContentValues values = new ContentValues();
 
@@ -3172,16 +3185,13 @@ public class ComposeActivity extends ActionBarActivity
             values.putAll(extraValues);
         }
 
-        SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(context, replyFromAccount,
+        SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(context, requestId,
                 values, refMessageId, message.getAttachments(), optionalAttachmentFds, save);
-        runSendOrSaveProviderCalls(sendOrSaveMessage, callback, draftAccount);
+        runSendOrSaveProviderCalls(sendOrSaveMessage, callback, currReplyFromAccount, originalReplyFromAccount);
 
         LogUtils.i(LOG_TAG, "[compose] SendOrSaveMessage [%s] posted (isSave: %s) - " +
-                        "body length: %d, attachment count: %d",
-                sendOrSaveMessage.requestId(), save, message.bodyText.length(),
+                "body length: %d, attachment count: %d", requestId, save, message.bodyText.length(),
                 message.getAttachmentCount(true));
-
-        return sendOrSaveMessage.requestId();
     }
 
     /**
@@ -3245,9 +3255,6 @@ public class ComposeActivity extends ActionBarActivity
         }
 
         final SendOrSaveCallback callback = new SendOrSaveCallback() {
-            // FIXME: unused
-            private int mRestoredRequestId;
-
             @Override
             public void initializeSendOrSave() {
                 final Intent i = new Intent(ComposeActivity.this, EmptyService.class);
@@ -3290,11 +3297,10 @@ public class ComposeActivity extends ActionBarActivity
             public void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage,
                     Message message) {
                 synchronized (mDraftLock) {
-                    mDraftAccount = sendOrSaveMessage.mAccount;
                     mDraftId = message.id;
                     mDraft = message;
                     if (sRequestMessageIdMap != null) {
-                        sRequestMessageIdMap.put(sendOrSaveMessage.requestId(), mDraftId);
+                        sRequestMessageIdMap.put(sendOrSaveMessage.mRequestId, mDraftId);
                     }
                     // Cache request message map, in case the process is killed
                     saveRequestMap();
@@ -3305,9 +3311,9 @@ public class ComposeActivity extends ActionBarActivity
             }
 
             @Override
-            public Message getMessage() {
+            public long getMessageId() {
                 synchronized (mDraftLock) {
-                    return mDraft;
+                    return mDraftId;
                 }
             }
 
@@ -3352,13 +3358,15 @@ public class ComposeActivity extends ActionBarActivity
             attachmentFds = null;
         }
 
+        // Generate a unique message id for this request
+        mRequestId = sRandom.nextInt();
         SEND_SAVE_TASK_HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 final Message msg = createMessage(mReplyFromAccount, mRefMessage, getMode(), body);
-                mRequestId = sendOrSaveInternal(ComposeActivity.this, mReplyFromAccount, msg,
-                        mRefMessage, mQuotedTextView.getQuotedTextIfIncluded(), callback,
-                        save, mComposeMode, mDraftAccount, mExtraValues, attachmentFds);
+                sendOrSaveInternal(ComposeActivity.this, mRequestId, mReplyFromAccount,
+                        mDraftAccount, msg, mRefMessage, mQuotedTextView.getQuotedTextIfIncluded(),
+                        callback, save, mComposeMode, mExtraValues, attachmentFds);
             }
         });
 
