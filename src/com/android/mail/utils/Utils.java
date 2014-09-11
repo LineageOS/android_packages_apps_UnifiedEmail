@@ -35,6 +35,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
+import android.support.annotation.Nullable;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 import android.text.SpannableString;
@@ -1048,7 +1049,7 @@ public class Utils {
         return -1;
     }
 
-    public static Address getAddress(Map<String, Address> cache, String emailStr) {
+    public static @Nullable Address getAddress(Map<String, Address> cache, String emailStr) {
         Address addr;
         synchronized (cache) {
             addr = cache.get(emailStr);
