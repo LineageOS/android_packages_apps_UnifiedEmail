@@ -31,8 +31,10 @@
     <color name="divider_color">#e5e5e5</color>
 
     <!-- Conversation List Item Colors -->
-    <color name="senders_text_color">@color/text_color_black</color>
-    <color name="subject_text_color">@color/text_color_black</color>
+    <color name="senders_text_color_unread">@color/text_color_black</color>
+    <color name="senders_text_color_read">@color/text_color_grey</color>
+    <color name="subject_text_color_unread">@color/text_color_black</color>
+    <color name="subject_text_color_read">@color/text_color_grey</color>
     <color name="snippet_text_color">@color/text_color_grey</color>
     <color name="date_text_color_unread">#4285f4</color>
     <color name="date_text_color_read">@color/text_color_grey</color>

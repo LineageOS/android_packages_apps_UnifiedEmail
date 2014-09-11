@@ -38,7 +38,8 @@ import com.android.mail.utils.FolderUri;
 
 public class WidgetConversationListItemViewBuilder {
     // Static colors
-    private static int SUBJECT_TEXT_COLOR;
+    private static int SUBJECT_TEXT_COLOR_READ;
+    private static int SUBJECT_TEXT_COLOR_UNREAD;
     private static int SNIPPET_TEXT_COLOR;
     private static int DATE_TEXT_COLOR_READ;
     private static int DATE_TEXT_COLOR_UNREAD;
@@ -113,7 +114,8 @@ public class WidgetConversationListItemViewBuilder {
         final Resources res = context.getResources();
 
         // Initialize colors
-        SUBJECT_TEXT_COLOR = res.getColor(R.color.subject_text_color);
+        SUBJECT_TEXT_COLOR_READ = res.getColor(R.color.subject_text_color_read);
+        SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
         SNIPPET_TEXT_COLOR = res.getColor(R.color.snippet_text_color);
         DATE_TEXT_COLOR_READ = res.getColor(R.color.date_text_color_read);
         DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
@@ -125,8 +127,8 @@ public class WidgetConversationListItemViewBuilder {
     /*
      * Add size, color and style to a given text
      */
-    private static CharSequence addStyle(CharSequence text, int size, int color) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(text);
+    private static SpannableStringBuilder addStyle(CharSequence text, int size, int color) {
+        final SpannableStringBuilder builder = new SpannableStringBuilder(text);
         builder.setSpan(
                 new AbsoluteSizeSpan(size), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         if (color != 0) {
@@ -152,7 +154,11 @@ public class WidgetConversationListItemViewBuilder {
 
         // Add style to date
         final int dateColor = isUnread ? DATE_TEXT_COLOR_UNREAD : DATE_TEXT_COLOR_READ;
-        final CharSequence styledDate = addStyle(date, dateFontSize, dateColor);
+        final SpannableStringBuilder dateBuilder = addStyle(date, dateFontSize, dateColor);
+        if (isUnread) {
+            dateBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, date.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
 
         subject = Conversation.getSubjectForDisplay(context, null /* badgeText */, subject);
         final SpannableStringBuilder subjectBuilder = new SpannableStringBuilder(subject);
@@ -160,7 +166,8 @@ public class WidgetConversationListItemViewBuilder {
             subjectBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        final CharacterStyle subjectStyle = new ForegroundColorSpan(SUBJECT_TEXT_COLOR);
+        final int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
+        final CharacterStyle subjectStyle = new ForegroundColorSpan(subjectColor);
         subjectBuilder.setSpan(subjectStyle, 0, subjectBuilder.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         final CharSequence styledSubject = addStyle(subjectBuilder, subjectFontSize, 0);
@@ -180,7 +187,7 @@ public class WidgetConversationListItemViewBuilder {
         final RemoteViews remoteViews = new RemoteViews(
                 context.getPackageName(), R.layout.widget_conversation_list_item);
         remoteViews.setTextViewText(R.id.widget_senders, senders);
-        remoteViews.setTextViewText(R.id.widget_date, styledDate);
+        remoteViews.setTextViewText(R.id.widget_date, dateBuilder);
         remoteViews.setTextViewText(R.id.widget_subject, styledSubject);
         remoteViews.setTextViewText(R.id.widget_snippet, styledSnippet);
         if (paperclipBitmap != null) {
