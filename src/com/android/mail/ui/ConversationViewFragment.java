@@ -29,6 +29,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.IdRes;
+import android.support.annotation.Nullable;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
@@ -1013,9 +1014,13 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         mWebView.getSettings().setBlockNetworkImage(false);
 
         final Address sender = getAddress(senderRawAddress);
+        if (sender == null) {
+            // Don't need to unblock any images
+            return;
+        }
         final MessageCursor cursor = getMessageCursor();
 
-        final List<String> messageDomIds = new ArrayList<String>();
+        final List<String> messageDomIds = new ArrayList<>();
 
         int pos = -1;
         while (cursor.moveToPosition(++pos)) {
@@ -1090,7 +1095,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         return positions;
     }
 
-    protected Address getAddress(String rawFrom) {
+    protected @Nullable Address getAddress(String rawFrom) {
         return Utils.getAddress(mAddressCache, rawFrom);
     }
 
@@ -1397,7 +1402,13 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 while (cursor.moveToPosition(++pos)) {
                     final ConversationMessage msg = cursor.getMessage();
                     if (TextUtils.equals(domId, mTemplates.getMessageDomId(msg))) {
-                        return getAddress(msg.getFrom()).getAddress();
+                        final Address address = getAddress(msg.getFrom());
+                        if (address != null) {
+                            return address.getAddress();
+                        } else {
+                            // Fall through to return an empty string
+                            break;
+                        }
                     }
                 }
 
