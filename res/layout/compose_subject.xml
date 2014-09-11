@@ -31,6 +31,6 @@
 
     </LinearLayout>
 
-    <View style="@style/RecipientComposeFieldSpacer"/>
+    <View style="@style/DefaultDividerStyle"/>
 
 </LinearLayout>
