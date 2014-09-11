@@ -50,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:src="@drawable/ic_ellipsis_24dp"
+            android:contentDescription="@string/drawer_open"
             style="@style/MiniDrawerFolderStyle" />
 
         <Space
