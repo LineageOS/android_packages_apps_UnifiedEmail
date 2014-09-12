@@ -465,6 +465,18 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="ActionBarTextAppearanceLargeStyle" parent="@android:style/TextAppearance.Holo.Widget.PopupMenu.Large">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+
+    <style name="ActionBarTextAppearanceSmallStyle" parent="@android:style/TextAppearance.Holo.Widget.PopupMenu.Small">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+
+    <style name="ActionBarDividerlessListViewStyle" parent="@android:style/Widget.Holo.ListView">
+        <item name="android:divider">@null</item>
+    </style>
+
     <style name="WaitFragmentTitleBase" parent="@android:style/Widget.Holo.TextView" />
 
     <style name="WaitFragmentTitle" parent="@style/WaitFragmentTitleBase">
