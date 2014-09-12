@@ -29,11 +29,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
@@ -145,7 +142,6 @@ public class ConversationItemView extends View
     private static int sCabAnimationDuration;
     private static int sBadgePaddingExtraWidth;
     private static int sBadgeRoundedCornerRadius;
-    private static int sFolderRoundedCornerRadius;
 
     // Static paints.
     private static final TextPaint sPaint = new TextPaint();
@@ -201,10 +197,7 @@ public class ConversationItemView extends View
     private final TextView mSnippetTextView;
     private int mGadgetMode;
 
-    private static int sFoldersStartPadding;
-    private static int sFoldersInnerPadding;
     private static int sFoldersMaxCount;
-    private static int sFoldersOverflowGradientPadding;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
     private static TextAppearanceSpan sSubjectTextReadSpan;
     private static TextAppearanceSpan sBadgeTextSpan;
@@ -245,13 +238,26 @@ public class ConversationItemView extends View
      * Handles displaying folders in a conversation header view.
      */
     static class ConversationItemFolderDisplayer extends FolderDisplayer {
-
         private final BidiFormatter mFormatter;
         private int mFoldersCount;
 
         public ConversationItemFolderDisplayer(Context context, BidiFormatter formatter) {
             super(context);
             mFormatter = formatter;
+        }
+
+        @Override
+        protected void initializeDrawableResources() {
+            super.initializeDrawableResources();
+            final Resources res = mContext.getResources();
+            mFolderDrawableResources.overflowGradientPadding =
+                    res.getDimensionPixelOffset(R.dimen.folder_tl_gradient_padding);
+            mFolderDrawableResources.folderHorizontalPadding =
+                    res.getDimensionPixelOffset(R.dimen.folder_tl_cell_content_padding);
+            mFolderDrawableResources.folderVerticalPadding =
+                    res.getDimensionPixelOffset(R.dimen.folder_tl_top_bottom_padding);
+            mFolderDrawableResources.folderFontSize =
+                    res.getDimensionPixelOffset(R.dimen.folder_tl_font_size);
         }
 
         @Override
@@ -272,104 +278,39 @@ public class ConversationItemView extends View
         }
 
         /**
-         * Helper function to calculate exactly how much space the displayed folders should take.
-         * @return an array of integers that signifies the length in dp.
-         */
-        private MeasurementWrapper measureFolderDimen(ConversationItemViewCoordinates coordinates) {
-            // This signifies the absolute max for each folder cell, no exceptions.
-            final int maxCellWidth = coordinates.folderCellWidth;
-
-            final int numDisplayedFolders = Math.min(sFoldersMaxCount, mFoldersSortedSet.size());
-            if (numDisplayedFolders == 0) {
-                return new MeasurementWrapper(new int[0], new boolean[0]);
-            }
-
-            // This variable is calculated based on the number of folders we are displaying
-            final int maxAllowedCellSize = Math.min(maxCellWidth, (coordinates.folderLayoutWidth -
-                    (numDisplayedFolders - 1) * sFoldersStartPadding) / numDisplayedFolders);
-            final int[] measurements = new int[numDisplayedFolders];
-            final boolean[] overflow = new boolean[numDisplayedFolders];
-            final MeasurementWrapper result = new MeasurementWrapper(measurements, overflow);
-
-            int count = 0;
-            int missingWidth = 0;
-            int extraWidth = 0;
-            for (Folder f : mFoldersSortedSet) {
-                if (count > numDisplayedFolders - 1) {
-                    break;
-                }
-
-                final String folderString = f.name;
-                final int neededWidth = (int) sFoldersPaint.measureText(folderString) +
-                        2 * sFoldersInnerPadding;
-
-                if (neededWidth > maxAllowedCellSize) {
-                    // What we can take from others is the minimum of the width we need to borrow
-                    // and the width we are allowed to borrow.
-                    final int borrowedWidth = Math.min(neededWidth - maxAllowedCellSize,
-                            maxCellWidth - maxAllowedCellSize);
-                    final int extraWidthLeftover = extraWidth - borrowedWidth;
-                    if (extraWidthLeftover >= 0) {
-                        measurements[count] = Math.min(neededWidth, maxCellWidth);
-                        extraWidth = extraWidthLeftover;
-                    } else {
-                        measurements[count] = maxAllowedCellSize + extraWidth;
-                        extraWidth = 0;
-                    }
-                    missingWidth = -extraWidthLeftover;
-                    overflow[count] = neededWidth > measurements[count];
-                } else {
-                    extraWidth = maxAllowedCellSize - neededWidth;
-                    measurements[count] = neededWidth;
-                    if (missingWidth > 0) {
-                        if (extraWidth >= missingWidth) {
-                            measurements[count - 1] += missingWidth;
-                            extraWidth -= missingWidth;
-                            overflow[count - 1] = false;
-                        } else {
-                            measurements[count - 1] += extraWidth;
-                            extraWidth = 0;
-                        }
-                    }
-                    missingWidth = 0;
-                }
-
-                count++;
-            }
-
-            return result;
-        }
-
-        /**
          * @return how much total space the folders list requires.
          */
         private int measureFolders(ConversationItemViewCoordinates coordinates) {
-            int[] sizes = measureFolderDimen(coordinates).measurements;
-            return sumWidth(sizes);
+            final int[] measurements = measureFolderDimen(
+                    mFoldersSortedSet, coordinates.folderCellWidth, coordinates.folderLayoutWidth,
+                    mFolderDrawableResources.folderInBetweenPadding,
+                    mFolderDrawableResources.folderHorizontalPadding, sFoldersMaxCount,
+                    sFoldersPaint);
+            return sumWidth(measurements);
         }
 
         private int sumWidth(int[] arr) {
             int sum = 0;
-            for (int i = 0; i < arr.length; i++) {
-                sum += arr[i];
+            for (int i : arr) {
+                sum += i;
             }
-            return sum + (arr.length - 1) * sFoldersStartPadding;
+            return sum + (arr.length - 1) * mFolderDrawableResources.folderInBetweenPadding;
         }
 
-        public void drawFolders(
-                Canvas canvas, ConversationItemViewCoordinates coordinates, boolean isRtl) {
+        public void drawFolders(Canvas canvas, ConversationItemViewCoordinates coordinates,
+                boolean isRtl) {
             if (mFoldersCount == 0) {
                 return;
             }
 
-            final MeasurementWrapper wrapper = measureFolderDimen(coordinates);
-            final int[] measurements = wrapper.measurements;
-            final boolean[] overflow = wrapper.overflow;
+            final int[] measurements = measureFolderDimen(
+                    mFoldersSortedSet, coordinates.folderCellWidth, coordinates.folderLayoutWidth,
+                    mFolderDrawableResources.folderInBetweenPadding,
+                    mFolderDrawableResources.folderHorizontalPadding, sFoldersMaxCount,
+                    sFoldersPaint);
 
             final int right = coordinates.foldersRight;
             final int y = coordinates.foldersY;
-            final int height = coordinates.foldersHeight;
-            final int textBottomPadding = coordinates.foldersTextBottomPadding;
 
             sFoldersPaint.setTextSize(coordinates.foldersFontSize);
             sFoldersPaint.setTypeface(coordinates.foldersTypeface);
@@ -380,134 +321,21 @@ public class ConversationItemView extends View
             int xStart = (isRtl) ? coordinates.snippetX + width : right - width;
 
             int index = 0;
-            for (Folder f : mFoldersSortedSet) {
+            for (Folder folder : mFoldersSortedSet) {
                 if (index > foldersCount - 1) {
                     break;
                 }
 
-                final String folderString = f.name;
-                final int fgColor = f.getForegroundColor(mDefaultFgColor);
-                final int bgColor = f.getBackgroundColor(mDefaultBgColor);
-
-                // Draw the box.
-                sFoldersPaint.setColor(bgColor);
-                sFoldersPaint.setStyle(Paint.Style.FILL);
-                final int folderLeft = (isRtl) ? xStart - measurements[index] : xStart;
-                final int folderRight = (isRtl) ? xStart : xStart + measurements[index];
-                final RectF rect =
-                        new RectF(folderLeft, y, folderRight, y + height);
-                canvas.drawRoundRect(rect, sFolderRoundedCornerRadius, sFolderRoundedCornerRadius,
-                        sFoldersPaint);
-
-                // Draw the text based on the language locale and layout direction.
-                final boolean isTextRtl = mFormatter.isRtl(folderString);
-                sFoldersPaint.setColor(fgColor);
-                sFoldersPaint.setStyle(Paint.Style.FILL);
-
-                // Compute the text/gradient indices
-                final int textLength = (int) sFoldersPaint.measureText(folderString);
-                final int gradientX0;
-                final int gradientX1;
-                final int textX;
-
-/***************************************************************************************************
- * measurements[index] - the actual folder chip rectangle.                                         *
- * textLength          - the length of the folder's full name (can be longer than                  *
- *                         the actual chip, which is what overflow gradient is for).               *
- * innerPadding        - the padding between the text and the chip edge.                           *
- * overflowPadding     - the padding between start of overflow and the chip edge.                  *
- *                                                                                                 *
- *                                                                                                 *
- * RTL layout and text.                                                                            *
- *                                                                                                 *
- *                                                                                     xStart      *
- *                      |<--------------------- measurements[index] --------------------->|        *
- *        |<-------------------------textLength----------------------->|                  |        *
- *        |             |<----- overflowPadding ----->|                                   |        *
- *        |             |<- innerPadding ->|<-------->|<-------------->|<- innerPadding ->|        *
- *       textX                            gX1        gX0                                           *
- *                                                                                                 *
- *                                                                                                 *
- * Layout is RTL and the text is in a LTR language.                                                *
- *                                                                                                 *
- *                                                                       xStart                    *
- *        |<--------------------- measurements[index] --------------------->|                      *
- *        |                  |<-------------------------textLength------------------------->|      *
- *        |                                   |<----- overflowPadding ----->|                      *
- *        |<- innerPadding ->|<-------------->|<-------->|<- innerPadding ->|                      *
- *                         textX             gX0        gX1                                        *
- *                                                                                                 *
- *                                                                                                 *
- * Layout is LTR but the text is in a RTL language.                                                *
- *                                                                                                 *
- *                    xStart                                                                       *
- *                      |<--------------------- measurements[index] --------------------->|        *
- *        |<-------------------------textLength----------------------->|                  |        *
- *        |             |<----- overflowPadding ----->|                                   |        *
- *        |             |<- innerPadding ->|<-------->|<-------------->|<- innerPadding ->|        *
- *       textX                            gX1        gX0                                           *
- *                                                                                                 *
- *                                                                                                 *
- * LTR layout and text.                                                                            *
- *                                                                                                 *
- *      xStart                                                                                     *
- *        |<--------------------- measurements[index] --------------------->|                      *
- *        |                  |<-------------------------textLength------------------------->|      *
- *        |                                   |<----- overflowPadding ----->|                      *
- *        |<- innerPadding ->|<-------------->|<-------->|<- innerPadding ->|                      *
- *                         textX             gX0        gX1                                        *
- *                                                                                                 *
- **************************************************************************************************/
-                if (isRtl) {
-                    if (isTextRtl) {
-                        // LAYOUT AND TEXT RTL
-                        gradientX0 = xStart - measurements[index] + sFoldersOverflowGradientPadding;
-                        gradientX1 = xStart - measurements[index] + sFoldersInnerPadding;
-                        textX = xStart - sFoldersInnerPadding - textLength;
-                    } else {
-                        // LAYOUT RTL, TEXT LTR
-                        gradientX0 = xStart - sFoldersOverflowGradientPadding;
-                        gradientX1 = xStart - sFoldersInnerPadding;
-                        textX = xStart - measurements[index] + sFoldersInnerPadding;
-                    }
-                } else {
-                    if (isTextRtl) {
-                        // LAYOUT LTR, TEXT RTL
-                        gradientX0 = xStart + sFoldersOverflowGradientPadding;
-                        gradientX1 = xStart + sFoldersInnerPadding;
-                        textX = xStart + measurements[index] - sFoldersInnerPadding - textLength;
-                    } else {
-                        // LAYOUT AND TEXT LTR
-                        gradientX0 = xStart + measurements[index] - sFoldersOverflowGradientPadding;
-                        gradientX1 = xStart + measurements[index] - sFoldersInnerPadding;
-                        textX = xStart + sFoldersInnerPadding;
-                    }
-                }
-
-                // Draw the text and the possible overflow gradient
-                if (overflow[index]) {
-                    final Shader shader = new LinearGradient(gradientX0, y, gradientX1, y, fgColor,
-                            Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
-                    sFoldersPaint.setShader(shader);
-                }
-                canvas.drawText(folderString, textX, y + height - textBottomPadding, sFoldersPaint);
-                if (overflow[index]) {
-                    sFoldersPaint.setShader(null);
-                }
+                final int actualStart = isRtl ? xStart - measurements[index] : xStart;
+                final int height = (int) coordinates.foldersFontSize +
+                        2 * mFolderDrawableResources.folderVerticalPadding;
+                drawFolder(canvas, actualStart, y, measurements[index], height, folder,
+                        mFolderDrawableResources, mFormatter, sFoldersPaint);
 
                 // Increment the starting position accordingly for the next item
-                final int usedWidth = measurements[index++] + sFoldersStartPadding;
+                final int usedWidth = measurements[index++] +
+                        mFolderDrawableResources.folderInBetweenPadding;
                 xStart += (isRtl) ? -usedWidth : usedWidth;
-            }
-        }
-
-        private static class MeasurementWrapper {
-            final int[] measurements;
-            final boolean[] overflow;
-
-            public MeasurementWrapper(int[] m, boolean[] o) {
-                measurements = m;
-                overflow = o;
             }
         }
     }
@@ -618,17 +446,11 @@ public class ConversationItemView extends View
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
             sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
-            sFoldersStartPadding = res.getDimensionPixelOffset(R.dimen.folders_start_padding);
-            sFoldersInnerPadding = res.getDimensionPixelOffset(R.dimen.folder_cell_content_padding);
             sFoldersMaxCount = res.getInteger(R.integer.conversation_list_max_folder_count);
-            sFoldersOverflowGradientPadding =
-                    res.getDimensionPixelOffset(R.dimen.folders_gradient_padding);
             sCabAnimationDuration = res.getInteger(R.integer.conv_item_view_cab_anim_duration);
             sBadgePaddingExtraWidth = res.getDimensionPixelSize(R.dimen.badge_padding_extra_width);
             sBadgeRoundedCornerRadius =
                     res.getDimensionPixelSize(R.dimen.badge_rounded_corner_radius);
-            sFolderRoundedCornerRadius =
-                    res.getDimensionPixelOffset(R.dimen.folder_rounded_corner_radius);
             sDividerPaint.setColor(res.getColor(R.color.divider_color));
             sDividerHeight = res.getDimensionPixelSize(R.dimen.divider_height);
         }
@@ -921,7 +743,7 @@ public class ConversationItemView extends View
             mBackgrounds.put(resourceId, drawable);
         }
         if (getBackground() != drawable) {
-            super.setBackgroundDrawable(drawable);
+            super.setBackground(drawable);
         }
         Utils.traceEndSection();
     }
