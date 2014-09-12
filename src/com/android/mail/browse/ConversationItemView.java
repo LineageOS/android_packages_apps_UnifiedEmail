@@ -67,6 +67,7 @@ import com.android.mail.analytics.Analytics;
 import com.android.mail.bitmap.CheckableContactFlipDrawable;
 import com.android.mail.bitmap.ContactDrawable;
 import com.android.mail.perf.Timer;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -77,7 +78,6 @@ import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationCheckedSet;
 import com.android.mail.ui.ConversationSetObserver;
-import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.SwipeableListView;
@@ -89,12 +89,11 @@ import com.android.mail.utils.Utils;
 import com.android.mail.utils.ViewUtils;
 import com.google.common.annotations.VisibleForTesting;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class ConversationItemView extends View
-        implements SwipeableItemView, ToggleableItem, InvalidateCallback, ConversationSetObserver,
+        implements SwipeableItemView, ToggleableItem, ConversationSetObserver,
         BadgeSpan.BadgeSpanDimensions {
 
     // Timer.
@@ -184,7 +183,7 @@ public class ConversationItemView extends View
 
     private final Context mContext;
 
-    public ConversationItemViewModel mHeader;
+    private ConversationItemViewModel mHeader;
     private boolean mDownEvent;
     private boolean mChecked = false;
     private ConversationCheckedSet mCheckedConversationSet;
@@ -194,7 +193,7 @@ public class ConversationItemView extends View
     private boolean mDividerEnabled;
     private AnimatedAdapter mAdapter;
     private float mAnimatedHeightFraction = 1.0f;
-    private final String mAccount;
+    private final Account mAccount;
     private ControllableActivity mActivity;
     private final TextView mSendersTextView;
     private final TextView mSubjectTextView;
@@ -512,7 +511,7 @@ public class ConversationItemView extends View
         }
     }
 
-    public ConversationItemView(Context context, String account) {
+    public ConversationItemView(Context context, Account account) {
         super(context);
         Utils.traceBeginSection("CIVC constructor");
         setClickable(true);
@@ -640,8 +639,8 @@ public class ConversationItemView extends View
             final boolean swipeEnabled, final boolean importanceMarkersEnabled,
             final boolean showChevronsEnabled, final AnimatedAdapter adapter) {
         Utils.traceBeginSection("CIVC.bind");
-        bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity,
-                null /* conversationItemAreaClickListener */,
+        bind(ConversationItemViewModel.forConversation(mAccount.getEmailAddress(), conversation),
+                activity, null /* conversationItemAreaClickListener */,
                 set, folder, checkboxOrSenderImage, swipeEnabled, importanceMarkersEnabled,
                 showChevronsEnabled, adapter, -1 /* backgroundOverrideResId */,
                 null /* photoBitmap */, false /* useFullMargins */, true /* mDividerEnabled */);
@@ -680,8 +679,7 @@ public class ConversationItemView extends View
             final boolean newlyBound = header.conversation.id != mHeader.conversation.id;
             // If this was previously bound to a different conversation, remove any contact photo
             // manager requests.
-            if (newlyBound || (mHeader.displayableNames != null && !mHeader
-                    .displayableNames.equals(header.displayableNames))) {
+            if (newlyBound || (!mHeader.displayableNames.equals(header.displayableNames))) {
                 mSendersImageView.getContactDrawable().unbind();
             }
 
@@ -951,18 +949,20 @@ public class ConversationItemView extends View
                     .createMessageInfo(context, mHeader.conversation, true);
             int maxChars = ConversationItemViewCoordinates.getSendersLength(context,
                     mCoordinates.getMode(), mHeader.conversation.hasAttachments);
-            mHeader.displayableEmails = new ArrayList<String>();
-            mHeader.displayableNames = new ArrayList<String>();
-            mHeader.styledNames = new ArrayList<SpannableString>();
+
+            mHeader.mSenderAvatarModel.clear();
+            mHeader.displayableNames.clear();
+            mHeader.styledNames.clear();
 
             SendersView.format(context, mHeader.conversation.conversationInfo,
                     mHeader.messageInfoString.toString(), maxChars, mHeader.styledNames,
-                    mHeader.displayableNames, mHeader.displayableEmails, mAccount,
-                    mDisplayedFolder.shouldShowRecipients(), true);
+                    mHeader.displayableNames, mHeader.mSenderAvatarModel,
+                    mAccount.getEmailAddress(), mDisplayedFolder.shouldShowRecipients(), true);
 
-            if (mHeader.displayableEmails.isEmpty() && mHeader.hasDraftMessage) {
-                mHeader.displayableEmails.add(mAccount);
-                mHeader.displayableNames.add(mAccount);
+            if (mHeader.mSenderAvatarModel.isNotPopulated() && mHeader.hasDraftMessage) {
+                mHeader.mSenderAvatarModel.populate(mAccount.getDisplayName(),
+                        mAccount.getEmailAddress());
+                mHeader.displayableNames.add(mAccount.getDisplayName());
             }
 
             // If we have displayable senders, load their thumbnails
@@ -996,8 +996,7 @@ public class ConversationItemView extends View
     // is immutable.
     private void loadImages() {
         if (mGadgetMode != ConversationItemViewCoordinates.GADGET_CONTACT_PHOTO
-                || mHeader.displayableEmails == null
-                || mHeader.displayableEmails.isEmpty()) {
+                || mHeader.mSenderAvatarModel.isNotPopulated()) {
             return;
         }
         if (mCoordinates.contactImagesWidth <= 0 || mCoordinates.contactImagesHeight <= 0) {
@@ -1015,7 +1014,8 @@ public class ConversationItemView extends View
         final ContactDrawable drawable = mSendersImageView.getContactDrawable();
         drawable.setDecodeDimensions(mCoordinates.contactImagesWidth,
                 mCoordinates.contactImagesHeight);
-        drawable.bind(mHeader.displayableNames.get(0), mHeader.displayableEmails.get(0));
+        drawable.bind(mHeader.mSenderAvatarModel.getName(),
+                mHeader.mSenderAvatarModel.getEmailAddress());
         Utils.traceEndSection();
     }
 
@@ -1935,7 +1935,7 @@ public class ConversationItemView extends View
         return sScrollSlop;
     }
 
-    public String getAccount() {
-        return mAccount;
+    public String getAccountEmailAddress() {
+        return mAccount.getEmailAddress();
     }
 }
