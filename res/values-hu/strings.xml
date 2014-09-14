@@ -46,8 +46,6 @@
     <string name="generic_attachment_problem" msgid="4683974765387240723">"A fájlt nem lehet csatolni."</string>
     <string name="attachment_permission_denied" msgid="2274397783497640486">"A mellékletre vonatkozó jogosultság le van tiltva."</string>
     <string name="recipient_needed" msgid="319816879398937214">"Vegyen fel legalább egy címzettet."</string>
-    <string name="recipient_error_dialog_title" msgid="760741480291963706">"Hiba a címzettnél"</string>
-    <string name="confirm_send_title" msgid="4664971589247101530">"Elküldi az üzenetet?"</string>
     <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"Nincs szöveg az üzenet tárgyában."</string>
     <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"Nincs szöveg az üzenet törzsében."</string>
     <string name="confirm_send_message" msgid="6211518590166222735">"Elküldi az üzenetet?"</string>
@@ -103,9 +101,6 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> fájl"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"Előnézet"</string>
     <string name="save_attachment" msgid="375685179032130033">"Mentés"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"Mégse"</string>
-    <string name="open_attachment" msgid="6100396056314739761">"Megnyitás"</string>
-    <string name="install_attachment" msgid="8119470822958087928">"Telepítés"</string>
     <string name="download_again" msgid="8195787340878328119">"Letöltés újra"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"Információ"</string>
     <string name="no_application_found" msgid="7309485680354949680">"Egyetlen alkalmazás sem tudja megjeleníteni ezt a mellékletet."</string>
@@ -129,10 +124,6 @@
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"E-mail küldése"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"Térkép"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"Link megosztása"</string>
-    <string name="contextmenu_help" msgid="4209674157707873384">"Súgó"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"Visszajelzés"</string>
-    <!-- no translation found for num_selected (7990204488812654380) -->
-    <skip />
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> a következővel kapcsolatban: <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> ezen a napon: <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> a következővel kapcsolatban: <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> ekkor: <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="read_string" msgid="5495929677508576520">"beszélgetés elolvasva"</string>
@@ -225,9 +216,6 @@
     <string name="contact_info_string_default" msgid="6204228921864816351">"Névjegyinformációk megjelenítése"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> régebbi üzenet"</item>
-  </plurals>
-  <plurals name="super_collapsed_loading_content_description">
-    <item quantity="other" msgid="678491885491918982">"<xliff:g id="COUNT">%1$d</xliff:g> korábbi üzenet betöltése"</item>
   </plurals>
     <string name="from_heading" msgid="48290556829713090">"Feladó:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Válaszcím:"</string>
@@ -478,4 +466,6 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"Általános beállítások"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"Beállítások"</string>
     <string name="overflow_description" msgid="7886090597023240426">"További lehetőségek"</string>
+    <string name="security_hold_required_text" msgid="6619955920101834286">"Biztonsági frissítés szükséges a következőhöz: <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="update_security_text" msgid="3527335757205741077">"frissítés most"</string>
 </resources>

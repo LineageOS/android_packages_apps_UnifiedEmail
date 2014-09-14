@@ -46,8 +46,6 @@
     <string name="generic_attachment_problem" msgid="4683974765387240723">"ไม่สามารถแนบไฟล์"</string>
     <string name="attachment_permission_denied" msgid="2274397783497640486">"ระบบปฏิเสธสิทธิ์ในไฟล์แนบ"</string>
     <string name="recipient_needed" msgid="319816879398937214">"เพิ่มผู้รับอย่างน้อยหนึ่งราย"</string>
-    <string name="recipient_error_dialog_title" msgid="760741480291963706">"พบข้อผิดพลาดกับผู้รับ"</string>
-    <string name="confirm_send_title" msgid="4664971589247101530">"ส่งข้อความหรือไม่"</string>
     <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"ไม่มีหัวเรื่องข้อความ"</string>
     <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"ไม่มีเนื้อหาข้อความ"</string>
     <string name="confirm_send_message" msgid="6211518590166222735">"ส่งข้อความนี้หรือไม่"</string>
@@ -103,9 +101,6 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"ไฟล์ <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"ดูตัวอย่าง"</string>
     <string name="save_attachment" msgid="375685179032130033">"บันทึก"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"ยกเลิก"</string>
-    <string name="open_attachment" msgid="6100396056314739761">"เปิด"</string>
-    <string name="install_attachment" msgid="8119470822958087928">"ติดตั้ง"</string>
     <string name="download_again" msgid="8195787340878328119">"ดาวน์โหลดอีกครั้ง"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"ข้อมูล"</string>
     <string name="no_application_found" msgid="7309485680354949680">"ไม่มีแอปที่สามารถเปิดดูไฟล์แนบนี้ได้"</string>
@@ -129,10 +124,6 @@
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"ส่งอีเมล"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"แผนที่"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"แชร์ลิงก์"</string>
-    <string name="contextmenu_help" msgid="4209674157707873384">"ความช่วยเหลือ"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"ส่งความคิดเห็น"</string>
-    <!-- no translation found for num_selected (7990204488812654380) -->
-    <skip />
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> เกี่ยวกับ <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> วันที่ <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> เกี่ยวกับ <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> เวลา <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="read_string" msgid="5495929677508576520">"อ่านการสนทนาแล้ว"</string>
@@ -225,9 +216,6 @@
     <string name="contact_info_string_default" msgid="6204228921864816351">"แสดงข้อมูลติดต่อ"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> ข้อความเก่า"</item>
-  </plurals>
-  <plurals name="super_collapsed_loading_content_description">
-    <item quantity="other" msgid="678491885491918982">"กำลังโหลดข้อความเก่า <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
   </plurals>
     <string name="from_heading" msgid="48290556829713090">"จาก:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"ตอบกลับ:"</string>
@@ -412,10 +400,10 @@
     <item quantity="other" msgid="5422167728480739361">"<xliff:g id="COUNT">%1$d</xliff:g> ไฟล์แนบ"</item>
   </plurals>
     <string name="no_subject" msgid="5622708348540036959">"(ไม่มีหัวเรื่อง)"</string>
-    <string name="vacation_responder" msgid="5570132559074523806">"โปรแกรมช่วยตอบอีเมลขณะพักร้อน"</string>
-    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"โปรแกรมช่วยตอบอีเมลขณะพักร้อน"</string>
+    <string name="vacation_responder" msgid="5570132559074523806">"การช่วยตอบอีเมลอัตโนมัติ"</string>
+    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"การช่วยตอบอีเมลอัตโนมัติ"</string>
     <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"ข้อความ"</string>
-    <string name="send_to_contacts_text" msgid="124432913980620545">"ส่งไปยังที่อยู่ติดต่อของฉันเท่านั้น"</string>
+    <string name="send_to_contacts_text" msgid="124432913980620545">"ส่งไปยังรายชื่อติดต่อของฉันเท่านั้น"</string>
     <string name="send_to_domain_text" msgid="5064559546745918393">"ส่งไปยัง <xliff:g id="DOMAIN">%1$s</xliff:g> เท่านั้น"</string>
     <string name="pick_start_date_title" msgid="2274665037355224165">"เริ่ม"</string>
     <string name="pick_end_date_title" msgid="733396083649496600">"สิ้นสุด (ไม่บังคับ)"</string>
@@ -424,8 +412,8 @@
     <string name="custom_date" msgid="5794846334232367838">"กำหนดเอง"</string>
     <string name="date_none" msgid="1061426502665431412">"ไม่มี"</string>
     <string name="discard_changes" msgid="5699760550972324746">"ยกเลิกการเปลี่ยนแปลงหรือไม่"</string>
-    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"บันทึกการเปลี่ยนแปลงโปรแกรมช่วยตอบอีเมลขณะพักร้อนแล้ว"</string>
-    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"ยกเลิกการเปลี่ยนแปลงโปรแกรมช่วยตอบอีเมลขณะพักร้อน"</string>
+    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"บันทึกการเปลี่ยนแปลงการช่วยตอบอีเมลอัตโนมัติแล้ว"</string>
+    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"ยกเลิกการเปลี่ยนแปลงการช่วยตอบอีเมลอัตโนมัติ"</string>
     <string name="vacation_responder_off" msgid="4429909341193366667">"ปิด"</string>
     <string name="vacation_responder_on" msgid="4913238379320882449">"เปิด ตั้งแต่ <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"เปิด ตั้งแต่ <xliff:g id="START_DATE">%1$s</xliff:g> ถึง <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
@@ -478,4 +466,6 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"การตั้งค่าทั่วไป"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"การตั้งค่า"</string>
     <string name="overflow_description" msgid="7886090597023240426">"ตัวเลือกเพิ่มเติม"</string>
+    <string name="security_hold_required_text" msgid="6619955920101834286">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> ต้องทำการอัปเดตด้านความปลอดภัย"</string>
+    <string name="update_security_text" msgid="3527335757205741077">"อัปเดตเลย"</string>
 </resources>

@@ -46,8 +46,6 @@
     <string name="generic_attachment_problem" msgid="4683974765387240723">"无法附加文件。"</string>
     <string name="attachment_permission_denied" msgid="2274397783497640486">"没有权限添加附件。"</string>
     <string name="recipient_needed" msgid="319816879398937214">"请至少添加一位收件人。"</string>
-    <string name="recipient_error_dialog_title" msgid="760741480291963706">"收件人出错"</string>
-    <string name="confirm_send_title" msgid="4664971589247101530">"要发送邮件吗？"</string>
     <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"邮件主题中没有文字。"</string>
     <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"邮件正文中没有文字。"</string>
     <string name="confirm_send_message" msgid="6211518590166222735">"要发送此邮件吗？"</string>
@@ -103,9 +101,6 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> 文件"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"预览"</string>
     <string name="save_attachment" msgid="375685179032130033">"保存"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"取消"</string>
-    <string name="open_attachment" msgid="6100396056314739761">"打开"</string>
-    <string name="install_attachment" msgid="8119470822958087928">"安装"</string>
     <string name="download_again" msgid="8195787340878328119">"再次下载"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"信息"</string>
     <string name="no_application_found" msgid="7309485680354949680">"无应用可打开此附件，因此无法查看。"</string>
@@ -129,10 +124,6 @@
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"发送电子邮件"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"地图"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"分享链接"</string>
-    <string name="contextmenu_help" msgid="4209674157707873384">"帮助"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"发送反馈"</string>
-    <!-- no translation found for num_selected (7990204488812654380) -->
-    <skip />
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>；主题为<xliff:g id="SUBJECT">%3$s</xliff:g>；<xliff:g id="SNIPPET">%4$s</xliff:g>；<xliff:g id="DATE">%5$s</xliff:g>；<xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>；主题为<xliff:g id="SUBJECT">%3$s</xliff:g>；<xliff:g id="SNIPPET">%4$s</xliff:g>；<xliff:g id="TIME">%5$s</xliff:g>；<xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="read_string" msgid="5495929677508576520">"已读会话"</string>
@@ -171,8 +162,8 @@
     <string name="getting_messages" msgid="8403333791332403244">"正在获取您的邮件"</string>
     <string name="undo" msgid="8256285267701059609">"撤消"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="1701235480675303125">"正在删除<xliff:g id="COUNT">%1$d</xliff:g>个会话的星标"</item>
-    <item quantity="other" msgid="1154441830432477256">"正在删除<xliff:g id="COUNT">%1$d</xliff:g>个会话的星标"</item>
+    <item quantity="one" msgid="1701235480675303125">"正在取消<xliff:g id="COUNT">%1$d</xliff:g>个会话的星标"</item>
+    <item quantity="other" msgid="1154441830432477256">"正在取消<xliff:g id="COUNT">%1$d</xliff:g>个会话的星标"</item>
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3622533556738049499">"已忽略&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话"</item>
@@ -183,8 +174,8 @@
     <item quantity="other" msgid="664292592683692920">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话举报为垃圾邮件"</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="3680479171846552641">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话标记为非垃圾邮件"</item>
-    <item quantity="other" msgid="6351739502184556635">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话标记为非垃圾邮件"</item>
+    <item quantity="one" msgid="3680479171846552641">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为非垃圾邮件"</item>
+    <item quantity="other" msgid="6351739502184556635">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为非垃圾邮件"</item>
   </plurals>
   <plurals name="conversation_not_important">
     <item quantity="one" msgid="7432667428974709669">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话标记为不重要"</item>
@@ -214,8 +205,8 @@
     <string name="search_unsupported" msgid="2873920566477359177">"此帐户不支持搜索。"</string>
     <string name="add_label" msgid="3285338046038610902">"添加文件夹"</string>
   <plurals name="new_incoming_messages">
-    <item quantity="one" msgid="1532079301006372605">"有<xliff:g id="COUNT">%1$d</xliff:g>封新邮件"</item>
-    <item quantity="other" msgid="4085982174357328926">"有<xliff:g id="COUNT">%1$d</xliff:g>封新邮件"</item>
+    <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g>封新邮件"</item>
+    <item quantity="other" msgid="4085982174357328926">"<xliff:g id="COUNT">%1$d</xliff:g>封新邮件"</item>
   </plurals>
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g>&lt;a href=\'http://www.example.com\'&gt;查看详情&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"隐藏详细信息"</string>
@@ -225,9 +216,6 @@
     <string name="contact_info_string_default" msgid="6204228921864816351">"显示联系人信息"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g>封较早的邮件"</item>
-  </plurals>
-  <plurals name="super_collapsed_loading_content_description">
-    <item quantity="other" msgid="678491885491918982">"正在加载<xliff:g id="COUNT">%1$d</xliff:g>封较早的邮件"</item>
   </plurals>
     <string name="from_heading" msgid="48290556829713090">"发件人："</string>
     <string name="replyto_heading" msgid="8275255318292059079">"回复："</string>
@@ -478,4 +466,8 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"常规设置"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"设置"</string>
     <string name="overflow_description" msgid="7886090597023240426">"更多选项"</string>
+    <!-- no translation found for security_hold_required_text (6619955920101834286) -->
+    <skip />
+    <!-- no translation found for update_security_text (3527335757205741077) -->
+    <skip />
 </resources>

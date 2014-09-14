@@ -46,8 +46,6 @@
     <string name="generic_attachment_problem" msgid="4683974765387240723">"Impossibile allegare il file."</string>
     <string name="attachment_permission_denied" msgid="2274397783497640486">"Autorizzazione negata per l\'allegato."</string>
     <string name="recipient_needed" msgid="319816879398937214">"Aggiungi almeno un destinatario."</string>
-    <string name="recipient_error_dialog_title" msgid="760741480291963706">"Errore destinatario"</string>
-    <string name="confirm_send_title" msgid="4664971589247101530">"Inviare il messaggio?"</string>
     <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"Nessun testo presente nell\'oggetto del messaggio."</string>
     <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"Nessun testo presente nel corpo del messaggio."</string>
     <string name="confirm_send_message" msgid="6211518590166222735">"Inviare il messaggio?"</string>
@@ -103,9 +101,6 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"File <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"Anteprima"</string>
     <string name="save_attachment" msgid="375685179032130033">"Salva"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"Annulla"</string>
-    <string name="open_attachment" msgid="6100396056314739761">"Apri"</string>
-    <string name="install_attachment" msgid="8119470822958087928">"Installa"</string>
     <string name="download_again" msgid="8195787340878328119">"Scarica di nuovo"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"Informazioni"</string>
     <string name="no_application_found" msgid="7309485680354949680">"Nessuna applicazione può aprire questo allegato per la visualizzazione."</string>
@@ -129,10 +124,6 @@
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"Invia email"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"Mappa"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"Condividi link"</string>
-    <string name="contextmenu_help" msgid="4209674157707873384">"Guida"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"Invia feedback"</string>
-    <!-- no translation found for num_selected (7990204488812654380) -->
-    <skip />
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> in merito a <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> in data <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> in merito a <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> alle <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="read_string" msgid="5495929677508576520">"conversazione letta"</string>
@@ -225,9 +216,6 @@
     <string name="contact_info_string_default" msgid="6204228921864816351">"Mostra informazioni di contatto"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> messaggi meno recenti"</item>
-  </plurals>
-  <plurals name="super_collapsed_loading_content_description">
-    <item quantity="other" msgid="678491885491918982">"Caricamento di <xliff:g id="COUNT">%1$d</xliff:g> messaggi meno recenti in corso..."</item>
   </plurals>
     <string name="from_heading" msgid="48290556829713090">"Da:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Rispondi a:"</string>
@@ -478,4 +466,8 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"Impostazioni generali"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"Impostazioni"</string>
     <string name="overflow_description" msgid="7886090597023240426">"Altre opzioni"</string>
+    <!-- no translation found for security_hold_required_text (6619955920101834286) -->
+    <skip />
+    <!-- no translation found for update_security_text (3527335757205741077) -->
+    <skip />
 </resources>

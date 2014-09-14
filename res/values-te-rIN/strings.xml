@@ -46,8 +46,6 @@
     <string name="generic_attachment_problem" msgid="4683974765387240723">"ఫైల్‌ను జోడించడం సాధ్యపడలేదు."</string>
     <string name="attachment_permission_denied" msgid="2274397783497640486">"జోడింపుకి అనుమతి నిరాకరించబడింది."</string>
     <string name="recipient_needed" msgid="319816879398937214">"కనీసం ఒక స్వీకర్తను జోడించండి."</string>
-    <string name="recipient_error_dialog_title" msgid="760741480291963706">"స్వీకర్త లోపం"</string>
-    <string name="confirm_send_title" msgid="4664971589247101530">"సందేశం పంపాలా?"</string>
     <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"సందేశ విషయంలో వచనం ఏదీ లేదు."</string>
     <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"సందేశ విషయంలో వచనం ఏదీ లేదు."</string>
     <string name="confirm_send_message" msgid="6211518590166222735">"ఈ సందేశం పంపాలా?"</string>
@@ -103,9 +101,6 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> ఫైల్"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"పరిదృశ్యం"</string>
     <string name="save_attachment" msgid="375685179032130033">"సేవ్ చేయి"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"రద్దు చేయి"</string>
-    <string name="open_attachment" msgid="6100396056314739761">"తెరువు"</string>
-    <string name="install_attachment" msgid="8119470822958087928">"ఇన్‌స్టాల్ చేయి"</string>
     <string name="download_again" msgid="8195787340878328119">"మళ్లీ డౌన్‌లోడ్ చేయి"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"సమాచారం"</string>
     <string name="no_application_found" msgid="7309485680354949680">"ఈ జోడింపును వీక్షించడం కోసం తెరవగల అనువర్తనం ఏదీ లేదు."</string>
@@ -129,10 +124,6 @@
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"ఇమెయిల్ పంపు"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"మ్యాప్‌"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"లింక్‌ను భాగస్వామ్యం చేయి"</string>
-    <string name="contextmenu_help" msgid="4209674157707873384">"సహాయం"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"అభిప్రాయం పంపండి"</string>
-    <!-- no translation found for num_selected (7990204488812654380) -->
-    <skip />
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> <xliff:g id="SUBJECT">%3$s</xliff:g> గురించి, <xliff:g id="SNIPPET">%4$s</xliff:g> <xliff:g id="DATE">%5$s</xliff:g>న, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> <xliff:g id="SUBJECT">%3$s</xliff:g> గురించి, <xliff:g id="SNIPPET">%4$s</xliff:g> <xliff:g id="TIME">%5$s</xliff:g>కి, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="read_string" msgid="5495929677508576520">"సంభాషణ చదవబడింది"</string>
@@ -171,8 +162,8 @@
     <string name="getting_messages" msgid="8403333791332403244">"మీ సందేశాలను పొందుతోంది"</string>
     <string name="undo" msgid="8256285267701059609">"చర్యరద్దు చేయి"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="1701235480675303125">"<xliff:g id="COUNT">%1$d</xliff:g> సంభాషణకు నక్షత్రం గుర్తు తీసివేస్తోంది"</item>
-    <item quantity="other" msgid="1154441830432477256">"<xliff:g id="COUNT">%1$d</xliff:g> సంభాషణలకు నక్షత్రం గుర్తు తీసివేస్తోంది"</item>
+    <item quantity="one" msgid="1701235480675303125">"<xliff:g id="COUNT">%1$d</xliff:g> సంభాషణకు నక్షత్రం తీసివేస్తోంది"</item>
+    <item quantity="other" msgid="1154441830432477256">"<xliff:g id="COUNT">%1$d</xliff:g> సంభాషణలకు నక్షత్రం తీసివేస్తోంది"</item>
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3622533556738049499">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; మ్యూట్ చేయబడింది"</item>
@@ -225,9 +216,6 @@
     <string name="contact_info_string_default" msgid="6204228921864816351">"సంప్రదింపు సమాచారాన్ని చూపు"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> పాత సందేశాలు"</item>
-  </plurals>
-  <plurals name="super_collapsed_loading_content_description">
-    <item quantity="other" msgid="678491885491918982">"<xliff:g id="COUNT">%1$d</xliff:g> పాత సందేశాలను లోడ్ చేస్తోంది"</item>
   </plurals>
     <string name="from_heading" msgid="48290556829713090">"వీరి నుండి:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"వీరికి ప్రత్యుత్తరం:"</string>
@@ -478,4 +466,8 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"సాధారణ సెట్టింగ్‌లు"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"సెట్టింగ్‌లు"</string>
     <string name="overflow_description" msgid="7886090597023240426">"మరిన్ని ఎంపికలు"</string>
+    <!-- no translation found for security_hold_required_text (6619955920101834286) -->
+    <skip />
+    <!-- no translation found for update_security_text (3527335757205741077) -->
+    <skip />
 </resources>
