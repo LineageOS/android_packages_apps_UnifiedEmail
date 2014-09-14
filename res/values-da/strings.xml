@@ -291,9 +291,9 @@
     <string name="shortcut_name_title" msgid="1562534040126088628">"Genvej til navngivning af mappe"</string>
     <string name="wait_for_sync_title" msgid="4577632826912823075">"Venter på synkronisering"</string>
     <string name="not_synced_title" msgid="3600180500934086346">"Kontoen er ikke synkroniseret"</string>
-    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Denne konto er ikke konfigureret til automatisk synkronisering.\nTryk på "<b>"Synkroniser nu"</b>" for at synkronisere e-mails én gang, eller tryk på "<b>"Skift synkroniseringsindstillinger"</b>" for at konfigurere denne konto til at synkronisere e-mail automatisk."</string>
+    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Denne konto er ikke konfigureret til automatisk synkronisering.\nTryk på "<b>"Synkroniser nu"</b>" for at synkronisere e-mails én gang, eller tryk på "<b>"Rediger indstillinger for synkronisering"</b>" for at konfigurere denne konto til at synkronisere e-mail automatisk."</string>
     <string name="manual_sync" msgid="2271479734895537848">"Synkroniser nu"</string>
-    <string name="change_sync_settings" msgid="3615852118397055361">"Skift synkroniseringsindst."</string>
+    <string name="change_sync_settings" msgid="3615852118397055361">"Rediger indst. for synkr."</string>
     <string name="photo_load_failed" msgid="577471721679146999">"Billedet kunne ikke indlæses"</string>
     <string name="cant_move_or_change_labels" msgid="4155490583610926755">"Flytning er ikke mulig, fordi markeringen indeholder flere konti."</string>
     <string name="multiple_new_message_notification_item" msgid="1386588046275174918"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>

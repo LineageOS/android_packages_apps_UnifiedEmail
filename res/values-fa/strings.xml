@@ -257,7 +257,7 @@
     <string name="cancel" msgid="4831678293149626190">"لغو"</string>
     <string name="clear" msgid="765949970989448022">"پاک کردن"</string>
   <string-array name="sync_status">
-    <item msgid="4600303222943450797">"موفقیت‌آمیز"</item>
+    <item msgid="4600303222943450797">"موفق شدید"</item>
     <item msgid="2972425114100316260">"اتصال برقرار نیست."</item>
     <item msgid="8594593386776437871">"ورود به برنامه انجام نشد."</item>
     <item msgid="1375193906551623606">"خطای امنیتی."</item>

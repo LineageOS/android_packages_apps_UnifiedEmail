@@ -199,8 +199,8 @@
     <item quantity="other" msgid="9218674052779504277">"Цепочек, помеченных как фишинг: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="4127890884907503696">"Архивировано (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
-    <item quantity="other" msgid="7789480176789922968">"Архивировано (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
+    <item quantity="one" msgid="4127890884907503696">"Архивировано: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="other" msgid="7789480176789922968">"Архивировано: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="5591889079235938982">"Удалено цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
@@ -292,7 +292,7 @@
     <string name="wait_for_sync_title" msgid="4577632826912823075">"Синхронизация…"</string>
     <string name="not_synced_title" msgid="3600180500934086346">"Аккаунт не синхронизирован"</string>
     <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"В этом аккаунте не настроена автоматическая синхронизация.\nВыберите "<b>"Настройки синхронизации"</b>", чтобы включить ее, или "<b>"Синхронизировать сейчас"</b>", чтобы синхронизировать почту один раз."</string>
-    <string name="manual_sync" msgid="2271479734895537848">"Синхр."</string>
+    <string name="manual_sync" msgid="2271479734895537848">"Синхронизировать"</string>
     <string name="change_sync_settings" msgid="3615852118397055361">"Настройки синхронизации"</string>
     <string name="photo_load_failed" msgid="577471721679146999">"Не удалось загрузить фото"</string>
     <string name="cant_move_or_change_labels" msgid="4155490583610926755">"Не удалось переместить сообщения, так как они находятся в разных аккаунтах."</string>
@@ -434,9 +434,9 @@
     <string name="discard_changes" msgid="5699760550972324746">"Отменить изменения?"</string>
     <string name="vacation_responder_changes_saved" msgid="91448817268121249">"Изменения настроек автоответчика сохранены"</string>
     <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"Изменения настроек автоответчика отменены"</string>
-    <string name="vacation_responder_off" msgid="4429909341193366667">"Отключить"</string>
+    <string name="vacation_responder_off" msgid="4429909341193366667">"Выключен"</string>
     <string name="vacation_responder_on" msgid="4913238379320882449">"Включить с <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"Включить с <xliff:g id="START_DATE">%1$s</xliff:g> по <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
+    <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"Включен с <xliff:g id="START_DATE">%1$s</xliff:g> по <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="6233629618520852439">"Введите тему и текст сообщения"</string>
     <string name="view_entire_message" msgid="823281796655014454">"Показать полностью"</string>
     <string name="eml_loader_error_toast" msgid="6577383216635400167">"Не удалось открыть файл"</string>
