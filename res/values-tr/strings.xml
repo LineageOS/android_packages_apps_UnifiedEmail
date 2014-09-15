@@ -46,8 +46,6 @@
     <string name="generic_attachment_problem" msgid="4683974765387240723">"Dosya eklenemedi."</string>
     <string name="attachment_permission_denied" msgid="2274397783497640486">"Ek için izin reddedildi."</string>
     <string name="recipient_needed" msgid="319816879398937214">"En az bir alıcı ekleyin."</string>
-    <string name="recipient_error_dialog_title" msgid="760741480291963706">"Alıcı hatası"</string>
-    <string name="confirm_send_title" msgid="4664971589247101530">"İleti gönderilsin mi?"</string>
     <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"İletinin konusunda metin yok."</string>
     <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"İleti gövdesinde metin yok."</string>
     <string name="confirm_send_message" msgid="6211518590166222735">"Bu ileti gönderilsin mi?"</string>
@@ -103,9 +101,6 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> Dosyası"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"Önizle"</string>
     <string name="save_attachment" msgid="375685179032130033">"Kaydet"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"İptal"</string>
-    <string name="open_attachment" msgid="6100396056314739761">"Aç"</string>
-    <string name="install_attachment" msgid="8119470822958087928">"Yükle"</string>
     <string name="download_again" msgid="8195787340878328119">"Tekrar indir"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"Bilgi"</string>
     <string name="no_application_found" msgid="7309485680354949680">"Bu eki görüntülemek için açacak uygulama yok."</string>
@@ -129,10 +124,6 @@
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"E-posta gönder"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"Harita"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"Bağlantıyı paylaş"</string>
-    <string name="contextmenu_help" msgid="4209674157707873384">"Yardım"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"Görüş bildir"</string>
-    <!-- no translation found for num_selected (7990204488812654380) -->
-    <skip />
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> adlı katılımcıya <xliff:g id="DATE">%5$s</xliff:g> tarihinde gönderilen <xliff:g id="SUBJECT">%3$s</xliff:g> konulu ve <xliff:g id="READSTATE">%6$s</xliff:g> durumda olan iletinin bir bölümü: <xliff:g id="SNIPPET">%4$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>, konu: <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> (saat: <xliff:g id="TIME">%5$s</xliff:g>), <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="read_string" msgid="5495929677508576520">"ileti dizisi okundu"</string>
@@ -225,9 +216,6 @@
     <string name="contact_info_string_default" msgid="6204228921864816351">"İletişim bilgilerini göster"</string>
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> eski ileti"</item>
-  </plurals>
-  <plurals name="super_collapsed_loading_content_description">
-    <item quantity="other" msgid="678491885491918982">"<xliff:g id="COUNT">%1$d</xliff:g> eski ileti yükleniyor"</item>
   </plurals>
     <string name="from_heading" msgid="48290556829713090">"Gönderen:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Yanıt Adresi:"</string>
@@ -478,4 +466,8 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"Genel ayarlar"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"Ayarlar"</string>
     <string name="overflow_description" msgid="7886090597023240426">"Diğer seçenekler"</string>
+    <!-- no translation found for security_hold_required_text (6619955920101834286) -->
+    <skip />
+    <!-- no translation found for update_security_text (3527335757205741077) -->
+    <skip />
 </resources>

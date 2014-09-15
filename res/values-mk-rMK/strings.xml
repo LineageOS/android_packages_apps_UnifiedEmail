@@ -49,8 +49,6 @@
     <!-- no translation found for attachment_permission_denied (2274397783497640486) -->
     <skip />
     <string name="recipient_needed" msgid="319816879398937214">"Додај најмалку еден примач."</string>
-    <string name="recipient_error_dialog_title" msgid="760741480291963706">"Грешка на примач"</string>
-    <string name="confirm_send_title" msgid="4664971589247101530">"Испрати порака?"</string>
     <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"Нема текст во предметот на пораката."</string>
     <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"Нема текст во телото на пораката."</string>
     <string name="confirm_send_message" msgid="6211518590166222735">"Испрати ја оваа порака?"</string>
@@ -107,9 +105,6 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> Датотека"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"Преглед"</string>
     <string name="save_attachment" msgid="375685179032130033">"Зачувај"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"Откажи"</string>
-    <string name="open_attachment" msgid="6100396056314739761">"Отвори"</string>
-    <string name="install_attachment" msgid="8119470822958087928">"Инсталирај"</string>
     <string name="download_again" msgid="8195787340878328119">"Преземи повторно"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"Информации"</string>
     <string name="no_application_found" msgid="7309485680354949680">"Ниедна апликација не може да го отвори овој прилог за прикажување."</string>
@@ -133,10 +128,6 @@
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"Испрати е-пошта"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"Карта"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"Сподели врска"</string>
-    <string name="contextmenu_help" msgid="4209674157707873384">"Помош"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"Испраќај повратни информации"</string>
-    <!-- no translation found for num_selected (7990204488812654380) -->
-    <skip />
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> за <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> на <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> за <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> во <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="read_string" msgid="5495929677508576520">"разговорот е прочитан"</string>
@@ -211,7 +202,6 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> постари пораки"</item>
   </plurals>
-    <!-- no translation found for super_collapsed_loading_content_description:other (678491885491918982) -->
     <string name="from_heading" msgid="48290556829713090">"Од:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Одговори на:"</string>
     <string name="to_heading" msgid="3495203282540398336">"До: "</string>
@@ -461,5 +451,9 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"Општи поставки"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"Поставки"</string>
     <!-- no translation found for overflow_description (7886090597023240426) -->
+    <skip />
+    <!-- no translation found for security_hold_required_text (6619955920101834286) -->
+    <skip />
+    <!-- no translation found for update_security_text (3527335757205741077) -->
     <skip />
 </resources>
