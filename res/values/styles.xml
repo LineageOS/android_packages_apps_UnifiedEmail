@@ -246,6 +246,7 @@
     <!-- Undo bar styles -->
     <style name="UndoTextStyle">
         <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:focusable">true</item>
         <item name="android:paddingLeft">@dimen/undo_text_padding</item>
         <item name="android:paddingRight">@dimen/undo_text_padding</item>
         <item name="android:text">@string/undo</item>
