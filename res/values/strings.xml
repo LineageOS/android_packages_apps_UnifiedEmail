@@ -587,6 +587,12 @@
     <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
     <!-- Voice search is not supported on this device [CHAR LIMIT=100] -->
     <string name="voice_search_not_supported">Voice search is not supported on this device.</string>
+    <!-- Description of the back button [CHAR LIMIT=100] -->
+    <string name="search_back_desc">Close search</string>
+    <!-- Description of the voice icon [CHAR LIMIT=100] -->
+    <string name="search_voice_desc">Start voice search</string>
+    <!-- Description of the clear icon (clears the current input text in the search bar) [CHAR LIMIT=100] -->
+    <string name="search_clear_desc">Clear search text</string>
 
     <!-- Shown in conversation list footer when application cannot make a connection [CHAR LIMIT=20]-->
     <string name="network_error">No connection</string>

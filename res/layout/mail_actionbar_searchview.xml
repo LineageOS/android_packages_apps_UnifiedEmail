@@ -29,6 +29,7 @@
         android:layout_width="@dimen/search_leading_button_width"
         android:layout_height="match_parent"
         android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/search_back_desc"
         android:paddingLeft="@dimen/search_button_padding"
         android:paddingRight="@dimen/search_button_padding"
         android:scaleType="center"
@@ -59,7 +60,6 @@
         android:background="?android:attr/selectableItemBackground"
         android:paddingLeft="@dimen/search_button_padding"
         android:paddingRight="@dimen/search_button_padding"
-        android:scaleType="center"
-        android:src="@drawable/ic_mic_24dp" />
+        android:scaleType="center" />
 
 </com.android.mail.ui.MaterialSearchActionView>
