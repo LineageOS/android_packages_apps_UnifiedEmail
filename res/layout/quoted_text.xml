@@ -52,7 +52,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/respond_inline"
             android:textAllCaps="true"
-            android:textColor="@color/respond_inline_color"
+            android:textColor="@color/text_color_blue"
             android:textSize="14sp" />
 
     </LinearLayout>
