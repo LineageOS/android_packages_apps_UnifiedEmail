@@ -167,8 +167,8 @@
 
     <color name="actionbar_color">@color/mail_orange</color>
     <color name="statusbar_color">@color/statusbar_orange</color>
-    <!-- TODO: get real color from UX -->
-    <color name="action_mode_background">#9b9b9b</color>
+    <color name="action_mode_background">@color/text_color_grey</color>
+    <color name="action_mode_statusbar_color">#616161</color>
 
     <color name="snack_bar_background_color">#323232</color>
     <color name="snack_bar_action_text_color">#f4b400</color>
