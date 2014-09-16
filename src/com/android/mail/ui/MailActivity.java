@@ -17,8 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,11 +29,13 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Window;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.bitmap.BitmapCache;
@@ -488,5 +490,31 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     public SearchRecentSuggestionsProvider getSuggestionsProvider() {
         return new SuggestionsProvider(this);
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onSupportActionModeStarted(ActionMode mode) {
+        super.onSupportActionModeStarted(mode);
+        if (Utils.isRunningLOrLater()) {
+            final Window window = getWindow();
+            if (window != null) {
+                window.setStatusBarColor(
+                        getResources().getColor(R.color.action_mode_statusbar_color));
+            }
+        }
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onSupportActionModeFinished(ActionMode mode) {
+        super.onSupportActionModeFinished(mode);
+        if (Utils.isRunningLOrLater()) {
+            final Window window = getWindow();
+            if (window != null) {
+                window.setStatusBarColor(
+                        getResources().getColor(R.color.statusbar_color));
+            }
+        }
     }
 }
