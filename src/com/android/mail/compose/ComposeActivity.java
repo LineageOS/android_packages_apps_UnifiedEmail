@@ -51,6 +51,7 @@ import android.provider.BaseColumns;
 import android.support.v4.app.RemoteInput;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpanWatcher;
@@ -69,6 +70,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -3959,6 +3961,32 @@ public class ComposeActivity extends ActionBarActivity
             setBody(spanned, false);
             mTextChanged = false;
             mBodyView.addTextChangedListener(ComposeActivity.this);
+        }
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onSupportActionModeStarted(ActionMode mode) {
+        super.onSupportActionModeStarted(mode);
+        if (Utils.isRunningLOrLater()) {
+            final Window window = getWindow();
+            if (window != null) {
+                window.setStatusBarColor(
+                        getResources().getColor(R.color.action_mode_statusbar_color));
+            }
+        }
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onSupportActionModeFinished(ActionMode mode) {
+        super.onSupportActionModeFinished(mode);
+        if (Utils.isRunningLOrLater()) {
+            final Window window = getWindow();
+            if (window != null) {
+                window.setStatusBarColor(
+                        getResources().getColor(R.color.statusbar_color));
+            }
         }
     }
 }
