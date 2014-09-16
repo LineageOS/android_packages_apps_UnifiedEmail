@@ -102,6 +102,8 @@
     <string name="preview_attachment" msgid="6265457626086113833">"Xem trước"</string>
     <string name="save_attachment" msgid="375685179032130033">"Lưu"</string>
     <string name="download_again" msgid="8195787340878328119">"Tải xuống lại"</string>
+    <!-- no translation found for remove_attachment_desc (1478445871170879140) -->
+    <skip />
     <string name="more_info_attachment" msgid="2899691682394864507">"Thông tin"</string>
     <string name="no_application_found" msgid="7309485680354949680">"Không ứng dụng nào mở được tệp đính kèm này để xem."</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"Đang tìm nạp tệp đính kèm"</string>
@@ -277,6 +279,12 @@
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
     <string name="voice_search_not_supported" msgid="8493517060419469738">"Tìm kiếm bằng giọng nói không được hỗ trợ trên thiết bị này."</string>
+    <!-- no translation found for search_back_desc (8038224690392783652) -->
+    <skip />
+    <!-- no translation found for search_voice_desc (9103854398344077204) -->
+    <skip />
+    <!-- no translation found for search_clear_desc (3044261775183044862) -->
+    <skip />
     <string name="network_error" msgid="5931164247644972255">"Không có kết nối"</string>
     <string name="retry" msgid="916102442074217293">"Thử lại"</string>
     <string name="load_more" msgid="8702691358453560575">"Tải thêm"</string>
@@ -466,8 +474,8 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"Cài đặt chung"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"Cài đặt"</string>
     <string name="overflow_description" msgid="7886090597023240426">"Tùy chọn khác"</string>
-    <!-- no translation found for security_hold_required_text (6619955920101834286) -->
-    <skip />
-    <!-- no translation found for update_security_text (3527335757205741077) -->
+    <string name="security_hold_required_text" msgid="6619955920101834286">"Cần cập nhật bảo mật cho <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
+    <string name="update_security_text" msgid="3527335757205741077">"cập nhật ngay"</string>
+    <!-- no translation found for forms_are_disabled (2876312737118986789) -->
     <skip />
 </resources>

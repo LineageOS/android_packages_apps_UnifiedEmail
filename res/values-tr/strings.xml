@@ -102,6 +102,8 @@
     <string name="preview_attachment" msgid="6265457626086113833">"Önizle"</string>
     <string name="save_attachment" msgid="375685179032130033">"Kaydet"</string>
     <string name="download_again" msgid="8195787340878328119">"Tekrar indir"</string>
+    <!-- no translation found for remove_attachment_desc (1478445871170879140) -->
+    <skip />
     <string name="more_info_attachment" msgid="2899691682394864507">"Bilgi"</string>
     <string name="no_application_found" msgid="7309485680354949680">"Bu eki görüntülemek için açacak uygulama yok."</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"Ek alınıyor"</string>
@@ -277,6 +279,12 @@
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
     <string name="voice_search_not_supported" msgid="8493517060419469738">"Sesle arama bu cihazda desteklenmiyor."</string>
+    <!-- no translation found for search_back_desc (8038224690392783652) -->
+    <skip />
+    <!-- no translation found for search_voice_desc (9103854398344077204) -->
+    <skip />
+    <!-- no translation found for search_clear_desc (3044261775183044862) -->
+    <skip />
     <string name="network_error" msgid="5931164247644972255">"Bağlantı yok"</string>
     <string name="retry" msgid="916102442074217293">"Yeniden dene"</string>
     <string name="load_more" msgid="8702691358453560575">"Daha fazla yükle"</string>
@@ -466,8 +474,8 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"Genel ayarlar"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"Ayarlar"</string>
     <string name="overflow_description" msgid="7886090597023240426">"Diğer seçenekler"</string>
-    <!-- no translation found for security_hold_required_text (6619955920101834286) -->
-    <skip />
-    <!-- no translation found for update_security_text (3527335757205741077) -->
+    <string name="security_hold_required_text" msgid="6619955920101834286">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> için güvenlik güncellemesi gerekli"</string>
+    <string name="update_security_text" msgid="3527335757205741077">"şimdi güncelle"</string>
+    <!-- no translation found for forms_are_disabled (2876312737118986789) -->
     <skip />
 </resources>
