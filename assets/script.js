@@ -784,7 +784,7 @@ function disablePostForms() {
                 alert(MSG_FORMS_ARE_DISABLED);
                 return false;
             }
-            elements = form[i].elements;
+            elements = forms[i].elements;
             for (j = 0; j < elements.length; ++j) {
                 elements[j].readOnly = true;
             }
