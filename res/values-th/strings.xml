@@ -415,10 +415,10 @@
     <item quantity="other" msgid="5422167728480739361">"<xliff:g id="COUNT">%1$d</xliff:g> ไฟล์แนบ"</item>
   </plurals>
     <string name="no_subject" msgid="5622708348540036959">"(ไม่มีหัวเรื่อง)"</string>
-    <string name="vacation_responder" msgid="5570132559074523806">"โปรแกรมช่วยตอบอีเมลขณะพักร้อน"</string>
-    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"โปรแกรมช่วยตอบอีเมลขณะพักร้อน"</string>
+    <string name="vacation_responder" msgid="5570132559074523806">"การช่วยตอบอีเมลอัตโนมัติ"</string>
+    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"การช่วยตอบอีเมลอัตโนมัติ"</string>
     <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"ข้อความ"</string>
-    <string name="send_to_contacts_text" msgid="124432913980620545">"ส่งไปยังที่อยู่ติดต่อของฉันเท่านั้น"</string>
+    <string name="send_to_contacts_text" msgid="124432913980620545">"ส่งไปยังรายชื่อติดต่อของฉันเท่านั้น"</string>
     <string name="send_to_domain_text" msgid="5064559546745918393">"ส่งไปยัง <xliff:g id="DOMAIN">%1$s</xliff:g> เท่านั้น"</string>
     <string name="pick_start_date_title" msgid="2274665037355224165">"เริ่ม"</string>
     <string name="pick_end_date_title" msgid="733396083649496600">"สิ้นสุด (ไม่บังคับ)"</string>
@@ -427,8 +427,8 @@
     <string name="custom_date" msgid="5794846334232367838">"กำหนดเอง"</string>
     <string name="date_none" msgid="1061426502665431412">"ไม่มี"</string>
     <string name="discard_changes" msgid="5699760550972324746">"ยกเลิกการเปลี่ยนแปลงหรือไม่"</string>
-    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"บันทึกการเปลี่ยนแปลงโปรแกรมช่วยตอบอีเมลขณะพักร้อนแล้ว"</string>
-    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"ยกเลิกการเปลี่ยนแปลงโปรแกรมช่วยตอบอีเมลขณะพักร้อน"</string>
+    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"บันทึกการเปลี่ยนแปลงการช่วยตอบอีเมลอัตโนมัติแล้ว"</string>
+    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"ยกเลิกการเปลี่ยนแปลงการช่วยตอบอีเมลอัตโนมัติ"</string>
     <string name="vacation_responder_off" msgid="4429909341193366667">"ปิด"</string>
     <string name="vacation_responder_on" msgid="4913238379320882449">"เปิด ตั้งแต่ <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"เปิด ตั้งแต่ <xliff:g id="START_DATE">%1$s</xliff:g> ถึง <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
