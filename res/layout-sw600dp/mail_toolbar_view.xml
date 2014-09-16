@@ -46,6 +46,7 @@
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/menu_search"
             android:scaleType="center"
             android:src="@drawable/ic_menu_search" />
 

@@ -207,8 +207,11 @@ public class MaterialSearchSuggestionsList extends LinearLayout
             }
 
             final SuggestionItem item = mSuggestions.get(position);
-            ((TextView) convertView.findViewById(R.id.search_overlay_item_text))
-                    .setText(item.suggestion);
+            final TextView text =
+                    (TextView) convertView.findViewById(R.id.search_overlay_item_text);
+            text.setText(item.suggestion);
+            text.setContentDescription(getResources().getString(R.string.search_suggestion_desc,
+                    item.suggestion));
             ((ImageView) convertView.findViewById(R.id.search_overlay_item_icon))
                     .setImageURI(item.icon);
 
