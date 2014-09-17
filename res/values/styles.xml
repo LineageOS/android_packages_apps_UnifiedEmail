@@ -148,35 +148,6 @@
         <item name="android:paddingRight">@dimen/compose_attachment_tile_text_end_padding</item>
     </style>
 
-    <style name="AttachmentContainer">
-        <item name="android:background">@drawable/attachment_bg_holo</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dip</item>
-    </style>
-
-    <style name="AttachmentTextContainer">
-        <item name="android:paddingLeft">@dimen/compose_attachment_text_padding</item>
-    </style>
-
-    <style name="AttachmentName">
-        <item name="android:singleLine">true</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#333333</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-    </style>
-
-    <style name="AttachmentSize" parent="@style/AttachmentName">
-        <item name="android:textColor">#aaaaaa</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="AttachmentThumbnail">
-        <item name="android:layout_marginLeft">8dip</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
     <style name="QuotedTextCheckbox">
         <item name="android:layout_marginLeft">@dimen/quoted_text_checkbox_margin_offset</item>
     </style>
@@ -666,6 +637,14 @@
 
     <style name="AttachmentIconStyle">
         <item name="android:layout_marginLeft">@dimen/attachment_icon_padding</item>
+    </style>
+
+    <style name="AttachmentTextContainer">
+        <item name="android:paddingLeft">@dimen/compose_attachment_text_padding</item>
+    </style>
+
+    <style name="AttachmentThumbnail">
+        <item name="android:layout_marginLeft">@dimen/attachment_item_padding_start</item>
     </style>
 
     <style name="UnreadCountWithMarginEndStyle" parent="UnreadCountRelativeLayout">
