@@ -285,5 +285,5 @@ public interface ActivityController extends LayoutListener,
     /**
      * Attach layout listener so our custom toolbar can listen to thread list layout events.
      */
-    void setConversationListLayoutListener(TwoPaneLayout.ConversationListLayoutListener listener);
+    void addConversationListLayoutListener(TwoPaneLayout.ConversationListLayoutListener listener);
 }
