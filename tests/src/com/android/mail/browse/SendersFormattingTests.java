@@ -21,11 +21,18 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.text.SpannableString;
 
+import com.android.mail.providers.Account;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.ParticipantInfo;
+import com.android.mail.providers.UIProvider;
 import com.google.common.collect.Lists;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @SmallTest
 public class SendersFormattingTests extends AndroidTestCase {
@@ -40,7 +47,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ArrayList<SpannableString> strings = Lists.newArrayList();
         assertEquals(0, strings.size());
 
-        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false, false);
+        final Account account = createAccount();
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, account, false, false);
         assertEquals(1, strings.size());
         assertEquals("me", strings.get(0).toString());
     }
@@ -51,7 +59,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ArrayList<SpannableString> strings = Lists.newArrayList();
         assertEquals(0, strings.size());
 
-        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false, false);
+        final Account account = createAccount();
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, account, false, false);
         assertEquals(1, strings.size());
         assertEquals("me", strings.get(0).toString());
     }
@@ -63,7 +72,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ArrayList<SpannableString> strings = Lists.newArrayList();
         assertEquals(0, strings.size());
 
-        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false, false);
+        final Account account = createAccount();
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, account, false, false);
         assertEquals(2, strings.size());
         assertNull(strings.get(0));
         assertEquals("me", strings.get(1).toString());
@@ -161,8 +171,9 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
                 new ConversationItemViewModel.SenderAvatarModel();
 
+        final Account account = createAccount();
         SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
-                senderAvatarModel, null, false, false);
+                senderAvatarModel, account, false, false);
 
         assertEquals("b@b.com", senderAvatarModel.getEmailAddress());
         assertEquals("b", senderAvatarModel.getName());
@@ -178,11 +189,12 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
                 new ConversationItemViewModel.SenderAvatarModel();
 
+        final Account account = createAccount();
         SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
-                senderAvatarModel, null, false, false);
+                senderAvatarModel, account, false, false);
 
-        assertEquals("a@a.com", senderAvatarModel.getEmailAddress());
-        assertEquals("", senderAvatarModel.getName());
+        assertEquals("fflinstone@example.com", senderAvatarModel.getEmailAddress());
+        assertEquals("Fred Flinstone", senderAvatarModel.getName());
     }
 
     /**
@@ -205,5 +217,22 @@ public class SendersFormattingTests extends AndroidTestCase {
         assertEquals(2, displayableSenderNames.size());
         assertEquals("Andrew", displayableSenderNames.get(0));
         assertEquals("Andrew", displayableSenderNames.get(1));
+    }
+
+    private static Account createAccount() {
+        try {
+            final Map<String, Object> map = new HashMap<>(2);
+            map.put(UIProvider.AccountColumns.NAME, "Fred Flinstone");
+            map.put(UIProvider.AccountColumns.ACCOUNT_MANAGER_NAME, "fflinstone@example.com");
+            map.put(UIProvider.AccountColumns.TYPE, "IMAP");
+            map.put(UIProvider.AccountColumns.PROVIDER_VERSION, 1);
+            map.put(UIProvider.AccountColumns.CAPABILITIES, 0);
+
+            final JSONObject json = new JSONObject(map);
+
+            return Account.builder().buildFrom(json);
+        } catch (JSONException je) {
+            throw new RuntimeException(je);
+        }
     }
 }
