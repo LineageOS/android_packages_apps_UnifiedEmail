@@ -16,7 +16,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Confirm forward message -->
-    <string name="confirm_forward_message">Message has attachment(s)</string>
+    <string name="confirm_forward_message">Message has attachments</string>
     <string name="confirm_forward_normal">Download and send</string>
     <string name="confirm_forward_drop_unloaded">Use server copy</string>
 </resources>
