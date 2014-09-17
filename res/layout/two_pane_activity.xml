@@ -26,14 +26,14 @@
     <!-- Main content -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:foreground="?android:attr/windowContentOverlay">
 
         <com.android.mail.ui.TwoPaneLayout
             android:id="@+id/two_pane_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:foregroundGravity="fill_horizontal|top"
-            android:foreground="?android:attr/windowContentOverlay"
             android:background="@color/tablet_background_gray">
 
             <FrameLayout
