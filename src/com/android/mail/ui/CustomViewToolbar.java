@@ -18,10 +18,10 @@
 package com.android.mail.ui;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -33,11 +33,13 @@ import com.android.mail.utils.ViewUtils;
  */
 public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeListener,
         TwoPaneLayout.ConversationListLayoutListener {
+    private static final long FADE_ANIMATION_DURATION_MS = 150;
 
     private ControllableActivity mActivity;
     private ActivityController mController;
     private ViewMode mViewMode;
 
+    protected View mCustomView;
     protected TextView mActionBarTitle;
     protected View mSearchButton;
 
@@ -61,6 +63,7 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        mCustomView = findViewById(R.id.actionbar_custom_view);
         mActionBarTitle = (TextView) findViewById(R.id.actionbar_title);
         mSearchButton = findViewById(R.id.actionbar_search_button);
 
@@ -90,25 +93,26 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
     @Override
     public void onConversationListLayout(int xEnd, boolean drawerOpen) {
         if (drawerOpen) {
-            mSearchButton.setVisibility(INVISIBLE);
+            mSearchButton.setClickable(false);
+            mSearchButton.animate().alpha(0).setDuration(FADE_ANIMATION_DURATION_MS).start();
         } else {
-            mSearchButton.setVisibility(VISIBLE);
-            // Since we no longer shift the search button when the drawer opens/closes, only set
-            // the width of the title on the first pass (when width is 0) so we avoid changing
-            // width during layout passes.
+            mSearchButton.setClickable(true);
+            mSearchButton.animate().alpha(1).setDuration(FADE_ANIMATION_DURATION_MS).start();
+
             final int[] coords = new int[2];
-            mActionBarTitle.getLocationInWindow(coords);
+            mCustomView.getLocationInWindow(coords);
             final int newWidth;
             if (ViewUtils.isViewRtl(this)) {
-                newWidth = coords[0] + mActionBarTitle.getWidth() - xEnd -
-                        mSearchButton.getWidth();
+                newWidth = coords[0] + mCustomView.getWidth() - xEnd;
             } else {
-                newWidth = xEnd - coords[0] - mSearchButton.getWidth();
+                newWidth = xEnd - coords[0];
             }
 
             // Only set the width if it's different than before so we avoid draw on layout pass.
-            if (mActionBarTitle.getWidth() != newWidth) {
-                mActionBarTitle.setWidth(newWidth);
+            if (mCustomView.getWidth() != newWidth) {
+                final ViewGroup.LayoutParams params = mCustomView.getLayoutParams();
+                params.width = newWidth;
+                mCustomView.setLayoutParams(params);
             }
         }
     }

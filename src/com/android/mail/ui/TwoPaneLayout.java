@@ -284,10 +284,13 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         final boolean listVisible = isRtl ? listX + mListView.getWidth() >= 0 : listX >= 0;
         adjustPaneVisibility(folderVisible, listVisible, cvOnScreen);
 
-        final List<ConversationListLayoutListener> layoutListeners =
-                mController.getConversationListLayoutListeners();
-        for (ConversationListLayoutListener listener : layoutListeners) {
-            listener.onConversationListLayout(isRtl ? listX : convX, isDrawerOpen);
+        if (!mListCollapsible) {
+            final int xEnd = isRtl ? listX : convX;
+            final List<ConversationListLayoutListener> layoutListeners =
+                    mController.getConversationListLayoutListeners();
+            for (ConversationListLayoutListener listener : layoutListeners) {
+                listener.onConversationListLayout(xEnd, isDrawerOpen);
+            }
         }
 
         mPositionedMode = mCurrentMode;
