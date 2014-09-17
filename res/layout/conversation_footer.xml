@@ -54,9 +54,8 @@
 
     </LinearLayout>
 
-    <View
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/conversation_view_item_background_color" />
+        android:layout_height="48dp" />
 
 </com.android.mail.browse.ConversationFooterView>
