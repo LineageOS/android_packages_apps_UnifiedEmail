@@ -496,7 +496,7 @@ public final class ConversationListFragment extends Fragment implements
 
         // For tablets, the default left focus is the mini-drawer
         if (mTabletDevice && mNextFocusStartId == 0) {
-            mNextFocusStartId = R.id.current_account_avatar;
+            mNextFocusStartId = R.id.mini_drawer;
         }
         setNextFocusStartOnList();
 
