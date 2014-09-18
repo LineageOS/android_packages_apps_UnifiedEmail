@@ -1007,7 +1007,7 @@ public class ConversationItemView extends View
         sPaint.setTextSize(mCoordinates.sendersFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
 
-        if (mHeader.styledNames != null) {
+        if (!mHeader.styledNames.isEmpty()) {
             final SpannableStringBuilder participantText = elideParticipants(mHeader.styledNames);
             layoutParticipantText(participantText);
         } else {
