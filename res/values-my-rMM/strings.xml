@@ -103,6 +103,8 @@
     <string name="preview_attachment" msgid="6265457626086113833">"အစမ်းကြည့်မှု"</string>
     <string name="save_attachment" msgid="375685179032130033">"သိမ်းဆည်း"</string>
     <string name="download_again" msgid="8195787340878328119">"ဒေါင်းလုဒ် ထပ်လုပ"</string>
+    <!-- no translation found for remove_attachment_desc (1478445871170879140) -->
+    <skip />
     <string name="more_info_attachment" msgid="2899691682394864507">"အင်ဖို"</string>
     <string name="no_application_found" msgid="7309485680354949680">"မည်သည့်appကမှ ဤပူးတွဲမှုကို ကြည့်ရှုရန် မဖွင့်နိုင်။"</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"ပူးတွဲမှုကို သွားယူနေ"</string>
@@ -278,6 +280,12 @@
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
     <string name="voice_search_not_supported" msgid="8493517060419469738">"ဒီကိရိယာ ထဲတွင် အသံဖြင့် ရှာဖွေမှုကို ပံ့ပိုးမထားပါ။"</string>
+    <!-- no translation found for search_back_desc (8038224690392783652) -->
+    <skip />
+    <!-- no translation found for search_voice_desc (9103854398344077204) -->
+    <skip />
+    <!-- no translation found for search_clear_desc (3044261775183044862) -->
+    <skip />
     <string name="network_error" msgid="5931164247644972255">"ချိတ်ဆက်မှု မရှိ"</string>
     <string name="retry" msgid="916102442074217293">"ထပ်စမ်းရန်"</string>
     <string name="load_more" msgid="8702691358453560575">"ထပ် တင်ရန်"</string>
@@ -467,8 +475,8 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"အထွေထွေ ဆက်တင်များ"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"ဆက်တင်များ"</string>
     <string name="overflow_description" msgid="7886090597023240426">"နောက်ထပ် ရွေးစရာများ"</string>
-    <!-- no translation found for security_hold_required_text (6619955920101834286) -->
-    <skip />
-    <!-- no translation found for update_security_text (3527335757205741077) -->
+    <string name="security_hold_required_text" msgid="6619955920101834286">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> အတွက် လုံခြုံရေးကို မွမ်းမံရန် လိုအပသည်"</string>
+    <string name="update_security_text" msgid="3527335757205741077">"ယခု မွမ်းမံပါ"</string>
+    <!-- no translation found for forms_are_disabled (2876312737118986789) -->
     <skip />
 </resources>
