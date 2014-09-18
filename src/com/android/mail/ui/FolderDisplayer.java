@@ -55,7 +55,6 @@ public abstract class FolderDisplayer {
         public int folderRoundedCornerRadius;
         public int overflowGradientPadding;
         public int folderHorizontalPadding;
-        public int folderVerticalPadding;
         public int folderInBetweenPadding;
         public int folderFontSize;
     }
