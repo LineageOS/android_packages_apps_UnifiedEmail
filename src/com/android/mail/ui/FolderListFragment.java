@@ -458,7 +458,7 @@ public class FolderListFragment extends ListFragment implements
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setEmptyView(null);
         mListView.setDivider(null);
-        addListHeader(inflater, mListView);
+        addListHeader(inflater, rootView, mListView);
         if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
             mListView.onRestoreInstanceState(savedState.getParcelable(BUNDLE_LIST_STATE));
         }
@@ -482,7 +482,7 @@ public class FolderListFragment extends ListFragment implements
         return rootView;
     }
 
-    protected void addListHeader(LayoutInflater inflater, ListView list) {
+    protected void addListHeader(LayoutInflater inflater, View rootView, ListView list) {
         // Default impl does nothing
     }
 
