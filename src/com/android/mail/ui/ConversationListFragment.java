@@ -813,24 +813,22 @@ public final class ConversationListFragment extends Fragment implements
     private void viewConversation(final int position) {
         LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
 
-        final ConversationCursor cursor =
-                (ConversationCursor) getAnimatedAdapter().getItem(position);
-
-        if (cursor == null) {
-            LogUtils.e(LOG_TAG,
-                    "unable to open conv at cursor pos=%s cursor=%s getPositionOffset=%s",
-                    position, cursor, getAnimatedAdapter().getPositionOffset(position));
-            return;
-        }
-
-        final Conversation conv = cursor.getConversation();
+        final Object item = getAnimatedAdapter().getItem(position);
+        if (item != null && item instanceof ConversationCursor) {
+            final ConversationCursor cursor = (ConversationCursor) item;
+            final Conversation conv = cursor.getConversation();
         /*
          * The cursor position may be different than the position method parameter because of
          * special views in the list.
          */
-        conv.position = cursor.getPosition();
-        setActivated(conv.position, true);
-        mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
+            conv.position = cursor.getPosition();
+            setActivated(conv.position, true);
+            mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
+        } else {
+            LogUtils.e(LOG_TAG,
+                    "unable to open conv at cursor pos=%s item=%s getPositionOffset=%s",
+                    position, item, getAnimatedAdapter().getPositionOffset(position));
+        }
     }
 
     /**

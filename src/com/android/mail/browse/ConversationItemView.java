@@ -741,7 +741,7 @@ public class ConversationItemView extends View
             mBackgrounds.put(resourceId, drawable);
         }
         if (getBackground() != drawable) {
-            super.setBackground(drawable);
+            super.setBackgroundDrawable(drawable);
         }
         Utils.traceEndSection();
     }
