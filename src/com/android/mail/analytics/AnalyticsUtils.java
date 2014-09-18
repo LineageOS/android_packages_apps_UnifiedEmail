@@ -46,12 +46,12 @@ public class AnalyticsUtils {
             s = "report_spam";
         } else if (id == R.id.mark_not_spam) {
             s = "mark_not_spam";
-        } else if (id == R.id.report_phishing) {
-            s = "report_phishing";
         } else if (id == R.id.compose) {
             s = "compose";
         } else if (id == R.id.refresh) {
             s = "refresh";
+        } else if (id == R.id.toggle_drawer) {
+            s = "toggle_drawer";
         } else if (id == R.id.settings) {
             s = "settings";
         } else if (id == R.id.help_info_menu_item) {
@@ -76,6 +76,8 @@ public class AnalyticsUtils {
             s = "mark_read";
         } else if (id == R.id.unread) {
             s = "mark_unread";
+        } else if (id == R.id.toggle_read_unread) {
+            s = "toggle_read_unread";
         } else if (id == R.id.show_original) {
             s = "show_original";
         } else if (id == R.id.add_file_attachment) {

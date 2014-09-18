@@ -327,17 +327,20 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             return false;
         }
 
-        boolean handled = false;
+        boolean handled = true;
         final int itemId = item.getItemId();
-        if (itemId == R.id.inside_conversation_unread) {
+        if (itemId == R.id.inside_conversation_unread || itemId == R.id.toggle_read_unread) {
             markUnread();
-            handled = true;
         } else if (itemId == R.id.show_original) {
             showUntransformedConversation();
-            handled = true;
         } else if (itemId == R.id.print_all) {
             printConversation();
-            handled = true;
+        } else if (itemId == R.id.reply) {
+            handleReply();
+        } else if (itemId == R.id.reply_all) {
+            handleReplyAll();
+        } else {
+            handled = false;
         }
         return handled;
     }
@@ -706,6 +709,10 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * Prints all messages in the conversation.
      */
     protected abstract void printConversation();
+
+    // These methods should perform default reply/replyall action on the last message.
+    protected abstract void handleReply();
+    protected abstract void handleReplyAll();
 
     public boolean shouldAlwaysShowImages() {
         return (mAccount != null) && (mAccount.settings.showImages == Settings.ShowImages.ALWAYS);

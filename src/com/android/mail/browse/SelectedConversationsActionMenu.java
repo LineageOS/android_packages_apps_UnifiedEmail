@@ -111,6 +111,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mUpdater = activity.getConversationUpdater();
     }
 
+    public boolean onActionItemClicked(MenuItem item) {
+        return onActionItemClicked(mActionMode, item);
+    }
+
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         boolean handled = true;
@@ -160,6 +164,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             markConversationsRead(false);
         } else if (itemId == R.id.star) {
             starConversations(true);
+        } else if (itemId == R.id.toggle_read_unread) {
+            if (mActionMode != null) {
+                markConversationsRead(mActionMode.getMenu().findItem(R.id.read).isVisible());
+            }
         } else if (itemId == R.id.remove_star) {
             if (mFolder.isType(UIProvider.FolderType.STARRED)) {
                 LogUtils.d(LOG_TAG, "We are in a starred folder, removing the star");
@@ -395,6 +403,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         read.setVisible(!showMarkUnread);
         final MenuItem unread = menu.findItem(R.id.unread);
         unread.setVisible(showMarkUnread);
+
         // We only ever show one of:
         // 1) remove folder
         // 2) archive
