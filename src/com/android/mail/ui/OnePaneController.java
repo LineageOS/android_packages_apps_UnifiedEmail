@@ -138,6 +138,7 @@ public final class OnePaneController extends AbstractActivityController {
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
         mDrawerContainer.setDrawerTitle(Gravity.START,
                 mActivity.getActivityContext().getString(R.string.drawer_title));
+        mDrawerContainer.setStatusBarBackground(R.color.primary_dark_color);
         final String drawerPulloutTag = mActivity.getString(R.string.drawer_pullout_tag);
         mDrawerPullout = mDrawerContainer.findViewWithTag(drawerPulloutTag);
         mDrawerPullout.setBackgroundResource(R.color.list_background_color);
