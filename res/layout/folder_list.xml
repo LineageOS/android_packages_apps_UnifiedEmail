@@ -31,6 +31,7 @@
         android:id="@+id/mini_drawer"
         android:layout_width="@dimen/two_pane_drawer_width_mini"
         android:layout_height="match_parent"
+        android:focusable="true"
         android:paddingTop="20dp"
         android:paddingBottom="18dp"
         android:orientation="vertical">
