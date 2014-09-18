@@ -1301,7 +1301,7 @@ public class FolderListFragment extends ListFragment implements
 
     private class FooterAdapter extends BaseAdapter {
 
-        private final List<FooterItem> mFooterItems = Lists.newArrayList();
+        private final List<Object> mFooterItems = Lists.newArrayList();
 
         private FooterAdapter() {
             update();
@@ -1329,31 +1329,35 @@ public class FolderListFragment extends ListFragment implements
          */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            final ViewGroup footerItemView;
-            if (convertView != null) {
-                footerItemView = (ViewGroup) convertView;
+            final Object item = getItem(position);
+            if (item instanceof FooterItem) {
+                final ViewGroup footerItemView;
+                if (convertView != null) {
+                    footerItemView = (ViewGroup) convertView;
+                } else {
+                    footerItemView = (ViewGroup) getActivity().getLayoutInflater().
+                            inflate(R.layout.drawer_footer_item, parent, false);
+                }
+
+                final FooterItem footerItem = (FooterItem) item;
+
+                // adjust the text of the footer item
+                final TextView textView = (TextView) footerItemView.
+                        findViewById(R.id.drawer_footer_text);
+                textView.setText(footerItem.getTextResourceID());
+
+                // adjust the icon of the footer item
+                final ImageView imageView = (ImageView) footerItemView.
+                        findViewById(R.id.drawer_footer_image);
+                imageView.setImageResource(footerItem.getImageResourceID());
+                return footerItemView;
+            } else if (item instanceof DrawerItem) {
+                final DrawerItem drawerItem = (DrawerItem) item;
+                return drawerItem.getView(convertView, parent);
             } else {
-                footerItemView = (ViewGroup) getActivity().getLayoutInflater().
-                        inflate(R.layout.drawer_footer_item, parent, false);
+                throw new IllegalStateException("Only DrawerItems and FooterItems allowed, " +
+                        item.toString());
             }
-
-            final FooterItem item = (FooterItem) getItem(position);
-
-            footerItemView.findViewById(R.id.top_border).setVisibility(
-                    item.shouldShowTopBorder() ? View.VISIBLE : View.GONE);
-            footerItemView.findViewById(R.id.bottom_margin).setVisibility(
-                    item.shouldIncludeBottomMargin() ? View.VISIBLE : View.GONE);
-
-            // adjust the text of the footer item
-            final TextView textView = (TextView) footerItemView.
-                    findViewById(R.id.drawer_footer_text);
-            textView.setText(item.getTextResourceID());
-
-            // adjust the icon of the footer item
-            final ImageView imageView = (ImageView) footerItemView.
-                    findViewById(R.id.drawer_footer_image);
-            imageView.setImageResource(item.getImageResourceID());
-            return footerItemView;
         }
 
         /**
@@ -1378,8 +1382,8 @@ public class FolderListFragment extends ListFragment implements
             }
 
             if (!mFooterItems.isEmpty()) {
-                mFooterItems.get(0).setShowTopBorder(true);
-                mFooterItems.get(mFooterItems.size() - 1).setIncludeBottomMargin(true);
+                mFooterItems.add(0, DrawerItem.ofBlankHeader(mActivity));
+                mFooterItems.add(DrawerItem.ofBottomSpace(mActivity));
             }
 
             notifyDataSetChanged();
@@ -1501,9 +1505,6 @@ public class FolderListFragment extends ListFragment implements
         private final int mImageResourceID;
         private final int mTextResourceID;
 
-        private boolean mShowTopBorder;
-        private boolean mIncludeBottomMargin;
-
         private FooterItem(final int imageResourceID, final int textResourceID) {
             mImageResourceID = imageResourceID;
             mTextResourceID = textResourceID;
@@ -1538,22 +1539,6 @@ public class FolderListFragment extends ListFragment implements
             } else {
                 doFooterAction();
             }
-        }
-
-        public boolean shouldShowTopBorder() {
-            return mShowTopBorder;
-        }
-
-        public void setShowTopBorder(boolean show) {
-            mShowTopBorder = show;
-        }
-
-        public boolean shouldIncludeBottomMargin() {
-            return mIncludeBottomMargin;
-        }
-
-        public void setIncludeBottomMargin(boolean include) {
-            mIncludeBottomMargin = include;
         }
 
         // for analytics
