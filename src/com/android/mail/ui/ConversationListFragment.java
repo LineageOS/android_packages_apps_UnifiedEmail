@@ -667,7 +667,19 @@ public final class ConversationListFragment extends Fragment implements
             if (KeyboardUtils.isKeycodeDirectionEnd(keyCode, ViewUtils.isViewRtl(list))) {
                 if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                     if (mKeyInitiatedFromList) {
-                        onListItemSelected(list.getSelectedView(), list.getSelectedItemPosition());
+                        int currentPos = list.getSelectedItemPosition();
+                        if (currentPos < 0) {
+                            // Find the activated item if the focused item is non-existent.
+                            // This can happen when the user transitions from touch mode.
+                            currentPos = list.getCheckedItemPosition();
+                        }
+                        if (currentPos >= 0) {
+                            // We don't use onListItemSelected because right arrow should always
+                            // view the conversation even in CAB/no_sender_image mode.
+                            viewConversation(currentPos);
+                            commitDestructiveActions(Utils.useTabletUI(
+                                    mActivity.getActivityContext().getResources()));
+                        }
                     }
                     mKeyInitiatedFromList = false;
                 } else if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {

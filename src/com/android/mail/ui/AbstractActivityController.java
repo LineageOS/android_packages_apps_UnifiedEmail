@@ -2950,7 +2950,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 mConversationListCursor.moveFailedIntoDrafts(mTarget);
                 undoEnabled = false;
             }
-            if (undoEnabled) {
+            if (undoEnabled && mTarget.size() > 0) {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -3749,7 +3749,7 @@ public abstract class AbstractActivityController implements ActivityController,
             if (isPerformed()) {
                 return;
             }
-            if (mIsDestructive && mShowUndo) {
+            if (mIsDestructive && mShowUndo && mTarget.size() > 0) {
                 ToastBarOperation undoOp = new ToastBarOperation(mTarget.size(), mAction,
                         ToastBarOperation.UNDO, mIsSelectedSet, mActionFolder);
                 onUndoAvailable(undoOp);
