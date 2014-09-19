@@ -18,7 +18,6 @@
 package com.android.mail.browse;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -30,11 +29,9 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
 
-public final class ConversationListFooterView extends LinearLayout implements View.OnClickListener,
-        ViewMode.ModeChangeListener {
+public final class ConversationListFooterView extends LinearLayout implements View.OnClickListener {
 
     public interface FooterViewClickListener {
         void onFooterViewErrorActionClick(Folder folder, int errorStatus);
@@ -50,14 +47,9 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
     private Uri mLoadMoreUri;
     private int mErrorStatus;
     private FooterViewClickListener mClickListener;
-    private final boolean mTabletDevice;
-    // Backgrounds for different states.
-    private static Drawable sWideBackground;
-    private static Drawable sNormalBackground;
 
     public ConversationListFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mTabletDevice = Utils.useTabletUI(context.getResources());
     }
 
     @Override
@@ -175,37 +167,5 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
             showFooter = false;
         }
         return showFooter;
-    }
-
-    /**
-     * Update to the appropriate background when the view mode changes.
-     */
-    @Override
-    public void onViewModeChanged(int newMode) {
-        final Drawable drawable;
-        if (mTabletDevice && newMode == ViewMode.CONVERSATION_LIST) {
-            drawable = getWideBackground();
-        } else {
-            drawable = getNormalBackground();
-        }
-        setBackgroundDrawable(drawable);
-    }
-
-    private Drawable getWideBackground() {
-        if (sWideBackground == null) {
-            sWideBackground = getBackground(R.drawable.conversation_wide_unread_selector);
-        }
-        return sWideBackground;
-    }
-
-    private Drawable getNormalBackground() {
-        if (sNormalBackground == null) {
-            sNormalBackground = getBackground(R.drawable.conversation_item_background);
-        }
-        return sNormalBackground;
-    }
-
-    private Drawable getBackground(int resId) {
-        return getContext().getResources().getDrawable(resId);
     }
 }
