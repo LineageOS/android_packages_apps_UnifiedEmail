@@ -71,6 +71,22 @@ public class MiniDrawerView extends LinearLayout {
         });
     }
 
+    @Override
+    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+        // This ViewGroup is focusable purely so it can act as a stable target for other views to
+        // designate as their left/right focus ID. When focus comes to this view, the XML
+        // declaration of descendantFocusability=FOCUS_AFTER_DESCENDANTS means it will always try
+        // to focus one of its children before resorting to this (great! we basically never want
+        // this container to gain focus).
+        //
+        // But the usual focus search towards the LEFT (in LTR) actually starts at the bottom,
+        // which is weird. So override all focus requests that land on this parent to use the
+        // FORWARD direction so the top-most item gets first focus. This will not affect focus
+        // traversal within this ViewGroup as the descendantFocusability prevents the parent from
+        // gaining focus.
+        return super.requestFocus(FOCUS_DOWN, previouslyFocusedRect);
+    }
+
     public void setController(FolderListFragment flf) {
         mController = flf;
         final ListAdapter adapter = mController.getMiniDrawerAccountsAdapter();
@@ -99,6 +115,8 @@ public class MiniDrawerView extends LinearLayout {
                 removeView(oldCurrentAccountView);
             }
             final View newCurrentAccountView = adapter.getView(0, oldCurrentAccountView, this);
+            newCurrentAccountView.setClickable(false);
+            newCurrentAccountView.setFocusable(false);
             addView(newCurrentAccountView, 0);
         }
 
@@ -138,15 +156,6 @@ public class MiniDrawerView extends LinearLayout {
                     addView(iv, 1 + numInboxes);
                     numInboxes++;
                 }
-            }
-        }
-    }
-
-    @Override
-    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
-        if (gainFocus && getFocusedChild() == null) {
-            if (getChildCount() > 0) {
-                getChildAt(0).requestFocus();
             }
         }
     }
