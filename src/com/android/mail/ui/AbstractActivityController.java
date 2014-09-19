@@ -1162,7 +1162,8 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onConversationListVisibilityChanged(boolean visible) {
-        mFloatingComposeButton.setVisibility(visible ? View.VISIBLE : View.GONE);
+        mFloatingComposeButton.setVisibility(
+                !ViewMode.isSearchMode(mViewMode.getMode()) && visible ? View.VISIBLE : View.GONE);
 
         informCursorVisiblity(visible);
         commitAutoAdvanceOperation();

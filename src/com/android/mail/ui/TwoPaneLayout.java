@@ -102,10 +102,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private View mConversationView;
     private View mFoldersView;
     private View mListView;
-    private View mFloatingActions;
-    private View mFloatingActionButton;
-
-    private int mFloatingActionButtonEndMargin;
 
     private final List<Runnable> mTransitionCompleteJobs = Lists.newArrayList();
 
@@ -136,8 +132,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         // don't show the conversation list, but in landscape we do.  This information is stored
         // in the constants
         mListCollapsible = !res.getBoolean(R.bool.is_tablet_landscape);
-        mFloatingActionButtonEndMargin =
-                res.getDimensionPixelOffset(R.dimen.floating_action_bar_margin);
 
         mDrawerWidthMini = res.getDimensionPixelSize(R.dimen.two_pane_drawer_width_mini);
         mDrawerWidthOpen = res.getDimensionPixelSize(R.dimen.two_pane_drawer_width_open);
@@ -159,8 +153,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView = findViewById(R.id.conversation_list_pane);
         mConversationView = findViewById(R.id.conversation_pane);
         mMiscellaneousView = findViewById(MISCELLANEOUS_VIEW_ID);
-        mFloatingActions = findViewById(R.id.floating_actions);
-        mFloatingActionButton = findViewById(R.id.compose_button);
 
         // all panes start GONE in initial UNKNOWN mode to avoid drawing misplaced panes
         mCurrentMode = ViewMode.UNKNOWN;
@@ -270,13 +262,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             }
         }
 
-        // manually set FAB position the first time so it doesn't animate to its initial position
-        if (mFloatingActions.getVisibility() != VISIBLE && mCurrentMode != ViewMode.UNKNOWN) {
-            mFloatingActionButton.setX(computeFloatingActionButtonX(isRtl ? listX : convX, isRtl));
-            mFloatingActions.setVisibility(VISIBLE);
-        }
-
-        animatePanes(foldersX, listX, convX, isRtl);
+        animatePanes(foldersX, listX, convX);
 
         // For views that are not on the screen, let's set their visibility for accessibility.
         final boolean folderVisible = isRtl ?
@@ -297,7 +283,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mPositionedIsDrawerOpen = isDrawerOpen;
     }
 
-    private void animatePanes(int foldersX, int listX, int convX, boolean isRtl) {
+    private void animatePanes(int foldersX, int listX, int convX) {
         // If positioning has not yet happened, we don't need to animate panes into place.
         // This happens on first layout, rotate, and when jumping straight to a conversation from
         // a view intent.
@@ -321,16 +307,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
         mFoldersView.animate().x(foldersX);
         mListView.animate().x(listX).setListener(mPaneAnimationListener);
-        mFloatingActionButton.animate()
-                .x(computeFloatingActionButtonX(isRtl ? listX : convX, isRtl));
 
-        configureAnimations(mConversationView, mFoldersView, mListView, mMiscellaneousView,
-                mFloatingActionButton);
-    }
-
-    private int computeFloatingActionButtonX(int edgeX, boolean isRtl) {
-        return isRtl ? edgeX + mFloatingActionButtonEndMargin :
-                edgeX - mFloatingActionButton.getWidth() - mFloatingActionButtonEndMargin;
+        configureAnimations(mConversationView, mFoldersView, mListView, mMiscellaneousView);
     }
 
     private void configureAnimations(View... views) {
