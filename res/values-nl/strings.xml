@@ -102,8 +102,7 @@
     <string name="preview_attachment" msgid="6265457626086113833">"Voorbeeld"</string>
     <string name="save_attachment" msgid="375685179032130033">"Opslaan"</string>
     <string name="download_again" msgid="8195787340878328119">"Opnieuw downloaden"</string>
-    <!-- no translation found for remove_attachment_desc (1478445871170879140) -->
-    <skip />
+    <string name="remove_attachment_desc" msgid="1478445871170879140">"Bijlage <xliff:g id="ATTACHMENTNAME">%s</xliff:g> verwijderen"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"Info"</string>
     <string name="no_application_found" msgid="7309485680354949680">"Er is geen app die deze bijlage kan openen voor weergave."</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"Bijlage ophalen"</string>
@@ -205,6 +204,7 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"Verplaatst naar <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="1529438451150580188">"Resultaten"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"Zoeken wordt niet ondersteund in dit account."</string>
+    <string name="search_suggestion_desc" msgid="4165491276003825492">"Suggestie: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"Map toevoegen"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> nieuw bericht"</item>
@@ -279,12 +279,9 @@
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
     <string name="voice_search_not_supported" msgid="8493517060419469738">"Gesproken zoekopdrachten worden niet ondersteund op dit apparaat."</string>
-    <!-- no translation found for search_back_desc (8038224690392783652) -->
-    <skip />
-    <!-- no translation found for search_voice_desc (9103854398344077204) -->
-    <skip />
-    <!-- no translation found for search_clear_desc (3044261775183044862) -->
-    <skip />
+    <string name="search_back_desc" msgid="8038224690392783652">"Zoekopdracht sluiten"</string>
+    <string name="search_voice_desc" msgid="9103854398344077204">"Gesproken zoekopdracht"</string>
+    <string name="search_clear_desc" msgid="3044261775183044862">"Tekst zoekopdracht wissen"</string>
     <string name="network_error" msgid="5931164247644972255">"Geen verbinding"</string>
     <string name="retry" msgid="916102442074217293">"Opnieuw proberen"</string>
     <string name="load_more" msgid="8702691358453560575">"Meer laden"</string>
@@ -476,6 +473,5 @@
     <string name="overflow_description" msgid="7886090597023240426">"Meer opties"</string>
     <string name="security_hold_required_text" msgid="6619955920101834286">"Beveiligingsupdate vereist voor <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="update_security_text" msgid="3527335757205741077">"nu bijwerken"</string>
-    <!-- no translation found for forms_are_disabled (2876312737118986789) -->
-    <skip />
+    <string name="forms_are_disabled" msgid="2876312737118986789">"Formulieren zijn uitgeschakeld in Gmail"</string>
 </resources>

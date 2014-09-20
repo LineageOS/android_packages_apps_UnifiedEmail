@@ -204,6 +204,7 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"<xliff:g id="FOLDERNAME">%1$s</xliff:g>मा सारियो"</string>
     <string name="search_results_header" msgid="1529438451150580188">"परिणामहरू"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"यस खातामा खोजी समर्थित छैन।"</string>
+    <string name="search_suggestion_desc" msgid="4165491276003825492">"सुझाव: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"फोल्डर थप्नुहोस्"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> नयाँ सन्देश"</item>
@@ -280,7 +281,7 @@
     <string name="voice_search_not_supported" msgid="8493517060419469738">"यस उपकरणमा आवाज खोजी समर्थित छैन।"</string>
     <string name="search_back_desc" msgid="8038224690392783652">"खोजी बन्द गर्नुहोस्"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"आवाज खोजी सुरु गर्नुहोस्"</string>
-    <string name="search_clear_desc" msgid="3044261775183044862">"खोजी पाठ खाली गर्नुहोस्"</string>
+    <string name="search_clear_desc" msgid="3044261775183044862">"खोजी पाठ हटाउनुहोस्"</string>
     <string name="network_error" msgid="5931164247644972255">"जडान छैन"</string>
     <string name="retry" msgid="916102442074217293">"पुन:प्रयास गर्नुहोला।"</string>
     <string name="load_more" msgid="8702691358453560575">"अधिक लोड गर्नुहोस्"</string>

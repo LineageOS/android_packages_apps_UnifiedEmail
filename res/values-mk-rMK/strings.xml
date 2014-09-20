@@ -191,6 +191,8 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"Преместен во <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="1529438451150580188">"Резултати"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"Оваа сметка не поддржува пребарување."</string>
+    <!-- no translation found for search_suggestion_desc (4165491276003825492) -->
+    <skip />
     <string name="add_label" msgid="3285338046038610902">"Додај папка"</string>
     <!-- no translation found for new_incoming_messages:one (1532079301006372605) -->
     <!-- no translation found for new_incoming_messages:other (4085982174357328926) -->

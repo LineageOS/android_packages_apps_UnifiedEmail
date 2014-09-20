@@ -204,6 +204,7 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"تم النقل إلى <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="1529438451150580188">"النتائج"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"لا يمكن استخدام البحث على هذا الحساب."</string>
+    <string name="search_suggestion_desc" msgid="4165491276003825492">"اقتراح: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"إضافة مجلد"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> رسالة جديدة"</item>

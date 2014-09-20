@@ -102,8 +102,7 @@
     <string name="preview_attachment" msgid="6265457626086113833">"மாதிரிக்காட்சி"</string>
     <string name="save_attachment" msgid="375685179032130033">"சேமி"</string>
     <string name="download_again" msgid="8195787340878328119">"மீண்டும் பதிவிறக்கு"</string>
-    <!-- no translation found for remove_attachment_desc (1478445871170879140) -->
-    <skip />
+    <string name="remove_attachment_desc" msgid="1478445871170879140">"<xliff:g id="ATTACHMENTNAME">%s</xliff:g> இணைப்பை அகற்று"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"தகவல்"</string>
     <string name="no_application_found" msgid="7309485680354949680">"பார்ப்பதற்கு, இந்த இணைப்பை எந்தப் பயன்பாட்டாலும் திறக்க முடியாது."</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"இணைப்பைப் பெறுகிறது"</string>
@@ -205,6 +204,7 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"<xliff:g id="FOLDERNAME">%1$s</xliff:g> க்கு நகர்த்தப்பட்டது"</string>
     <string name="search_results_header" msgid="1529438451150580188">"முடிவுகள்"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"இந்தக் கணக்கில் தேடல் ஆதரிக்கப்படவில்லை."</string>
+    <string name="search_suggestion_desc" msgid="4165491276003825492">"பரிந்துரை: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"கோப்புறையைச் சேர்"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> புதிய செய்தி"</item>
@@ -238,7 +238,7 @@
     <string name="hide_elided" msgid="5768235486834692733">"▼ மேற்கோளிட்ட உரையை மறை"</string>
     <string name="message_invite_title" msgid="5985161025144867256">"கேலெண்டர் அழைப்பு"</string>
     <string name="message_invite_calendar_view" msgid="9181966650840809197">"கேலெண்டரில் காட்டு"</string>
-    <string name="message_invite_label_attending" msgid="4194264767870003397">"கலந்துகொள்கிறீர்களா?"</string>
+    <string name="message_invite_label_attending" msgid="4194264767870003397">"பங்கேற்கிறீர்களா?"</string>
     <string name="message_invite_accept" msgid="8002758842580134835">"ஆம்"</string>
     <string name="message_invite_tentative" msgid="3199418731566655887">"கலந்துகொள்ளலாம்"</string>
     <string name="message_invite_decline" msgid="6331040872447290777">"இல்லை"</string>
@@ -279,12 +279,9 @@
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
     <string name="voice_search_not_supported" msgid="8493517060419469738">"இந்தச் சாதனத்தில் குரல் தேடல் ஆதரிக்கப்படவில்லை."</string>
-    <!-- no translation found for search_back_desc (8038224690392783652) -->
-    <skip />
-    <!-- no translation found for search_voice_desc (9103854398344077204) -->
-    <skip />
-    <!-- no translation found for search_clear_desc (3044261775183044862) -->
-    <skip />
+    <string name="search_back_desc" msgid="8038224690392783652">"தேடலை மூடு"</string>
+    <string name="search_voice_desc" msgid="9103854398344077204">"குரல் தேடலைத் தொடங்கு"</string>
+    <string name="search_clear_desc" msgid="3044261775183044862">"தேடல் உரையை அழி"</string>
     <string name="network_error" msgid="5931164247644972255">"இணைப்பு இல்லை"</string>
     <string name="retry" msgid="916102442074217293">"மீண்டும் முயற்சிசெய்க"</string>
     <string name="load_more" msgid="8702691358453560575">"மேலும் ஏற்று"</string>
@@ -476,6 +473,5 @@
     <string name="overflow_description" msgid="7886090597023240426">"மேலும் விருப்பங்கள்"</string>
     <string name="security_hold_required_text" msgid="6619955920101834286">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>க்குப் பாதுகாப்புப் புதுப்பிப்பு அவசியம்"</string>
     <string name="update_security_text" msgid="3527335757205741077">"இப்போது புதுப்பி"</string>
-    <!-- no translation found for forms_are_disabled (2876312737118986789) -->
-    <skip />
+    <string name="forms_are_disabled" msgid="2876312737118986789">"Gmail இல் படிவங்கள் முடக்கப்பட்டுள்ளன"</string>
 </resources>

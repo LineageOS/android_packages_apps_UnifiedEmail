@@ -204,6 +204,7 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"გადატანილია <xliff:g id="FOLDERNAME">%1$s</xliff:g>-ში"</string>
     <string name="search_results_header" msgid="1529438451150580188">"შედეგები"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"ძიება ამ ანგარიშში არ არის მხარდაჭერილი."</string>
+    <string name="search_suggestion_desc" msgid="4165491276003825492">"შემოთავაზება: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"საქაღალდის დამატება"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> ახალი შეტყობინება"</item>
@@ -471,6 +472,6 @@
     <string name="activity_preferences" msgid="8966077432517613292">"პარამეტრები"</string>
     <string name="overflow_description" msgid="7886090597023240426">"დამატებითი პარამეტრები"</string>
     <string name="security_hold_required_text" msgid="6619955920101834286">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> საჭიროებს უსაფრთხოების განახლებას"</string>
-    <string name="update_security_text" msgid="3527335757205741077">"განახლება"</string>
+    <string name="update_security_text" msgid="3527335757205741077">"ახლა განახლება"</string>
     <string name="forms_are_disabled" msgid="2876312737118986789">"Gmail-ში ფორმები გამორთულია"</string>
 </resources>

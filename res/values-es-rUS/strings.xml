@@ -102,8 +102,7 @@
     <string name="preview_attachment" msgid="6265457626086113833">"Vista prev"</string>
     <string name="save_attachment" msgid="375685179032130033">"Guardar"</string>
     <string name="download_again" msgid="8195787340878328119">"Volver a descargar"</string>
-    <!-- no translation found for remove_attachment_desc (1478445871170879140) -->
-    <skip />
+    <string name="remove_attachment_desc" msgid="1478445871170879140">"Eliminar el archivo adjunto <xliff:g id="ATTACHMENTNAME">%s</xliff:g>"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"Info"</string>
     <string name="no_application_found" msgid="7309485680354949680">"Ninguna aplicación puede abrir este archivo adjunto para su visualización."</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"Obteniendo el archivo adjunto"</string>
@@ -205,6 +204,7 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"Enviada a <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="1529438451150580188">"Resultados"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"Esta cuenta no admite la función de búsqueda."</string>
+    <string name="search_suggestion_desc" msgid="4165491276003825492">"Sugerencia: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"Agregar carpeta"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> mensaje nuevo"</item>
@@ -279,12 +279,9 @@
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
     <string name="voice_search_not_supported" msgid="8493517060419469738">"El dispositivo no admite la búsqueda por voz."</string>
-    <!-- no translation found for search_back_desc (8038224690392783652) -->
-    <skip />
-    <!-- no translation found for search_voice_desc (9103854398344077204) -->
-    <skip />
-    <!-- no translation found for search_clear_desc (3044261775183044862) -->
-    <skip />
+    <string name="search_back_desc" msgid="8038224690392783652">"Cerrar la búsqueda"</string>
+    <string name="search_voice_desc" msgid="9103854398344077204">"Iniciar búsqueda por voz"</string>
+    <string name="search_clear_desc" msgid="3044261775183044862">"Borrar el texto de la búsqueda"</string>
     <string name="network_error" msgid="5931164247644972255">"Sin conexión"</string>
     <string name="retry" msgid="916102442074217293">"Volver a intentar"</string>
     <string name="load_more" msgid="8702691358453560575">"Realizar más cargas"</string>
@@ -476,6 +473,5 @@
     <string name="overflow_description" msgid="7886090597023240426">"Más opciones"</string>
     <string name="security_hold_required_text" msgid="6619955920101834286">"Actualización de seguridad necesaria para <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="update_security_text" msgid="3527335757205741077">"actualizar ahora"</string>
-    <!-- no translation found for forms_are_disabled (2876312737118986789) -->
-    <skip />
+    <string name="forms_are_disabled" msgid="2876312737118986789">"Formularios inhabilitados en Gmail"</string>
 </resources>

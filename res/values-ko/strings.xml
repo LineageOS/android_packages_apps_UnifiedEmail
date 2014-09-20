@@ -102,8 +102,7 @@
     <string name="preview_attachment" msgid="6265457626086113833">"미리보기"</string>
     <string name="save_attachment" msgid="375685179032130033">"저장"</string>
     <string name="download_again" msgid="8195787340878328119">"다시 다운로드"</string>
-    <!-- no translation found for remove_attachment_desc (1478445871170879140) -->
-    <skip />
+    <string name="remove_attachment_desc" msgid="1478445871170879140">"첨부파일 <xliff:g id="ATTACHMENTNAME">%s</xliff:g> 삭제"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"정보"</string>
     <string name="no_application_found" msgid="7309485680354949680">"이 첨부파일을 열어서 볼 수 있는 앱이 없습니다."</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"첨부파일 가져오는 중"</string>
@@ -205,6 +204,7 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"<xliff:g id="FOLDERNAME">%1$s</xliff:g>(으)로 이동함"</string>
     <string name="search_results_header" msgid="1529438451150580188">"검색결과"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"이 계정에서는 검색이 지원되지 않습니다."</string>
+    <string name="search_suggestion_desc" msgid="4165491276003825492">"검색 추천: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"폴더 추가"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"새 메일 <xliff:g id="COUNT">%1$d</xliff:g>개"</item>
@@ -279,12 +279,9 @@
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
     <string name="voice_search_not_supported" msgid="8493517060419469738">"음성 검색은 이 기기에서 지원되지 않습니다."</string>
-    <!-- no translation found for search_back_desc (8038224690392783652) -->
-    <skip />
-    <!-- no translation found for search_voice_desc (9103854398344077204) -->
-    <skip />
-    <!-- no translation found for search_clear_desc (3044261775183044862) -->
-    <skip />
+    <string name="search_back_desc" msgid="8038224690392783652">"검색을 종료합니다."</string>
+    <string name="search_voice_desc" msgid="9103854398344077204">"음성 검색을 시작합니다."</string>
+    <string name="search_clear_desc" msgid="3044261775183044862">"검색 텍스트를 지웁니다."</string>
     <string name="network_error" msgid="5931164247644972255">"연결되지 않음"</string>
     <string name="retry" msgid="916102442074217293">"다시 시도"</string>
     <string name="load_more" msgid="8702691358453560575">"추가 로드"</string>
@@ -474,8 +471,7 @@
     <string name="general_preferences_title" msgid="4212138728220418162">"일반 설정"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"설정"</string>
     <string name="overflow_description" msgid="7886090597023240426">"옵션 더보기"</string>
-    <string name="security_hold_required_text" msgid="6619955920101834286">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>에 보안 업데이트 필요"</string>
+    <string name="security_hold_required_text" msgid="6619955920101834286">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>에 대한 보안 업데이트 필요"</string>
     <string name="update_security_text" msgid="3527335757205741077">"지금 업데이트"</string>
-    <!-- no translation found for forms_are_disabled (2876312737118986789) -->
-    <skip />
+    <string name="forms_are_disabled" msgid="2876312737118986789">"Gmail에서 양식이 사용 중지되어 있습니다."</string>
 </resources>

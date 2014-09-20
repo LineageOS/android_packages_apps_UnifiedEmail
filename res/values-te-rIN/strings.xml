@@ -204,6 +204,7 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"<xliff:g id="FOLDERNAME">%1$s</xliff:g>కి తరలించబడింది"</string>
     <string name="search_results_header" msgid="1529438451150580188">"ఫలితాలు"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"ఈ ఖాతాలో శోధనకు మద్దతు లేదు."</string>
+    <string name="search_suggestion_desc" msgid="4165491276003825492">"సూచన: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"ఫోల్డర్‌ను జోడించండి"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> కొత్త సందేశం"</item>

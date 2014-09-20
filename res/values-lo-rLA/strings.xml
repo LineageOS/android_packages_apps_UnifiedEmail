@@ -27,7 +27,7 @@
     <string name="add_file_attachment" msgid="2604880054248593993">"ແນບ​ໄຟລ໌"</string>
     <string name="add_photo_attachment" msgid="7163589794940909528">"ແນບຮູບ"</string>
     <string name="save_draft" msgid="2669523480789672118">"ບັນ​ທຶກ​ສະ​ບັບ​ຮ່າງ"</string>
-    <string name="discard" msgid="4905982179911608430">"​ຍົກ​ເລີກ"</string>
+    <string name="discard" msgid="4905982179911608430">"ປ່ອຍຖິ້ມ"</string>
     <string name="compose" msgid="2602861958391035523">"ຂຽນອີເມວ"</string>
     <string name="compose_title" msgid="5673376086133995913">"ຂຽນອີເມວ"</string>
   <string-array name="compose_modes">
@@ -64,8 +64,8 @@
     <string name="mark_not_spam" msgid="8617774236231366651">"ລາຍງານວ່າບໍ່ແມ່ນສະແປມ"</string>
     <string name="report_phishing" msgid="8454666464488413739">"ລາຍງານຟິດຊິ່ງ"</string>
     <string name="delete" msgid="6784262386780496958">"ລຶບ"</string>
-    <string name="discard_drafts" msgid="5881484193628472105">"ຍົກເລີກສະບັບຮ່າງ"</string>
-    <string name="discard_failed" msgid="7520780769812210279">"​ການຍົກ​ເລີກ​ລົ້ມ​ເຫຼວ"</string>
+    <string name="discard_drafts" msgid="5881484193628472105">"ຖິ້ມ​ສະບັບ​ຮ່າງ"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"ການປ່ອຍຖິ້ມລົ້ມເຫລວ"</string>
     <string name="refresh" msgid="1533748989749277511">"ໂຫຼດໃໝ່"</string>
     <string name="reply" msgid="8337757482824207118">"ຕອບກັບ"</string>
     <string name="reply_all" msgid="5366796103758360957">"ຕອບກັບທັງຫມົດ"</string>
@@ -102,8 +102,7 @@
     <string name="preview_attachment" msgid="6265457626086113833">"ຕົວຢ່າງ"</string>
     <string name="save_attachment" msgid="375685179032130033">"ບັນທຶກ"</string>
     <string name="download_again" msgid="8195787340878328119">"ດາວໂຫລດອີກເທື່ອ"</string>
-    <!-- no translation found for remove_attachment_desc (1478445871170879140) -->
-    <skip />
+    <string name="remove_attachment_desc" msgid="1478445871170879140">"ລຶບໄຟລ໌ແນບ <xliff:g id="ATTACHMENTNAME">%s</xliff:g>"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"ຂໍ້ມູນ"</string>
     <string name="no_application_found" msgid="7309485680354949680">"ບໍ່ມີ​ແອັບຯ​ໃດ​ສາມາດ​ເປີດ​ເບິ່ງ​ໄຟລ໌ແນບ​ນີ້​ໄດ້."</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"ກຳລັງດຶງ​ຂໍ້ມູນ​ໄຟລ໌ແນບ"</string>
@@ -151,10 +150,10 @@
     <item quantity="other" msgid="2001972798185641108">"ຈັດເກັບ <xliff:g id="COUNT">%1$d</xliff:g> ການສົນທະນານີ້?"</item>
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one" msgid="2030421499893210789">"​ຍົກ​ເລີກ​​ອີ​ເມວ​ນີ້ບໍ່?"</item>
-    <item quantity="other" msgid="782234447471532005">"​ຍົກ​ເລີກ​ອີ​ເມວ <xliff:g id="COUNT">%1$d</xliff:g> ສະ​ບັບ​ນີ້?"</item>
+    <item quantity="one" msgid="2030421499893210789">"ຖິ້ມ​ອີ​ເມວ​ນີ້ບໍ່?"</item>
+    <item quantity="other" msgid="782234447471532005">"ຖິ້ມ​ອີ​ເມວ <xliff:g id="COUNT">%1$d</xliff:g> ສະ​ບັບ​ນີ້​ບໍ່?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="5172680524418848519">"​ຍົກ​ເລີກ​​ອີ​ເມວ​ນີ້ບໍ່?"</string>
+    <string name="confirm_discard_text" msgid="5172680524418848519">"ຖິ້ມ​​​ອີ​ເມວ​ນີ້​ບໍ?"</string>
     <string name="loading_conversations" msgid="7255732786298655246">"ກຳລັງໂຫລດ…"</string>
     <string name="empty_inbox" msgid="5901734942362315228">"ທ່ານອ່ານອີເມວໝົດແລ້ວ! ຂໍໃຫ້ມີຄວາມສຸກກັບມື້​ນີ້​ຂອງ​ທ່ານ."</string>
     <string name="empty_search" msgid="8564899353449880818">"ອຸຍ! ພວກ​ເຮົາ​ບໍ່​ສາ​ມາດ​ຊອກ​ຫາຂໍ້​ມູນ​ກ່ຽວ​ກັ​ບ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" ໄດ້."</string>
@@ -205,6 +204,7 @@
     <string name="conversation_folder_moved" msgid="6475872337373081683">"ຍ້າຍໄປ <xliff:g id="FOLDERNAME">%1$s</xliff:g> ແລ້ວ"</string>
     <string name="search_results_header" msgid="1529438451150580188">"ຜົນການຊອກຫາ"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"ການຊອກຫາບໍ່​ຮອງຮັບ​ສຳລັບບັນຊີນີ້."</string>
+    <string name="search_suggestion_desc" msgid="4165491276003825492">"ການແນະນຳ: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"ເພີ່ມໂຟນເດີ"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> ຂໍ້​ຄວາມ​ໃໝ່"</item>
@@ -279,12 +279,9 @@
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
     <string name="voice_search_not_supported" msgid="8493517060419469738">"​ການ​ຊອກ​ຫາ​ດ້ວຍ​ສຽງ​ບໍ່​ຮອງ​ຮັບ​ສຳ​ລັບອຸ​ປະ​ກອນ​ນີ້."</string>
-    <!-- no translation found for search_back_desc (8038224690392783652) -->
-    <skip />
-    <!-- no translation found for search_voice_desc (9103854398344077204) -->
-    <skip />
-    <!-- no translation found for search_clear_desc (3044261775183044862) -->
-    <skip />
+    <string name="search_back_desc" msgid="8038224690392783652">"ປິດການຊອກ​ຫາ"</string>
+    <string name="search_voice_desc" msgid="9103854398344077204">"​ເລີ່ມ​ການ​ຊອກ​ຫາ​ດ້ວຍ​ສຽງ"</string>
+    <string name="search_clear_desc" msgid="3044261775183044862">"ລ້າງ​ຂໍ້​ຄວາມ​ການຊອກ​ຫາ"</string>
     <string name="network_error" msgid="5931164247644972255">"ບໍ່ມີການເຊື່ອມຕໍ່"</string>
     <string name="retry" msgid="916102442074217293">"ລອງໃໝ່"</string>
     <string name="load_more" msgid="8702691358453560575">"ໂຫລດເພີ່ມເຕີມ"</string>
@@ -419,7 +416,7 @@
     <string name="set_end_date_dialog_title" msgid="7543009262788808443">"ມື້ສ​ິ້ນ​ສຸດ (ເປັນທາງເລືອກ)"</string>
     <string name="custom_date" msgid="5794846334232367838">"ກຳນົດເອງ"</string>
     <string name="date_none" msgid="1061426502665431412">"ບໍ່​ມີ"</string>
-    <string name="discard_changes" msgid="5699760550972324746">"ຍົກເລີກການແກ້ໄຂບໍ່?"</string>
+    <string name="discard_changes" msgid="5699760550972324746">"ຖິ້ມ​ການ​ແກ້ໄຂ​ບໍ່?"</string>
     <string name="vacation_responder_changes_saved" msgid="91448817268121249">"ການປ່ຽນແປງຂອງ​ການຕອບຂໍ້ຄວາມ​ລາພັກໄດ້ຖືກບັນທຶກແລ້ວ"</string>
     <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"ການປ່ຽນແປງຂອງ​ການຕອບ​ຂໍ້ຄວາມ​ລາພັກຖືກຍົກເລີກແລ້ວ"</string>
     <string name="vacation_responder_off" msgid="4429909341193366667">"ປິດ"</string>
@@ -476,6 +473,5 @@
     <string name="overflow_description" msgid="7886090597023240426">"ໂຕ​ເລືອກ​ເພີ່ມ​ເຕີມ"</string>
     <string name="security_hold_required_text" msgid="6619955920101834286">"ຕ້ອງ​ອັບ​ເດດ​ຄວາມ​ປອດ​ໄພ​ໃຫ້​ກັບ <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
     <string name="update_security_text" msgid="3527335757205741077">"​ອັບ​ເດດ​ດຽວ​ນີ້"</string>
-    <!-- no translation found for forms_are_disabled (2876312737118986789) -->
-    <skip />
+    <string name="forms_are_disabled" msgid="2876312737118986789">"ຟອມ​ຖືກ​ປິດການນຳ​ໃຊ້ໃນ Gmail"</string>
 </resources>
