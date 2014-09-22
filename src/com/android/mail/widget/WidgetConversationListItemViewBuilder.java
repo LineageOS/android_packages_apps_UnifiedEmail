@@ -120,7 +120,7 @@ public class WidgetConversationListItemViewBuilder {
         DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
 
         // Initialize Bitmap
-        ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attach_file_20dp);
+        ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attach_file_18dp);
     }
 
     /*
