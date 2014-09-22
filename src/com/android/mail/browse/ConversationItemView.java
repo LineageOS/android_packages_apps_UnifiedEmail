@@ -756,8 +756,6 @@ public class ConversationItemView extends View
 
         updateBackground();
 
-        mHeader.sendersDisplayText = new SpannableStringBuilder();
-
         mHeader.hasDraftMessage = mHeader.conversation.numDrafts() > 0;
 
         // Parse senders fragments.
@@ -1007,21 +1005,18 @@ public class ConversationItemView extends View
         sPaint.setTextSize(mCoordinates.sendersFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
 
-        if (!mHeader.styledNames.isEmpty()) {
-            final SpannableStringBuilder participantText = elideParticipants(mHeader.styledNames);
-            layoutParticipantText(participantText);
-        } else {
-            // First pass to calculate width of each fragment.
-            if (mSendersWidth < 0) {
-                mSendersWidth = 0;
-            }
-
-            mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
-                    mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
-        }
-
+        // First pass to calculate width of each fragment.
         if (mSendersWidth < 0) {
             mSendersWidth = 0;
+        }
+
+        // sendersDisplayText is only set when preserveSendersText is true.
+        if (mHeader.preserveSendersText) {
+            mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
+                    mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
+        } else {
+            final SpannableStringBuilder participantText = elideParticipants(mHeader.styledNames);
+            layoutParticipantText(participantText);
         }
 
         pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
@@ -1054,7 +1049,7 @@ public class ConversationItemView extends View
         }
 
         final SpannableStringBuilder messageInfoString = mHeader.messageInfoString;
-        if (messageInfoString.length() > 0) {
+        if (!TextUtils.isEmpty(messageInfoString)) {
             CharacterStyle[] spans = messageInfoString.getSpans(0, messageInfoString.length(),
                     CharacterStyle.class);
             // There is only 1 character style span; make sure we apply all the
@@ -1066,8 +1061,8 @@ public class ConversationItemView extends View
             float messageInfoWidth = sPaint.measureText(messageInfoString.toString());
             totalWidth += messageInfoWidth;
         }
-       SpannableString prevSender = null;
-       SpannableString ellipsizedText;
+        SpannableString prevSender = null;
+        SpannableString ellipsizedText;
         for (SpannableString sender : parts) {
             // There may be null sender strings if there were dupes we had to remove.
             if (sender == null) {
@@ -1085,17 +1080,16 @@ public class ConversationItemView extends View
             // If there are already senders present in this string, we need to
             // make sure we prepend the dividing token
             if (SendersView.sElidedString.equals(sender.toString())) {
-                prevSender = sender;
                 sender = copyStyles(spans, sElidedPaddingToken + sender + sElidedPaddingToken);
             } else if (!skipToHeader && builder.length() > 0
                     && (prevSender == null || !SendersView.sElidedString.equals(prevSender
                             .toString()))) {
-                prevSender = sender;
                 sender = copyStyles(spans, sSendersSplitToken + sender);
             } else {
-                prevSender = sender;
                 skipToHeader = false;
             }
+            prevSender = sender;
+
             if (spans.length > 0) {
                 spans[0].updateDrawState(sPaint);
             }
@@ -1123,7 +1117,9 @@ public class ConversationItemView extends View
             builder.append(fragmentDisplayText);
         }
         mHeader.styledMessageInfoStringOffset = builder.length();
-        builder.append(messageInfoString);
+        if (!TextUtils.isEmpty(messageInfoString)) {
+            builder.append(messageInfoString);
+        }
         return builder;
     }
 
