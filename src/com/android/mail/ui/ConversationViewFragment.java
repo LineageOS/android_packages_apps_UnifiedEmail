@@ -1649,7 +1649,9 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             // We are going to update the data in the adapter whenever any input fields change.
             // This ensures that the Message object that ComposeActivity uses will be correctly
             // aligned with the most up-to-date data.
-            if (!newMsg.isEqual(oldMsg)) {
+            // Note that isEqual does not compare all fields in the Message object
+            if (!newMsg.isEqual(oldMsg) ||
+                    newMsg.read != oldMsg.read || newMsg.starred != oldMsg.starred) {
                 mAdapter.updateItemsForMessage(newMsg, changedOverlayPositions);
                 LogUtils.i(LOG_TAG, "msg #%d (%d): detected field(s) change. sendingState=%s",
                         pos, newMsg.id, newMsg.sendingState);
