@@ -27,6 +27,8 @@ import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.ActionBar;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
@@ -35,6 +37,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
+import com.android.mail.utils.EmptyStateUtils;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
@@ -53,6 +56,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
             "saved-miscellaneous-view-transaction-id";
 
     private TwoPaneLayout mLayout;
+    private ImageView mEmptyCvView;
     private List<TwoPaneLayout.ConversationListLayoutListener> mConversationListLayoutListeners =
             Lists.newArrayList();
     @Deprecated
@@ -166,6 +170,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     @Override
     public boolean onCreate(Bundle savedState) {
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
+        mEmptyCvView = (ImageView) mActivity.findViewById(R.id.conversation_pane_no_message_view);
         if (mLayout == null) {
             // We need the layout for everything. Crash/Return early if it is null.
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
@@ -189,6 +194,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         // notifications upon animation completion:
         // (onConversationVisibilityChanged, onConversationListVisibilityChanged)
         mViewMode.addListener(mLayout);
+
         return super.onCreate(savedState);
     }
 
@@ -330,6 +336,11 @@ public final class TwoPaneController extends AbstractActivityController implemen
             } else {
                 showCurrentConversationInPager();
             }
+        }
+
+        // Change visibility of the empty view
+        if (mIsTabletLandscape) {
+            mEmptyCvView.setVisibility(visible ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -695,5 +706,18 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
     public List<TwoPaneLayout.ConversationListLayoutListener> getConversationListLayoutListeners() {
         return mConversationListLayoutListeners;
+    }
+
+    @Override
+    public boolean setupEmptyIconView(Folder folder, boolean isEmpty) {
+        if (mIsTabletLandscape) {
+            if (!isEmpty) {
+                mEmptyCvView.setImageResource(R.drawable.ic_empty_cv_120dp);
+            } else {
+                EmptyStateUtils.bindEmptyFolderIcon(mEmptyCvView, folder);
+            }
+            return true;
+        }
+        return false;
     }
 }

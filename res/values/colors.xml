@@ -28,7 +28,6 @@
     <color name="light_gray">#cccccc</color>
     <!-- if you want to make something blue, please try to use THIS blue -->
     <color name="mail_app_blue">@android:color/holo_blue_light</color>
-    <color name="tablet_background_gray">#eeeeee</color>
     <color name="divider_color">#e5e5e5</color>
 
     <!-- Conversation List Item Colors -->
