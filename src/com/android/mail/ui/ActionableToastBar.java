@@ -88,6 +88,12 @@ public class ActionableToastBar extends FrameLayout {
      * always <tt>null</tt> in two-pane layouts. */
     private TextView mMultiLineActionView;
 
+    /** The minimum width of this view; applicable when description text is very short. */
+    private int mMinWidth;
+
+    /** The maximum width of this view; applicable when description text is long enough to wrap. */
+    private int mMaxWidth;
+
     private ToastBarOperation mOperation;
 
     public ActionableToastBar(Context context) {
@@ -104,6 +110,8 @@ public class ActionableToastBar extends FrameLayout {
         mAnimationDuration = getResources().getInteger(R.integer.toast_bar_animation_duration_ms);
         mMinToastDuration = getResources().getInteger(R.integer.toast_bar_min_duration_ms);
         mMaxToastDuration = getResources().getInteger(R.integer.toast_bar_max_duration_ms);
+        mMinWidth = getResources().getDimensionPixelOffset(R.dimen.snack_bar_min_width);
+        mMaxWidth = getResources().getDimensionPixelOffset(R.dimen.snack_bar_max_width);
         mHideToastBarHandler = new Handler();
         mHideToastBarRunnable = new Runnable() {
             @Override
@@ -150,13 +158,26 @@ public class ActionableToastBar extends FrameLayout {
         // measure the view and its content
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        // if the description does not fit, switch to multi line display if one is present
-        final boolean descriptionIsMultiLine = mSingleLineDescriptionView.getLineCount() > 1;
-        final boolean haveMultiLineView = mMultiLineDescriptionView != null;
-        if (descriptionIsMultiLine && haveMultiLineView) {
-            setVisibility(true /* multiLine */, showAction);
+        // if specific views exist to handle the multiline case
+        if (mMultiLineDescriptionView != null) {
+            // if the description does not fit on a single line
+            if (mSingleLineDescriptionView.getLineCount() > 1) {
+                //switch to multi line display views
+                setVisibility(true /* multiLine */, showAction);
 
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            }
+        } else {
+            // otherwise, adjust the the single line view so wrapping occurs at the desired width
+            // (the total width of the toast bar must always fall between the given min and max
+            // width; if max width cannot accommodate all of the description text, it wraps)
+            if (getMeasuredWidth() < mMinWidth) {
+                widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(mMinWidth, MeasureSpec.EXACTLY);
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            } else if (getMeasuredWidth() > mMaxWidth) {
+                widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(mMaxWidth, MeasureSpec.EXACTLY);
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            }
         }
     }
 

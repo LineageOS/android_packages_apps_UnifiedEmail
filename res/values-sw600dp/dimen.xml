@@ -56,4 +56,7 @@
     <dimen name="chip_wrapper_start_padding">64dp</dimen>
 
     <dimen name="action_bar_content_inset_start">60dp</dimen>
+
+    <dimen name="snack_bar_min_width">288dp</dimen>
+    <dimen name="snack_bar_max_width">320dp</dimen>
 </resources>
