@@ -3316,6 +3316,9 @@ public abstract class AbstractActivityController implements ActivityController,
             LogUtils.d(LOG_TAG,
                     "IN AAC.ConversationCursor.onLoadFinished, data=%s loader=%s this=%s",
                     data, loader, this);
+            if (isDestroyed()) {
+                return;
+            }
             if (isDrawerEnabled() && mDrawerListener.getDrawerState() != DrawerLayout.STATE_IDLE) {
                 LogUtils.d(LOG_TAG, "ConversationListLoaderCallbacks.onLoadFinished: ignoring.");
                 mConversationListLoadFinishedIgnored = true;
@@ -3424,6 +3427,9 @@ public abstract class AbstractActivityController implements ActivityController,
         public void onLoadFinished(Loader<ObjectCursor<Folder>> loader, ObjectCursor<Folder> data) {
             if (data == null) {
                 LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", loader.getId());
+            }
+            if (isDestroyed()) {
+                return;
             }
             switch (loader.getId()) {
                 case LOADER_FOLDER_CURSOR:
@@ -3557,6 +3563,9 @@ public abstract class AbstractActivityController implements ActivityController,
                 ObjectCursor<Account> data) {
             if (data == null) {
                 LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", loader.getId());
+            }
+            if (isDestroyed()) {
+                return;
             }
             switch (loader.getId()) {
                 case LOADER_ACCOUNT_CURSOR:
