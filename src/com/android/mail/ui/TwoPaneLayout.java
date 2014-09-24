@@ -171,7 +171,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mConversationListWeight = (double) convListWeight
                 / (convListWeight + convViewWeight);
 
-        mShadowDrawable = getResources().getDrawable(R.drawable.ic_vertical_shadow_start_6dp);
+        mShadowDrawable = getResources().getDrawable(R.drawable.ic_vertical_shadow_start_4dp);
         mShadowMinWidth = mShadowDrawable.getMinimumWidth();
     }
 

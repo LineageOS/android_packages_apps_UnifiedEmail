@@ -69,7 +69,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="left"
-                android:foreground="@drawable/ic_vertical_shadow_end_4dp" >
+                android:foreground="@drawable/ic_vertical_shadow_end_2dp" >
 
                 <include layout="@layout/conversation_pager"
                     android:layout_width="match_parent"
@@ -82,7 +82,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="left"
-                android:foreground="@drawable/ic_vertical_shadow_end_4dp" />
+                android:foreground="@drawable/ic_vertical_shadow_end_2dp" />
 
             <include layout="@layout/floating_actions" />
 
