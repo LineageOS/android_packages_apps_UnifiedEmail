@@ -169,7 +169,7 @@
     <string name="empty_search" msgid="8564899353449880818">"อ๊ะ! เราไม่พบผลลัพธ์ใดๆสำหรับ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\""</string>
     <string name="empty_spam_folder" msgid="3288985543286122800">"ไชโย ไม่มีสแปมเลย!"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"ไม่มีขยะที่นี่ ขอขอบคุณที่รีไซเคิล!"</string>
-    <string name="empty_folder" msgid="3227552635613553855">"ไม่มีอีเมลที่นี่"</string>
+    <string name="empty_folder" msgid="3227552635613553855">"ไม่มีจดหมายที่นี่"</string>
     <string name="getting_messages" msgid="8403333791332403244">"กำลังโหลดข้อความของคุณ"</string>
     <string name="undo" msgid="8256285267701059609">"เลิกทำ"</string>
   <plurals name="conversation_unstarred">
@@ -272,7 +272,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"ซิงค์โฟลเดอร์"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ ใหม่"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> ใหม่"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"ใหม่ <xliff:g id="COUNT">%d</xliff:g>"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"ยังไม่ได้อ่าน <xliff:g id="COUNT">%1$d</xliff:g> ข้อความ"</item>
   </plurals>

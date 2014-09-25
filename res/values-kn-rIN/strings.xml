@@ -337,7 +337,7 @@
     <string name="notification_action_reply" msgid="8378725460102575919">"ಪ್ರತ್ಯುತ್ತರ"</string>
     <string name="notification_action_reply_all" msgid="5693469099941000037">"ಎಲ್ಲರಿಗೂ ಪ್ರತ್ಯುತ್ತರಿಸು"</string>
     <string name="notification_action_archive" msgid="2884874164831039047">"ಆರ್ಕೈವ್"</string>
-    <string name="notification_action_remove_label" msgid="3714785653186750981">"ಲೇಬಲ್ ತೆಗೆದುಹಾಕಿ"</string>
+    <string name="notification_action_remove_label" msgid="3714785653186750981">"ಲೇಬಲ್ ತೆಗೆದುಹಾಕು"</string>
     <string name="notification_action_delete" msgid="3201627482564624132">"ಅಳಿಸು"</string>
     <string name="notification_action_undo_archive" msgid="600186958134073582">"ಆರ್ಕೈವ್ ಮಾಡಲಾಗಿದೆ"</string>
     <string name="notification_action_undo_remove_label" msgid="8341924850540100690">"ಲೇಬಲ್ ತೆಗೆದು ಹಾಕಲಾಗಿದೆ"</string>

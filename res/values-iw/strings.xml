@@ -23,7 +23,7 @@
     <string name="cc" msgid="8768828862207919684">"עותק"</string>
     <string name="bcc" msgid="519303553518479171">"עותק מוסתר"</string>
     <string name="subject_hint" msgid="2136470287303571827">"נושא"</string>
-    <string name="body_hint" msgid="6478994981747057817">"כתבו דוא\"ל"</string>
+    <string name="body_hint" msgid="6478994981747057817">"כתוב אימייל"</string>
     <string name="add_file_attachment" msgid="2604880054248593993">"צרף קובץ"</string>
     <string name="add_photo_attachment" msgid="7163589794940909528">"צרף תמונה"</string>
     <string name="save_draft" msgid="2669523480789672118">"שמור טיוטה"</string>
@@ -124,7 +124,7 @@
     <string name="contextmenu_dial_dot" msgid="8881095692316726628">"חייג..."</string>
     <string name="contextmenu_sms_dot" msgid="5319737001771622657">"SMS…"</string>
     <string name="contextmenu_add_contact" msgid="2310064151427072475">"הוסף איש קשר"</string>
-    <string name="contextmenu_send_mail" msgid="3834654593200105396">"שלח דוא\"ל"</string>
+    <string name="contextmenu_send_mail" msgid="3834654593200105396">"שלח אימייל"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"מפה"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"שתף קישור"</string>
     <string name="contextmenu_help" msgid="4209674157707873384">"עזרה"</string>
@@ -272,7 +272,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"סנכרן תיקיה"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ חדשות"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g>חד\'"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> חדש"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g> לא נקראו"</item>
   </plurals>
@@ -293,11 +293,11 @@
     <!-- no translation found for load_attachment (3894318473827290350) -->
     <skip />
     <string name="shortcut_name_title" msgid="1562534040126088628">"תן שם לקיצור הדרך של התיקיה"</string>
-    <string name="wait_for_sync_title" msgid="4577632826912823075">"ממתין לסינכרון"</string>
+    <string name="wait_for_sync_title" msgid="4577632826912823075">"ממתין לסנכרון"</string>
     <string name="not_synced_title" msgid="3600180500934086346">"החשבון אינו מסונכרן"</string>
-    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"חשבון זה אינו מוגדר לסינכרון באופן אוטומטי.\nגע באפשרות "<b>"סנכרן כעת"</b>" כדי לסנכרן את הדואר פעם אחת, או באפשרות "<b>"שנה הגדרות סינכרון"</b>" כדי להגדיר חשבון זה לבצע סינכרון דואר באופן אוטומטי."</string>
+    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"חשבון זה אינו מוגדר לסנכרון באופן אוטומטי.\nגע באפשרות "<b>"סנכרן כעת"</b>" כדי לסנכרן את הדואר פעם אחת, או באפשרות "<b>"שנה הגדרות סנכרון"</b>" כדי להגדיר חשבון זה לבצע סנכרון דואר באופן אוטומטי."</string>
     <string name="manual_sync" msgid="2271479734895537848">"סנכרן עכשיו"</string>
-    <string name="change_sync_settings" msgid="3615852118397055361">"שנה הגדרות סינכרון"</string>
+    <string name="change_sync_settings" msgid="3615852118397055361">"שנה הגדרות סנכרון"</string>
     <string name="photo_load_failed" msgid="577471721679146999">"לא ניתן היה לטעון את התמונה"</string>
     <string name="cant_move_or_change_labels" msgid="4155490583610926755">"לא ניתן לבצע העברה מכיוון שהבחירה כוללת מספר חשבונות."</string>
     <string name="multiple_new_message_notification_item" msgid="1386588046275174918"><b>"‏<xliff:g id="SENDER">%1$s</xliff:g>‏"</b>"‏   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>

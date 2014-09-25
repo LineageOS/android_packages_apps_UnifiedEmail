@@ -371,7 +371,7 @@
     <string name="preference_swipe_title_delete" msgid="4860474024917543711">"Stryg til siden for at slette"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"På samtaleliste"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Afsenderbillede"</string>
-    <string name="preference_sender_image_description" msgid="3586817690132199889">"Vis ud for navnet i samtalelisten"</string>
+    <string name="preference_sender_image_description" msgid="3586817690132199889">"Vis ud for navnet på samtalelisten"</string>
     <string name="empty_trash" msgid="3385937024924728399">"Tøm papirkurv"</string>
     <string name="empty_spam" msgid="2911988289997281371">"Tøm spammappe"</string>
     <string name="empty_trash_dialog_title" msgid="2104898489663621508">"Skal papirkurven tømmes?"</string>
@@ -462,11 +462,11 @@
     <string name="preference_confirm_before_send_title" msgid="4136585783513077039">"Bekræft før afsendelse"</string>
     <string name="preferences_conversation_mode_title" msgid="389352009651720838">"Tilpas meddelelser automatisk"</string>
     <string name="preferences_conversation_mode_summary" msgid="5730999743867653106">"Formindsk meddelelser, så de passer til skærmen"</string>
-    <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"Beskedhandlinger"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"Meddelelseshandlinger"</string>
   <string-array name="prefSummaries_snapHeader">
-    <item msgid="43373293784193461">"Vis altid beskedhandlinger øverst på skærmen"</item>
-    <item msgid="1765271305989996747">"Vis kun beskedhandlinger øverst på skærmen i portrættilstand"</item>
-    <item msgid="6311113076575333488">"Vis ikke beskedhandlinger uden for meddelelsens sidehoved"</item>
+    <item msgid="43373293784193461">"Vis altid meddelelseshandlinger øverst på skærmen"</item>
+    <item msgid="1765271305989996747">"Vis kun meddelelseshandlinger øverst på skærmen i portrættilstand"</item>
+    <item msgid="6311113076575333488">"Vis ikke meddelelseshandlinger uden for meddelelsens header"</item>
   </string-array>
   <string-array name="prefEntries_snapHeader">
     <item msgid="6906986566816683587">"Vis altid"</item>

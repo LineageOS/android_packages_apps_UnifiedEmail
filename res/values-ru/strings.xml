@@ -271,8 +271,8 @@
     <string name="non_synced_folder_description" msgid="3044618511909304701">"Для просмотра цепочек писем синхронизируйте эту папку."</string>
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"Синхронизировать папку"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
-    <string name="large_unseen_count" msgid="3055042669246912518">"Новых: &gt;<xliff:g id="COUNT">%d</xliff:g>"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"Новых: <xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="large_unseen_count" msgid="3055042669246912518">"&gt;<xliff:g id="COUNT">%d</xliff:g> нов."</string>
+    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> нов."</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"Новых: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
@@ -317,9 +317,9 @@
     <string name="message_details_title" msgid="60771875776494764">"Сведения о сообщении"</string>
     <string name="preference_advance_to_title" msgid="6385669491239514630">"Автопереход"</string>
   <string-array name="prefEntries_autoAdvance">
-    <item msgid="1505450878799459652">"Следующее письмо"</item>
-    <item msgid="8000986144872247139">"Предыдущее письмо"</item>
-    <item msgid="8015001161633421314">"Список писем"</item>
+    <item msgid="1505450878799459652">"Следующему письму"</item>
+    <item msgid="8000986144872247139">"Предыдущему письму"</item>
+    <item msgid="8015001161633421314">"Списку писем"</item>
   </string-array>
   <string-array name="prefSummaries_autoAdvance">
     <item msgid="8221665977497655719">"Показывать более позднюю цепочку после удаления текущей"</item>
@@ -365,7 +365,7 @@
     <item msgid="3196207224108008441">"Архивировать или удалять"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"Я предпочитаю:"</string>
-    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Отвечать всем"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Функция \"Ответить всем\""</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"Использовать по умолчанию для всех ответов"</string>
     <string name="preference_swipe_title_archive" msgid="9122333537761282714">"Быстрая архивация"</string>
     <string name="preference_swipe_title_delete" msgid="4860474024917543711">"Быстрое удаление"</string>
@@ -422,7 +422,7 @@
     <string name="send_to_domain_text" msgid="5064559546745918393">"Отправлять только адресатам из домена <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
     <string name="pick_start_date_title" msgid="2274665037355224165">"Начало"</string>
     <string name="pick_end_date_title" msgid="733396083649496600">"Окончание (необязательно)"</string>
-    <string name="date_not_set" msgid="3251555782945051904">"Не установлена"</string>
+    <string name="date_not_set" msgid="3251555782945051904">"Не задано"</string>
     <string name="set_end_date_dialog_title" msgid="7543009262788808443">"Окончание (необязательно)"</string>
     <string name="custom_date" msgid="5794846334232367838">"Произвольная дата"</string>
     <string name="date_none" msgid="1061426502665431412">"Нет"</string>
@@ -432,7 +432,7 @@
     <string name="vacation_responder_off" msgid="4429909341193366667">"Выключен"</string>
     <string name="vacation_responder_on" msgid="4913238379320882449">"Включить с <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"Включен с <xliff:g id="START_DATE">%1$s</xliff:g> по <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
-    <string name="vacation_responder_empty_subject_and_body_warning" msgid="6233629618520852439">"Введите тему и текст сообщения"</string>
+    <string name="vacation_responder_empty_subject_and_body_warning" msgid="6233629618520852439">"Введите тему и текст сообщения."</string>
     <string name="view_entire_message" msgid="823281796655014454">"Показать полностью"</string>
     <string name="eml_loader_error_toast" msgid="6577383216635400167">"Не удалось открыть файл"</string>
     <string name="help_and_info" msgid="3708286489943154681">"Справка"</string>
