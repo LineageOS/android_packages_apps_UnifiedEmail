@@ -60,13 +60,13 @@
         android:id="@+id/read"
         android:title="@string/mark_read"
         app:showAsAction="always"
-        android:icon="@drawable/ic_menu_mark_read_wht_24dp" />
+        android:icon="@drawable/ic_mark_read_wht_24dp" />
 
     <item
         android:id="@+id/unread"
         android:title="@string/mark_unread"
         app:showAsAction="always"
-        android:icon="@drawable/ic_menu_mark_unread_wht_24dp" />
+        android:icon="@drawable/ic_mark_unread_wht_24dp" />
 
     <item
         android:id="@+id/move_to"
