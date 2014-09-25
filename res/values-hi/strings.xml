@@ -24,7 +24,7 @@
     <string name="bcc" msgid="519303553518479171">"Bcc"</string>
     <string name="subject_hint" msgid="2136470287303571827">"विषय"</string>
     <string name="body_hint" msgid="6478994981747057817">"ईमेल लिखें"</string>
-    <string name="add_file_attachment" msgid="2604880054248593993">"फ़ाइल अनुलग्‍न करें"</string>
+    <string name="add_file_attachment" msgid="2604880054248593993">"फ़ाइल अटैच करें"</string>
     <string name="add_photo_attachment" msgid="7163589794940909528">"चित्र जोड़ें"</string>
     <string name="save_draft" msgid="2669523480789672118">"अधूरा ईमेल सहेजें"</string>
     <string name="discard" msgid="4905982179911608430">"हटाएं"</string>

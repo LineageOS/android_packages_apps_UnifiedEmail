@@ -361,7 +361,7 @@
     <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"Standardåtgärd"</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Svara alla"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"Använd som standard för svar på meddelanden"</string>
-    <string name="preference_swipe_title" msgid="2073613840893904205">"Åtgärder för dra"</string>
+    <string name="preference_swipe_title" msgid="2073613840893904205">"Utför åtgärder genom att dra"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"I konversationslista"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Bild på avsändare"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"Visa bredvid namnet i konversationslistan"</string>

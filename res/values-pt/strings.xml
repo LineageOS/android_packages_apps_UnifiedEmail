@@ -264,7 +264,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"Sincronizar pasta"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"+<xliff:g id="COUNT">%d</xliff:g>"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"+<xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> nov"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g> não lidas"</item>
   </plurals>
@@ -290,7 +290,7 @@
     <string name="shortcut_name_title" msgid="1562534040126088628">"Atalho da pasta Nome"</string>
     <string name="wait_for_sync_title" msgid="4577632826912823075">"Aguardando sincronização"</string>
     <string name="not_synced_title" msgid="3600180500934086346">"Conta não sincronizada"</string>
-    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Esta conta não está configurada para sincronizar automaticamente.\nToque em "<b>"Sincronizar agora"</b>" para sincronizar os e-mails uma vez ou em "<b>"Alterar configurações de sincronização"</b>" para configurar a sincronização automática de e-mails desta conta."</string>
+    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Esta conta não está configurada para autossincronizar.\nToque em "<b>"Sincronizar agora"</b>" para sincronizar os e-mails uma vez ou em "<b>"Alterar configurações de sincronização"</b>" para configurar a autossincronização de e-mails desta conta."</string>
     <string name="manual_sync" msgid="2271479734895537848">"Sincr. agora"</string>
     <string name="change_sync_settings" msgid="3615852118397055361">"Alterar config. de sincr."</string>
     <string name="photo_load_failed" msgid="577471721679146999">"Impossível carregar a imagem"</string>

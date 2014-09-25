@@ -29,7 +29,7 @@
     <string name="save_draft" msgid="2669523480789672118">"Enregistrer le brouillon"</string>
     <string name="discard" msgid="4905982179911608430">"Supprimer"</string>
     <string name="compose" msgid="2602861958391035523">"Nouveau message"</string>
-    <string name="compose_title" msgid="5673376086133995913">"Rédiger"</string>
+    <string name="compose_title" msgid="5673376086133995913">"Nouveau"</string>
   <string-array name="compose_modes">
     <item msgid="9000553538766397816">"Répondre"</item>
     <item msgid="2767793214788399009">"Répondre à tous"</item>
@@ -194,8 +194,8 @@
     <item quantity="one" msgid="4819167474123685161">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation supprimée"</item>
     <item quantity="other" msgid="6287534453625638257">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;conversations supprimées"</item>
   </plurals>
-    <string name="deleted" msgid="7378013910782008375">"Supprimé."</string>
-    <string name="archived" msgid="6283673603512713022">"Archivé."</string>
+    <string name="deleted" msgid="7378013910782008375">"Supprimé"</string>
+    <string name="archived" msgid="6283673603512713022">"Archivé"</string>
     <string name="folder_removed" msgid="5656281444688183676">"Supprimé de <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_folder_changed">
     <item quantity="one" msgid="7787126147584620603">"Dossier modifié"</item>
@@ -355,8 +355,8 @@
     <item msgid="2567465476369142505">"Supprimer"</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="4080896545573973751">"Archiver."</item>
-    <item msgid="6088164268501960435">"Supprimer."</item>
+    <item msgid="4080896545573973751">"Archiver"</item>
+    <item msgid="6088164268501960435">"Supprimer"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"Action par défaut"</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Répondre à tous"</string>
