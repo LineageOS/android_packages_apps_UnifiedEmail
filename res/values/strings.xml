@@ -108,6 +108,8 @@
     <string name="mark_read">Mark read</string>
     <!-- Menu item: mark this conversation as unread -->
     <string name="mark_unread">Mark unread</string>
+    <!-- Menu item: toggle read/unread for menus that contain both read and unread options -->
+    <string name="toggle_read_unread">Toggle read unread</string>
     <!--  Menu item: mute this conversation -->
     <string name="mute">Mute</string>
     <!-- Menu item: add a star to this conversation -->
@@ -171,6 +173,8 @@
     <string name="menu_settings">Settings</string>
     <!-- Menu item: search through the Gmail inbox -->
     <string name="menu_search">Search</string>
+    <!-- Menu item: toggle drawer -->
+    <string name="menu_toggle_drawer">Toggle drawer</string>
     <!-- Title of the drawer, indicating what it is used for, which is navigation of the app -->
     <string name="drawer_title">Navigation</string>
 
