@@ -206,16 +206,29 @@
     </style>
     <!-- End browse list item styles -->
 
+    <!-- Shared by floating action button including v21 and rtl (never overriden) -->
     <style name="AbstractFloatingActionButtonStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">@dimen/floating_action_bar_margin</item>
-        <item name="android:background">@drawable/compose_button</item>
+        <item name="android:layout_marginBottom">@dimen/compose_button_margin_bottom</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:contentDescription">@string/compose</item>
+        <item name="android:focusable">false</item>
+        <item name="android:layout_gravity">bottom|end</item>
     </style>
 
-    <style name="FloatingActionButtonStyle" parent="AbstractFloatingActionButtonStyle">
-        <item name="android:layout_gravity">bottom|right</item>
-        <item name="android:layout_marginRight">@dimen/floating_action_bar_margin</item>
+    <!-- Used by floating action button to center the red circle & pencil over the shadow asset for
+        pre-L and overriden in v21 where we have elevation to produce the shadow
+    -->
+    <style name="FloatingActionButtonBackgroundStyle" parent="AbstractFloatingActionButtonStyle">
+        <item name="android:paddingBottom">@dimen/compose_button_padding_bottom</item>
+        <item name="android:background">@drawable/ic_fab_4dpshadow</item>
+        <item name="android:src">@drawable/compose_button</item>
+    </style>
+
+    <!-- Style to handle RTL for the floating action button -->
+    <style name="FloatingActionButtonStyle" parent="FloatingActionButtonBackgroundStyle">
+        <item name="android:layout_marginRight">@dimen/compose_button_margin_side</item>
     </style>
 
     <style name="SnackBarActionTextStyle">
