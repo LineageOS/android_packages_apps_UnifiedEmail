@@ -99,8 +99,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     private boolean isConversationOnlyMode() {
-        return getCurrentConversation() != null && !isCurrentConversationJustPeeking()
-                && !mLayout.shouldShowPreviewPanel();
+        return mViewMode.isConversationMode() && !mLayout.shouldShowPreviewPanel();
     }
 
     /**
