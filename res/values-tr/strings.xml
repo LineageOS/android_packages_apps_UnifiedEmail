@@ -19,7 +19,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="from" msgid="5159056500059912358">"Gönderen"</string>
-    <string name="to" msgid="3971614275716830581">"Alıcı:"</string>
+    <string name="to" msgid="3971614275716830581">"Alıcı"</string>
     <string name="cc" msgid="8768828862207919684">"Cc"</string>
     <string name="bcc" msgid="519303553518479171">"Bcc"</string>
     <string name="subject_hint" msgid="2136470287303571827">"Konu"</string>

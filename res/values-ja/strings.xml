@@ -18,7 +18,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="from" msgid="5159056500059912358">"差出人"</string>
+    <string name="from" msgid="5159056500059912358">"From"</string>
     <string name="to" msgid="3971614275716830581">"To"</string>
     <string name="cc" msgid="8768828862207919684">"Cc"</string>
     <string name="bcc" msgid="519303553518479171">"Bcc"</string>
@@ -264,7 +264,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"フォルダを同期"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d超"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"新着<xliff:g id="COUNT">%d</xliff:g>件以上"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"新着<xliff:g id="COUNT">%d</xliff:g>件"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g>通の新着"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g>件の未読"</item>
   </plurals>
@@ -349,7 +349,7 @@
   </plurals>
     <string name="single_new_message_notification_title" msgid="7954710563222504868">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="1570794756474381886">"マナーモード"</string>
-    <string name="preference_removal_action_title" msgid="3128186577060329884">"デフォルトの動作"</string>
+    <string name="preference_removal_action_title" msgid="3128186577060329884">"既定の動作"</string>
   <string-array name="prefEntries_removal_action">
     <item msgid="7381624742404593351">"アーカイブ"</item>
     <item msgid="2567465476369142505">"削除"</item>
@@ -358,9 +358,9 @@
     <item msgid="4080896545573973751">"アーカイブ"</item>
     <item msgid="6088164268501960435">"削除"</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"デフォルトの動作"</string>
+    <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"既定の動作"</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"全員に返信"</string>
-    <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"返信時のデフォルトとして使用する"</string>
+    <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"返信時の既定値として使用する"</string>
     <string name="preference_swipe_title" msgid="2073613840893904205">"スワイプの動作"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"スレッドリスト内"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"送信者の画像"</string>
