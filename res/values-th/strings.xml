@@ -55,6 +55,7 @@
     <string name="send" msgid="4269810089682120826">"ส่ง"</string>
     <string name="mark_read" msgid="579388143288052493">"ทำเครื่องหมายว่าอ่านแล้ว"</string>
     <string name="mark_unread" msgid="6245060538061533191">"ทำเครื่องหมายว่ายังไม่อ่าน"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"สลับจากอ่านแล้วเป็นยังไม่อ่าน"</string>
     <string name="mute" msgid="9164839998562321569">"ปิดรับ"</string>
     <string name="add_star" msgid="3275117671153616270">"เพิ่มดาว"</string>
     <string name="remove_star" msgid="9126690774161840733">"นำดาวออก"</string>
@@ -79,6 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"เปลี่ยนกลับการปรับขนาด"</string>
     <string name="menu_settings" msgid="7993485401501778040">"การตั้งค่า"</string>
     <string name="menu_search" msgid="1949652467806052768">"ค้นหา"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"สลับที่จัดเก็บ"</string>
     <string name="drawer_title" msgid="3766219846644975778">"การนำทาง"</string>
     <string name="mark_important" msgid="8781680450177768820">"ทำเครื่องหมายว่าสำคัญ"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"ทำเครื่องหมายว่าไม่สำคัญ"</string>
@@ -159,7 +161,7 @@
     <string name="empty_search" msgid="8564899353449880818">"อ๊ะ! เราไม่พบผลลัพธ์ใดๆสำหรับ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\""</string>
     <string name="empty_spam_folder" msgid="3288985543286122800">"ไชโย ไม่มีสแปมเลย!"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"ไม่มีขยะที่นี่ ขอขอบคุณที่รีไซเคิล!"</string>
-    <string name="empty_folder" msgid="3227552635613553855">"ไม่มีจดหมายที่นี่"</string>
+    <string name="empty_folder" msgid="3227552635613553855">"ที่นี่ไม่มีจดหมาย"</string>
     <string name="getting_messages" msgid="8403333791332403244">"กำลังโหลดข้อความของคุณ"</string>
     <string name="undo" msgid="8256285267701059609">"เลิกทำ"</string>
   <plurals name="conversation_unstarred">

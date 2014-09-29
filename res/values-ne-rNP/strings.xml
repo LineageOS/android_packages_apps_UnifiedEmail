@@ -55,6 +55,7 @@
     <string name="send" msgid="4269810089682120826">"पठाउनुहोस्"</string>
     <string name="mark_read" msgid="579388143288052493">"पढेको चिन्ह लगाउनुहोस्"</string>
     <string name="mark_unread" msgid="6245060538061533191">"नपढिएकोलाई चिन्ह लगाउनुहोस्"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"टगल पठित अपठित"</string>
     <string name="mute" msgid="9164839998562321569">"आवाज बन्द गर्नुहोस्"</string>
     <string name="add_star" msgid="3275117671153616270">"स्टार थप गर्नुहोस्"</string>
     <string name="remove_star" msgid="9126690774161840733">"तारा हटाउनुहोस्"</string>
@@ -79,6 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"स्वत: पूर्वाकारमा परिवर्तित"</string>
     <string name="menu_settings" msgid="7993485401501778040">"सेटिङ्स"</string>
     <string name="menu_search" msgid="1949652467806052768">"खोजी गर्नुहोस्"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"टगल ड्रअर"</string>
     <string name="drawer_title" msgid="3766219846644975778">"नेभिगेसन"</string>
     <string name="mark_important" msgid="8781680450177768820">"महत्त्वपूर्णका रूपमा चिनो लगाउनुहोस्"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"महत्त्वपूर्ण हैन भनी चिनो लगाउनुहोस्"</string>

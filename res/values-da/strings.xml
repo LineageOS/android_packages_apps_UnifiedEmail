@@ -55,6 +55,7 @@
     <string name="send" msgid="4269810089682120826">"Send"</string>
     <string name="mark_read" msgid="579388143288052493">"Markér som læst"</string>
     <string name="mark_unread" msgid="6245060538061533191">"Markér som ulæst"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"Skift mellem læst og ulæst"</string>
     <string name="mute" msgid="9164839998562321569">"Ignorer"</string>
     <string name="add_star" msgid="3275117671153616270">"Tilføj stjerne"</string>
     <string name="remove_star" msgid="9126690774161840733">"Fjern stjernemarkering"</string>
@@ -79,6 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"Vis oprindelig størrelse"</string>
     <string name="menu_settings" msgid="7993485401501778040">"Indstillinger"</string>
     <string name="menu_search" msgid="1949652467806052768">"Søg"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"Åbn eller luk skuffe"</string>
     <string name="drawer_title" msgid="3766219846644975778">"Navigation"</string>
     <string name="mark_important" msgid="8781680450177768820">"Markér som vigtig"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"Markér som uvigtig"</string>
@@ -187,8 +189,8 @@
     <item quantity="other" msgid="8400382886585779414">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; bliver rapporteret som phishing"</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="4859172326053399351">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkiveres"</item>
-    <item quantity="other" msgid="8520761617935818623">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkiveres"</item>
+    <item quantity="one" msgid="4859172326053399351">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkiveret"</item>
+    <item quantity="other" msgid="8520761617935818623">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkiveret"</item>
   </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="4819167474123685161">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; slettes"</item>

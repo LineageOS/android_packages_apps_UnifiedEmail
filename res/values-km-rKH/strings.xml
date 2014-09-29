@@ -55,6 +55,7 @@
     <string name="send" msgid="4269810089682120826">"ផ្ញើ"</string>
     <string name="mark_read" msgid="579388143288052493">"សម្គាល់​ថា​បាន​អាន"</string>
     <string name="mark_unread" msgid="6245060538061533191">"សម្គាល់​ថា​មិន​ទាន់​អាន"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"បិទ​បើក​អាន​ មិន​ទាន់​អាន"</string>
     <string name="mute" msgid="9164839998562321569">"បិទ​សំឡេង"</string>
     <string name="add_star" msgid="3275117671153616270">"បន្ថែម​ផ្កាយ"</string>
     <string name="remove_star" msgid="9126690774161840733">"ដក​​ផ្កាយ​ចេញ"</string>
@@ -79,6 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"ត្រឡប់​ទៅ​​ការ​ប្ដូរ​ទំហំ​ដោយ​ស្វ័យ​ប្រវត្តិ"</string>
     <string name="menu_settings" msgid="7993485401501778040">"ការ​កំណត់"</string>
     <string name="menu_search" msgid="1949652467806052768">"ស្វែងរក"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"ថត​បិទ​បើក"</string>
     <string name="drawer_title" msgid="3766219846644975778">"ការ​រុក​រក"</string>
     <string name="mark_important" msgid="8781680450177768820">"សម្គាល់​​ថា​សំខាន់"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"សម្គាល់​ថា​មិន​សំខាន់"</string>
@@ -155,7 +157,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="5172680524418848519">"បោះបង់​សារ​នេះ​?"</string>
     <string name="loading_conversations" msgid="7255732786298655246">"កំពុង​ផ្ទុក…"</string>
-    <string name="empty_inbox" msgid="5901734942362315228">"អ្នក​រួចរាល់​ហើយ! សូម​រីករាយ​ចុះ។"</string>
+    <string name="empty_inbox" msgid="5901734942362315228">"រួចរាល់​អស់​ហើយ! សូម​អ្នក​រីករាយ​ចុះ។"</string>
     <string name="empty_search" msgid="8564899353449880818">"អូ! យើង​​រក​មិន​ឃើញ​អ្វី​សម្រាប់ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" ទេ។"</string>
     <string name="empty_spam_folder" msgid="3288985543286122800">"អូ គ្មាន​សារ​ឥត​បាន​ការ​នៅ​ទីនេះ​ទេ!"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"មិន​មាន​ធុងសំរាម​នៅ​ទីនេះ។ អរគុណ​ចំពោះ​ការ​ប្រើ​ឡើងវិញ!"</string>

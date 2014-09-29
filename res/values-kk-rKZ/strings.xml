@@ -58,6 +58,8 @@
     <string name="send" msgid="4269810089682120826">"Жіберу"</string>
     <string name="mark_read" msgid="579388143288052493">"Оқылған деп белгілеу"</string>
     <string name="mark_unread" msgid="6245060538061533191">"Оқылмаған деп белгілеу"</string>
+    <!-- no translation found for toggle_read_unread (1006469736520919028) -->
+    <skip />
     <string name="mute" msgid="9164839998562321569">"Үнсіз"</string>
     <string name="add_star" msgid="3275117671153616270">"Жұлдызша қосу"</string>
     <string name="remove_star" msgid="9126690774161840733">"Жұлдызшаны жою"</string>
@@ -83,6 +85,8 @@
     <string name="menu_show_original" msgid="2330398228979616661">"Өлшемді автоматты түрде орнатуды болдырмау"</string>
     <string name="menu_settings" msgid="7993485401501778040">"Параметрлер"</string>
     <string name="menu_search" msgid="1949652467806052768">"Іздеу"</string>
+    <!-- no translation found for menu_toggle_drawer (8653049392208282481) -->
+    <skip />
     <string name="drawer_title" msgid="3766219846644975778">"Шарлау"</string>
     <string name="mark_important" msgid="8781680450177768820">"Маңызды деп белгілеу"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"Маңызды емес етіп белгілеу"</string>
