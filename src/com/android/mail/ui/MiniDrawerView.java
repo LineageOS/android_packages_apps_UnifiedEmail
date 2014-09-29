@@ -155,6 +155,7 @@ public class MiniDrawerView extends LinearLayout {
                             R.layout.mini_drawer_folder_item, this, false /* attachToRoot */);
                     iv.setTag(new FolderItem(f, iv));
                     iv.setContentDescription(f.name);
+                    iv.setActivated(mController.isSelectedFolder(f));
                     addView(iv, 1 + numInboxes);
                     numInboxes++;
                 }
