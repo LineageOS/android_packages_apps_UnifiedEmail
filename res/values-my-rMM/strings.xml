@@ -74,7 +74,7 @@
     <string name="forward" msgid="4397585145490426320">"တစ်ဆင့်ပို့"</string>
     <string name="menu_compose" msgid="4575025207594709432">"စာရေးဖွဲ့ရန်"</string>
     <string name="menu_change_folders" msgid="2194946192901276625">"ဖိုလ်ဒါများ ပြောင်းရန်"</string>
-    <string name="menu_move_to" msgid="7948877550284452830">"သို့ ရွှေ့ရန်"</string>
+    <string name="menu_move_to" msgid="7948877550284452830">"ရွှေ့ရန်"</string>
     <string name="menu_move_to_inbox" msgid="258554178236001444">"ဝင်စာသို့ ရွှေ့ရန်"</string>
     <string name="menu_manage_folders" msgid="8486398523679534519">"ဖိုလ်ဒါ ဆက်တင်များ"</string>
     <string name="menu_show_original" msgid="2330398228979616661">"အော်တို-ဆိုက် ပြောင်းရန်"</string>
@@ -102,7 +102,7 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> ဖိုင်"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"အစမ်းကြည့်မှု"</string>
     <string name="save_attachment" msgid="375685179032130033">"သိမ်းဆည်း"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"ပယ်ဖျက်ရန်"</string>
+    <string name="cancel_attachment" msgid="6900093625792891122">"ထားတော့"</string>
     <string name="open_attachment" msgid="6100396056314739761">"ဖွင့်ရန်"</string>
     <string name="install_attachment" msgid="8119470822958087928">"တပ်ဆင်ရန်"</string>
     <string name="download_again" msgid="8195787340878328119">"ဒေါင်းလုဒ် ထပ်လုပ"</string>
@@ -255,7 +255,7 @@
     <string name="send_anyway" msgid="2727576121007079643">"ဘာဘဲဖြစ်ဖြစ် ပို့ရန်"</string>
     <string name="ok" msgid="6178802457914802336">"အိုကေ"</string>
     <string name="done" msgid="344354738335270292">"လုပ်ပြီး"</string>
-    <string name="cancel" msgid="4831678293149626190">"ပယ်ဖျက်ရန်"</string>
+    <string name="cancel" msgid="4831678293149626190">"ထားတော့"</string>
     <string name="clear" msgid="765949970989448022">"ရှင်းရန်"</string>
     <string name="next" msgid="2662478712866255138">"ရှေ့ဆက်"</string>
     <string name="previous" msgid="8985379053279804274">"ယခင်"</string>
@@ -284,7 +284,7 @@
     <string name="activity_folder_selection" msgid="8375243281001234750">"ဖိုလ်ဒါကို ရွေးရန်"</string>
     <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"ဖိုလ်ဒါကို အီးမေးလ် လုပ်ရန်"</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"ဖိုလ်ဒါများ ပြောင်းရန်"</string>
-    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"သို့ ရွှေ့ရန်"</string>
+    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"ရွှေ့ရန်"</string>
     <string name="search_hint" msgid="4916671414132334289">"စာကို ရှာရန်"</string>
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
@@ -426,7 +426,7 @@
     <string name="date_not_set" msgid="3251555782945051904">"မသတ်မှတ် ရသေး"</string>
     <string name="set_end_date_dialog_title" msgid="7543009262788808443">"ပြီးဆုံး ရက်စွဲ (လိုချင်မှ ထည့်ရန်)"</string>
     <string name="custom_date" msgid="5794846334232367838">"စိတ်တိုင်းကျ"</string>
-    <string name="date_none" msgid="1061426502665431412">"မရှိ"</string>
+    <string name="date_none" msgid="1061426502665431412">"နတ္တိ"</string>
     <string name="discard_changes" msgid="5699760550972324746">"ပြောင်းလဲမှုများကို စွန့်ပစ်မလား?"</string>
     <string name="vacation_responder_changes_saved" msgid="91448817268121249">"အပန်းဖြေမှု တုံ့ပြန်သူ အပြောင်းအလဲများ သိမ်းဆည်းခဲ့"</string>
     <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"အပန်းဖြေမှု တုံ့ပြန်သူ အပြောင်းအလဲများ စွန့်ပစ်ပြီး"</string>

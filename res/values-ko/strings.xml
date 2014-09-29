@@ -272,7 +272,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"폴더 동기화"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"새 메시지 <xliff:g id="COUNT">%d</xliff:g>개 이상"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"새 메시지 <xliff:g id="COUNT">%d</xliff:g>개"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g>"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"읽지 않은 메일 <xliff:g id="COUNT">%1$d</xliff:g>개"</item>
   </plurals>

@@ -62,7 +62,7 @@
     <string name="archive" msgid="5978663590021719939">"Archivovať"</string>
     <string name="report_spam" msgid="4106897677959987340">"Nahlásiť spam"</string>
     <string name="mark_not_spam" msgid="8617774236231366651">"Nahlásiť, že to nie je spam"</string>
-    <string name="report_phishing" msgid="8454666464488413739">"Nahlásiť neopráv. získ. údajov"</string>
+    <string name="report_phishing" msgid="8454666464488413739">"Nahlásiť phishing"</string>
     <string name="delete" msgid="6784262386780496958">"Odstrániť"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"Zahodiť koncepty"</string>
     <string name="discard_failed" msgid="7520780769812210279">"Správy sa nepodarilo zahodiť"</string>
@@ -272,7 +272,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"Synchronizovať priečinok"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"viac ako <xliff:g id="COUNT">%d</xliff:g> nových"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"Nové: <xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"Nové (<xliff:g id="COUNT">%d</xliff:g>)"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"Počet neprečítaných správ: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
@@ -295,9 +295,9 @@
     <string name="shortcut_name_title" msgid="1562534040126088628">"Pomenovať skratku priečinka"</string>
     <string name="wait_for_sync_title" msgid="4577632826912823075">"Čaká sa na synchronizáciu…"</string>
     <string name="not_synced_title" msgid="3600180500934086346">"Účet nie je synchronizovaný"</string>
-    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Tento účet nie je nastavený na automatickú synchronizáciu.\nAk chcete synchronizovať e-maily jednorazovo, dotknite sa položky "<b>"Synchronizovať"</b>". Ak chcete nastaviť, aby účet synchronizoval e-maily automaticky, dotknite sa položky "<b>"Zmeniť nastavenia synchronizácie"</b>"."</string>
-    <string name="manual_sync" msgid="2271479734895537848">"Synchroniz."</string>
-    <string name="change_sync_settings" msgid="3615852118397055361">"Zmeniť nastav. synchronizácie"</string>
+    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Tento účet nemá nastavenú automatickú synchronizáciu.\nAk chcete jednorazovo synchronizovať poštu, dotknite sa tlačidla "<b>"Synchronizovať"</b>". Ak chcete nastaviť, aby účet synchronizoval poštu automaticky, dotknite sa tlačidla "<b>"Zmeniť synchronizáciu"</b>"."</string>
+    <string name="manual_sync" msgid="2271479734895537848">"Synchronizovať"</string>
+    <string name="change_sync_settings" msgid="3615852118397055361">"Zmeniť synchronizáciu"</string>
     <string name="photo_load_failed" msgid="577471721679146999">"Obrázok sa nepodarilo načítať"</string>
     <string name="cant_move_or_change_labels" msgid="4155490583610926755">"Presun nie je možné uskutočniť, pretože vybraté správy pochádzajú z rôznych účtov."</string>
     <string name="multiple_new_message_notification_item" msgid="1386588046275174918"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -317,8 +317,8 @@
     <string name="message_details_title" msgid="60771875776494764">"Podrobnosti správy"</string>
     <string name="preference_advance_to_title" msgid="6385669491239514630">"Automatický prechod"</string>
   <string-array name="prefEntries_autoAdvance">
-    <item msgid="1505450878799459652">"Novšia konverzácia"</item>
-    <item msgid="8000986144872247139">"Staršia konverzácia"</item>
+    <item msgid="1505450878799459652">"Novšiu konverzáciu"</item>
+    <item msgid="8000986144872247139">"Staršiu konverzáciu"</item>
     <item msgid="8015001161633421314">"Zoznam konverzácií"</item>
   </string-array>
   <string-array name="prefSummaries_autoAdvance">
@@ -326,7 +326,7 @@
     <item msgid="1721869262893378141">"Po odstránení zobraziť staršiu konverzáciu"</item>
     <item msgid="880913657385630195">"Po odstránení zobraziť zoznam konverzácií"</item>
   </string-array>
-    <string name="prefDialogTitle_autoAdvance" msgid="5459235590885640678">"Pokračovať do"</string>
+    <string name="prefDialogTitle_autoAdvance" msgid="5459235590885640678">"Prejsť na"</string>
     <string name="clear_display_images_whitelist_title" msgid="2012677202404471778">"Vymazať schválenia obrázkov"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"Chcete vymazať schválenia obrázkov?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="3952553078559373729">"Prestanú sa zobrazovať vložené obrázky od odosielateľov, pre ktorých ste to predtým povolili."</string>
@@ -400,7 +400,7 @@
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="7239160845196929866">"Zapnúť"</string>
     <string name="show_n_more_folders" msgid="5769610839632786654">"Zobraziť ďalšie priečinky (počet: <xliff:g id="NUMBER">%1$s</xliff:g>)"</string>
     <string name="hide_folders" msgid="7618891933409521283">"Skryť priečinky"</string>
-    <string name="print" msgid="7987949243936577207">"Tlač"</string>
+    <string name="print" msgid="7987949243936577207">"Tlačiť"</string>
     <string name="print_all" msgid="4011022762279519941">"Vytlačiť všetky"</string>
   <plurals name="num_messages">
     <item quantity="one" msgid="8071234386915191851">"<xliff:g id="COUNT">%1$d</xliff:g> správa"</item>

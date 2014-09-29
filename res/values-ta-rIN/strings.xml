@@ -246,7 +246,7 @@
     <string name="hide_elided" msgid="5768235486834692733">"▼ மேற்கோளிட்ட உரையை மறை"</string>
     <string name="message_invite_title" msgid="5985161025144867256">"கேலெண்டர் அழைப்பு"</string>
     <string name="message_invite_calendar_view" msgid="9181966650840809197">"கேலெண்டரில் காட்டு"</string>
-    <string name="message_invite_label_attending" msgid="4194264767870003397">"கலந்துகொள்கிறீர்களா?"</string>
+    <string name="message_invite_label_attending" msgid="4194264767870003397">"பங்கேற்கிறீர்களா?"</string>
     <string name="message_invite_accept" msgid="8002758842580134835">"ஆம்"</string>
     <string name="message_invite_tentative" msgid="3199418731566655887">"கலந்துகொள்ளலாம்"</string>
     <string name="message_invite_decline" msgid="6331040872447290777">"இல்லை"</string>

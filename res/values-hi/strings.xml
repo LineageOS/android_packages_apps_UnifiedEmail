@@ -24,7 +24,7 @@
     <string name="bcc" msgid="519303553518479171">"Bcc"</string>
     <string name="subject_hint" msgid="2136470287303571827">"विषय"</string>
     <string name="body_hint" msgid="6478994981747057817">"ईमेल लिखें"</string>
-    <string name="add_file_attachment" msgid="2604880054248593993">"फ़ाइल अनुलग्‍न करें"</string>
+    <string name="add_file_attachment" msgid="2604880054248593993">"फ़ाइल अटैच करें"</string>
     <string name="add_photo_attachment" msgid="7163589794940909528">"चित्र जोड़ें"</string>
     <string name="save_draft" msgid="2669523480789672118">"अधूरा ईमेल सहेजें"</string>
     <string name="discard" msgid="4905982179911608430">"हटाएं"</string>
@@ -101,7 +101,7 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> फ़ाइल"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"पूर्वावलोकन"</string>
     <string name="save_attachment" msgid="375685179032130033">"सहेजें"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"रद्द करें"</string>
+    <string name="cancel_attachment" msgid="6900093625792891122">"रहने दें"</string>
     <string name="open_attachment" msgid="6100396056314739761">"खोलें"</string>
     <string name="install_attachment" msgid="8119470822958087928">"इंस्‍टॉल"</string>
     <string name="download_again" msgid="8195787340878328119">"पुनः डाउनलोड करें"</string>
@@ -254,7 +254,7 @@
     <string name="send_anyway" msgid="2727576121007079643">"फिर भी भेजें"</string>
     <string name="ok" msgid="6178802457914802336">"ठीक"</string>
     <string name="done" msgid="344354738335270292">"पूर्ण"</string>
-    <string name="cancel" msgid="4831678293149626190">"रद्द करें"</string>
+    <string name="cancel" msgid="4831678293149626190">"रहने दें"</string>
     <string name="clear" msgid="765949970989448022">"साफ़ करें"</string>
     <string name="next" msgid="2662478712866255138">"अगला"</string>
     <string name="previous" msgid="8985379053279804274">"पिछला"</string>
