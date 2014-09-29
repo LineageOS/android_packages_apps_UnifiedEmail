@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">اضغط هنا لتحميل باقي الرسالة</string>
-  <string name="fetching_message">جلب الرسالة\u2026</string>
+  <string name="confirm_forward_message">Mesajda əlavələr var</string>
+  <string name="confirm_forward_normal">Endir və göndər</string>
+  <string name="confirm_forward_drop_unloaded">Server kopyasından istifadə et</string>
 </resources>

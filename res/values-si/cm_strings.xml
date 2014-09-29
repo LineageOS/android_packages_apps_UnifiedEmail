@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">පණිවිඩයේ ඉතිරිය පූරණයට මෙතනට තට්ටු කරන්න</string>
-  <string name="fetching_message">පණිවිඩය ගෙන එමින්\u2026</string>
+  <string name="confirm_forward_message">පණිවිඩයෙහි ඇමුණුම් ඇත</string>
+  <string name="confirm_forward_normal">භාගතකර යවන්න</string>
+  <string name="confirm_forward_drop_unloaded">සේවාදායක පිටපත භාවිතාකරන්න</string>
 </resources>

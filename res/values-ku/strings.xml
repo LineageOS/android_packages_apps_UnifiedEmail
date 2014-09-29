@@ -22,7 +22,7 @@
   <string name="bcc">کۆپی بێ ناردنی سەرچاوە</string>
   <string name="subject_hint">سه‌ردێڕ</string>
   <string name="body_hint">پێکهێنانی پۆستی ئەلیکترۆنی</string>
-  <string name="add_file_attachment">هاوپێچکردنی فایل</string>
+  <string name="add_file_attachment">هاوپێچکردنی پەڕگە</string>
   <string name="add_photo_attachment">هاوپێچکردنی وێنە</string>
   <string name="add_video_attachment">هاوپێچکردنی ڤیدیۆ</string>
   <string name="save_draft">پاشەکەوتکردنی گەڵاڵه</string>
@@ -39,9 +39,9 @@
   <string name="cc_attribution">Cc: <xliff:g id="cc">%1$s</xliff:g>وlt;brوgt;</string>
   <string name="select_attachment_type">جۆری پێوەلکێندراو هەڵبژێرە</string>
   <string name="too_large_to_attach_single">ناتوانرا فایلەکە بلکێنرێت لەڕێگەی <xliff:g id="maxSize">%1$s</xliff:g>.</string>
-  <string name="too_large_to_attach_multiple">یەک یان هەندێک فایل نەلکێنراون. سنور <xliff:g id="maxSize">%1$s</xliff:g>.</string>
-  <string name="too_large_to_attach_additional">فایل نەلکێنرا. <xliff:g id="maxSize">%1$s</xliff:g> سنور بە دەست گەیشتووە.</string>
-  <string name="generic_attachment_problem">ناتوانرا فایل بلکێنرێت.</string>
+  <string name="too_large_to_attach_multiple">یەک یان هەندێک پەڕگە نەلکێنراون. سنور <xliff:g id="maxSize">%1$s</xliff:g>.</string>
+  <string name="too_large_to_attach_additional">پەڕگە نەلکێنرا. <xliff:g id="maxSize">%1$s</xliff:g> سنور بە دەست گەیشتووە.</string>
+  <string name="generic_attachment_problem">ناتوانرا پەڕگە بلکێنرێت.</string>
   <string name="recipient_needed">لانیکەم یەک وەرگر زێدە بکە.</string>
   <string name="recipient_error_dialog_title">وەرگر هەڵەیە</string>
   <string name="confirm_send_title">نامە ئەنێری؟</string>

@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Calca equí pa cargar el restu del mensaxe</string>
-  <string name="fetching_message">Obteniendo mensaxe\u2026</string>
+  <string name="confirm_forward_message">Sõnumil on manused</string>
+  <string name="confirm_forward_normal">Lae alla ja saada</string>
+  <string name="confirm_forward_drop_unloaded">Kasuta serveri koopiat</string>
 </resources>

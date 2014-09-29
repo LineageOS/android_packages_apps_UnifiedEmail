@@ -16,6 +16,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Bakstelėkite čia norėdami įkelti likusį pranešimą</string>
-  <string name="fetching_message">Gaunamas pranešimas\u2026</string>
+  <string name="confirm_forward_normal">Parsisiųsti ir siųsti</string>
+  <string name="confirm_forward_drop_unloaded">Naudoti serverio kopiją</string>
 </resources>

@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Mesajın geri kalanını yüklemek için buraya dokunun</string>
-  <string name="fetching_message">Mesaj alınıyor\u2026</string>
+  <string name="confirm_forward_message">Mesaj ek dosyalara sahip</string>
+  <string name="confirm_forward_normal">İndir ve gönder</string>
+  <string name="confirm_forward_drop_unloaded">Sunucu kopyasını kullan</string>
 </resources>

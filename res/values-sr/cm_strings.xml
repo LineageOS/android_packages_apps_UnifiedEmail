@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Додирни овде да се учита остатак поруке</string>
-  <string name="fetching_message">Учитавање поруке\u2026</string>
+  <string name="confirm_forward_message">Порука има прилоге</string>
+  <string name="confirm_forward_normal">Преузми и пошаљи</string>
+  <string name="confirm_forward_drop_unloaded">Користи копију са сервера</string>
 </resources>

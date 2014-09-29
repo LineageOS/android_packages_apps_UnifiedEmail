@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Tryk her for at indlæse resten af meddelelsen</string>
-  <string name="fetching_message">Henter meddelelse\u2026</string>
+  <string name="confirm_forward_message">Meddelelsen indeholder vedhæftede filer</string>
+  <string name="confirm_forward_normal">Download og send</string>
+  <string name="confirm_forward_drop_unloaded">Anvend kopi på server</string>
 </resources>

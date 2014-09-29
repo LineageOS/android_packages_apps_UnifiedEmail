@@ -16,5 +16,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">輕按此處以載入剩餘訊息</string>
+  <string name="confirm_forward_normal">下載並發送</string>
+  <string name="confirm_forward_drop_unloaded">使用伺服器複本</string>
 </resources>

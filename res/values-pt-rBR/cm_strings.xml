@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="load_more_summary">Toque aqui para carregar o resto da mensagem</string>
-  <string name="fetching_message">Obtendo mensagem\u2026</string>
+  <string name="confirm_forward_message">A mensagem tem anexos</string>
+  <string name="confirm_forward_normal">Baixar e enviar</string>
+  <string name="confirm_forward_drop_unloaded">Usar a cópia do servidor</string>
 </resources>
