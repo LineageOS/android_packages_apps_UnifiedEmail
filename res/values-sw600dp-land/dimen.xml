@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2014 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,5 @@
      limitations under the License.
 -->
 <resources>
-    <style name="ComposeAreaWrapper">
-        <item name="android:background">@color/holo_light_background_color</item>
-    </style>
+    <dimen name="vacation_responder_padding_horizontal">80dp</dimen>
 </resources>
