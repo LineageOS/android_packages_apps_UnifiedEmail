@@ -1531,9 +1531,11 @@ public abstract class AbstractActivityController implements ActivityController,
         final UndoCallback undoCallback = getUndoCallbackForDestructiveActionsWithAutoAdvance(
                 id, mCurrentConversation);
 
-        // Menu items that are targetted, only perform if there actually is a target.
+        // Menu items that are targetted, only perform if there actually is a target and the
+        // cursor is showing the target in the list.
         boolean handled = false;
-        if (target.size() > 0) {
+        if (target.size() > 0 &&
+                ConversationCursor.isCursorReadyToShow(getConversationListCursor())) {
             handled = true;
             if (id == R.id.archive) {
                 final boolean showDialog = (settings != null && settings.confirmArchive);
