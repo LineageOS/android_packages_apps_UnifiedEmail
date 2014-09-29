@@ -55,6 +55,7 @@
     <string name="send" msgid="4269810089682120826">"傳送"</string>
     <string name="mark_read" msgid="579388143288052493">"標示為已讀取"</string>
     <string name="mark_unread" msgid="6245060538061533191">"標示為未讀取"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"切換已讀取/未讀取選項"</string>
     <string name="mute" msgid="9164839998562321569">"略過"</string>
     <string name="add_star" msgid="3275117671153616270">"加上星號"</string>
     <string name="remove_star" msgid="9126690774161840733">"移除星號"</string>
@@ -79,6 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"取消自動調整大小"</string>
     <string name="menu_settings" msgid="7993485401501778040">"設定"</string>
     <string name="menu_search" msgid="1949652467806052768">"搜尋"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"切換導覽匣"</string>
     <string name="drawer_title" msgid="3766219846644975778">"瀏覽"</string>
     <string name="mark_important" msgid="8781680450177768820">"標示為重要"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"標示為不重要"</string>

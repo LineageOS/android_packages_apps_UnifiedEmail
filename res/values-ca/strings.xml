@@ -55,6 +55,7 @@
     <string name="send" msgid="4269810089682120826">"Envia"</string>
     <string name="mark_read" msgid="579388143288052493">"Marca com a llegit"</string>
     <string name="mark_unread" msgid="6245060538061533191">"Marca com a no llegit"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"Mostra/amaga llegits/no llegit"</string>
     <string name="mute" msgid="9164839998562321569">"Silencia"</string>
     <string name="add_star" msgid="3275117671153616270">"Destaca"</string>
     <string name="remove_star" msgid="9126690774161840733">"No destaquis"</string>
@@ -79,6 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"Reverteix a mida orginal"</string>
     <string name="menu_settings" msgid="7993485401501778040">"Configuració"</string>
     <string name="menu_search" msgid="1949652467806052768">"Cerca"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"Mostra/amaga el tauler"</string>
     <string name="drawer_title" msgid="3766219846644975778">"Navegació"</string>
     <string name="mark_important" msgid="8781680450177768820">"Marca com a important"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"Marca com a no important"</string>

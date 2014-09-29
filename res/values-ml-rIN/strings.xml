@@ -55,6 +55,7 @@
     <string name="send" msgid="4269810089682120826">"അയയ്‌ക്കുക"</string>
     <string name="mark_read" msgid="579388143288052493">"വായിച്ചതെന്ന് അടയാളപ്പെടുത്തുക"</string>
     <string name="mark_unread" msgid="6245060538061533191">"വായിക്കാത്തതായി അടയാളപ്പെടുത്തുക"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"വായിച്ചവ, വായിക്കാത്തവ എന്നിവ ടോഗിൾ ചെയ്യുക"</string>
     <string name="mute" msgid="9164839998562321569">"മ്യൂട്ടുചെയ്യുക"</string>
     <string name="add_star" msgid="3275117671153616270">"നക്ഷത്രം ചേർക്കുക"</string>
     <string name="remove_star" msgid="9126690774161840733">"നക്ഷത്രം നീക്കംചെയ്യുക"</string>
@@ -79,6 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"യാന്ത്രികമായി വലുപ്പം മാറ്റൽ പഴയപടിയാക്കുക"</string>
     <string name="menu_settings" msgid="7993485401501778040">"ക്രമീകരണങ്ങൾ"</string>
     <string name="menu_search" msgid="1949652467806052768">"തിരയുക"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"ഡ്രോയർ ടോഗിൾ ചെയ്യുക"</string>
     <string name="drawer_title" msgid="3766219846644975778">"നാവിഗേഷന്‍"</string>
     <string name="mark_important" msgid="8781680450177768820">"പ്രധാനമെന്ന് അടയാളപ്പെടുത്തുക"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"പ്രധാനമല്ലെന്ന് അടയാളപ്പെടുത്തുക"</string>
