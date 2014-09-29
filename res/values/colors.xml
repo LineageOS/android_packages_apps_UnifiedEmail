@@ -145,7 +145,6 @@
     <!-- The color of the icon background in the teaser -->
     <color name="folder_teaser_icon_background">#eeeeee</color>
 
-    <color name="vacation_responder_view_background">@android:color/white</color>
     <color name="vacation_responder_window_background">#ffe9e9e9</color>
     <color name="vacation_responder_header_text_color">@color/text_color_grey</color>
     <color name="vacation_responder_main_text_color">@color/text_color_black</color>
