@@ -388,11 +388,6 @@ public class FolderSelectionActivity extends ActionBarActivity implements OnClic
     }
 
     @Override
-    public void onFooterViewErrorActionClick(Folder folder, int errorStatus) {
-        // Unsupported
-    }
-
-    @Override
     public void onFooterViewLoadMoreClick(Folder folder) {
         // Unsupported
     }
