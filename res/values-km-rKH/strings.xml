@@ -165,7 +165,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="5172680524418848519">"បោះបង់​សារ​នេះ​?"</string>
     <string name="loading_conversations" msgid="7255732786298655246">"កំពុង​ផ្ទុក…"</string>
-    <string name="empty_inbox" msgid="5901734942362315228">"អ្នក​រួចរាល់​ហើយ! សូម​រីករាយ​ចុះ។"</string>
+    <string name="empty_inbox" msgid="5901734942362315228">"រួចរាល់​អស់​ហើយ! សូម​អ្នក​រីករាយ​ចុះ។"</string>
     <string name="empty_search" msgid="8564899353449880818">"អូ! យើង​​រក​មិន​ឃើញ​អ្វី​សម្រាប់ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" ទេ។"</string>
     <string name="empty_spam_folder" msgid="3288985543286122800">"អូ គ្មាន​សារ​ឥត​បាន​ការ​នៅ​ទីនេះ​ទេ!"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"មិន​មាន​ធុងសំរាម​នៅ​ទីនេះ។ អរគុណ​ចំពោះ​ការ​ប្រើ​ឡើងវិញ!"</string>

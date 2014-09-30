@@ -169,7 +169,7 @@
     <string name="empty_search" msgid="8564899353449880818">"อ๊ะ! เราไม่พบผลลัพธ์ใดๆสำหรับ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\""</string>
     <string name="empty_spam_folder" msgid="3288985543286122800">"ไชโย ไม่มีสแปมเลย!"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"ไม่มีขยะที่นี่ ขอขอบคุณที่รีไซเคิล!"</string>
-    <string name="empty_folder" msgid="3227552635613553855">"ไม่มีจดหมายที่นี่"</string>
+    <string name="empty_folder" msgid="3227552635613553855">"ที่นี่ไม่มีจดหมาย"</string>
     <string name="getting_messages" msgid="8403333791332403244">"กำลังโหลดข้อความของคุณ"</string>
     <string name="undo" msgid="8256285267701059609">"เลิกทำ"</string>
   <plurals name="conversation_unstarred">

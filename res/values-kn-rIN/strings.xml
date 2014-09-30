@@ -430,7 +430,7 @@
     <string name="vacation_responder_changes_saved" msgid="91448817268121249">"ರಜಾ ಕಾಲದ ಪ್ರತ್ಯುತ್ತರದ ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ"</string>
     <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"ರಜಾ ಕಾಲದ ಪ್ರತ್ಯುತ್ತರದ ಬದಲಾವಣೆಗಳನ್ನು ತ್ಯಜಿಸಲಾಗಿದೆ"</string>
     <string name="vacation_responder_off" msgid="4429909341193366667">"ಆಫ್ ಆಗಿದೆ"</string>
-    <string name="vacation_responder_on" msgid="4913238379320882449">"<xliff:g id="DATE">%1$s</xliff:g> ರಿಂದ, ಆನ್ ಆಗಿದೆ"</string>
+    <string name="vacation_responder_on" msgid="4913238379320882449">"<xliff:g id="DATE">%1$s</xliff:g> ದಿನಾಂಕದಿಂದ, ಆನ್ ಆಗಿದೆ"</string>
     <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"ರಲ್ಲಿ, <xliff:g id="START_DATE">%1$s</xliff:g> ರಿಂದ <xliff:g id="END_DATE">%2$s</xliff:g> ಗೆ"</string>
     <string name="vacation_responder_empty_subject_and_body_warning" msgid="6233629618520852439">"ವಿಷಯ ಅಥವಾ ಸಂದೇಶ ಸೇರಿಸಿ"</string>
     <string name="view_entire_message" msgid="823281796655014454">"ಇಡೀ ಸಂದೇಶವನ್ನು ವೀಕ್ಷಿಸು"</string>

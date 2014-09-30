@@ -27,7 +27,7 @@
     <string name="add_file_attachment" msgid="2604880054248593993">"फ़ाइल अटैच करें"</string>
     <string name="add_photo_attachment" msgid="7163589794940909528">"चित्र जोड़ें"</string>
     <string name="save_draft" msgid="2669523480789672118">"अधूरा ईमेल सहेजें"</string>
-    <string name="discard" msgid="4905982179911608430">"हटाएं"</string>
+    <string name="discard" msgid="4905982179911608430">"अभी नहीं"</string>
     <string name="compose" msgid="2602861958391035523">"लिखें"</string>
   <string-array name="compose_modes">
     <item msgid="9000553538766397816">"जवाब दें"</item>
