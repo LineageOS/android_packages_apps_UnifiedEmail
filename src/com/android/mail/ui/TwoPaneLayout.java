@@ -291,7 +291,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             // the conversation is currently not set but this layout/position occurs, throwing off
             // this app's view and controller synergy and resulting in an awkward state such as a
             // non-responsive TL or an empty grey screen.
-            if (ViewMode.isConversationMode(mCurrentMode)) {
+            if (ViewMode.isConversationMode(mCurrentMode) || ViewMode.isAdMode(mCurrentMode)) {
                 // CV mode
                 if (isRtl) {
                     convX = 0;
