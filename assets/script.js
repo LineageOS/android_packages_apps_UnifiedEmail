@@ -754,8 +754,14 @@ function replaceMessageBodies(messageIds) {
     for (i = 0, len = messageIds.length; i < len; i++) {
         id = messageIds[i];
         msgContentDiv = document.querySelector("#" + id + " > .mail-message-content");
-        msgContentDiv.innerHTML = window.mail.getMessageBody(id);
-        processNewMessageBody(msgContentDiv);
+        // Check if we actually have a div before trying to replace this message body.
+        if (msgContentDiv) {
+            msgContentDiv.innerHTML = window.mail.getMessageBody(id);
+            processNewMessageBody(msgContentDiv);
+        } else {
+            // There's no message div, just skip it. We're in a really busted state.
+            console.log("Mail message content for msg " + id + " to replace not found.");
+        }
     }
     disablePostForms();
     measurePositions();
