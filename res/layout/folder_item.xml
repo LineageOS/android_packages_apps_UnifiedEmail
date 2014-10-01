@@ -55,6 +55,9 @@
 
     <TextView
         android:id="@+id/unseen"
+        android:includeFontPadding="false"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         style="@style/UnseenCount" />
 
 </com.android.mail.ui.FolderItemView>
