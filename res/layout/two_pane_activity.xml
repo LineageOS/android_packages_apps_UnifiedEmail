@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:foregroundGravity="fill_horizontal|top"
-            android:background="@color/tablet_background_gray">
+            android:background="@android:color/white">
 
             <FrameLayout
                 android:id="@+id/drawer"
@@ -71,6 +71,15 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="left"
                 android:foreground="@drawable/ic_vertical_shadow_end_2dp" >
+
+                <!-- Empty icon view for CV landscape -->
+                <ImageView
+                    android:id="@+id/conversation_pane_no_message_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_empty_cv_120dp"
+                    android:visibility="gone" />
 
                 <include layout="@layout/conversation_pager"
                     android:layout_width="match_parent"

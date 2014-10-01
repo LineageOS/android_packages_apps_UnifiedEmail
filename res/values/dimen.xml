@@ -201,7 +201,7 @@
     <dimen name="teaser_arrow_margin_end">12dip</dimen>
 
     <dimen name="empty_view_text_width">228dip</dimen>
-    <dimen name="empty_view_text_size">22sp</dimen>
+    <dimen name="empty_view_text_size">20sp</dimen>
     <dimen name="empty_view_space">16dip</dimen>
 
     <dimen name="avatar_border_width">.5dp</dimen>
