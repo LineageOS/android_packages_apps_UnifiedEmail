@@ -23,7 +23,6 @@
     <dimen name="two_pane_drawer_width_open">288dp</dimen>
     <dimen name="two_pane_tl_side">24dp</dimen>
     <dimen name="two_pane_tl_top">16dp</dimen>
-    <dimen name="list_min_width_is_wide">720dp</dimen>
     <dimen name="senders_font_size">18sp</dimen>
     <dimen name="attachment_tile_min_size">120dp</dimen>
     <dimen name="attachment_tile_max_size">164dp</dimen>
