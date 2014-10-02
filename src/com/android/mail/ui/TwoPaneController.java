@@ -713,7 +713,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     public boolean setupEmptyIconView(Folder folder, boolean isEmpty) {
         if (mIsTabletLandscape) {
             if (!isEmpty) {
-                mEmptyCvView.setImageResource(R.drawable.ic_empty_cv_120dp);
+                mEmptyCvView.setImageResource(R.drawable.ic_empty_default);
             } else {
                 EmptyStateUtils.bindEmptyFolderIcon(mEmptyCvView, folder);
             }

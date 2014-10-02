@@ -35,17 +35,17 @@ public class EmptyStateUtils {
      */
     public static void bindEmptyFolderIcon(ImageView view, Folder folder) {
         if (folder == null) {
-            view.setImageResource(R.drawable.empty_folders);
+            view.setImageResource(R.drawable.ic_empty_default);
         } else if (folder.isInbox()) {
-            view.setImageResource(R.drawable.empty_inbox);
+            view.setImageResource(R.drawable.ic_empty_inbox);
         } else if (folder.isSearch()) {
-            view.setImageResource(R.drawable.empty_search);
+            view.setImageResource(R.drawable.ic_empty_search);
         } else if (folder.isSpam()) {
-            view.setImageResource(R.drawable.empty_spam);
+            view.setImageResource(R.drawable.ic_empty_spam);
         } else if (folder.isTrash()) {
-            view.setImageResource(R.drawable.empty_trash);
+            view.setImageResource(R.drawable.ic_empty_trash);
         } else {
-            view.setImageResource(R.drawable.empty_folders);
+            view.setImageResource(R.drawable.ic_empty_default);
         }
     }
 
