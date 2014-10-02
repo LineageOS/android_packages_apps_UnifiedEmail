@@ -23,8 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="64dp"
     internal:layout_maxHeight="64dp"
-    internal:layout_minHeight="64dp"
-    android:background="@drawable/notification_bg" >
+    internal:layout_minHeight="64dp" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +40,6 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:textColor="@android:color/white"
             android:textSize="16sp"
             style="@style/UndoDescriptionStyle" />
 
