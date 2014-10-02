@@ -41,8 +41,7 @@ public abstract class AbstractMailActivity extends ActionBarActivity implements 
 
     private final UiHandler mUiHandler = new UiHandler();
 
-    // STOPSHIP: ship with false
-    private static final boolean STRICT_MODE = true;
+    private static final boolean STRICT_MODE = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
