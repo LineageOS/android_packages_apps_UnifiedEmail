@@ -1700,6 +1700,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         // if no footer, just skip the work for it. The rest should be fine to do.
         if (footerItem != null) {
             mConversationContainer.removeViewAtAdapterIndex(footerItem.getPosition());
+        } else {
+            LogUtils.i(LOG_TAG, "footer item not found");
         }
 
         mTemplates.reset();

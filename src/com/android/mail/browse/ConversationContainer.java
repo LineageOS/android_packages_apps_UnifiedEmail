@@ -998,6 +998,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         if (overlay != null) {
             final int height = getHeight();
             onOverlayScrolledOff(adapterIndex, overlay, height, height + overlay.view.getHeight());
+            LogUtils.i(TAG, "footer scrolled off. container height=%s, measuredHeight=%s",
+                    height, getMeasuredHeight());
+        } else {
+            LogUtils.i(TAG, "footer not removed. container height=%s, measuredHeight=%s",
+                    getHeight(), getMeasuredHeight());
         }
         // restore the offset to its original value after the view has been moved off-screen.
         mOffsetY = offsetY;
