@@ -16,6 +16,6 @@
      limitations under the License.
 -->
 <resources>
-    <color name="text_color_undo">@color/text_color_grey</color>
-    <color name="text_color_undo_description">@color/text_color_black</color>
+    <color name="text_color_undo_notification">@color/text_color_grey</color>
+    <color name="text_color_undo_notification_description">@color/text_color_black</color>
 </resources>
