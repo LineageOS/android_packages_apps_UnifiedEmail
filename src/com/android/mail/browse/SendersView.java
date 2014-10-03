@@ -418,8 +418,12 @@ public class SendersView {
             // search for the last sender that is not the current account
             for (int i = conversationInfo.participantInfos.size() - 1; i >= 0; i--) {
                 final ParticipantInfo participant = conversationInfo.participantInfos.get(i);
+                // empty name implies it is the current account and should not be chosen
                 if (!TextUtils.isEmpty(participant.name)) {
-                    senderAvatarModel.populate(participant.name, participant.email);
+                    // use the participant name in place of unusable email addresses
+                    final String senderEmail = TextUtils.isEmpty(participant.email) ?
+                            participant.name : participant.email;
+                    senderAvatarModel.populate(participant.name, senderEmail);
                     break;
                 }
             }
