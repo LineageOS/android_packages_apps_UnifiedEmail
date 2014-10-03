@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"Fermer la recherche"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"Démarrer la recherche vocale"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"Effacer le texte de la recherche"</string>
-    <string name="network_error" msgid="5931164247644972255">"Aucune connexion"</string>
     <string name="retry" msgid="916102442074217293">"Réessayer"</string>
     <string name="load_more" msgid="8702691358453560575">"Plus"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

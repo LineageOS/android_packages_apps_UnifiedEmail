@@ -55,7 +55,7 @@
     <string name="send" msgid="4269810089682120826">"ارسال"</string>
     <string name="mark_read" msgid="579388143288052493">"علامت‌گذاری به‌عنوان خوانده‌شده"</string>
     <string name="mark_unread" msgid="6245060538061533191">"علامت‌گذاری به‌عنوان خوانده‌نشده"</string>
-    <string name="toggle_read_unread" msgid="1006469736520919028">"جابجا شدن بین حالت «خوانده شد» و «خوانده نشده»"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"جابجا شدن بین حالت «خوانده شده» و «خوانده نشده»"</string>
     <string name="mute" msgid="9164839998562321569">"نادیده گرفتن"</string>
     <string name="add_star" msgid="3275117671153616270">"افزودن ستاره"</string>
     <string name="remove_star" msgid="9126690774161840733">"حذف ستاره"</string>
@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"بستن جستجو"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"شروع جستجوی صوتی"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"پاک کردن نوشتار جستجو"</string>
-    <string name="network_error" msgid="5931164247644972255">"اتصالی موجود نیست"</string>
     <string name="retry" msgid="916102442074217293">"سعی مجدد"</string>
     <string name="load_more" msgid="8702691358453560575">"بارگیری بیشتر"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

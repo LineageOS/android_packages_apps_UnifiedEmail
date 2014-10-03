@@ -55,7 +55,7 @@
     <string name="send" msgid="4269810089682120826">"Kirim"</string>
     <string name="mark_read" msgid="579388143288052493">"Tandai telah dibaca"</string>
     <string name="mark_unread" msgid="6245060538061533191">"Tandai belum dibaca"</string>
-    <string name="toggle_read_unread" msgid="1006469736520919028">"Alihkan baca/belum dibaca"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"Alihkan baca belum dibaca"</string>
     <string name="mute" msgid="9164839998562321569">"Bisukan"</string>
     <string name="add_star" msgid="3275117671153616270">"Bintangi"</string>
     <string name="remove_star" msgid="9126690774161840733">"Hapus bintang"</string>
@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"Tutup penelusuran"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"Memulai penelusuran suara"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"Hapus teks penelusuran"</string>
-    <string name="network_error" msgid="5931164247644972255">"Tidak ada sambungan"</string>
     <string name="retry" msgid="916102442074217293">"Coba lagi"</string>
     <string name="load_more" msgid="8702691358453560575">"Muat lainnya"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

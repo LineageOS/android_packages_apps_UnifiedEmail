@@ -213,7 +213,7 @@
     <item quantity="other" msgid="4085982174357328926">"<xliff:g id="COUNT">%1$d</xliff:g> nouveaux messages"</item>
   </plurals>
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Afficher les détails&lt;/a&gt;"</string>
-    <string name="hide_details" msgid="8018801050702453314">"Masquer les informations détaillées"</string>
+    <string name="hide_details" msgid="8018801050702453314">"Masquer les infos détaillées"</string>
     <string name="to_message_header" msgid="3954385178027011919">"à <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
     <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"cci : "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"Afficher les coordonnées de <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"Fermer la recherche"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"Démarrer la recherche vocale"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"Effacer le texte de la recherche"</string>
-    <string name="network_error" msgid="5931164247644972255">"Aucune connexion"</string>
     <string name="retry" msgid="916102442074217293">"Réessayer"</string>
     <string name="load_more" msgid="8702691358453560575">"Afficher plus"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

@@ -55,7 +55,7 @@
     <string name="send" msgid="4269810089682120826">"Pošlji"</string>
     <string name="mark_read" msgid="579388143288052493">"Označi kot prebran"</string>
     <string name="mark_unread" msgid="6245060538061533191">"Označi kot neprebran"</string>
-    <string name="toggle_read_unread" msgid="1006469736520919028">"Preklopi med predaloma Prebrano in Neprebrano"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"Preklopi med Prebrano in Neprebrano"</string>
     <string name="mute" msgid="9164839998562321569">"Prezri"</string>
     <string name="add_star" msgid="3275117671153616270">"Dodaj zvezdico"</string>
     <string name="remove_star" msgid="9126690774161840733">"Odstrani zvezdico"</string>
@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"Izhod iz iskanja"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"Začni glasovno iskanje"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"Počisti besedilo v iskalni vrstici"</string>
-    <string name="network_error" msgid="5931164247644972255">"Ni povezave"</string>
     <string name="retry" msgid="916102442074217293">"Poskusi znova"</string>
     <string name="load_more" msgid="8702691358453560575">"Naloži več"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

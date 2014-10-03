@@ -55,7 +55,7 @@
     <string name="send" msgid="4269810089682120826">"שלח"</string>
     <string name="mark_read" msgid="579388143288052493">"סמן כנקראה"</string>
     <string name="mark_unread" msgid="6245060538061533191">"סמן כלא נקרא"</string>
-    <string name="toggle_read_unread" msgid="1006469736520919028">"שנה מצב נקרא/לא נקרא"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"שנה מצב נקרא לא נקרא"</string>
     <string name="mute" msgid="9164839998562321569">"השתק"</string>
     <string name="add_star" msgid="3275117671153616270">"הוסף כוכב"</string>
     <string name="remove_star" msgid="9126690774161840733">"הסר כוכבית"</string>
@@ -274,7 +274,7 @@
     <string name="loading_conversation" msgid="7931600025861500397">"טוען..."</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"בחר חשבון"</string>
     <string name="activity_folder_selection" msgid="8375243281001234750">"בחר תיקיה"</string>
-    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"תיקיית דוא\"ל"</string>
+    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"תיקיית אימייל"</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"שנה תיקיות"</string>
     <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"העבר אל"</string>
     <string name="search_hint" msgid="7060626585689391003">"חיפוש"</string>
@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"סגור את החיפוש"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"התחל חיפוש קולי"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"נקה את טקסט החיפוש"</string>
-    <string name="network_error" msgid="5931164247644972255">"אין חיבור"</string>
     <string name="retry" msgid="916102442074217293">"נסה שוב"</string>
     <string name="load_more" msgid="8702691358453560575">"טען עוד"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

@@ -27,7 +27,7 @@
     <string name="add_file_attachment" msgid="2604880054248593993">"Bestand bijvoegen"</string>
     <string name="add_photo_attachment" msgid="7163589794940909528">"Foto bijvoegen"</string>
     <string name="save_draft" msgid="2669523480789672118">"Concept opslaan"</string>
-    <string name="discard" msgid="4905982179911608430">"Weggooien"</string>
+    <string name="discard" msgid="4905982179911608430">"Verwijderen"</string>
     <string name="compose" msgid="2602861958391035523">"Opstellen"</string>
     <string name="compose_title" msgid="5673376086133995913">"Opstellen"</string>
   <string-array name="compose_modes">
@@ -152,10 +152,10 @@
     <item quantity="other" msgid="2001972798185641108">"Deze <xliff:g id="COUNT">%1$d</xliff:g> conversaties archiveren?"</item>
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one" msgid="2030421499893210789">"Dit bericht weggooien?"</item>
-    <item quantity="other" msgid="782234447471532005">"Deze <xliff:g id="COUNT">%1$d</xliff:g> berichten weggooien?"</item>
+    <item quantity="one" msgid="2030421499893210789">"Dit bericht verwijderen?"</item>
+    <item quantity="other" msgid="782234447471532005">"Deze <xliff:g id="COUNT">%1$d</xliff:g> berichten verwijderen?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="5172680524418848519">"Dit bericht weggooien?"</string>
+    <string name="confirm_discard_text" msgid="5172680524418848519">"Dit bericht verwijderen?"</string>
     <string name="loading_conversations" msgid="7255732786298655246">"Laden…"</string>
     <string name="empty_inbox" msgid="5901734942362315228">"U bent klaar. Nog een fijne dag gewenst."</string>
     <string name="empty_search" msgid="8564899353449880818">"Oeps! We hebben geen resultaten gevonden voor \'<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\'."</string>
@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"Zoekopdracht sluiten"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"Gesproken zoekopdracht"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"Tekst zoekopdracht wissen"</string>
-    <string name="network_error" msgid="5931164247644972255">"Geen verbinding"</string>
     <string name="retry" msgid="916102442074217293">"Opnieuw proberen"</string>
     <string name="load_more" msgid="8702691358453560575">"Meer laden"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

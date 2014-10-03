@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"검색을 종료합니다."</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"음성 검색을 시작합니다."</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"검색 텍스트를 지웁니다."</string>
-    <string name="network_error" msgid="5931164247644972255">"연결되지 않음"</string>
     <string name="retry" msgid="916102442074217293">"다시 시도"</string>
     <string name="load_more" msgid="8702691358453560575">"추가 로드"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

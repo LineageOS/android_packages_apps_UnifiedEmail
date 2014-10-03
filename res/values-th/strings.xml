@@ -32,7 +32,7 @@
     <string name="compose_title" msgid="5673376086133995913">"เขียน"</string>
   <string-array name="compose_modes">
     <item msgid="9000553538766397816">"ตอบ"</item>
-    <item msgid="2767793214788399009">"ตอบทั้งหมด"</item>
+    <item msgid="2767793214788399009">"ตอบทุกคน"</item>
     <item msgid="2758162027982270607">"ส่งต่อ"</item>
   </string-array>
     <string name="reply_attribution" msgid="1114972798797833259">"เมื่อ <xliff:g id="DATE">%s</xliff:g> <xliff:g id="PERSON">%s</xliff:g> เขียนว่า:"</string>
@@ -69,7 +69,7 @@
     <string name="discard_failed" msgid="7520780769812210279">"ยกเลิกไม่สำเร็จ"</string>
     <string name="refresh" msgid="1533748989749277511">"รีเฟรช"</string>
     <string name="reply" msgid="8337757482824207118">"ตอบ"</string>
-    <string name="reply_all" msgid="5366796103758360957">"ตอบทั้งหมด"</string>
+    <string name="reply_all" msgid="5366796103758360957">"ตอบทุกคน"</string>
     <string name="resume_draft" msgid="1272723181782570649">"แก้ไข"</string>
     <string name="forward" msgid="4397585145490426320">"ส่งต่อ"</string>
     <string name="menu_compose" msgid="4575025207594709432">"เขียน"</string>
@@ -80,7 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"เปลี่ยนกลับการปรับขนาด"</string>
     <string name="menu_settings" msgid="7993485401501778040">"การตั้งค่า"</string>
     <string name="menu_search" msgid="1949652467806052768">"ค้นหา"</string>
-    <string name="menu_toggle_drawer" msgid="8653049392208282481">"สลับที่จัดเก็บ"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"สลับลิ้นชัก"</string>
     <string name="drawer_title" msgid="3766219846644975778">"การนำทาง"</string>
     <string name="mark_important" msgid="8781680450177768820">"ทำเครื่องหมายว่าสำคัญ"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"ทำเครื่องหมายว่าไม่สำคัญ"</string>
@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"ปิดการค้นหา"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"เริ่มต้นการค้นหาด้วยเสียง"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"ล้างข้อความค้นหา"</string>
-    <string name="network_error" msgid="5931164247644972255">"ไม่มีการเชื่อมต่อ"</string>
     <string name="retry" msgid="916102442074217293">"ลองอีกครั้ง"</string>
     <string name="load_more" msgid="8702691358453560575">"โหลดเพิ่มเติม"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->
@@ -333,7 +332,7 @@
     <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"ลายเซ็น"</string>
     <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"ไม่ได้ตั้งค่า"</string>
     <string name="notification_action_reply" msgid="8378725460102575919">"ตอบ"</string>
-    <string name="notification_action_reply_all" msgid="5693469099941000037">"ตอบทั้งหมด"</string>
+    <string name="notification_action_reply_all" msgid="5693469099941000037">"ตอบทุกคน"</string>
     <string name="notification_action_archive" msgid="2884874164831039047">"เก็บถาวร"</string>
     <string name="notification_action_remove_label" msgid="3714785653186750981">"ลบป้ายกำกับ"</string>
     <string name="notification_action_delete" msgid="3201627482564624132">"ลบ"</string>
@@ -361,7 +360,7 @@
     <item msgid="6088164268501960435">"ลบ"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"การดำเนินการเริ่มต้น"</string>
-    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ตอบทั้งหมด"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ตอบทุกคน"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"ใช้เป็นค่าเริ่มต้นสำหรับการตอบกลับข้อความ"</string>
     <string name="preference_swipe_title" msgid="2073613840893904205">"การกวาด"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"ในรายการการสนทนา"</string>

@@ -80,7 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"Palauta autom. koko"</string>
     <string name="menu_settings" msgid="7993485401501778040">"Asetukset"</string>
     <string name="menu_search" msgid="1949652467806052768">"Haku"</string>
-    <string name="menu_toggle_drawer" msgid="8653049392208282481">"Palkki esiin/pois"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"Ota vetopaneeli käyttöön tai poista se käytöstä"</string>
     <string name="drawer_title" msgid="3766219846644975778">"Navigointi"</string>
     <string name="mark_important" msgid="8781680450177768820">"Merkitse tärkeäksi"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"Merkitse ei-tärkeäksi"</string>
@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"Sulje haku"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"Aloita puhehaku"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"Tyhjennä hakuteksti"</string>
-    <string name="network_error" msgid="5931164247644972255">"Ei yhteyttä"</string>
     <string name="retry" msgid="916102442074217293">"Yritä uudelleen"</string>
     <string name="load_more" msgid="8702691358453560575">"Lataa lisää"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

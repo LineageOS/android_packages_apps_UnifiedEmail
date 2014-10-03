@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"ძიების დახურვა"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"ხმოვანი ძიების დაწყება"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"ძიების ტექსტის წაშლა"</string>
-    <string name="network_error" msgid="5931164247644972255">"კავშირი არ არის"</string>
     <string name="retry" msgid="916102442074217293">"ხელახალი მცდელობა"</string>
     <string name="load_more" msgid="8702691358453560575">"მეტის ჩატვირთვა"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

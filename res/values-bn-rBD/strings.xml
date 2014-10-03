@@ -80,7 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"স্বয়ং-আকারবদল ফেরান"</string>
     <string name="menu_settings" msgid="7993485401501778040">"সেটিংস"</string>
     <string name="menu_search" msgid="1949652467806052768">"অনুসন্ধান করুন"</string>
-    <string name="menu_toggle_drawer" msgid="8653049392208282481">"ড্রয়ারে টগল করুন"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"ড্রয়ার টগল করুন"</string>
     <string name="drawer_title" msgid="3766219846644975778">"নেভিগেশন"</string>
     <string name="mark_important" msgid="8781680450177768820">"গুরুত্বপূর্ণ রূপে চিহ্নিত করুন"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"গুরুত্বপূর্ণ নয় বলে চিহ্নিত করুন"</string>
@@ -284,7 +284,6 @@
     <string name="search_back_desc" msgid="8038224690392783652">"অনুসন্ধান বন্ধ করুন"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"ভয়েস অনুসন্ধান শুরু করুন"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"অনুসন্ধান পাঠ্য সাফ করুন"</string>
-    <string name="network_error" msgid="5931164247644972255">"কোনো সংযোগ নেই"</string>
     <string name="retry" msgid="916102442074217293">"পুনরায় চেষ্টা করুন"</string>
     <string name="load_more" msgid="8702691358453560575">"আরো লোড করুন"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->
