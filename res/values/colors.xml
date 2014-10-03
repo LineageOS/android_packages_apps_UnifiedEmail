@@ -53,7 +53,9 @@
     <color name="account_item_selected_text_color">@color/mail_app_blue</color>
     <color name="folder_list_heading_text_color">@color/text_color_medium_grey</color>
     <color name="list_background_color">@android:color/white</color>
-    <color name="drawer_item_selected_background_color">#12000000</color>
+    <color name="drawer_item_activated_background_color">#12000000</color>
+    <color name="mini_drawer_activated_background_color">#d3d3d3</color>
+
     <!-- overridden in sw600dp -->
     <color name="folder_list_divider_color">@color/divider_color</color>
 
