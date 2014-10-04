@@ -31,7 +31,7 @@
     <string name="compose" msgid="2602861958391035523">"เขียน"</string>
   <string-array name="compose_modes">
     <item msgid="9000553538766397816">"ตอบ"</item>
-    <item msgid="2767793214788399009">"ตอบทั้งหมด"</item>
+    <item msgid="2767793214788399009">"ตอบทุกคน"</item>
     <item msgid="2758162027982270607">"ส่งต่อ"</item>
   </string-array>
     <string name="reply_attribution" msgid="1114972798797833259">"เมื่อ <xliff:g id="DATE">%s</xliff:g> <xliff:g id="PERSON">%s</xliff:g> เขียนว่า:"</string>
@@ -68,7 +68,7 @@
     <string name="discard_failed" msgid="7520780769812210279">"ยกเลิกไม่สำเร็จ"</string>
     <string name="refresh" msgid="1533748989749277511">"รีเฟรช"</string>
     <string name="reply" msgid="8337757482824207118">"ตอบ"</string>
-    <string name="reply_all" msgid="5366796103758360957">"ตอบทั้งหมด"</string>
+    <string name="reply_all" msgid="5366796103758360957">"ตอบทุกคน"</string>
     <string name="resume_draft" msgid="1272723181782570649">"แก้ไข"</string>
     <string name="forward" msgid="4397585145490426320">"ส่งต่อ"</string>
     <string name="menu_compose" msgid="4575025207594709432">"เขียน"</string>
@@ -335,7 +335,7 @@
     <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"ลายเซ็น"</string>
     <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"ไม่ได้ตั้งค่า"</string>
     <string name="notification_action_reply" msgid="8378725460102575919">"ตอบ"</string>
-    <string name="notification_action_reply_all" msgid="5693469099941000037">"ตอบทั้งหมด"</string>
+    <string name="notification_action_reply_all" msgid="5693469099941000037">"ตอบทุกคน"</string>
     <string name="notification_action_archive" msgid="2884874164831039047">"เก็บถาวร"</string>
     <string name="notification_action_remove_label" msgid="3714785653186750981">"ลบป้ายกำกับ"</string>
     <string name="notification_action_delete" msgid="3201627482564624132">"ลบ"</string>
@@ -365,7 +365,7 @@
     <item msgid="3196207224108008441">"แสดง \"เก็บ\" และ \"ลบ\""</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"การดำเนินการ \"เก็บ\" และ \"ลบ\""</string>
-    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ตอบทั้งหมด"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ตอบทุกคน"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"ใช้เป็นค่าเริ่มต้นสำหรับการตอบกลับข้อความ"</string>
     <string name="preference_swipe_title_archive" msgid="9122333537761282714">"กวาดนิ้วเพื่อเก็บถาวร"</string>
     <string name="preference_swipe_title_delete" msgid="4860474024917543711">"กวาดนิ้วเพื่อลบ"</string>
