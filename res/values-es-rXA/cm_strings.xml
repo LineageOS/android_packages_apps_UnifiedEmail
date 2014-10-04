@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="confirm_forward_message">Pranešimas turi priedą (-us)</string>
-  <string name="confirm_forward_normal">Parsisiųsti ir siųsti</string>
-  <string name="confirm_forward_drop_unloaded">Naudoti serverio kopiją</string>
+  <string name="confirm_forward_message">El mensaxe tien ficheros axuntos</string>
+  <string name="confirm_forward_normal">Descargar y unviar</string>
+  <string name="confirm_forward_drop_unloaded">Usar copia del sirvidor</string>
 </resources>
