@@ -284,6 +284,7 @@
     <string name="search_back_desc" msgid="8038224690392783652">"অনুসন্ধান বন্ধ করুন"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"ভয়েস অনুসন্ধান শুরু করুন"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"অনুসন্ধান পাঠ্য সাফ করুন"</string>
+    <string name="network_error" msgid="5931164247644972255">"কোনো সংযোগ নেই"</string>
     <string name="retry" msgid="916102442074217293">"পুনরায় চেষ্টা করুন"</string>
     <string name="load_more" msgid="8702691358453560575">"আরো লোড করুন"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

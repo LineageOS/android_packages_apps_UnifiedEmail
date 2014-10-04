@@ -284,6 +284,7 @@
     <string name="search_back_desc" msgid="8038224690392783652">"සෙවීම වසන්න"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"හඬ සෙවීම අරඹන්න"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"සෙවීම් පෙළ හිස් කරන්න"</string>
+    <string name="network_error" msgid="5931164247644972255">"සම්බන්ධතාවය නැත"</string>
     <string name="retry" msgid="916102442074217293">"නැවත උත්සාහ කරන්න"</string>
     <string name="load_more" msgid="8702691358453560575">"තවත් පූරණය කරන්න"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

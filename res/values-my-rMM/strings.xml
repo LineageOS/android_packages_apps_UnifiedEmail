@@ -285,6 +285,7 @@
     <string name="search_back_desc" msgid="8038224690392783652">"ရှာဖွေကို ပိတ်ရန်"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"အသံဖြင့် ရှာဖွေမှု စတင်ရန်"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"ရှာဖွေမှု စာသားကို ရှင်းပစ်ရန်"</string>
+    <string name="network_error" msgid="5931164247644972255">"ချိတ်ဆက်မှု မရှိ"</string>
     <string name="retry" msgid="916102442074217293">"ထပ်စမ်းရန်"</string>
     <string name="load_more" msgid="8702691358453560575">"ထပ် တင်ရန်"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

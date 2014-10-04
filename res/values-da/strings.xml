@@ -280,10 +280,11 @@
     <string name="search_hint" msgid="7060626585689391003">"Søg"</string>
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
-    <string name="voice_search_not_supported" msgid="8493517060419469738">"Stemmesøgning understøttes ikke på denne enhed."</string>
+    <string name="voice_search_not_supported" msgid="8493517060419469738">"Talesøgning understøttes ikke på denne enhed."</string>
     <string name="search_back_desc" msgid="8038224690392783652">"Luk søgningen"</string>
-    <string name="search_voice_desc" msgid="9103854398344077204">"Start stemmesøgning"</string>
+    <string name="search_voice_desc" msgid="9103854398344077204">"Start talesøgning"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"Ryd søgeteksten"</string>
+    <string name="network_error" msgid="5931164247644972255">"Ingen forbindelse"</string>
     <string name="retry" msgid="916102442074217293">"Prøv igen"</string>
     <string name="load_more" msgid="8702691358453560575">"Indlæs mere"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

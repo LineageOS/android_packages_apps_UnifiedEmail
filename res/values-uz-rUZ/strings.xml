@@ -273,6 +273,7 @@
     <skip />
     <!-- no translation found for search_clear_desc (3044261775183044862) -->
     <skip />
+    <string name="network_error" msgid="5931164247644972255">"Internetga ulanmagan"</string>
     <string name="retry" msgid="916102442074217293">"Qayta urinish"</string>
     <string name="load_more" msgid="8702691358453560575">"Ko‘proq yuklash"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

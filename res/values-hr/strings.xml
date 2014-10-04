@@ -266,7 +266,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"Sinkronizacija mape"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"Novo: <xliff:g id="COUNT">%d</xliff:g>+"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"Novo: <xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"Nove: <xliff:g id="COUNT">%d</xliff:g>"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"Nepročitano: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
@@ -284,6 +284,7 @@
     <string name="search_back_desc" msgid="8038224690392783652">"Zatvaranje pretraživanja"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"Pokretanje glasovnog pretraživanja"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"Brisanje teksta za pretraživanje"</string>
+    <string name="network_error" msgid="5931164247644972255">"Nema veze"</string>
     <string name="retry" msgid="916102442074217293">"Pokušajte ponovo"</string>
     <string name="load_more" msgid="8702691358453560575">"Učitaj više"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

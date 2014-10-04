@@ -284,6 +284,7 @@
     <string name="search_back_desc" msgid="8038224690392783652">"关闭搜索"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"启动语音搜索"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"清除搜索文字"</string>
+    <string name="network_error" msgid="5931164247644972255">"无连接"</string>
     <string name="retry" msgid="916102442074217293">"重试"</string>
     <string name="load_more" msgid="8702691358453560575">"加载更多"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

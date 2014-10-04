@@ -284,6 +284,7 @@
     <string name="search_back_desc" msgid="8038224690392783652">"Закрити пошук"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"Розпочати голосовий пошук"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"Очистити пошуковий запит"</string>
+    <string name="network_error" msgid="5931164247644972255">"Немає з’єднання"</string>
     <string name="retry" msgid="916102442074217293">"Повторити спробу"</string>
     <string name="load_more" msgid="8702691358453560575">"Завантажити ще"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->

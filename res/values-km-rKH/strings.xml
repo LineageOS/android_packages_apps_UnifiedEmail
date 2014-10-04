@@ -284,6 +284,7 @@
     <string name="search_back_desc" msgid="8038224690392783652">"បិទ​ការ​ស្វែង​រក"</string>
     <string name="search_voice_desc" msgid="9103854398344077204">"ចាប់ផ្ដើម​ស្វែងរក​ជា​សំឡេង"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"ជម្រះ​អត្ថបទ​ស្វែងរក"</string>
+    <string name="network_error" msgid="5931164247644972255">"គ្មាន​ការ​តភ្ជាប់"</string>
     <string name="retry" msgid="916102442074217293">"ព្យាយាម​ឡើង​វិញ"</string>
     <string name="load_more" msgid="8702691358453560575">"ផ្ទុក​ច្រើន​ទៀត"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->
