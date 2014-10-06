@@ -50,7 +50,6 @@ import android.speech.RecognizerIntent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -2019,17 +2018,6 @@ public abstract class AbstractActivityController implements ActivityController,
             // is seeing the "your mail will appear shortly" message)
             return;
         }
-
-        // TODO: remove me after experiment b/17508768
-        final String id = android.provider.Settings.Secure.getString(
-                mActivity.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-        if (!TextUtils.isEmpty(id)) {
-            final long longId = Long.parseLong(
-                    Character.toString(id.charAt(id.length() - 1)), 16 /* hex */);
-            Analytics.getInstance().sendEvent("battery_experiment", "refresh",
-                    longId % 2 == 0 ? "even" : "odd", 1);
-        }
-
         convList.showSyncStatusBar();
 
         if (mAsyncRefreshTask != null) {
