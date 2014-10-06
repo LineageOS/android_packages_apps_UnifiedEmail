@@ -17,7 +17,6 @@
 package com.android.mail.photo;
 
 import android.content.Context;
-import android.net.Uri;
 
 import com.android.mail.utils.NotificationUtils;
 
@@ -31,5 +30,4 @@ public interface ContactFetcher {
             int idealIconWidth, int idealIconHeight,
             int idealWearableBgWidth, int idealWearableBgHeight);
 
-    public Uri getContactLookupUri(Context context, String accountName, String senderAddress);
 }
