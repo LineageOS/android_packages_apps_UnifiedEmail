@@ -525,10 +525,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         switch (mSendingState) {
             case UIProvider.ConversationSendingState.QUEUED:
             case UIProvider.ConversationSendingState.SENDING:
-                title = getResources().getString(R.string.sending);
-                break;
             case UIProvider.ConversationSendingState.RETRYING:
-                title = getResources().getString(R.string.message_retrying);
+                title = getResources().getString(R.string.sending);
                 break;
             case UIProvider.ConversationSendingState.SEND_ERROR:
                 title = getResources().getString(R.string.message_failed);
