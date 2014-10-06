@@ -113,7 +113,6 @@
     <dimen name="account_item_swatch_height">8dip</dimen>
     <dimen name="account_item_folder_color_width">36dip</dimen>
     <dimen name="drawer_footer_item_padding">16dp</dimen>
-    <dimen name="drawer_footer_text_padding_start">32dp</dimen>
     <dimen name="drawer_footer_item_minimum_height">48dp</dimen>
     <dimen name="drawer_item_font_size">16sp</dimen>
     <dimen name="widget_subject_font_size">13sp</dimen>

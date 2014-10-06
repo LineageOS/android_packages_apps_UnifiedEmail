@@ -54,4 +54,16 @@
     <style name="NotificationSecondaryText">
         <item name="android:textColor">@color/text_color_grey</item>
     </style>
+
+    <style name="DrawerFontStyle">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="FolderListItemStyle" parent="@style/FolderListItemStyleBase">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="DrawerUnreadCount" parent="@style/UnreadCount">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
 </resources>
