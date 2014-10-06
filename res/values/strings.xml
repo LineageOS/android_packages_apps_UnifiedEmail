@@ -458,10 +458,17 @@
     <string name="contact_info_string">Show contact information for <xliff:g id="name">%1$s</xliff:g></string>
     <!--  Icon name for showing sender contact information when we cannot get sender info. [CHAR LIMIT=100] -->
     <string name="contact_info_string_default">Show contact information</string>
-    <!-- Shown in collapsed mode when a conversation has more than one read message.
-         The message count is shown to the right of this text. [CHAR LIMIT=70] -->
+    <!-- Used for accessibility purposes when a conversation has several previously read
+         messages that are collapsed into a single touch target. Tapping on this touch target
+         expands these messages. [CHAR LIMIT=UNLIMITED] -->
     <plurals name="show_messages_read">
-        <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
+        <item quantity="other">Expand <xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
+    </plurals>
+    <!-- Used for accessibility purposes when a conversation has several previously read
+         messages that are collapsed into a single touch target to announce that the messages
+         have been expanded. [CHAR LIMIT=UNLIMITED] -->
+    <plurals name="super_collapsed_block_accessibility_announcement">
+        <item quantity="other">Expanded <xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
     </plurals>
     <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
     <string name="from_heading">From:</string>
