@@ -162,6 +162,10 @@
 
     <!-- End Compose styles -->
 
+    <style name="DrawerUnreadCount" parent="@style/UnreadCount">
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="UnreadCount">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -630,13 +634,17 @@
         <item name="android:paddingRight">@dimen/folder_list_item_end_margin</item>
     </style>
 
-    <style name="FolderListItemStyle">
+    <style name="FolderListItemStyle" parent="@style/FolderListItemStyleBase">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="FolderListItemStyleBase">
         <item name="android:layout_marginLeft">@dimen/folder_list_item_text_start_margin</item>
         <item name="android:layout_marginRight">@dimen/folder_list_item_end_margin</item>
     </style>
 
-    <style name="DrawerFooterListItemStyle">
-        <item name="android:paddingLeft">@dimen/drawer_footer_text_padding_start</item>
+    <style name="DrawerFontStyle">
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DismissSeparatorStyle">
