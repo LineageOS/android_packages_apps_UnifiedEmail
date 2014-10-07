@@ -218,9 +218,8 @@
     <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"密件副本： "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"顯示 <xliff:g id="NAME">%1$s</xliff:g> 的聯絡資料"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"顯示聯絡資料"</string>
-  <plurals name="show_messages_read">
-    <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> 封較舊的郵件"</item>
-  </plurals>
+    <!-- no translation found for show_messages_read:other (8094857552036574099) -->
+    <!-- no translation found for super_collapsed_block_accessibility_announcement:other (2016326586162784420) -->
     <string name="from_heading" msgid="48290556829713090">"寄件者："</string>
     <string name="replyto_heading" msgid="8275255318292059079">"回覆："</string>
     <string name="to_heading" msgid="3495203282540398336">"收件者： "</string>

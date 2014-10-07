@@ -218,9 +218,8 @@
     <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"Ccn: "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"Mostra informazioni di contatto di <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"Mostra informazioni di contatto"</string>
-  <plurals name="show_messages_read">
-    <item quantity="other" msgid="5285673397387128129">"<xliff:g id="COUNT">%1$d</xliff:g> messaggi meno recenti"</item>
-  </plurals>
+    <!-- no translation found for show_messages_read:other (8094857552036574099) -->
+    <!-- no translation found for super_collapsed_block_accessibility_announcement:other (2016326586162784420) -->
     <string name="from_heading" msgid="48290556829713090">"Da:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Rispondi a:"</string>
     <string name="to_heading" msgid="3495203282540398336">"A: "</string>

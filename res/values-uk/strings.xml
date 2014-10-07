@@ -74,8 +74,8 @@
     <string name="forward" msgid="4397585145490426320">"Переслати"</string>
     <string name="menu_compose" msgid="4575025207594709432">"Написати"</string>
     <string name="menu_change_folders" msgid="2194946192901276625">"Змінити папки"</string>
-    <string name="menu_move_to" msgid="7948877550284452830">"Перемістити в"</string>
-    <string name="menu_move_to_inbox" msgid="258554178236001444">"Перемістити до вхідних"</string>
+    <string name="menu_move_to" msgid="7948877550284452830">"Перемістити у"</string>
+    <string name="menu_move_to_inbox" msgid="258554178236001444">"Перемістити у вхідні"</string>
     <string name="menu_manage_folders" msgid="8486398523679534519">"Налаштування папки"</string>
     <string name="menu_show_original" msgid="2330398228979616661">"Не змінювати розмір"</string>
     <string name="menu_settings" msgid="7993485401501778040">"Налаштування"</string>
@@ -218,9 +218,8 @@
     <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"Пр. копія "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"Показати контактну інформацію відправника <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"Показати контактну інформацію"</string>
-  <plurals name="show_messages_read">
-    <item quantity="other" msgid="5285673397387128129">"Попередні повідомлення: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
-  </plurals>
+    <!-- no translation found for show_messages_read:other (8094857552036574099) -->
+    <!-- no translation found for super_collapsed_block_accessibility_announcement:other (2016326586162784420) -->
     <string name="from_heading" msgid="48290556829713090">"Від:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Відпов.:"</string>
     <string name="to_heading" msgid="3495203282540398336">"Кому: "</string>
@@ -276,7 +275,7 @@
     <string name="activity_folder_selection" msgid="8375243281001234750">"Вибрати папку"</string>
     <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"Папка \"Електронна пошта\""</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"Змінити папки"</string>
-    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"Перемістити в"</string>
+    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"Перемістити у"</string>
     <string name="search_hint" msgid="7060626585689391003">"Пошук"</string>
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
