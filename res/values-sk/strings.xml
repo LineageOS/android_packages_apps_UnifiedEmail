@@ -337,10 +337,10 @@
     <string name="notification_action_reply" msgid="8378725460102575919">"Odpovedať"</string>
     <string name="notification_action_reply_all" msgid="5693469099941000037">"Odpovedať všetkým"</string>
     <string name="notification_action_archive" msgid="2884874164831039047">"Archivovať"</string>
-    <string name="notification_action_remove_label" msgid="3714785653186750981">"Odstrániť menovku"</string>
+    <string name="notification_action_remove_label" msgid="3714785653186750981">"Odstrániť štítok"</string>
     <string name="notification_action_delete" msgid="3201627482564624132">"Odstrániť"</string>
     <string name="notification_action_undo_archive" msgid="600186958134073582">"Archivované"</string>
-    <string name="notification_action_undo_remove_label" msgid="8341924850540100690">"Menovka bola odstránená"</string>
+    <string name="notification_action_undo_remove_label" msgid="8341924850540100690">"Štítok bol odstránený"</string>
     <string name="notification_action_undo_delete" msgid="6915612337413587103">"Odstránené"</string>
     <string name="veiled_address" msgid="2670378260196977266"></string>
     <string name="veiled_alternate_text" msgid="6343564357099807582"></string>
