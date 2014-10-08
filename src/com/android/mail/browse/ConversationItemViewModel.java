@@ -245,7 +245,8 @@ public class ConversationItemViewModel {
     /**
      * Get conversation information to use for accessibility.
      */
-    public CharSequence getContentDescription(Context context, boolean showToHeader) {
+    public CharSequence getContentDescription(Context context, boolean showToHeader,
+            String foldersDesc) {
         if (mContentDescription == null) {
             // If any are unread, get the first unread sender.
             // If all are unread, get the first sender.
@@ -289,9 +290,16 @@ public class ConversationItemViewModel {
                     .toString();
             String readString = context.getString(
                     conversation.read ? R.string.read_string : R.string.unread_string);
-            int res = isToday ? R.string.content_description_today : R.string.content_description;
+            final int res;
+            if (foldersDesc == null) {
+                res = isToday ? R.string.content_description_today : R.string.content_description;
+            } else {
+                res = isToday ? R.string.content_description_today_with_folders :
+                        R.string.content_description_with_folders;
+            }
             mContentDescription = context.getString(res, toHeader, participant,
-                    conversation.subject, conversation.getSnippet(), date, readString);
+                    conversation.subject, conversation.getSnippet(), date, readString,
+                    foldersDesc);
         }
         return mContentDescription;
     }
