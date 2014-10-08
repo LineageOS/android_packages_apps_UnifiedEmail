@@ -115,6 +115,7 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.NotificationActionUtils;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.ViewUtils;
 import com.google.android.mail.common.html.parser.HtmlTree;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -4000,29 +4001,15 @@ public class ComposeActivity extends ActionBarActivity
         }
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onSupportActionModeStarted(ActionMode mode) {
         super.onSupportActionModeStarted(mode);
-        if (Utils.isRunningLOrLater()) {
-            final Window window = getWindow();
-            if (window != null) {
-                window.setStatusBarColor(
-                        getResources().getColor(R.color.action_mode_statusbar_color));
-            }
-        }
+        ViewUtils.setStatusBarColor(this, R.color.action_mode_statusbar_color);
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onSupportActionModeFinished(ActionMode mode) {
         super.onSupportActionModeFinished(mode);
-        if (Utils.isRunningLOrLater()) {
-            final Window window = getWindow();
-            if (window != null) {
-                window.setStatusBarColor(
-                        getResources().getColor(R.color.primary_dark_color));
-            }
-        }
+        ViewUtils.setStatusBarColor(this, R.color.primary_dark_color);
     }
 }

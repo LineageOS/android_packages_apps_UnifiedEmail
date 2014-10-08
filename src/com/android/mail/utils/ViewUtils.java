@@ -17,10 +17,13 @@
 package com.android.mail.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.ColorRes;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewParent;
+import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
@@ -85,6 +88,19 @@ public class ViewUtils {
             event.getText().add(text);
             event.setContentDescription(null);
             parent.requestSendAccessibilityEvent(view, event);
+        }
+    }
+
+    /**
+     * Sets the status bar color of the provided activity.
+     */
+    @SuppressLint("NewApi")
+    public static void setStatusBarColor(Activity activity, @ColorRes int colorId) {
+        if (Utils.isRunningLOrLater() && activity != null) {
+            final Window window = activity.getWindow();
+            if (window != null) {
+                window.setStatusBarColor(activity.getResources().getColor(colorId));
+            }
         }
     }
 }
