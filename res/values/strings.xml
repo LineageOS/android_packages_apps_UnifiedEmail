@@ -52,7 +52,7 @@
     <string name="discard">Discard</string>
     <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
     <string name="compose">Compose</string>
-    <!-- The action bar title for  the default compose mode [CHAR LIMIT=10] -->
+    <!-- The action bar title for the default compose mode [CHAR LIMIT=10] -->
     <string name="compose_title">Compose</string>
     <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
     <string-array name="compose_modes">
