@@ -367,7 +367,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
             ab.setHomeAsUpIndicator(R.drawable.ic_arrow_back_wht_24dp_with_rtl);
             ab.setHomeActionContentDescription(0 /* system default */);
         } else {
-            ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
+            ab.setHomeAsUpIndicator(R.drawable.ic_menu_wht_24dp);
             ab.setHomeActionContentDescription(
                     isDrawerOpen() ? R.string.drawer_close : R.string.drawer_open);
         }

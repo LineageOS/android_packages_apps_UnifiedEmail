@@ -20,7 +20,7 @@
     <ImageView
         android:id="@+id/edit_draft"
         android:contentDescription="@string/resume_draft"
-        android:src="@drawable/ic_edit_24dp"
+        android:src="@drawable/ic_pencil_24dp"
         android:visibility="gone"
         style="@style/MessageHeaderActionButtonStyle" />
 
