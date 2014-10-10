@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -101,6 +103,9 @@ public class FolderListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<ObjectCursor<Folder>>,
         FolderWatcher.UnreadCountChangedListener {
     private static final String LOG_TAG = LogTag.getLogTag();
+    // Duration to fade alpha from 0 to 1 and vice versa.
+    private static final long DRAWER_FADE_VELOCITY_MS_PER_ALPHA = TwoPaneLayout.SLIDE_DURATION_MS;
+
     /** The parent activity */
     protected ControllableActivity mActivity;
     /** The underlying list view */
@@ -214,6 +219,37 @@ public class FolderListFragment extends ListFragment implements
     // use the same dimen as AccountItemView to participate in recycling
     // TODO: but Material account switcher doesn't recycle...
     private int mMiniDrawerAvatarDecodeSize;
+
+    private AnimatorListenerAdapter mMiniDrawerFadeOutListener = new AnimatorListenerAdapter() {
+        private boolean mCanceled;
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            mCanceled = true;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (!mCanceled) {
+                mMiniDrawerView.setVisibility(View.INVISIBLE);
+            }
+        }
+    };
+    private AnimatorListenerAdapter mListViewFadeOutListener = new AnimatorListenerAdapter() {
+        private boolean mCanceled;
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            mCanceled = true;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (!mCanceled) {
+                mListView.setVisibility(View.INVISIBLE);
+            }
+        }
+    };
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -755,12 +791,59 @@ public class FolderListFragment extends ListFragment implements
 
         if (isMinimized()) {
             mMiniDrawerView.setVisibility(View.VISIBLE);
+            mMiniDrawerView.setAlpha(1f);
             mListView.setVisibility(View.INVISIBLE);
+            mListView.setAlpha(0f);
         } else {
             mMiniDrawerView.setVisibility(View.INVISIBLE);
+            mMiniDrawerView.setAlpha(0f);
             mListView.setVisibility(View.VISIBLE);
+            mListView.setAlpha(1f);
+        }
+    }
+
+    public void animateMinimized(boolean minimized) {
+        if (!mMiniDrawerEnabled) {
+            return;
+        }
+
+        mIsMinimized = minimized;
+
+        if (mIsMinimized) {
+            // From the current state (either maximized or partially dragged) to minimized.
+            final float startAlpha = mListView.getAlpha();
+            final long duration = (long) (startAlpha * DRAWER_FADE_VELOCITY_MS_PER_ALPHA);
+            mMiniDrawerView.setVisibility(View.VISIBLE);
+            mMiniDrawerView.animate()
+                    .alpha(1f)
+                    .setDuration(duration)
+                    .setListener(null);
+            mListView.animate()
+                    .alpha(0f)
+                    .setDuration(duration)
+                    .setListener(mListViewFadeOutListener);
+        } else {
+            // From the current state (either minimized or partially dragged) to maximized.
+            final float startAlpha = mMiniDrawerView.getAlpha();
+            final long duration = (long) (startAlpha * DRAWER_FADE_VELOCITY_MS_PER_ALPHA);
+            mMiniDrawerView.animate()
+                    .alpha(0f)
+                    .setDuration(duration)
+                    .setListener(mMiniDrawerFadeOutListener);
+            mListView.setVisibility(View.VISIBLE);
+            mListView.animate()
+                    .alpha(1f)
+                    .setDuration(duration)
+                    .setListener(null);
             mListView.requestFocus();
         }
+    }
+
+    public void onDrawerDrag(float percent) {
+        mMiniDrawerView.setAlpha(1f - percent);
+        mListView.setAlpha(percent);
+        mMiniDrawerView.setVisibility(View.VISIBLE);
+        mListView.setVisibility(View.VISIBLE);
     }
 
     /**
