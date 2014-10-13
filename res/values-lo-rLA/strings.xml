@@ -129,10 +129,8 @@
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"ແບ່ງປັນລິ້ງ"</string>
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> ກ່ຽວກັບ <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> ເມື່ອ <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> ກ່ຽວກັບ <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> ເມື່ອ <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
-    <!-- no translation found for content_description_with_folders (482368474097191879) -->
-    <skip />
-    <!-- no translation found for content_description_today_with_folders (860548626146933495) -->
-    <skip />
+    <string name="content_description_with_folders" msgid="482368474097191879">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> ​ກ່ຽວ​ກັບ <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> ​ເມື່ອ​ <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>, ​ປ້າຍ​ກຳ​ກັບ: <xliff:g id="FOLDERS">%7$s</xliff:g>"</string>
+    <string name="content_description_today_with_folders" msgid="860548626146933495">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> ກ່ຽວ​ກັບ <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> ເມື່ອ​ເວ​ລາ <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>, ​ປ້າຍ​ກຳ​ກັບ: <xliff:g id="FOLDERS">%7$s</xliff:g>"</string>
     <string name="read_string" msgid="5495929677508576520">"ອ່ານການສົນທະນາແລ້ວ"</string>
     <string name="unread_string" msgid="7342558841698083381">"ການສົນທະນາທີ່ຍັງບໍ່ໄດ້ອ່ານ"</string>
     <string name="filtered_tag" msgid="721666921386074505">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -223,10 +221,10 @@
     <string name="contact_info_string" msgid="6484930184867405276">"ສະແດງລາຍລະອຽດຜູ່ຕິດຕໍ່ສຳລັບ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"ສະແດງຂໍ້ມູນຕິດຕໍ່"</string>
   <plurals name="show_messages_read">
-    <item quantity="other" msgid="8094857552036574099">"Expand <xliff:g id="COUNT">%1$d</xliff:g> older messages"</item>
+    <item quantity="other" msgid="8094857552036574099">"ຂະ​ຫຍາຍ <xliff:g id="COUNT">%1$d</xliff:g> ຂໍ້​ຄວາມ​ເກົ່າ"</item>
   </plurals>
   <plurals name="super_collapsed_block_accessibility_announcement">
-    <item quantity="other" msgid="2016326586162784420">"Expanded <xliff:g id="COUNT">%1$d</xliff:g> older messages"</item>
+    <item quantity="other" msgid="2016326586162784420">"ຂະ​ຫຍາຍ​ຂໍ້​ຄວາມ​ເກົ່າ <xliff:g id="COUNT">%1$d</xliff:g> ຂໍ້​ຄວາມ​ແລ້ວ"</item>
   </plurals>
     <string name="from_heading" msgid="48290556829713090">"ຈາກ:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"ຕອບກັບຫາ:"</string>
