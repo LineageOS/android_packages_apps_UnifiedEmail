@@ -547,8 +547,8 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public boolean shouldShowSearchBarByDefault() {
-        return mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST;
+    public boolean shouldShowSearchBarByDefault(int viewMode) {
+        return viewMode == ViewMode.SEARCH_RESULTS_LIST;
     }
 
     @Override
