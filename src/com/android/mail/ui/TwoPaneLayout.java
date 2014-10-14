@@ -276,7 +276,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
             } else {
                 onTransitionComplete();
             }
-            mTranslatedMode = mCurrentMode;
         }
 
         // Layout the children views
@@ -437,6 +436,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
             job.run();
         }
         mTransitionCompleteJobs.clear();
+
+        // We finished transitioning into the new mode.
+        mTranslatedMode = mCurrentMode;
 
         // Notify conversation list layout listeners of position change.
         final int xEnd = mIsRtl ? mListLeft : mListRight;
@@ -687,7 +689,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
                 final int width = getMeasuredWidth();
                 translateDueToViewMode(width, true /* animate */);
             }
-            mTranslatedMode = mCurrentMode;
         }
     }
 
