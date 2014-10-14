@@ -18,8 +18,12 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="to">Fir</string>
+  <string name="cc">CC</string>
+  <string name="bcc">BCC</string>
+  <string name="subject_hint">Sujet</string>
   <string name="body_hint">E-Mail schreiwen</string>
   <string name="add_file_attachment">Fichier drunhänken</string>
+  <string name="add_photo_attachment">Bild drunhänken</string>
   <string name="add_video_attachment">Video drunhänken</string>
   <string name="save_draft">Brouillon späicheren</string>
   <string name="discard">Verwerfen</string>
@@ -29,34 +33,364 @@
     <item>Allen Äntwerten</item>
     <item>Weider</item>
   </string-array>
+  <string name="reply_attribution">Den <xliff:g id="date">%s</xliff:g> schreift den/d\' <xliff:g id="person">%s</xliff:g>:</string>
+  <string name="forward_attribution">---------- Weidergeleete Message ----------&lt;br&gt;Vum: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Datum: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Sujet: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;Un: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
   <string name="forward_attribution_no_headers">---------- Weidergeleete Message ----------</string>
+  <string name="cc_attribution">CC: <xliff:g id="cc">%1$s</xliff:g>&lt;br&gt;</string>
+  <string name="select_attachment_type">Typ vun Unhang auswielen</string>
+  <string name="too_large_to_attach_single">Fichier iwwer <xliff:g id="maxSize">%1$s</xliff:g> kann net ugehaange ginn.</string>
+  <string name="too_large_to_attach_multiple">Een oder méi Fichiere goufen net ugehaangen. Limitt <xliff:g id="maxSize">%1$s</xliff:g>.</string>
+  <string name="too_large_to_attach_additional">Fichier net ugehaangen. <xliff:g id="maxSize">%1$s</xliff:g>-Limitt erreecht.</string>
+  <string name="generic_attachment_problem">Konnt de Fichier net drunhänken.</string>
+  <string name="recipient_needed">Setz op d\'mannst een Empfänger dobäi.</string>
+  <string name="recipient_error_dialog_title">Empfänger-Feeler</string>
+  <string name="confirm_send_title">Message schécken?</string>
+  <string name="confirm_send_message_with_no_subject">De Sujet ass eidel.</string>
+  <string name="confirm_send_message_with_no_body">Den Text ass eidel.</string>
+  <string name="confirm_send_message">Dëse Message schécken?</string>
+  <string name="message_discarded">Message verworf.</string>
+  <string name="signature">\n\n<xliff:g id="signature">%s</xliff:g></string>
+  <string name="custom_from_account_label">Mail schécken als:</string>
+  <string name="send">Schécken</string>
+  <string name="mark_read">Als gelies markéieren</string>
+  <string name="mark_unread">Als ongelies markéieren</string>
+  <string name="mute">Stomm</string>
+  <string name="add_star">Stär dobäisetzen</string>
+  <string name="remove_star">Stär ewechhuelen</string>
+  <string name="remove_folder">Aus <xliff:g id="folderName">%1$s</xliff:g> läschen</string>
+  <string name="archive">Archiv</string>
+  <string name="report_spam">Als Spam mellen</string>
+  <string name="mark_not_spam">Als net Spam mellen</string>
+  <string name="report_phishing">Als Phishing mellen</string>
+  <string name="delete">Läschen</string>
+  <string name="discard_drafts">Brouillone verwerfen</string>
+  <string name="refresh">Opfrëschen</string>
   <string name="reply">Äntweren</string>
   <string name="reply_all">Allen Äntwerten</string>
+  <string name="resume_draft">Änneren</string>
   <string name="forward">Weider</string>
   <string name="menu_compose">Schreiwen</string>
+  <string name="menu_change_folders">Dossier wiesselen</string>
+  <string name="menu_move_to">An den Dossier réckelen</string>
+  <string name="menu_move_to_inbox">Réckelen an den Agank</string>
+  <string name="menu_manage_folders">Dossiersastellungen</string>
+  <string name="menu_show_original">Originalgréisst nees uweisen</string>
+  <string name="menu_folder_options">Dossiersastellungen</string>
   <string name="menu_settings">Astellungen</string>
+  <string name="menu_search">Sichen</string>
+  <string name="mark_important">Als wichteg markéieren</string>
+  <string name="mark_not_important">Als onwichteg markéieren</string>
+  <string name="add_cc_label">CC/BCC dobäisetzen</string>
+  <string name="add_bcc_label">BCC dobäisetzen</string>
+  <string name="feedback">Feedback schécken</string>
+  <string name="help_and_info">Hëllef</string>
+  <string name="quoted_text">Zitéierten Text abannen</string>
+  <string name="quoted_text_label">Text zitéieren</string>
+  <string name="respond_inline">Am Text äntweren</string>
+  <string name="bytes"><xliff:g id="count">%s</xliff:g> B</string>
+  <string name="kilobytes"><xliff:g id="count">%s</xliff:g> kB</string>
+  <string name="megabytes"><xliff:g id="count">%s</xliff:g> MB</string>
+  <string name="attachment_image">Bild</string>
+  <string name="attachment_video">Video</string>
+  <string name="attachment_audio">Toun</string>
+  <string name="attachment_text">Text</string>
+  <string name="attachment_application_msword">Dokument</string>
+  <string name="attachment_application_vnd_ms_powerpoint">Presentatioun</string>
+  <string name="attachment_application_vnd_ms_excel">Tabell</string>
+  <string name="attachment_application_pdf">PDF</string>
+  <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> Fichier</string>
+  <string name="preview_attachment">Virschau</string>
   <string name="save_attachment">Späicheren</string>
+  <string name="cancel_attachment">Ofbriechen</string>
   <string name="download_again">Erëm eroflueden</string>
+  <string name="more_info_attachment">Info</string>
+  <string name="attachment_type_blocked">Leider kann dësen Typ vun Unhang net gespäichert oder opgemaach ginn.</string>
+  <string name="no_application_found">Et gëtt keng App fir dësen Unhang.</string>
+  <string name="fetching_attachment">Unhang gëtt erofgelueden</string>
   <string name="please_wait">Waart w.e.g.\u2026</string>
+  <string name="saved">Gespäichert, <xliff:g id="size">%s</xliff:g></string>
+  <string name="download_failed">Konnt net eroflueden. Dréck fir nees ze probéieren.</string>
+  <string name="attachments_header">Unhäng</string>
+  <string name="menu_photo_save_all">All späicheren</string>
   <string name="menu_photo_share">Deelen</string>
+  <string name="menu_photo_share_all">Alles deelen</string>
+  <string name="saving">Gëtt gespäichert&#8230;</string>
   <string name="choosertitle_sharevia">Deelen iwwer</string>
+  <string name="contextmenu_openlink">Am Browser opmaachen</string>
+  <string name="contextmenu_copy">Kopéieren</string>
+  <string name="contextmenu_copylink">Adress kopéieren</string>
+  <string name="contextmenu_dial_dot">Uruffen\u2026</string>
+  <string name="contextmenu_sms_dot">SMS\u2026</string>
   <string name="contextmenu_add_contact">Kontakt dobäisetzen</string>
   <string name="contextmenu_send_mail">E-Mail schécken</string>
   <string name="contextmenu_map">Kaart</string>
   <string name="contextmenu_sharelink">Link deelen</string>
+  <string name="contextmenu_help">Hëllef</string>
+  <string name="contextmenu_feedback">Feedback schécken</string>
+  <string name="num_selected"><xliff:g id="number" example="7">%d</xliff:g></string>
+  <plurals name="move_conversation">
+    <item quantity="one">Konversatioun réckelen</item>
+    <item quantity="other"><xliff:g>%1$d</xliff:g> Konversatioune réckelen</item>
+  </plurals>
+  <string name="content_description"><xliff:g id="sender">%1$s</xliff:g> iwwer <xliff:g id="subject">%2$s</xliff:g>, <xliff:g id="snippet">%3$s</xliff:g> um <xliff:g id="date">%4$s</xliff:g>, <xliff:g id="readstate">%5$s</xliff:g></string>
+  <string name="content_description_today"><xliff:g id="sender">%1$s</xliff:g> iwwer <xliff:g id="subject">%2$s</xliff:g>, <xliff:g id="snippet">%3$s</xliff:g> um <xliff:g id="time">%4$s</xliff:g>, <xliff:g id="readstate">%5$s</xliff:g></string>
+  <string name="read_string">Konversatioun gelies</string>
+  <string name="unread_string">Konversatioun ongelies</string>
+  <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
+  <string name="subject_and_snippet"><xliff:g>%s</xliff:g> \u2014 <xliff:g>%s</xliff:g></string>
+  <plurals name="draft">
+    <item quantity="one">Brouillon</item>
+    <item quantity="other">Brouillonen</item>
+  </plurals>
+  <string name="sending">Gëtt geschéckt\u2026</string>
+  <string name="send_failed">De Message gouf net geschéckt.</string>
+  <string name="me_object_pronun">ech</string>
+  <string name="me_subject_pronun">ech</string>
+  <string name="inbox_folders_heading">Agank</string>
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one">Dës Konversatioun läschen?</item>
+    <item quantity="other">Dës <xliff:g id="count">%1$d</xliff:g> Konversatioune läschen?</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one">Dës Konversatioun archivéieren?</item>
+    <item quantity="other">Dës <xliff:g id="count">%1$d</xliff:g> Konversatiounen archivéieren?</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <item quantity="one">Brouillonen aus dëser Konversatioun verwerfen?</item>
+    <item quantity="other">Brouillonen aus <xliff:g id="count">%1$d</xliff:g> Konversatioune verwerfen?</item>
+  </plurals>
+  <string name="confirm_discard_text">Dëse Message verwerfen?</string>
+  <string name="loading_conversations">Gëtt gelueden\u2026</string>
   <string name="no_conversations">Keng Gespréicher.</string>
+  <string name="undo">Réckgängeg maachen</string>
+  <plurals name="conversation_unstarred">
+    <item quantity="one">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatioun ewechgeholl.</item>
+    <item quantity="other">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatiounen ewechgeholl.</item>
+  </plurals>
+  <plurals name="conversation_muted">
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; stomm geschalt.</item>
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; stomm geschalt.</item>
+  </plurals>
+  <plurals name="conversation_spammed">
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Spam gemellt.</item>
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Spam gemellt.</item>
+  </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als net Spam gemellt.</item>
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als net Spam gemellt.</item>
+  </plurals>
+  <plurals name="conversation_not_important">
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als wichteg markéiert.</item>
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als wichteg markéiert.</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Phishing gemellt.</item>
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Phishing gemellt.</item>
+  </plurals>
+  <plurals name="conversation_archived">
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; archivéiert.</item>
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; archivéiert.</item>
+  </plurals>
+  <plurals name="conversation_deleted">
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; geläscht.</item>
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; geläscht.</item>
+  </plurals>
   <string name="deleted">Geläscht</string>
+  <string name="archived">Archivéiert</string>
+  <string name="folder_removed">Aus <xliff:g id="folderName">%1$s</xliff:g> geläscht</string>
+  <plurals name="conversation_folder_changed">
+    <item quantity="one">Dossier gewiesselt.</item>
+    <item quantity="other">Dossiere gewiesselt.</item>
+  </plurals>
+  <string name="conversation_folder_moved">Geréckelt an den Dossier <xliff:g id="folderName">%1$s</xliff:g></string>
+  <string name="search_results_header">Resultater</string>
+  <string name="search_unsupported">D\'Sich ass op dësem Kont net ënnerstëtzt.</string>
+  <string name="search_results_searching_header">Gëtt gesicht\u2026</string>
+  <string name="add_label">Dossier dobäisetzen</string>
+  <string name="new_incoming_messages_one">Neie Message vum <xliff:g id="sender">%s</xliff:g>. Weisen.</string>
+  <plurals name="new_incoming_messages_many">
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> neie Message. Weisen.</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> nei Messagen. Weisen.</item>
+  </plurals>
+  <string name="expand_recipient_details">Empfängerdetailer opklappen</string>
+  <string name="collapse_recipient_details">Empfänger-Detailer zesummeklappen</string>
+  <string name="contact_info_string">Kontakt-Informatioun fir <xliff:g id="name">%1$s</xliff:g> uweisen</string>
+  <string name="contact_info_string_default">Kontakt-Informatioun uweisen</string>
+  <plurals name="show_messages_read">
+    <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> méi ale Message</item>
+    <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> méi al Messagen</item>
+  </plurals>
+  <string name="from_heading">Vum:\u0020</string>
+  <string name="replyto_heading">Äntweren-un:\u0020</string>
+  <string name="to_heading">Un:\u0020</string>
+  <string name="cc_heading">CC:\u0020</string>
   <string name="bcc_heading">Bcc:\u0020</string>
+  <string name="date_heading">Datum:\u0020</string>
+  <string name="show_images">Biller uweisen</string>
+  <string name="always_show_images">Biller vun dësem Ofsender ëmmer weisen</string>
+  <string name="always_show_images_toast">Biller vun dësem Ofsender ginn automatesch gewisen.</string>
+  <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g></string>
+  <string name="address_display_format_with_via_domain"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g> iwwer <xliff:g id="via_domain">%3$s</xliff:g></string>
   <string name="message_saved">Message als Brouillon gespäichert.</string>
+  <string name="sending_message">Message gëtt geschéckt\u2026</string>
+  <string name="invalid_recipient">D\'Adress <xliff:g id="wrongemail" example="foo@@gmail..com">%s</xliff:g> ass ongëlteg.</string>
+  <string name="show_elided">\u25B6 Zitéierten Text uweisen</string>
+  <string name="hide_elided">\u25BC Zitéierten Text verstoppen</string>
+  <string name="message_invite_title">Kalenner-Invitatioun</string>
+  <string name="message_invite_calendar_view">Am Kalenner uweisen</string>
+  <string name="message_invite_label_attending">Deelhuelen?</string>
+  <string name="message_invite_accept">Jo</string>
   <string name="message_invite_tentative">Vläicht</string>
+  <string name="message_invite_decline">Nee</string>
+  <string name="enumeration_comma">,\u0020</string>
+  <string name="yes">Jo</string>
+  <string name="no">Nee</string>
+  <string name="ok">OK</string>
+  <string name="done">Fäerdeg</string>
+  <string name="cancel">Ofbriechen</string>
   <string name="clear">Eidel maachen</string>
+  <string-array name="sync_status">
+    <item>Erfollegräich</item>
+    <item>Keng Connectioun.</item>
+    <item>Alogge war net méiglech.</item>
+    <item>Sécherheetsfeeler.</item>
+    <item>Konnt net synchroniséieren.</item>
+    <item>Interne Feeler</item>
+  </string-array>
+  <string name="tap_to_configure">Drécke fir anzestellen</string>
+  <string name="non_synced_folder_description">Fir d\'Konversatiounen ze gesinn, synchroniséier dësen Dossier.</string>
+  <string name="tap_to_configure_folder_sync">Dossier synchroniséieren</string>
+  <string name="widget_large_unread_count">%d+</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> ongelies</item>
+    <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> ongelies</item>
+  </plurals>
+  <string name="actionbar_large_unread_count"><xliff:g id="count">%1$d</xliff:g>+ ongelies</string>
+  <string name="view_more_conversations">Méi Konversatiounen uweisen</string>
+  <string name="loading_conversation">Gëtt gelueden\u2026</string>
+  <string name="activity_mailbox_selection">Kont auswielen</string>
+  <string name="activity_folder_selection">Dossier auswielen</string>
+  <string name="folder_shortcut_widget_label">E-Mail-Dossier</string>
+  <string name="change_folders_selection_dialog_title">Dossier wiesselen</string>
+  <string name="move_to_selection_dialog_title">An den Dossier réckelen</string>
+  <string name="search_hint">E-Mail sichen</string>
+  <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
+  <string name="network_error">Keng Connectioun</string>
+  <string name="retry">Nees probéieren</string>
+  <string name="load_more">Méi lueden</string>
+  <string name="load_attachment">@string/load_more</string>
+  <string name="shortcut_name_title">Dossiersofkierzung benennen</string>
+  <string name="wait_for_sync_title">Waarden op d\'Synchronisatioun</string>
+  <string name="wait_for_sync_body">Deng E-Mail erschéngt geschwënn.</string>
+  <string name="not_synced_title">Kont net synchroniséiert</string>
+  <string name="wait_for_manual_sync_body">Dëse Kont ass net agestallt fir automatesch synchroniséiert ze ginn.\nDréck <b>Elo synchroniséieren</b> fir d\'E-Mailen eemoleg ze synchroniséieren, oder <b>Synchroniséierungsastellungen änneren</b> fir d\'E-Maile vun dësem Kont automatesch synchroniséieren ze loossen.</string>
+  <string name="manual_sync">Elo synchroniséieren</string>
+  <string name="change_sync_settings">Sync-Astellungen änneren</string>
+  <string name="photo_load_failed">Konnt d\'Bild net lueden</string>
+  <string name="cant_move_or_change_labels">Kann net réckele well d\'Auswiel verschidde Konten enthält.</string>
+  <string name="multiple_new_message_notification_item"><b><xliff:g id="sender">%1$s</xliff:g></b>\u0020\u0020\u0020<xliff:g id="subject">%2$s</xliff:g></string>
+  <string name="single_new_message_notification_big_text"><xliff:g id="subject">%1$s</xliff:g>\n<xliff:g id="snippet">%2$s</xliff:g></string>
+  <string name="ignore_spam_warning">Ignoréieren, ech vertrauen dësem Message.</string>
+  <string name="via_domain">iwwer <xliff:g id="viaDomain">%1$s</xliff:g></string>
+  <string-array name="moveto_folder_sections">
+    <item>System</item>
+    <item>Dacks benotzt</item>
+    <item>All d\'Dossieren</item>
+  </string-array>
+  <string name="signin">Aloggen</string>
+  <string name="info">Info</string>
   <string name="report">Bericht</string>
+  <string name="sync_error">Konnt net synchroniséieren.</string>
+  <string name="sync_error_message">Däin Apparat huet net genuch Späicherplaz fir ze synchroniséieren.</string>
   <string name="storage">Späicher</string>
+  <string name="senders_split_token">,\u00A0</string>
+  <string name="draft_count_format">\u00A0(<xliff:g id="count">%1$s</xliff:g>)</string>
+  <string name="all_folders_heading">All d\'Dossieren</string>
+  <string name="recent_folders_heading">Rezent Dossieren</string>
   <string name="message_details_title">Messagendetailer</string>
+  <string name="auto_advance_label">Automatesch weidergoen</string>
+  <string name="auto_advance_summary">Wiel aus wéi ee Schierm s de nom Läsche vun engem Message wëlls uweisen</string>
+  <string name="auto_advance_help_title">Preferenz fir d\'automatescht weidergoen astellen\n(nom läschen, etc.)</string>
+  <string-array name="prefEntries_autoAdvance">
+    <item>Méi nei</item>
+    <item>Méi al</item>
+    <item>Konversatiounslëscht</item>
+  </string-array>
+  <string-array name="prefSummaries_autoAdvance">
+    <item>Nom Läschen déi méi nei Konversatioun uweisen</item>
+    <item>Nom Läschen déi méi al Konversatioun uweisen</item>
+    <item>Nom Läschen d\'Konversatiounslëscht uweisen</item>
+  </string-array>
+  <string name="clear_display_images_whitelist_title">Billerautorisatioune läschen</string>
+  <string name="clear_display_images_whitelist_dialog_title">Billerautorisatioune läschen?</string>
+  <string name="clear_display_images_whitelist_dialog_message">Biller vun Ofsenderen déi virdrun zougelooss waren elo net méi automatesch uweisen.</string>
+  <string name="sender_whitelist_cleared">Biller ginn net automatesch ugewisen.</string>
+  <string name="preferences_signature_title">Ënnerschrëft</string>
+  <string name="preferences_signature_dialog_title">Ënnerschrëft</string>
+  <string name="preferences_signature_summary_not_set">Net gesat</string>
   <string name="notification_action_reply">Äntweren</string>
   <string name="notification_action_reply_all">Allen Äntwerten</string>
+  <string name="notification_action_archive">Archiv</string>
+  <string name="notification_action_remove_label">Etikett läschen</string>
   <string name="notification_action_delete">Läschen</string>
+  <string name="notification_action_undo_archive">Archivéiert</string>
+  <string name="notification_action_undo_remove_label">Etikett geläscht</string>
   <string name="notification_action_undo_delete">Geläscht</string>
+  <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
+  <string name="new_messages"><xliff:g id="count">%1$d</xliff:g> nei Messagen</string>
+  <string name="single_new_message_notification_title"><xliff:g id="sender">%1$s</xliff:g>: <xliff:g id="subject">%2$s</xliff:g></string>
   <string name="silent_ringtone">Roueg</string>
+  <string name="preference_removal_action_title">Aktioun beim Archivéieren a Läschen</string>
+  <string-array name="prefEntries_removal_action">
+    <item>Just \"Archivéieren\" uweisen</item>
+    <item>Just \"Läschen\" uweisen</item>
+    <item>\"Archivéieren\" a \"Läschen\" uweisen</item>
+  </string-array>
+  <string-array name="prefSummaries_removal_action_summary">
+    <item>Just \"Archivéieren\" uweisen</item>
+    <item>Just \"Läschen\" uweisen</item>
+    <item>\"Archivéieren\" a \"Läschen\" uweisen</item>
+  </string-array>
+  <string name="prefDialogTitle_removal_action">Aktioun beim Archivéieren a Läschen</string>
   <string name="preferences_default_reply_all_title">Allen Äntwerten</string>
+  <string name="preferences_default_reply_all_summary">Als Standard fir Äntwerte benotzen</string>
+  <string name="preference_swipe_title_archive">Wësche fir z\'archivéieren</string>
+  <string name="preference_swipe_title_delete">Wësche fir ze läschen</string>
+  <string name="preference_swipe_description">An der Konversatiounslëscht</string>
+  <string name="preference_sender_image_title">Ofsender-Bild</string>
+  <string name="preference_sender_image_description">Nieft dem Numm an der Konversatiounslëscht uweisen</string>
+  <string name="swipe_down_to_refresh">Erofwësche fir opzefrëschen</string>
+  <string name="checking_for_mail">Maile ginn ofgeruff</string>
+  <string name="empty_trash">Poubelle eidel maachen</string>
+  <string name="empty_spam">Spam eidel maachen</string>
+  <string name="empty_trash_dialog_title">Poubelle eidel maachen?</string>
+  <string name="empty_spam_dialog_title">Spam eidel maachen?</string>
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> Message gëtt permanent geläscht.</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> Messagë gi permanent geläscht.</item>
+  </plurals>
+  <string name="drawer_open">Navigatiounsleescht opmaachen</string>
+  <string name="drawer_close">Navigatiounsleescht zoumaachen</string>
+  <string name="conversation_photo_welcome_text">Dréck op d\'Bild vun engem Ofsender fir déi Konversatioun auszewielen.</string>
+  <string name="long_press_to_select_tip">Gedréckt hale fir eng Konversatioun auszewielen, duerno drécke fir der méi auszewielen.</string>
+  <string name="folder_icon_desc">Dossierssymbol</string>
+  <string name="add_account">Kont dobäisetzen</string>
+  <string name="attached_message">Ugehaangene Message</string>
+  <string name="date_message_received"><xliff:g id="day_and_date">%1$s</xliff:g>, <xliff:g id="time">%2$s</xliff:g></string>
+  <string name="date_message_received_today">Haut, <xliff:g id="time">%1$s</xliff:g></string>
+  <string name="date_message_received_yesterday">Gëschter, <xliff:g id="time">%1$s</xliff:g></string>
+  <string name="dismiss_tip_hover_text">Tipp verwerfen</string>
+  <string name="auto_sync_off">Auto-Sync ass aus.</string>
+  <string name="tap_to_enable_sync">Drécke fir unzeschalten.</string>
+  <string name="account_sync_off">Kontesynchronisatioun ass aus.</string>
+  <string name="enable_sync_in_account_settings">Uschalten ënner <xliff:g id="account_settings">%1$s</xliff:g>.</string>
+  <string name="account_settings_param">Kontenastellungen</string>
+  <string name="unsent_messages_in_outbox"><xliff:g id="number">%1$s</xliff:g> net verschéckt am Dossier <xliff:g id="outbox">%2$s</xliff:g></string>
+  <string name="turn_auto_sync_on_dialog_title">Automatesch Synchroniséierung uschalten?</string>
+  <string name="turn_auto_sync_on_dialog_body">Ännerungen déi s du bei all Appen a Konten - net just Gmail - méchs, ginn tëscht dem Internet, dengen aneren Apparater an dengem <xliff:g id="phone_or_tablet">%1$s</xliff:g> synchroniséiert.</string>
+  <string name="phone">Telefon</string>
+  <string name="tablet">Tablet</string>
+  <string name="turn_auto_sync_on_dialog_confirm_btn">Uschalten</string>
+  <string name="show_n_more_folders"><xliff:g id="number">%1$s</xliff:g> weider Dossieren uweisen</string>
+  <string name="hide_folders">Dossiere verstoppen</string>
 </resources>

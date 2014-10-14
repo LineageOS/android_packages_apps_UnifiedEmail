@@ -227,7 +227,7 @@
   <string name="retry">دوبارە هەوڵدانەوە</string>
   <string name="load_more">زیاتر</string>
   <string name="load_attachment">@string/load_more</string>
-  <string name="shortcut_name_title">ناوی کورته‌ئایکۆنی بوخچه‌</string>
+  <string name="shortcut_name_title">ناوی کورته‌وێنۆچکی بوخچه‌</string>
   <string name="wait_for_sync_title">چاوه‌ڕوانکردن بۆ گواستنه‌وه‌</string>
   <string name="wait_for_sync_body">پۆستی ئه‌لیکترۆنییه‌که‌ت نیشان ئه‌درێت.</string>
   <string name="not_synced_title">هه‌ژماره‌که‌ ڕاگواستنی بۆ نه‌کراوه‌</string>
