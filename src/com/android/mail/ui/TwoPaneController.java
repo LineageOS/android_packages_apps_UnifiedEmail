@@ -301,6 +301,16 @@ public final class TwoPaneController extends AbstractActivityController implemen
         }
     }
 
+    protected void onDragStarted() {
+        final FolderListFragment flf = getFolderListFragment();
+        if (flf == null) {
+            LogUtils.w(LOG_TAG, "no drawer to toggle open/closed");
+            return;
+        }
+
+        flf.onDrawerDragStarted();
+    }
+
     protected void onDrawerDrag(float percent) {
         final FolderListFragment flf = getFolderListFragment();
         if (flf == null) {
