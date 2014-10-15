@@ -67,7 +67,7 @@
     <string name="discard_drafts" msgid="5881484193628472105">"अधूरा ईमेल छोड़ें"</string>
     <string name="discard_failed" msgid="7520780769812210279">"विफल संदेशों को छोड़ें"</string>
     <string name="refresh" msgid="1533748989749277511">"रीफ्रेश करें"</string>
-    <string name="reply" msgid="8337757482824207118">"प्रत्‍युत्तर दें"</string>
+    <string name="reply" msgid="8337757482824207118">"उत्तर दें"</string>
     <string name="reply_all" msgid="5366796103758360957">"सभी को जवाब दें"</string>
     <string name="resume_draft" msgid="1272723181782570649">"संपादित करें"</string>
     <string name="forward" msgid="4397585145490426320">"इसको भेजें"</string>
@@ -125,7 +125,7 @@
     <string name="contextmenu_sms_dot" msgid="5319737001771622657">"SMS भेजें…"</string>
     <string name="contextmenu_add_contact" msgid="2310064151427072475">"संपर्क जोड़ें"</string>
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"ईमेल भेजें"</string>
-    <string name="contextmenu_map" msgid="5118951927399465521">"नक्शा"</string>
+    <string name="contextmenu_map" msgid="5118951927399465521">"मानचित्र"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"लिंक साझा करें"</string>
     <string name="contextmenu_help" msgid="4209674157707873384">"सहायता"</string>
     <string name="contextmenu_feedback" msgid="8319100902136337085">"सुझाव भेजें"</string>
@@ -439,7 +439,7 @@
     <string name="help_and_feedback" msgid="7211458338163287670">"सहायता और फ़ीडबैक"</string>
     <string name="feedback" msgid="204247008751740034">"सुझाव भेजें"</string>
     <string name="copyright" msgid="3121335168340432582">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
-    <string name="version" msgid="1161745345056656547">"<xliff:g id="APP_NAME">%1$s</xliff:g> संस्करण <xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="version" msgid="1161745345056656547">"<xliff:g id="APP_NAME">%1$s</xliff:g> वर्शन <xliff:g id="VERSION">%2$s</xliff:g>"</string>
     <string name="view_app_page" msgid="3241990517052398927"></string>
     <string name="print_dialog" msgid="8895536548487605661">"प्रिंट करें…"</string>
     <string name="copyright_information" msgid="971422874488783312">"कॉपीराइट जानकारी"</string>
