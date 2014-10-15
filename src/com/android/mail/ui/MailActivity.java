@@ -346,6 +346,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         sb.append(mViewMode);
         sb.append(" controller=");
         sb.append(mController);
+        sb.append(" current_focus=");
+        sb.append(getCurrentFocus());
         sb.append("}");
         return sb.toString();
     }
