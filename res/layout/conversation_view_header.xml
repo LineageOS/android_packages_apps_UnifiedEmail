@@ -20,6 +20,7 @@
     android:id="@+id/conversation_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="horizontal"
     android:minHeight="88sp"
     android:paddingTop="16dp"
@@ -40,9 +41,9 @@
         android:layout_width="@dimen/conversation_header_star_size"
         android:layout_height="@dimen/conversation_header_star_size"
         android:layout_gravity="center_vertical"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:scaleType="center"
         android:visibility="invisible"
-        android:src="@drawable/star"
-        style="@style/BorderlessBackground" />
+        android:src="@drawable/star" />
 
 </com.android.mail.browse.ConversationViewHeader>
