@@ -72,6 +72,8 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     private SwipeListener mSwipeListener;
 
+    private int mSelectedPosition = ListView.INVALID_POSITION;
+
     // Instantiated through view inflation
     @SuppressWarnings("unused")
     public SwipeableListView(Context context) {
@@ -404,6 +406,25 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     public boolean isScrolling() {
         return mScrolling;
+    }
+
+    /**
+     * Set the currently selected (focused by the list view) position.
+     */
+    public void setSelectedPosition(int position) {
+        if (position == ListView.INVALID_POSITION) {
+            return;
+        }
+
+        mSelectedPosition = position;
+    }
+
+    public boolean isPositionSelected(int position) {
+        return mSelectedPosition != ListView.INVALID_POSITION && mSelectedPosition == position;
+    }
+
+    public int getSelectedPosition() {
+        return mSelectedPosition;
     }
 
     @Override
