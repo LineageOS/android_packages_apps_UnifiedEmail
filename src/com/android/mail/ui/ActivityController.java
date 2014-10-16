@@ -93,9 +93,8 @@ public interface ActivityController extends LayoutListener,
      *
      * @see android.app.Activity#onCreate
      * @param savedState
-     * @return true if the controller was able to initialize successfully, false otherwise.
      */
-    boolean onCreate(Bundle savedState);
+    void onCreate(Bundle savedState);
 
     /**
      * @see android.app.Activity#onPostCreate
@@ -174,7 +173,7 @@ public interface ActivityController extends LayoutListener,
      * @param menu
      * @return
      */
-    boolean onPrepareOptionsMenu(Menu menu);
+    void onPrepareOptionsMenu(Menu menu);
 
     /**
      * Called by the Mail activity on Activity resume.
