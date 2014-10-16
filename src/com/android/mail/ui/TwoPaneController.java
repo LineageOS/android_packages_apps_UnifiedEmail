@@ -526,15 +526,18 @@ public final class TwoPaneController extends AbstractActivityController implemen
         showConversation(conversation, peek, false /* fromKeyboard */);
     }
 
+    private boolean isCurrentlyPeeking() {
+        return mViewMode.isConversationMode() && mCurrentConversationJustPeeking
+                && mCurrentConversation != null;
+    }
+
     private void showConversation(Conversation conversation, boolean peek, boolean fromKeyboard) {
         // transition from peek mode to normal mode if we're already peeking at this convo
         // and this was a request to switch to normal mode
-        if (mViewMode.isConversationMode() && mCurrentConversationJustPeeking && !peek
-                && conversation != null && conversation.equals(mCurrentConversation)) {
+        if (!peek && conversation != null && conversation.equals(mCurrentConversation)
+                && transitionFromPeekToNormalMode()) {
             LogUtils.i(LOG_TAG, "peek->normal: marking current CV seen. conv=%s",
                     mCurrentConversation);
-            mCurrentConversationJustPeeking = false;
-            markConversationSeen(mCurrentConversation);
             return;
         }
 
@@ -581,6 +584,18 @@ public final class TwoPaneController extends AbstractActivityController implemen
         } else {
             LogUtils.i(LOG_TAG, "TPC.showConversation will wait for TPL.animationEnd to show!");
         }
+    }
+
+    /**
+     * @return success=true, else false if we aren't peeking
+     */
+    private boolean transitionFromPeekToNormalMode() {
+        final boolean shouldTransition = isCurrentlyPeeking();
+        if (shouldTransition) {
+            mCurrentConversationJustPeeking = false;
+            markConversationSeen(mCurrentConversation);
+        }
+        return shouldTransition;
     }
 
     @Override
@@ -875,6 +890,15 @@ public final class TwoPaneController extends AbstractActivityController implemen
         // handle a tap on CV by closing the drawer if open
         if (isDrawerOpen()) {
             toggleDrawerState();
+        }
+    }
+
+    @Override
+    public void onConversationViewTouchDown() {
+        final boolean handled = transitionFromPeekToNormalMode();
+        if (handled) {
+            LogUtils.i(LOG_TAG, "TPC: tap on CV triggered peek->normal, marking seen. conv=%s",
+                    mCurrentConversation);
         }
     }
 
