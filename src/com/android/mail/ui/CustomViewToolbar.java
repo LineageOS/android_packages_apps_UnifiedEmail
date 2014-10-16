@@ -28,6 +28,8 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
 import com.android.mail.utils.ViewUtils;
 
 /**
@@ -40,6 +42,12 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
     private ControllableActivity mActivity;
     private ActivityController mController;
     private ViewMode mViewMode;
+    private AccountObserver mAccountObserver = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount) {
+            setSearchButtonVisibility(newAccount);
+        }
+    };
 
     protected View mCustomView;
     protected TextView mActionBarTitle;
@@ -59,6 +67,8 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
         mController = controller;
         mViewMode = viewMode;
         mViewMode.addListener(this);
+
+        mAccountObserver.initialize(mActivity.getAccountController());
     }
 
     @Override
@@ -80,11 +90,23 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
         });
     }
 
+    protected void onDestroy() {
+        mAccountObserver.unregisterAndDestroy();
+    }
+
+    /**
+     * Sets the search button visibility based on the current account.
+     */
     private void setSearchButtonVisibility() {
-        // Search button is ONLY visible in conversation list mode
-        final boolean visible = mController.shouldShowSearchMenuItem() &&
-                mActivity.getAccountController().getAccount().supportsSearch();
-        mSearchButton.setVisibility(visible ? VISIBLE : INVISIBLE);
+        setSearchButtonVisibility(mActivity.getAccountController().getAccount());
+    }
+
+    private void setSearchButtonVisibility(Account account) {
+        if (mSearchButton != null) {
+            final boolean visible = mController.shouldShowSearchMenuItem() &&
+                    account.supportsSearch();
+            mSearchButton.setVisibility(visible ? VISIBLE : INVISIBLE);
+        }
     }
 
     @Override
