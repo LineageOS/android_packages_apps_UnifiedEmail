@@ -58,7 +58,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -197,7 +196,6 @@ public class ConversationItemView extends View
     private final TextView mSubjectTextView;
     private final TextView mSnippetTextView;
     private int mGadgetMode;
-    private int mAdapterPosition = ListView.INVALID_POSITION;
 
     private static int sFoldersMaxCount;
     private static TextAppearanceSpan sSubjectTextUnreadSpan;
@@ -472,9 +470,8 @@ public class ConversationItemView extends View
             final ConversationCheckedSet set, final Folder folder,
             final int checkboxOrSenderImage,
             final boolean swipeEnabled, final boolean importanceMarkersEnabled,
-            final boolean showChevronsEnabled, final AnimatedAdapter adapter, int position) {
+            final boolean showChevronsEnabled, final AnimatedAdapter adapter) {
         Utils.traceBeginSection("CIVC.bind");
-        mAdapterPosition = position;
         bind(ConversationItemViewModel.forConversation(mAccount.getEmailAddress(), conversation),
                 activity, null /* conversationItemAreaClickListener */,
                 set, folder, checkboxOrSenderImage, swipeEnabled, importanceMarkersEnabled,
@@ -1277,7 +1274,7 @@ public class ConversationItemView extends View
 
         // The focused bar
         final SwipeableListView listView = getListView();
-        if (listView != null && listView.isPositionSelected(getViewPosition())) {
+        if (listView != null && listView.isConversationSelected(getConversation())) {
             final int w = FOCUSED_CONVERSATION_HIGHLIGHT.getIntrinsicWidth();
             final boolean isRtl = ViewUtils.isViewRtl(this);
             // This bar is on the right side of the conv list if it's RTL
@@ -1299,24 +1296,10 @@ public class ConversationItemView extends View
         if (selected) {
             final SwipeableListView listView = getListView();
             if (listView != null) {
-                listView.setSelectedPosition(getViewPosition());
+                listView.setSelectedConversation(getConversation());
             }
         }
         super.setSelected(selected);
-    }
-
-    private int getViewPosition() {
-        if (mAdapterPosition != ListView.INVALID_POSITION) {
-            return mAdapterPosition;
-        } else {
-            final ListView listView = getListView();
-            final int position = listView != null ?
-                    listView.getPositionForView(this) : ListView.INVALID_POSITION;
-            LogUtils.e(LOG_TAG,
-                    "ConversationItemView didn't set position, using listview's position: %d",
-                    position);
-            return position;
-        }
     }
 
     private void drawSendersImage(final Canvas canvas) {
@@ -1405,7 +1388,8 @@ public class ConversationItemView extends View
             final SwipeableListView listView = getListView();
 
             try {
-                conv.position = mChecked ? getViewPosition() : Conversation.NO_POSITION;
+                conv.position = mChecked && listView != null ? listView.getPositionForView(this)
+                        : Conversation.NO_POSITION;
             } catch (final NullPointerException e) {
                 // TODO(skennedy) Remove this if we find the root cause b/9527863
             }
