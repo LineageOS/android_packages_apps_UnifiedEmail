@@ -82,6 +82,7 @@
                 android:id="@+id/multiline_action_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
                 android:paddingTop="8dp"
                 android:paddingBottom="@dimen/snack_bar_margin_vertical"
                 android:textAllCaps="true"
