@@ -296,10 +296,11 @@ public final class TwoPaneController extends AbstractActivityController implemen
             mSavedPeekingConversation = conversation;
 
             mViewMode.enterConversationListMode();
-
-            return;
+        } else if (mCurrentConversationJustPeeking && mIsTabletLandscape) {
+            showConversationWithPeek(conversation, true /* peek */);
+        } else {
+            super.restoreConversation(conversation);
         }
-        super.restoreConversation(conversation);
     }
 
     @Override
