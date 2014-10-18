@@ -66,32 +66,37 @@
             </FrameLayout>
 
             <com.android.mail.ui.ConversationViewFrame
-                android:id="@+id/conversation_pane"
+                android:id="@+id/conversation_frame"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="left"
-                android:foreground="@drawable/ic_vertical_shadow_end_2dp" >
+                android:foreground="@drawable/ic_vertical_shadow_end_2dp">
 
-                <!-- Empty icon view for CV landscape -->
-                <ImageView
-                    android:id="@+id/conversation_pane_no_message_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="gone" />
+                <FrameLayout
+                    android:id="@+id/conversation_pane"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <include layout="@layout/conversation_pager"
+                    <!-- Empty icon view for CV landscape -->
+                    <ImageView
+                        android:id="@+id/conversation_pane_no_message_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone" />
+
+                    <include layout="@layout/conversation_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/miscellaneous_pane"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
             </com.android.mail.ui.ConversationViewFrame>
-
-            <com.android.mail.ui.ConversationViewFrame
-                android:id="@+id/miscellaneous_pane"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="left"
-                android:foreground="@drawable/ic_vertical_shadow_end_2dp" />
 
             <include layout="@layout/floating_actions" />
 
