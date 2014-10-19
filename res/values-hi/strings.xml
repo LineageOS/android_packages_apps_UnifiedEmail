@@ -27,12 +27,12 @@
     <string name="add_file_attachment" msgid="2604880054248593993">"फ़ाइल अटैच करें"</string>
     <string name="add_photo_attachment" msgid="7163589794940909528">"चित्र जोड़ें"</string>
     <string name="save_draft" msgid="2669523480789672118">"अधूरा ईमेल सहेजें"</string>
-    <string name="discard" msgid="4905982179911608430">"हटाएं"</string>
+    <string name="discard" msgid="4905982179911608430">"अभी नहीं"</string>
     <string name="compose" msgid="2602861958391035523">"लिखें"</string>
   <string-array name="compose_modes">
-    <item msgid="9000553538766397816">"जवाब दें"</item>
-    <item msgid="2767793214788399009">"सभी को जवाब दें"</item>
-    <item msgid="2758162027982270607">"इसको भेजें"</item>
+    <item msgid="9000553538766397816">"उत्तर दें"</item>
+    <item msgid="2767793214788399009">"सभी प्रषकों को उत्तर दें"</item>
+    <item msgid="2758162027982270607">"आगे भेजें"</item>
   </string-array>
     <string name="reply_attribution" msgid="1114972798797833259">"<xliff:g id="DATE">%s</xliff:g> को, <xliff:g id="PERSON">%s</xliff:g> ने लिखा:"</string>
     <string name="forward_attribution" msgid="597850048345475752">"---------- अग्रेषित संदेश ----------&lt;br&gt;प्रेषक: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;दिनांक: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;विषय: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;प्रति: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
@@ -67,13 +67,13 @@
     <string name="discard_drafts" msgid="5881484193628472105">"अधूरा ईमेल छोड़ें"</string>
     <string name="discard_failed" msgid="7520780769812210279">"विफल संदेशों को छोड़ें"</string>
     <string name="refresh" msgid="1533748989749277511">"रीफ्रेश करें"</string>
-    <string name="reply" msgid="8337757482824207118">"प्रत्‍युत्तर दें"</string>
-    <string name="reply_all" msgid="5366796103758360957">"सभी को जवाब दें"</string>
+    <string name="reply" msgid="8337757482824207118">"उत्तर दें"</string>
+    <string name="reply_all" msgid="5366796103758360957">"सभी प्रषकों को उत्तर दें"</string>
     <string name="resume_draft" msgid="1272723181782570649">"संपादित करें"</string>
-    <string name="forward" msgid="4397585145490426320">"इसको भेजें"</string>
+    <string name="forward" msgid="4397585145490426320">"आगे भेजें"</string>
     <string name="menu_compose" msgid="4575025207594709432">"लिखें"</string>
     <string name="menu_change_folders" msgid="2194946192901276625">"फ़ोल्डर बदलें"</string>
-    <string name="menu_move_to" msgid="7948877550284452830">"इसमें ले जाएं"</string>
+    <string name="menu_move_to" msgid="7948877550284452830">"फ़ोल्डर ले जाएं"</string>
     <string name="menu_move_to_inbox" msgid="258554178236001444">"इनबॉक्स में ले जाएं"</string>
     <string name="menu_manage_folders" msgid="8486398523679534519">"फ़ोल्डर सेटिंग"</string>
     <string name="menu_show_original" msgid="2330398228979616661">"स्वत: आकार बदलें वापस लाएं"</string>
@@ -104,13 +104,13 @@
     <string name="cancel_attachment" msgid="6900093625792891122">"रहने दें"</string>
     <string name="open_attachment" msgid="6100396056314739761">"खोलें"</string>
     <string name="install_attachment" msgid="8119470822958087928">"इंस्‍टॉल"</string>
-    <string name="download_again" msgid="8195787340878328119">"पुनः डाउनलोड करें"</string>
+    <string name="download_again" msgid="8195787340878328119">"फिर से डाउनलोड करें"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"जानकारी"</string>
     <string name="no_application_found" msgid="7309485680354949680">"कोई भी ऐप्स  इस अटैचमेंट को देखने के लिए नहीं खोल सकता."</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"अटैचमेंट फ़ेच कर रहा है"</string>
     <string name="please_wait" msgid="3953824147776128899">"कृपया प्रतीक्षा करें…"</string>
     <string name="saved" msgid="161536102236967534">"सहेजा गया, <xliff:g id="SIZE">%s</xliff:g>"</string>
-    <string name="download_failed" msgid="3878373998269062395">"डाउनलोड नहीं हो सका. पुनर्प्रयास हेतु स्पर्श करें."</string>
+    <string name="download_failed" msgid="3878373998269062395">"डाउनलोड नहीं हो सका. पुनर्प्रयास के लिए स्पर्श करें."</string>
     <string name="menu_photo_save_all" msgid="2742869476474613396">"सभी सहेजें"</string>
     <string name="menu_photo_share" msgid="6410980274832639330">"साझा करें"</string>
     <string name="menu_photo_share_all" msgid="3049053252719665320">"सभी साझा करें"</string>
@@ -125,7 +125,7 @@
     <string name="contextmenu_sms_dot" msgid="5319737001771622657">"SMS भेजें…"</string>
     <string name="contextmenu_add_contact" msgid="2310064151427072475">"संपर्क जोड़ें"</string>
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"ईमेल भेजें"</string>
-    <string name="contextmenu_map" msgid="5118951927399465521">"नक्शा"</string>
+    <string name="contextmenu_map" msgid="5118951927399465521">"मानचित्र"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"लिंक साझा करें"</string>
     <string name="contextmenu_help" msgid="4209674157707873384">"सहायता"</string>
     <string name="contextmenu_feedback" msgid="8319100902136337085">"सुझाव भेजें"</string>
@@ -142,7 +142,7 @@
     <string name="filtered_tag" msgid="721666921386074505">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="badge_and_subject" msgid="3979372269373936750">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g>"</string>
   <plurals name="draft">
-    <item quantity="one" msgid="6717535677167943402">"ड्रॉफ़्ट"</item>
+    <item quantity="one" msgid="6717535677167943402">"अधूरा ईमेल"</item>
     <item quantity="other" msgid="1335781147509740039">"अधूरा ईमेल"</item>
   </plurals>
     <string name="sending" msgid="5600034886763930499">"भेज रहा है…"</string>
@@ -167,11 +167,11 @@
     <string name="loading_conversations" msgid="7255732786298655246">"लोड हो रहा है…"</string>
     <string name="empty_inbox" msgid="5901734942362315228">"आपने पूर्ण कर लिया है! कृपया अपने दिन का आनंद लें."</string>
     <string name="empty_search" msgid="8564899353449880818">"ओह! हमें \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" के लिए कुछ भी नहीं मिला."</string>
-    <string name="empty_spam_folder" msgid="3288985543286122800">"हुर्रे, कोई स्पैम नहीं है!"</string>
-    <string name="empty_trash_folder" msgid="378119063015945020">"कोई ट्रैश नहीं है. रिसाइकलिंग के लिए धन्यवाद!"</string>
+    <string name="empty_spam_folder" msgid="3288985543286122800">"हुर्रे, कोई अनचाहा ईमेल नहीं है!"</string>
+    <string name="empty_trash_folder" msgid="378119063015945020">"कोई मिटाए गए ईमेल नहीं है. रिसाइकलिंग के लिए धन्यवाद!"</string>
     <string name="empty_folder" msgid="3227552635613553855">"कोई मेल नहीं है."</string>
     <string name="getting_messages" msgid="8403333791332403244">"आपके संदेश प्राप्त हो रहे हैं"</string>
-    <string name="undo" msgid="8256285267701059609">"पूर्ववत करें"</string>
+    <string name="undo" msgid="8256285267701059609">"वापस लाएं"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="839233699150563831">"<xliff:g id="COUNT">%1$d</xliff:g> बातचीत के तारांकन हटाए जा रहे हैं."</item>
     <item quantity="other" msgid="7677305734833709789">"<xliff:g id="COUNT">%1$d</xliff:g> बातचीत के तारांकन हटाए जा रहे हैं."</item>
@@ -181,7 +181,7 @@
     <item quantity="other" msgid="4276111931404654219">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को म्‍यूट कि‍या गया."</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; की स्पैम के रूप में रिपोर्ट की गई."</item>
+    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; की अनचाहा ईमेल के रूप में रिपोर्ट की गई."</item>
     <item quantity="other" msgid="5900913789259199137">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को अनचाहा के रूप में रिपोर्ट किया गया."</item>
   </plurals>
   <plurals name="conversation_not_spam">
@@ -197,8 +197,8 @@
     <item quantity="other" msgid="9218674052779504277">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को फ़िशिंग के रूप में रिपोर्ट किया गया."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="4127890884907503696">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को संग्रहीत कि‍या गया."</item>
-    <item quantity="other" msgid="7789480176789922968">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को संग्रहीत कि‍या गया."</item>
+    <item quantity="one" msgid="4127890884907503696">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ईमेल को संग्रहीत कि‍या गया."</item>
+    <item quantity="other" msgid="7789480176789922968">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ईमेल को संग्रहीत कि‍या गया."</item>
   </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="5591889079235938982">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को हटा दिया गया."</item>
@@ -239,7 +239,7 @@
     <string name="always_show_images_toast" msgid="3763157294047555051">"इस प्रेषक के चित्रों को अपने आप दिखाया जाएगा."</string>
     <string name="address_display_format" msgid="2098008376913966177">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="8108294635074750048">"<xliff:g id="VIA_DOMAIN">%3$s</xliff:g> के द्वारा <xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
-    <string name="message_saved" msgid="3291655042310241793">"संदेश ड्राफ़्ट के रूप में सहेजा गया."</string>
+    <string name="message_saved" msgid="3291655042310241793">"संदेश अधूरा ईमेल के रूप में सहेजा गया."</string>
     <string name="sending_message" msgid="2487846954946637084">"संदेश भेज रहा है..."</string>
     <string name="invalid_recipient" msgid="9157434699389936584">"<xliff:g id="WRONGEMAIL">%s</xliff:g> पता अमान्‍य है."</string>
     <string name="show_elided" msgid="3456154624105704327">"उद्धृत लेख दिखाएं"</string>
@@ -268,7 +268,7 @@
     <item msgid="5442620760791553027">"सर्वर त्रुटि"</item>
   </string-array>
     <string name="tap_to_configure" msgid="137172348280050643">"सेट करने के लिए स्पर्श करें"</string>
-    <string name="non_synced_folder_description" msgid="3044618511909304701">"बातचीत देखने हेतु, फ़ोल्डर समन्वयित करें."</string>
+    <string name="non_synced_folder_description" msgid="3044618511909304701">"बातचीत देखने के लिए, फ़ोल्डर समन्वयित करें."</string>
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"फ़ोल्डर समन्वयित करें"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ नए"</string>
@@ -295,7 +295,7 @@
     <string name="shortcut_name_title" msgid="1562534040126088628">"नाम फ़ोल्‍डर शॉर्टकट"</string>
     <string name="wait_for_sync_title" msgid="4577632826912823075">"समन्‍वयन की प्रतीक्षा कर रहा है"</string>
     <string name="not_synced_title" msgid="3600180500934086346">"खाता समन्वयित नहीं है"</string>
-    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"यह खाता अपने आप समन्वयित करने के लिए सेट नहीं है. \nएक बार मेल समन्‍वयित करने के लिए, "<b>"अभी समन्वयित करें"</b>" स्‍पर्श करें, या इस खाते को मेल अपने आप समन्‍वयित करने के लिए सेट करने हेतु "<b>"समन्वयन सेटिंग बदलें"</b>" स्‍पर्श करें."</string>
+    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"यह खाता अपने आप समन्वयित करने के लिए सेट नहीं है. \nएक बार मेल समन्‍वयित करने के लिए, "<b>"अभी समन्वयित करें"</b>" स्‍पर्श करें, या इस खाते को मेल अपने आप समन्‍वयित करने के लिए सेट करने के लिए "<b>"समन्वयन सेटिंग बदलें"</b>" स्‍पर्श करें."</string>
     <string name="manual_sync" msgid="2271479734895537848">"अभी समन्वयित करें"</string>
     <string name="change_sync_settings" msgid="3615852118397055361">"समन्वयन सेटिंग बदलें"</string>
     <string name="photo_load_failed" msgid="577471721679146999">"चित्र लोड नहीं की जा सकी"</string>
@@ -315,7 +315,7 @@
     <string name="all_folders_heading" msgid="9023770187629170967">"सभी फ़ोल्डर"</string>
     <string name="recent_folders_heading" msgid="8943134955788867702">"हाल ही के फ़ोल्‍डर"</string>
     <string name="message_details_title" msgid="60771875776494764">"संदेश विवरण"</string>
-    <string name="preference_advance_to_title" msgid="6385669491239514630">"स्वत: आगे"</string>
+    <string name="preference_advance_to_title" msgid="6385669491239514630">"अतिरिक्त सुविधाएं"</string>
   <string-array name="prefEntries_autoAdvance">
     <item msgid="1505450878799459652">"नया"</item>
     <item msgid="8000986144872247139">"पुराना"</item>
@@ -334,8 +334,8 @@
     <string name="preferences_signature_title" msgid="2318034745474929902">"हस्ताक्षर"</string>
     <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"हस्ताक्षर"</string>
     <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"सेट नहीं है"</string>
-    <string name="notification_action_reply" msgid="8378725460102575919">"जवाब दें"</string>
-    <string name="notification_action_reply_all" msgid="5693469099941000037">"सभी को जवाब दें"</string>
+    <string name="notification_action_reply" msgid="8378725460102575919">"उत्तर दें"</string>
+    <string name="notification_action_reply_all" msgid="5693469099941000037">"सभी प्रषकों को उत्तर दें"</string>
     <string name="notification_action_archive" msgid="2884874164831039047">"संग्रहीत करें"</string>
     <string name="notification_action_remove_label" msgid="3714785653186750981">"लेबल निकालें"</string>
     <string name="notification_action_delete" msgid="3201627482564624132">"हटाएं"</string>
@@ -365,7 +365,7 @@
     <item msgid="3196207224108008441">"संगृहीत करें और हटाएं दिखाएं"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"संगृहीत करें और हटाएं कार्यवाही"</string>
-    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"सभी को जवाब दें"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"सभी प्रषकों को उत्तर दें"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"संदेश के जवाबों के लिए डिफ़ॉल्ट के रूप में उपयोग करें"</string>
     <string name="preference_swipe_title_archive" msgid="9122333537761282714">"संगृहीत करने के लिए स्वाइप करें"</string>
     <string name="preference_swipe_title_delete" msgid="4860474024917543711">"हटाने के लिए स्वाइप करें"</string>
@@ -373,7 +373,7 @@
     <string name="preference_sender_image_title" msgid="7890813537985591865">"प्रेषक का चित्र"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"बातचीत सूची में नाम के पास दिखाएं"</string>
     <string name="empty_trash" msgid="3385937024924728399">"मिटाया हुआ खाली करें"</string>
-    <string name="empty_spam" msgid="2911988289997281371">"स्पैम खाली करें"</string>
+    <string name="empty_spam" msgid="2911988289997281371">"अनचाहा ईमेल खाली करें"</string>
     <string name="empty_trash_dialog_title" msgid="2104898489663621508">"मिटाया हुआ खाली करें?"</string>
     <string name="empty_spam_dialog_title" msgid="1130319045917820569">"अनचाहा खाली करें?"</string>
   <plurals name="empty_folder_dialog_message">
@@ -439,7 +439,7 @@
     <string name="help_and_feedback" msgid="7211458338163287670">"सहायता और फ़ीडबैक"</string>
     <string name="feedback" msgid="204247008751740034">"सुझाव भेजें"</string>
     <string name="copyright" msgid="3121335168340432582">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
-    <string name="version" msgid="1161745345056656547">"<xliff:g id="APP_NAME">%1$s</xliff:g> संस्करण <xliff:g id="VERSION">%2$s</xliff:g>"</string>
+    <string name="version" msgid="1161745345056656547">"<xliff:g id="APP_NAME">%1$s</xliff:g> वर्शन <xliff:g id="VERSION">%2$s</xliff:g>"</string>
     <string name="view_app_page" msgid="3241990517052398927"></string>
     <string name="print_dialog" msgid="8895536548487605661">"प्रिंट करें…"</string>
     <string name="copyright_information" msgid="971422874488783312">"कॉपीराइट जानकारी"</string>
@@ -457,9 +457,9 @@
     <string name="reply_choice_smiling_face" msgid="1772253938506548631">":)"</string>
     <string name="reply_choice_frowning_face" msgid="6260338807944002651">":("</string>
     <string name="preference_header_action_confirmations" msgid="3922674681156121948">"कार्रवाई पुष्टिकरण"</string>
-    <string name="preference_confirm_before_delete_title" msgid="7563587174619033835">"हटाने से पहले पुष्टि करें"</string>
-    <string name="preference_confirm_before_archive_title" msgid="7318645995655875718">"मेमोरी से पहले पुष्टि करें"</string>
-    <string name="preference_confirm_before_send_title" msgid="4136585783513077039">"भेजने से पहले पुष्टि करें"</string>
+    <string name="preference_confirm_before_delete_title" msgid="7563587174619033835">"हटाने से पहले दुबारा पूछें"</string>
+    <string name="preference_confirm_before_archive_title" msgid="7318645995655875718">"मेमोरी से पहले दुबारा पूछें"</string>
+    <string name="preference_confirm_before_send_title" msgid="4136585783513077039">"भेजने से पहले दुबारा पूछें"</string>
     <string name="preferences_conversation_mode_title" msgid="389352009651720838">"संदेशों को स्वत: फ़िट करें"</string>
     <string name="preferences_conversation_mode_summary" msgid="5730999743867653106">"स्क्रीन पर फ़िट होने के लिए संदेशों को सिकोड़ें"</string>
     <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"संदेश कार्रवाइयां"</string>

@@ -281,7 +281,7 @@
     <string name="loading_conversation" msgid="7931600025861500397">"טוען..."</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"בחר חשבון"</string>
     <string name="activity_folder_selection" msgid="8375243281001234750">"בחר תיקיה"</string>
-    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"תיקיית דוא\"ל"</string>
+    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"תיקיית אימייל"</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"שנה תיקיות"</string>
     <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"העבר אל"</string>
     <string name="search_hint" msgid="4916671414132334289">"חפש בדואר"</string>

@@ -128,7 +128,7 @@
     <string name="contextmenu_map" msgid="5118951927399465521">"ផែនទី"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"ចែករំលែក​តំណ"</string>
     <string name="contextmenu_help" msgid="4209674157707873384">"ជំនួយ"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"ផ្ញើ​មតិ​ប្រតិកម្ម"</string>
+    <string name="contextmenu_feedback" msgid="8319100902136337085">"ផ្ញើ​មតិ​ស្ថាបនា"</string>
     <!-- no translation found for num_selected (7990204488812654380) -->
     <skip />
   <plurals name="move_conversation">
@@ -165,7 +165,7 @@
   </plurals>
     <string name="confirm_discard_text" msgid="5172680524418848519">"បោះបង់​សារ​នេះ​?"</string>
     <string name="loading_conversations" msgid="7255732786298655246">"កំពុង​ផ្ទុក…"</string>
-    <string name="empty_inbox" msgid="5901734942362315228">"អ្នក​រួចរាល់​ហើយ! សូម​រីករាយ​ចុះ។"</string>
+    <string name="empty_inbox" msgid="5901734942362315228">"រួចរាល់​អស់​ហើយ! សូម​អ្នក​រីករាយ​ចុះ។"</string>
     <string name="empty_search" msgid="8564899353449880818">"អូ! យើង​​រក​មិន​ឃើញ​អ្វី​សម្រាប់ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\" ទេ។"</string>
     <string name="empty_spam_folder" msgid="3288985543286122800">"អូ គ្មាន​សារ​ឥត​បាន​ការ​នៅ​ទីនេះ​ទេ!"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"មិន​មាន​ធុងសំរាម​នៅ​ទីនេះ។ អរគុណ​ចំពោះ​ការ​ប្រើ​ឡើងវិញ!"</string>
@@ -436,8 +436,8 @@
     <string name="view_entire_message" msgid="823281796655014454">"មើល​សារ​ទាំង​មូល"</string>
     <string name="eml_loader_error_toast" msgid="6577383216635400167">"មិន​អាច​បើក​ឯកសារ​នេះ"</string>
     <string name="help_and_info" msgid="3708286489943154681">"ជំនួយ"</string>
-    <string name="help_and_feedback" msgid="7211458338163287670">"ជំនួយ &amp; មតិ​ប្រតិកម្ម"</string>
-    <string name="feedback" msgid="204247008751740034">"ផ្ញើ​មតិ​ប្រតិកម្ម"</string>
+    <string name="help_and_feedback" msgid="7211458338163287670">"ជំនួយ &amp; មតិ​ស្ថាបនា"</string>
+    <string name="feedback" msgid="204247008751740034">"ផ្ញើ​មតិ​ស្ថាបនា"</string>
     <string name="copyright" msgid="3121335168340432582">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc។"</string>
     <string name="version" msgid="1161745345056656547">"<xliff:g id="APP_NAME">%1$s</xliff:g> កំណែ <xliff:g id="VERSION">%2$s</xliff:g>"</string>
     <string name="view_app_page" msgid="3241990517052398927"></string>

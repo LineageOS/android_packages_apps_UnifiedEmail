@@ -272,7 +272,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"Sinkronizacija mape"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"Novo: <xliff:g id="COUNT">%d</xliff:g>+"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"Novo: <xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"Nove: <xliff:g id="COUNT">%d</xliff:g>"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"Nepročitano: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>

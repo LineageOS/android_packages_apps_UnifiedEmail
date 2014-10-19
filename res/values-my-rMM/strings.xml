@@ -65,8 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"မျှားယူမှုကို သတင်းပို့ရန်"</string>
     <string name="delete" msgid="6784262386780496958">"ဖျက်ပစ်ရန်"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"မူကြမ်းများကို စွန့်ပစ်ရန်"</string>
-    <!-- no translation found for discard_failed (7520780769812210279) -->
-    <skip />
+    <string name="discard_failed" msgid="7520780769812210279">"မအောင်မြင်သော ဖျက်သိမ်းမှု"</string>
     <string name="refresh" msgid="1533748989749277511">"ဆန်းသစ်ယူရန်"</string>
     <string name="reply" msgid="8337757482824207118">"ဖြေကြားရန်"</string>
     <string name="reply_all" msgid="5366796103758360957">"အားလုံးကို ဖြေကြား"</string>
