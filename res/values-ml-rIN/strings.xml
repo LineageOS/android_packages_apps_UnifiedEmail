@@ -63,7 +63,7 @@
     <string name="archive" msgid="5978663590021719939">"ആര്‍ക്കൈവുചെയ്യുക"</string>
     <string name="report_spam" msgid="4106897677959987340">"സ്പാം റിപ്പോർട്ടുചെയ്യുക"</string>
     <string name="mark_not_spam" msgid="8617774236231366651">"സ്‌പാമല്ലെന്ന് റിപ്പോർട്ടുചെയ്യുക"</string>
-    <string name="report_phishing" msgid="8454666464488413739">"ഫിഷിംഗ് റിപ്പോർട്ടുചെയ്യുക"</string>
+    <string name="report_phishing" msgid="8454666464488413739">"വഞ്ചന റിപ്പോർട്ടുചെയ്യുക"</string>
     <string name="delete" msgid="6784262386780496958">"ഇല്ലാതാക്കുക"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"ഡ്രാഫ്റ്റുകൾ നിരസിക്കുക"</string>
     <string name="discard_failed" msgid="7520780769812210279">"പരാജയപ്പെട്ടവ നിരസിക്കുക"</string>
@@ -270,8 +270,8 @@
     <string name="non_synced_folder_description" msgid="3044618511909304701">"സംഭാഷണങ്ങൾ കാണാൻ, ഈ ഫോൾഡർ സമന്വയിപ്പിക്കുക."</string>
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"ഫോൾഡർ സമന്വയിപ്പിക്കുക"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
-    <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ പുതിയ‌വ"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> പുതിയവ"</string>
+    <string name="large_unseen_count" msgid="3055042669246912518">"പുതിയത് <xliff:g id="COUNT">%d</xliff:g>+"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"പുതിയത് <xliff:g id="COUNT">%d</xliff:g>"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g> വായിക്കാത്തവ"</item>
   </plurals>
@@ -412,8 +412,8 @@
     <item quantity="other" msgid="5422167728480739361">"<xliff:g id="COUNT">%1$d</xliff:g> അറ്റാച്ചുമെന്റുകൾ"</item>
   </plurals>
     <string name="no_subject" msgid="5622708348540036959">"(വിഷയമൊന്നുമില്ല)"</string>
-    <string name="vacation_responder" msgid="5570132559074523806">"അവധിക്കാല റെസ്‌പോണ്ടർ"</string>
-    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"അവധിക്കാല റെസ്‌പോണ്ടർ"</string>
+    <string name="vacation_responder" msgid="5570132559074523806">"ഒഴിവുകാല പ്രതികരണം"</string>
+    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"ഒഴിവുകാല പ്രതികരണം"</string>
     <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"സന്ദേശം"</string>
     <string name="send_to_contacts_text" msgid="124432913980620545">"എന്റെ കോൺടാക്റ്റുകളിലേക്ക് മാത്രം അയയ്‌ക്കുക"</string>
     <string name="send_to_domain_text" msgid="5064559546745918393">"<xliff:g id="DOMAIN">%1$s</xliff:g> എന്നതിലേക്ക് മാത്രം അയയ്‌ക്കുക"</string>
@@ -424,8 +424,8 @@
     <string name="custom_date" msgid="5794846334232367838">"ഇഷ്‌ടാനുസൃതം"</string>
     <string name="date_none" msgid="1061426502665431412">"ഒന്നുമില്ല"</string>
     <string name="discard_changes" msgid="5699760550972324746">"മാറ്റങ്ങൾ നിരസിക്കണോ?"</string>
-    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"അവധിക്കാല റെസ്‌പോണ്ടർ മാറ്റങ്ങൾ സംരക്ഷിച്ചു"</string>
-    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"അവധിക്കാല റെസ്‌പോണ്ടർ മാറ്റങ്ങൾ നിരസിച്ചു"</string>
+    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"ഒഴിവുകാല പ്രതികരണം മാറ്റങ്ങൾ സംരക്ഷിച്ചു"</string>
+    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"ഒഴിവുകാല പ്രതികരണം മാറ്റങ്ങൾ നിരസിച്ചു"</string>
     <string name="vacation_responder_off" msgid="4429909341193366667">"ഓഫാണ്"</string>
     <string name="vacation_responder_on" msgid="4913238379320882449">"<xliff:g id="DATE">%1$s</xliff:g> മുതൽ ഓണാണ്"</string>
     <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"<xliff:g id="START_DATE">%1$s</xliff:g> മുതൽ <xliff:g id="END_DATE">%2$s</xliff:g> വരെ ഓണാണ്"</string>
