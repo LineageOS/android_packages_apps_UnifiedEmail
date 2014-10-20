@@ -91,7 +91,7 @@
     <string name="kilobytes" msgid="1523463964465770347">"<xliff:g id="COUNT">%s</xliff:g> គីឡូបៃ"</string>
     <string name="megabytes" msgid="4309397368708773323">"<xliff:g id="COUNT">%s</xliff:g> មេកាបៃ"</string>
     <string name="attachment_image" msgid="6375306026208274564">"រូបភាព"</string>
-    <string name="attachment_video" msgid="7119476472603939848">"វីដេអូ"</string>
+    <string name="attachment_video" msgid="7119476472603939848">"វីដេអូ​"</string>
     <string name="attachment_audio" msgid="7097658089301809284">"សំឡេង"</string>
     <string name="attachment_text" msgid="3485853714965922173">"អត្ថបទ"</string>
     <string name="attachment_application_msword" msgid="2110108876623152162">"ឯកសារ"</string>
@@ -112,7 +112,7 @@
     <string name="saved" msgid="161536102236967534">"បាន​រក្សាទុក  <xliff:g id="SIZE">%s</xliff:g>"</string>
     <string name="download_failed" msgid="3878373998269062395">"មិន​អាច​ទាញ​យក​។ ប៉ះ​ដើម្បី​ព្យាយាម​ម្ដង​ទៀត​។"</string>
     <string name="menu_photo_save_all" msgid="2742869476474613396">"រក្សា​ទុក​ទាំងអស់"</string>
-    <string name="menu_photo_share" msgid="6410980274832639330">"ចែក​រំលែក"</string>
+    <string name="menu_photo_share" msgid="6410980274832639330">"ចែក​រំលែក​"</string>
     <string name="menu_photo_share_all" msgid="3049053252719665320">"ចែក​រំលែក​ទាំងអស់"</string>
     <string name="menu_photo_print" msgid="3084679038179342333">"បោះពុម្ព"</string>
     <string name="saving" msgid="6274238733828387433">"កំពុង​រក្សាទុក…"</string>
@@ -128,7 +128,7 @@
     <string name="contextmenu_map" msgid="5118951927399465521">"ផែនទី"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"ចែករំលែក​តំណ"</string>
     <string name="contextmenu_help" msgid="4209674157707873384">"ជំនួយ"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"ផ្ញើ​មតិ​ប្រតិកម្ម"</string>
+    <string name="contextmenu_feedback" msgid="8319100902136337085">"ផ្ញើ​មតិ​ស្ថាបនា"</string>
     <!-- no translation found for num_selected (7990204488812654380) -->
     <skip />
   <plurals name="move_conversation">
@@ -252,7 +252,7 @@
     <string name="message_invite_decline" msgid="6331040872447290777">"ទេ"</string>
     <string name="enumeration_comma" msgid="2848850136844740850">", "</string>
     <string name="send_anyway" msgid="2727576121007079643">"អញ្ចឹង​ផ្ញើ​​តែម្ដង"</string>
-    <string name="ok" msgid="6178802457914802336">"យល់​ព្រម"</string>
+    <string name="ok" msgid="6178802457914802336">"យល់​ព្រម​"</string>
     <string name="done" msgid="344354738335270292">"រួចរាល់"</string>
     <string name="cancel" msgid="4831678293149626190">"បោះបង់"</string>
     <string name="clear" msgid="765949970989448022">"សម្អាត"</string>
@@ -269,7 +269,7 @@
   </string-array>
     <string name="tap_to_configure" msgid="137172348280050643">"ប៉ះ​ដើម្បី​​រៀបចំ"</string>
     <string name="non_synced_folder_description" msgid="3044618511909304701">"ដើម្បី​មើល​ការ​សន្ទនា​ ធ្វើ​សម​កាល​កម្ម​ថត​នេះ​។"</string>
-    <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"ថត​សម​កាល​កម្ម"</string>
+    <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"ថត​សម​កាល​កម្ម​"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"ថ្មី <xliff:g id="COUNT">%d</xliff:g>+"</string>
     <string name="unseen_count" msgid="5509898665569695288">"ថ្មី <xliff:g id="COUNT">%d</xliff:g>"</string>
@@ -383,7 +383,7 @@
     <string name="drawer_open" msgid="2285557278907103851">"បើក​ផ្ទាំង​បញ្ជីកម្មវិធី"</string>
     <string name="drawer_close" msgid="2065829742127544297">"បិទ​​​ផ្ទាំង​​​បញ្ជី​កម្មវិធី"</string>
     <string name="conversation_photo_welcome_text" msgid="836483155429003787">"ប៉ះ​រូបភាព​របស់​អ្នក​ផ្ញើ ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​នោះ​។"</string>
-    <string name="long_press_to_select_tip" msgid="1660881999120625177">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ការ​សន្ទនា​មួយ បន្ទាប់​មក​ប៉ះ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​ច្រើន​ទៀត។"</string>
+    <string name="long_press_to_select_tip" msgid="1660881999120625177">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ការ​សន្ទនា​មួយ បន្ទាប់​មក​ប៉ះ​ដើម្បី​ជ្រើស​ការ​សន្ទនា​ច្រើន​ទៀត។​"</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"រូប​តំណាង​ថត"</string>
     <string name="add_account" msgid="5905863370226612377">"បន្ថែម​គណនី"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"បោះបង់​ព័ត៌មាន​ជំនួយ"</string>
@@ -427,8 +427,8 @@
     <string name="custom_date" msgid="5794846334232367838">"ផ្ទាល់​ខ្លួន"</string>
     <string name="date_none" msgid="1061426502665431412">"គ្មាន"</string>
     <string name="discard_changes" msgid="5699760550972324746">"បោះបង់​ការ​ផ្លាស់ប្ដូរ?"</string>
-    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"បាន​រក្សាទុក​ការ​ផ្លាស់ប្ដូរ​ការ​ឆ្លើយតប​ពេល​វិស្សមកាល"</string>
-    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"​បាន​បោះបង់​ការ​ឆ្លើយតប​ពេល​​វិស្សមកាល"</string>
+    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"បាន​រក្សាទុក​ការ​ផ្លាស់ប្ដូរ​ការ​ឆ្លើយតប​ពេល​វិស្សមកាល​"</string>
+    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"​បាន​បោះបង់​ការ​ឆ្លើយតប​ពេល​​វិស្សមកាល​"</string>
     <string name="vacation_responder_off" msgid="4429909341193366667">"បិទ"</string>
     <string name="vacation_responder_on" msgid="4913238379320882449">"បើក ពី<xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"បើក​ ពី <xliff:g id="START_DATE">%1$s</xliff:g> ដល់ <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
@@ -436,8 +436,8 @@
     <string name="view_entire_message" msgid="823281796655014454">"មើល​សារ​ទាំង​មូល"</string>
     <string name="eml_loader_error_toast" msgid="6577383216635400167">"មិន​អាច​បើក​ឯកសារ​នេះ"</string>
     <string name="help_and_info" msgid="3708286489943154681">"ជំនួយ"</string>
-    <string name="help_and_feedback" msgid="7211458338163287670">"ជំនួយ &amp; មតិ​ប្រតិកម្ម"</string>
-    <string name="feedback" msgid="204247008751740034">"ផ្ញើ​មតិ​ប្រតិកម្ម"</string>
+    <string name="help_and_feedback" msgid="7211458338163287670">"ជំនួយ &amp; មតិ​ស្ថាបនា"</string>
+    <string name="feedback" msgid="204247008751740034">"ផ្ញើ​មតិ​ស្ថាបនា"</string>
     <string name="copyright" msgid="3121335168340432582">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc។"</string>
     <string name="version" msgid="1161745345056656547">"<xliff:g id="APP_NAME">%1$s</xliff:g> កំណែ <xliff:g id="VERSION">%2$s</xliff:g>"</string>
     <string name="view_app_page" msgid="3241990517052398927"></string>
@@ -447,12 +447,12 @@
     <string name="open_source_licenses" msgid="8643615555920977752">"អាជ្ញាប័ណ្ណ​កម្មវិធី​​​​​កូដ​ចំហ"</string>
     <string name="reply_choice_yes" msgid="3327633032975373220">"បាទ/ចាស"</string>
     <string name="reply_choice_no" msgid="7068775605915475207">"ទេ"</string>
-    <string name="reply_choice_ok" msgid="7881073621845053152">"យល់​ព្រម"</string>
+    <string name="reply_choice_ok" msgid="7881073621845053152">"យល់​ព្រម​"</string>
     <string name="reply_choice_hehe" msgid="6054314968043050748">"ហេហេ"</string>
     <string name="reply_choice_thanks" msgid="4978961954288364694">"អរគុណ"</string>
     <string name="reply_choice_i_agree" msgid="2496652737796884298">"ខ្ញុំ​យល់​ស្រប"</string>
     <string name="reply_choice_nice" msgid="4465894941302838676">"ល្អ"</string>
-    <string name="reply_on_my_way" msgid="5645003971107444269">"នៅ​តាម​ផ្លូវ"</string>
+    <string name="reply_on_my_way" msgid="5645003971107444269">"នៅ​តាម​ផ្លូវ​"</string>
     <string name="reply_choice_later" msgid="4629219072859486413">"យល់ព្រម ខ្ញុំនឹងទាក់ទងអ្នកវិញ"</string>
     <string name="reply_choice_smiling_face" msgid="1772253938506548631">":)"</string>
     <string name="reply_choice_frowning_face" msgid="6260338807944002651">":("</string>
@@ -465,7 +465,7 @@
     <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"សកម្មភាព​សារ"</string>
   <string-array name="prefSummaries_snapHeader">
     <item msgid="43373293784193461">"បង្ហាញ​សកម្មភាព​សារ​ជានិច្ច​​​នៅ​​ផ្នែក​ខាង​លើ​នៃ​​​អេក្រង់"</item>
-    <item msgid="1765271305989996747">"បង្ហាញ​តែ​​សកម្មភាព​សារ​ដែល​នៅ​ផ្នែក​​ខាងលើ​នៃ​​អេក្រង់​ ពេល​បង្វិល​បញ្ឈរ"</item>
+    <item msgid="1765271305989996747">"បង្ហាញ​តែ​​សកម្មភាព​សារ​ដែល​នៅ​ផ្នែក​​ខាងលើ​នៃ​​អេក្រង់​ ពេល​បង្វិល​បញ្ឈរ​"</item>
     <item msgid="6311113076575333488">"កុំ​បង្ហាញ​សកម្មភាព​​សារ​នៅ​ខាង​ក្រៅ​បឋមកថា​សារ"</item>
   </string-array>
   <string-array name="prefEntries_snapHeader">
@@ -477,7 +477,7 @@
     <string name="search_history_cleared" msgid="1461946302763342640">"បាន​សម្អាត​ប្រវត្តិ​ស្វែងរក។"</string>
     <string name="clear_history_dialog_title" msgid="3503603389704365385">"សម្អាត​ប្រវត្តិ​ស្វែងរក?"</string>
     <string name="clear_history_dialog_message" msgid="5202922561632407778">"ការ​ស្វែងរក​ទាំងអស់​ដែល​អ្នក​បាន​អនុវត្ត​ពី​មុន​នឹង​ត្រូវ​បាន​​លុប​ចេញ​។"</string>
-    <string name="manage_accounts_menu_item" msgid="4734660452395086786">"គ្រប់គ្រង​គណនី"</string>
+    <string name="manage_accounts_menu_item" msgid="4734660452395086786">"គ្រប់គ្រង​គណនី​"</string>
     <string name="general_preferences_title" msgid="4212138728220418162">"ការ​កំណត់​ទូទៅ"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"កំណត់"</string>
 </resources>

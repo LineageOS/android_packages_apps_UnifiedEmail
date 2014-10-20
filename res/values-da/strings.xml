@@ -380,8 +380,8 @@
     <item quantity="one" msgid="3315412388217832914">"<xliff:g id="COUNT">%1$d</xliff:g> meddelelse vil blive slettet permanent."</item>
     <item quantity="other" msgid="263840304486020101">"<xliff:g id="COUNT">%1$d</xliff:g> meddelelser vil blive slettet permanent."</item>
   </plurals>
-    <string name="drawer_open" msgid="2285557278907103851">"Åbn navigationsskuffen"</string>
-    <string name="drawer_close" msgid="2065829742127544297">"Luk navigationsskuffen"</string>
+    <string name="drawer_open" msgid="2285557278907103851">"Åbn menuen"</string>
+    <string name="drawer_close" msgid="2065829742127544297">"Luk menuen"</string>
     <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Tryk på afsenderbilledet for at markere samtalen."</string>
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"Tryk og hold nede for at vælge en samtale, og tryk derefter igen for at vælge flere."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"Mappeikon"</string>
