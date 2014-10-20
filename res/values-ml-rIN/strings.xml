@@ -285,9 +285,9 @@
     <string name="search_hint" msgid="7060626585689391003">"തിരയുക"</string>
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
-    <string name="voice_search_not_supported" msgid="8493517060419469738">"ഈ ഉപകരണത്തിൽ വോയ്‌സ് തിരയൽ പിന്തുണയ്‌ക്കില്ല."</string>
+    <string name="voice_search_not_supported" msgid="8493517060419469738">"ഈ ഉപകരണത്തിൽ ശബ്ദ തിരയൽ പിന്തുണയ്‌ക്കില്ല."</string>
     <string name="search_back_desc" msgid="8038224690392783652">"തിരയൽ അടയ്‌ക്കുക"</string>
-    <string name="search_voice_desc" msgid="9103854398344077204">"വോയ്‌സ് തിരയൽ ആരംഭിക്കുക"</string>
+    <string name="search_voice_desc" msgid="9103854398344077204">"ശബ്ദ തിരയൽ ആരംഭിക്കുക"</string>
     <string name="search_clear_desc" msgid="3044261775183044862">"തിരയൽ ടെക്‌സ്റ്റ് മായ്ക്കുക"</string>
     <string name="network_error" msgid="5931164247644972255">"കണക്ഷനൊന്നുമില്ല"</string>
     <string name="retry" msgid="916102442074217293">"വീണ്ടും ശ്രമിക്കുക"</string>
