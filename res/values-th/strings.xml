@@ -367,8 +367,8 @@
     <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"การดำเนินการ \"เก็บ\" และ \"ลบ\""</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ตอบทุกคน"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"ใช้เป็นค่าเริ่มต้นสำหรับการตอบกลับข้อความ"</string>
-    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"กวาดนิ้วเพื่อเก็บถาวร"</string>
-    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"กวาดนิ้วเพื่อลบ"</string>
+    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"กวาดเพื่อเก็บ"</string>
+    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"กวาดเพื่อลบ"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"ในรายการการสนทนา"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"ภาพของผู้ส่ง"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"แสดงข้างชื่อในรายการสนทนา"</string>
