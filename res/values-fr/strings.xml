@@ -196,7 +196,7 @@
   </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="4819167474123685161">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation supprimée"</item>
-    <item quantity="other" msgid="6287534453625638257">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;conversations supprimées"</item>
+    <item quantity="other" msgid="6287534453625638257">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations supprimées"</item>
   </plurals>
     <string name="deleted" msgid="7378013910782008375">"Supprimé"</string>
     <string name="archived" msgid="6283673603512713022">"Archivé"</string>

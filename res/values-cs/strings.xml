@@ -330,8 +330,8 @@
     <item msgid="880913657385630195">"Po smazání zobrazit seznam konverzací"</item>
   </string-array>
     <string name="prefDialogTitle_autoAdvance" msgid="5459235590885640678">"Pokračovat do"</string>
-    <string name="clear_display_images_whitelist_title" msgid="2012677202404471778">"Zrušit schválení obrázků"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"Zrušit schválení obrázků?"</string>
+    <string name="clear_display_images_whitelist_title" msgid="2012677202404471778">"Vymazat schválení obrázků"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"Vymazat schválení obrázků?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="3952553078559373729">"Přestat zobrazovat vložené obrázky od odesílatelů, u kterých jste to dříve povolili."</string>
     <string name="sender_whitelist_cleared" msgid="2490984995927904030">"Obrázky se nebudou zobrazovat automaticky."</string>
     <string name="preferences_signature_title" msgid="2318034745474929902">"Podpis"</string>

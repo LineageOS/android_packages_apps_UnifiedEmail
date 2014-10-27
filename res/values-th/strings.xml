@@ -62,7 +62,7 @@
     <string name="remove_folder" msgid="2379905457788576297">"ลบจาก <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="5978663590021719939">"เก็บถาวร"</string>
     <string name="report_spam" msgid="4106897677959987340">"รายงานจดหมายขยะ"</string>
-    <string name="mark_not_spam" msgid="8617774236231366651">"รายงานว่าไม่ใช่สแปม"</string>
+    <string name="mark_not_spam" msgid="8617774236231366651">"รายงานว่าไม่ใช่จดหมายขยะ"</string>
     <string name="report_phishing" msgid="8454666464488413739">"รายงานฟิชชิง"</string>
     <string name="delete" msgid="6784262386780496958">"ลบ"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"ยกเลิกข้อความร่าง"</string>
