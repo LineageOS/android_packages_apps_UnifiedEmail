@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="confirm_forward_message">Wiadomość zawiera załączniki</string>
-  <string name="confirm_forward_normal">Pobierz i wyślij</string>
-  <string name="confirm_forward_drop_unloaded">Użyj kopii serwera</string>
+  <string name="confirm_forward_message">Messagen hunn Unhäng</string>
+  <string name="confirm_forward_normal">Eroflueden a schécken</string>
+  <string name="confirm_forward_drop_unloaded">Kopie vum Server benotzen</string>
 </resources>
