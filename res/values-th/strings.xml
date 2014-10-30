@@ -31,7 +31,7 @@
     <string name="compose" msgid="2602861958391035523">"เขียน"</string>
   <string-array name="compose_modes">
     <item msgid="9000553538766397816">"ตอบ"</item>
-    <item msgid="2767793214788399009">"ตอบทั้งหมด"</item>
+    <item msgid="2767793214788399009">"ตอบทุกคน"</item>
     <item msgid="2758162027982270607">"ส่งต่อ"</item>
   </string-array>
     <string name="reply_attribution" msgid="1114972798797833259">"เมื่อ <xliff:g id="DATE">%s</xliff:g> <xliff:g id="PERSON">%s</xliff:g> เขียนว่า:"</string>
@@ -61,14 +61,14 @@
     <string name="remove_folder" msgid="2379905457788576297">"ลบจาก <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="5978663590021719939">"เก็บถาวร"</string>
     <string name="report_spam" msgid="4106897677959987340">"รายงานจดหมายขยะ"</string>
-    <string name="mark_not_spam" msgid="8617774236231366651">"รายงานว่าไม่ใช่สแปม"</string>
+    <string name="mark_not_spam" msgid="8617774236231366651">"รายงานว่าไม่ใช่จดหมายขยะ"</string>
     <string name="report_phishing" msgid="8454666464488413739">"รายงานฟิชชิง"</string>
     <string name="delete" msgid="6784262386780496958">"ลบ"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"ยกเลิกข้อความร่าง"</string>
     <string name="discard_failed" msgid="7520780769812210279">"ยกเลิกไม่สำเร็จ"</string>
     <string name="refresh" msgid="1533748989749277511">"รีเฟรช"</string>
     <string name="reply" msgid="8337757482824207118">"ตอบ"</string>
-    <string name="reply_all" msgid="5366796103758360957">"ตอบทั้งหมด"</string>
+    <string name="reply_all" msgid="5366796103758360957">"ตอบทุกคน"</string>
     <string name="resume_draft" msgid="1272723181782570649">"แก้ไข"</string>
     <string name="forward" msgid="4397585145490426320">"ส่งต่อ"</string>
     <string name="menu_compose" msgid="4575025207594709432">"เขียน"</string>
@@ -169,7 +169,7 @@
     <string name="empty_search" msgid="8564899353449880818">"อ๊ะ! เราไม่พบผลลัพธ์ใดๆสำหรับ \"<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>\""</string>
     <string name="empty_spam_folder" msgid="3288985543286122800">"ไชโย ไม่มีสแปมเลย!"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"ไม่มีขยะที่นี่ ขอขอบคุณที่รีไซเคิล!"</string>
-    <string name="empty_folder" msgid="3227552635613553855">"ไม่มีอีเมลที่นี่"</string>
+    <string name="empty_folder" msgid="3227552635613553855">"ที่นี่ไม่มีจดหมาย"</string>
     <string name="getting_messages" msgid="8403333791332403244">"กำลังโหลดข้อความของคุณ"</string>
     <string name="undo" msgid="8256285267701059609">"เลิกทำ"</string>
   <plurals name="conversation_unstarred">
@@ -272,7 +272,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"ซิงค์โฟลเดอร์"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ ใหม่"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> ใหม่"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"ใหม่ <xliff:g id="COUNT">%d</xliff:g>"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"ยังไม่ได้อ่าน <xliff:g id="COUNT">%1$d</xliff:g> ข้อความ"</item>
   </plurals>
@@ -335,7 +335,7 @@
     <string name="preferences_signature_dialog_title" msgid="4801741764511807064">"ลายเซ็น"</string>
     <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"ไม่ได้ตั้งค่า"</string>
     <string name="notification_action_reply" msgid="8378725460102575919">"ตอบ"</string>
-    <string name="notification_action_reply_all" msgid="5693469099941000037">"ตอบทั้งหมด"</string>
+    <string name="notification_action_reply_all" msgid="5693469099941000037">"ตอบทุกคน"</string>
     <string name="notification_action_archive" msgid="2884874164831039047">"เก็บถาวร"</string>
     <string name="notification_action_remove_label" msgid="3714785653186750981">"ลบป้ายกำกับ"</string>
     <string name="notification_action_delete" msgid="3201627482564624132">"ลบ"</string>
@@ -365,10 +365,10 @@
     <item msgid="3196207224108008441">"แสดง \"เก็บ\" และ \"ลบ\""</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"การดำเนินการ \"เก็บ\" และ \"ลบ\""</string>
-    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ตอบทั้งหมด"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ตอบทุกคน"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"ใช้เป็นค่าเริ่มต้นสำหรับการตอบกลับข้อความ"</string>
-    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"กวาดนิ้วเพื่อเก็บถาวร"</string>
-    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"กวาดนิ้วเพื่อลบ"</string>
+    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"กวาดเพื่อเก็บ"</string>
+    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"กวาดเพื่อลบ"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"ในรายการการสนทนา"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"ภาพของผู้ส่ง"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"แสดงข้างชื่อในรายการสนทนา"</string>
@@ -415,10 +415,10 @@
     <item quantity="other" msgid="5422167728480739361">"<xliff:g id="COUNT">%1$d</xliff:g> ไฟล์แนบ"</item>
   </plurals>
     <string name="no_subject" msgid="5622708348540036959">"(ไม่มีหัวเรื่อง)"</string>
-    <string name="vacation_responder" msgid="5570132559074523806">"โปรแกรมช่วยตอบอีเมลขณะพักร้อน"</string>
-    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"โปรแกรมช่วยตอบอีเมลขณะพักร้อน"</string>
+    <string name="vacation_responder" msgid="5570132559074523806">"การช่วยตอบอีเมลอัตโนมัติ"</string>
+    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"การช่วยตอบอีเมลอัตโนมัติ"</string>
     <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"ข้อความ"</string>
-    <string name="send_to_contacts_text" msgid="124432913980620545">"ส่งไปยังที่อยู่ติดต่อของฉันเท่านั้น"</string>
+    <string name="send_to_contacts_text" msgid="124432913980620545">"ส่งไปยังรายชื่อติดต่อของฉันเท่านั้น"</string>
     <string name="send_to_domain_text" msgid="5064559546745918393">"ส่งไปยัง <xliff:g id="DOMAIN">%1$s</xliff:g> เท่านั้น"</string>
     <string name="pick_start_date_title" msgid="2274665037355224165">"เริ่ม"</string>
     <string name="pick_end_date_title" msgid="733396083649496600">"สิ้นสุด (ไม่บังคับ)"</string>
@@ -427,8 +427,8 @@
     <string name="custom_date" msgid="5794846334232367838">"กำหนดเอง"</string>
     <string name="date_none" msgid="1061426502665431412">"ไม่มี"</string>
     <string name="discard_changes" msgid="5699760550972324746">"ยกเลิกการเปลี่ยนแปลงหรือไม่"</string>
-    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"บันทึกการเปลี่ยนแปลงโปรแกรมช่วยตอบอีเมลขณะพักร้อนแล้ว"</string>
-    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"ยกเลิกการเปลี่ยนแปลงโปรแกรมช่วยตอบอีเมลขณะพักร้อน"</string>
+    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"บันทึกการเปลี่ยนแปลงการช่วยตอบอีเมลอัตโนมัติแล้ว"</string>
+    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"ยกเลิกการเปลี่ยนแปลงการช่วยตอบอีเมลอัตโนมัติ"</string>
     <string name="vacation_responder_off" msgid="4429909341193366667">"ปิด"</string>
     <string name="vacation_responder_on" msgid="4913238379320882449">"เปิด ตั้งแต่ <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"เปิด ตั้งแต่ <xliff:g id="START_DATE">%1$s</xliff:g> ถึง <xliff:g id="END_DATE">%2$s</xliff:g>"</string>

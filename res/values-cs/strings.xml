@@ -18,7 +18,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="from" msgid="5159056500059912358">"Odesílatel"</string>
+    <string name="from" msgid="5159056500059912358">"Od"</string>
     <string name="to" msgid="3971614275716830581">"Komu"</string>
     <string name="cc" msgid="8768828862207919684">"Kopie"</string>
     <string name="bcc" msgid="519303553518479171">"Skrytá kopie"</string>
@@ -227,7 +227,7 @@
   <plurals name="show_messages_read">
     <item quantity="other" msgid="5285673397387128129">"Starší zprávy: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="from_heading" msgid="48290556829713090">"Odesílatel:"</string>
+    <string name="from_heading" msgid="48290556829713090">"Od:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Odpovědět:"</string>
     <string name="to_heading" msgid="3495203282540398336">"Komu: "</string>
     <string name="to_heading_no_space" msgid="679167047628308670">"Komu:"</string>
@@ -327,8 +327,8 @@
     <item msgid="880913657385630195">"Po smazání zobrazit seznam konverzací"</item>
   </string-array>
     <string name="prefDialogTitle_autoAdvance" msgid="5459235590885640678">"Pokračovat do"</string>
-    <string name="clear_display_images_whitelist_title" msgid="2012677202404471778">"Zrušit schválení obrázků"</string>
-    <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"Zrušit schválení obrázků?"</string>
+    <string name="clear_display_images_whitelist_title" msgid="2012677202404471778">"Vymazat schválení obrázků"</string>
+    <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"Vymazat schválení obrázků?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="3952553078559373729">"Přestat zobrazovat vložené obrázky od odesílatelů, u kterých jste to dříve povolili."</string>
     <string name="sender_whitelist_cleared" msgid="2490984995927904030">"Obrázky se nebudou zobrazovat automaticky."</string>
     <string name="preferences_signature_title" msgid="2318034745474929902">"Podpis"</string>

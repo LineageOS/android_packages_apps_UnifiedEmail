@@ -53,8 +53,8 @@
     <string name="signature" msgid="3172144541947408374">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="custom_from_account_label" msgid="5042317430007736322">"Նամակ ուղարկել որպես`"</string>
     <string name="send" msgid="4269810089682120826">"Ուղարկել"</string>
-    <string name="mark_read" msgid="579388143288052493">"Նշել որպես ընթերցված"</string>
-    <string name="mark_unread" msgid="6245060538061533191">"Նշել չընթերցված"</string>
+    <string name="mark_read" msgid="579388143288052493">"Նշել որպես կարդացված"</string>
+    <string name="mark_unread" msgid="6245060538061533191">"Նշել որպես չկարդացված"</string>
     <string name="mute" msgid="9164839998562321569">"Խլացնել"</string>
     <string name="add_star" msgid="3275117671153616270">"Ավելացնել աստղանիշ"</string>
     <string name="remove_star" msgid="9126690774161840733">"Հեռացնել աստղանիշը"</string>
@@ -65,7 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"Զեկուցել որսման մասին"</string>
     <string name="delete" msgid="6784262386780496958">"Ջնջել"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"Հեռացնել սևագրերը"</string>
-    <string name="discard_failed" msgid="7520780769812210279">"Ջնջել ձախողվածները"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"Ջնջել ձախողված հաղորդագրությունները"</string>
     <string name="refresh" msgid="1533748989749277511">"Թարմացնել"</string>
     <string name="reply" msgid="8337757482824207118">"Պատասխանել"</string>
     <string name="reply_all" msgid="5366796103758360957">"Պատասխանել բոլորին"</string>
@@ -137,8 +137,8 @@
   </plurals>
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> <xliff:g id="SUBJECT">%3$s</xliff:g>-ի մասին, <xliff:g id="SNIPPET">%4$s</xliff:g> <xliff:g id="DATE">%5$s</xliff:g>-ին, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>-ի <xliff:g id="SUBJECT">%3$s</xliff:g> մասին, <xliff:g id="SNIPPET">%4$s</xliff:g> ժամը <xliff:g id="TIME">%5$s</xliff:g>-ին, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
-    <string name="read_string" msgid="5495929677508576520">"խոսակցությունը ընթերցված է"</string>
-    <string name="unread_string" msgid="7342558841698083381">"զրույցը չընթերցված է"</string>
+    <string name="read_string" msgid="5495929677508576520">"խոսակցությունը կարդացված է"</string>
+    <string name="unread_string" msgid="7342558841698083381">"կարդացված չէ"</string>
     <string name="filtered_tag" msgid="721666921386074505">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="badge_and_subject" msgid="3979372269373936750">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g>"</string>
   <plurals name="draft">
@@ -149,8 +149,8 @@
     <string name="message_retrying" msgid="5335188121407261331">"Կրկին է փորձում..."</string>
     <string name="message_failed" msgid="7887650587384601790">"Ձախողվեց"</string>
     <string name="send_failed" msgid="2186285547449865010">"Հաղորդագրությունը չի ուղարկվել:"</string>
-    <string name="me_object_pronoun" msgid="4674452244417913816">"ինձ"</string>
-    <string name="me_subject_pronoun" msgid="7479328865714008288">"ինձ"</string>
+    <string name="me_object_pronoun" msgid="4674452244417913816">"ես"</string>
+    <string name="me_subject_pronoun" msgid="7479328865714008288">"ես"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="7605755011865575440">"Ջնջե՞լ այս խոսակցությունը:"</item>
     <item quantity="other" msgid="1585660381208712562">"Ջնջե՞լ այս <xliff:g id="COUNT">%1$d</xliff:g> խոսակցությունը:"</item>
@@ -274,9 +274,9 @@
     <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ նոր"</string>
     <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> նոր"</string>
   <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g> չընթերցված"</item>
+    <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g> չկարդացված"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="753635978542372792">"<xliff:g id="COUNT">%1$d</xliff:g> + չընթերցված"</string>
+    <string name="actionbar_large_unread_count" msgid="753635978542372792">"<xliff:g id="COUNT">%1$d</xliff:g> + չկարդացված"</string>
     <string name="view_more_conversations" msgid="8377920000247101901">"Տեսնել այլ զրույցներ"</string>
     <string name="loading_conversation" msgid="7931600025861500397">"Բեռնում..."</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"Ընտրեք հաշիվը"</string>

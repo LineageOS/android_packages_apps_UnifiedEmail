@@ -220,7 +220,7 @@
     <item quantity="other" msgid="4394042684501388790">"Vis <xliff:g id="COUNT">%1$d</xliff:g> nye meddelelser."</item>
   </plurals>
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Se info&lt;/a&gt;"</string>
-    <string name="hide_details" msgid="8018801050702453314">"Skjul oplysninger"</string>
+    <string name="hide_details" msgid="8018801050702453314">"Skjul info"</string>
     <string name="to_message_header" msgid="3954385178027011919">"til <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
     <string name="contact_info_string" msgid="6484930184867405276">"Vis kontaktoplysninger for <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"Vis kontaktoplysninger"</string>
@@ -295,9 +295,9 @@
     <string name="shortcut_name_title" msgid="1562534040126088628">"Genvej til navngivning af mappe"</string>
     <string name="wait_for_sync_title" msgid="4577632826912823075">"Venter på synkronisering"</string>
     <string name="not_synced_title" msgid="3600180500934086346">"Kontoen er ikke synkroniseret"</string>
-    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Denne konto er ikke konfigureret til automatisk synkronisering.\nTryk på "<b>"Synkroniser nu"</b>" for at synkronisere e-mails én gang, eller tryk på "<b>"Skift synkroniseringsindstillinger"</b>" for at konfigurere denne konto til at synkronisere e-mail automatisk."</string>
+    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Denne konto er ikke konfigureret til automatisk synkronisering.\nTryk på "<b>"Synkroniser nu"</b>" for at synkronisere e-mails én gang, eller tryk på "<b>"Rediger indstillinger for synkronisering"</b>" for at konfigurere denne konto til at synkronisere e-mail automatisk."</string>
     <string name="manual_sync" msgid="2271479734895537848">"Synkroniser nu"</string>
-    <string name="change_sync_settings" msgid="3615852118397055361">"Skift synkroniseringsindst."</string>
+    <string name="change_sync_settings" msgid="3615852118397055361">"Rediger indst. for synkr."</string>
     <string name="photo_load_failed" msgid="577471721679146999">"Billedet kunne ikke indlæses"</string>
     <string name="cant_move_or_change_labels" msgid="4155490583610926755">"Flytning er ikke mulig, fordi markeringen indeholder flere konti."</string>
     <string name="multiple_new_message_notification_item" msgid="1386588046275174918"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
@@ -371,7 +371,7 @@
     <string name="preference_swipe_title_delete" msgid="4860474024917543711">"Stryg til siden for at slette"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"På samtaleliste"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Afsenderbillede"</string>
-    <string name="preference_sender_image_description" msgid="3586817690132199889">"Vis ud for navnet i samtalelisten"</string>
+    <string name="preference_sender_image_description" msgid="3586817690132199889">"Vis ud for navnet på samtalelisten"</string>
     <string name="empty_trash" msgid="3385937024924728399">"Tøm papirkurv"</string>
     <string name="empty_spam" msgid="2911988289997281371">"Tøm spammappe"</string>
     <string name="empty_trash_dialog_title" msgid="2104898489663621508">"Skal papirkurven tømmes?"</string>
@@ -380,8 +380,8 @@
     <item quantity="one" msgid="3315412388217832914">"<xliff:g id="COUNT">%1$d</xliff:g> meddelelse vil blive slettet permanent."</item>
     <item quantity="other" msgid="263840304486020101">"<xliff:g id="COUNT">%1$d</xliff:g> meddelelser vil blive slettet permanent."</item>
   </plurals>
-    <string name="drawer_open" msgid="2285557278907103851">"Åbn navigationsskuffen"</string>
-    <string name="drawer_close" msgid="2065829742127544297">"Luk navigationsskuffen"</string>
+    <string name="drawer_open" msgid="2285557278907103851">"Åbn menuen"</string>
+    <string name="drawer_close" msgid="2065829742127544297">"Luk menuen"</string>
     <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Tryk på afsenderbilledet for at markere samtalen."</string>
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"Tryk og hold nede for at vælge en samtale, og tryk derefter igen for at vælge flere."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"Mappeikon"</string>
@@ -462,11 +462,11 @@
     <string name="preference_confirm_before_send_title" msgid="4136585783513077039">"Bekræft før afsendelse"</string>
     <string name="preferences_conversation_mode_title" msgid="389352009651720838">"Tilpas meddelelser automatisk"</string>
     <string name="preferences_conversation_mode_summary" msgid="5730999743867653106">"Formindsk meddelelser, så de passer til skærmen"</string>
-    <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"Beskedhandlinger"</string>
+    <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"Meddelelseshandlinger"</string>
   <string-array name="prefSummaries_snapHeader">
-    <item msgid="43373293784193461">"Vis altid beskedhandlinger øverst på skærmen"</item>
-    <item msgid="1765271305989996747">"Vis kun beskedhandlinger øverst på skærmen i portrættilstand"</item>
-    <item msgid="6311113076575333488">"Vis ikke beskedhandlinger uden for meddelelsens sidehoved"</item>
+    <item msgid="43373293784193461">"Vis altid meddelelseshandlinger øverst på skærmen"</item>
+    <item msgid="1765271305989996747">"Vis kun meddelelseshandlinger øverst på skærmen i portrættilstand"</item>
+    <item msgid="6311113076575333488">"Vis ikke meddelelseshandlinger uden for meddelelsens header"</item>
   </string-array>
   <string-array name="prefEntries_snapHeader">
     <item msgid="6906986566816683587">"Vis altid"</item>

@@ -65,7 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"Пријави „пецање“"</string>
     <string name="delete" msgid="6784262386780496958">"Избриши"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"Одбаци недовршене поруке"</string>
-    <string name="discard_failed" msgid="7520780769812210279">"Одбацивање није успело"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"Одбаци неуспешне"</string>
     <string name="refresh" msgid="1533748989749277511">"Освежи"</string>
     <string name="reply" msgid="8337757482824207118">"Одговори"</string>
     <string name="reply_all" msgid="5366796103758360957">"Одговори свима"</string>
@@ -126,7 +126,7 @@
     <string name="contextmenu_add_contact" msgid="2310064151427072475">"Додај контакт"</string>
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"Пошаљи имејл"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"Мапа"</string>
-    <string name="contextmenu_sharelink" msgid="8670940060477758709">"Дели везу"</string>
+    <string name="contextmenu_sharelink" msgid="8670940060477758709">"Дели линк"</string>
     <string name="contextmenu_help" msgid="4209674157707873384">"Помоћ"</string>
     <string name="contextmenu_feedback" msgid="8319100902136337085">"Пошаљи повратне информације"</string>
     <!-- no translation found for num_selected (7990204488812654380) -->
@@ -278,7 +278,7 @@
   </plurals>
     <string name="actionbar_large_unread_count" msgid="753635978542372792">"Непрочитаних: <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
     <string name="view_more_conversations" msgid="8377920000247101901">"Прикажи још преписки"</string>
-    <string name="loading_conversation" msgid="7931600025861500397">"Учитавање..."</string>
+    <string name="loading_conversation" msgid="7931600025861500397">"Учитава се..."</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"Избор налога"</string>
     <string name="activity_folder_selection" msgid="8375243281001234750">"Избор директоријума"</string>
     <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"Директоријум Е-пошта"</string>

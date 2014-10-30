@@ -65,7 +65,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"举报网上诱骗行为"</string>
     <string name="delete" msgid="6784262386780496958">"删除"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"舍弃草稿"</string>
-    <string name="discard_failed" msgid="7520780769812210279">"舍弃未发送成功的邮件"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"舍弃未成功发送的邮件"</string>
     <string name="refresh" msgid="1533748989749277511">"刷新"</string>
     <string name="reply" msgid="8337757482824207118">"回复"</string>
     <string name="reply_all" msgid="5366796103758360957">"全部回复"</string>
@@ -166,7 +166,7 @@
     <string name="confirm_discard_text" msgid="5172680524418848519">"要舍弃此邮件吗？"</string>
     <string name="loading_conversations" msgid="7255732786298655246">"正在加载…"</string>
     <string name="empty_inbox" msgid="5901734942362315228">"没有需要处理的邮件！去放松一下吧。"</string>
-    <string name="empty_search" msgid="8564899353449880818">"抱歉！没有找到有关“<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>”的任何结果。"</string>
+    <string name="empty_search" msgid="8564899353449880818">"抱歉！找不到与“<xliff:g id="SEARCH_QUERY">%1$s</xliff:g>”相符的结果。"</string>
     <string name="empty_spam_folder" msgid="3288985543286122800">"太棒了，没有任何垃圾邮件！"</string>
     <string name="empty_trash_folder" msgid="378119063015945020">"没有任何已删除的邮件。还是下次再来回收吧。"</string>
     <string name="empty_folder" msgid="3227552635613553855">"此文件夹中没有任何邮件。"</string>
@@ -182,11 +182,11 @@
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="6986172030710967687">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为垃圾邮件。"</item>
-    <item quantity="other" msgid="5900913789259199137">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话举报为垃圾邮件。"</item>
+    <item quantity="other" msgid="5900913789259199137">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为垃圾邮件。"</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="2294904093653094150">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话举报为非垃圾邮件。"</item>
-    <item quantity="other" msgid="4966164423991098144">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话举报为非垃圾邮件。"</item>
+    <item quantity="one" msgid="2294904093653094150">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为非垃圾邮件。"</item>
+    <item quantity="other" msgid="4966164423991098144">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为非垃圾邮件。"</item>
   </plurals>
   <plurals name="conversation_not_important">
     <item quantity="one" msgid="3824809189993339030">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话标记为不重要。"</item>
@@ -272,7 +272,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"同步文件夹"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+封新邮件"</string>
-    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g>封新邮件"</string>
+    <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g>新"</string>
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g>封未读邮件"</item>
   </plurals>
@@ -419,7 +419,7 @@
     <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"外出回复"</string>
     <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"邮件内容"</string>
     <string name="send_to_contacts_text" msgid="124432913980620545">"仅发送给我通讯录中的联系人"</string>
-    <string name="send_to_domain_text" msgid="5064559546745918393">"仅发送给 <xliff:g id="DOMAIN">%1$s</xliff:g> 中的联系人"</string>
+    <string name="send_to_domain_text" msgid="5064559546745918393">"仅发送给<xliff:g id="DOMAIN">%1$s</xliff:g>中的联系人"</string>
     <string name="pick_start_date_title" msgid="2274665037355224165">"开始日期"</string>
     <string name="pick_end_date_title" msgid="733396083649496600">"结束日期（可选）"</string>
     <string name="date_not_set" msgid="3251555782945051904">"未设置"</string>

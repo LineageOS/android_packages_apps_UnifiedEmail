@@ -56,8 +56,8 @@
     <string name="mark_read" msgid="579388143288052493">"Marcar como leída"</string>
     <string name="mark_unread" msgid="6245060538061533191">"Marcar como no leída"</string>
     <string name="mute" msgid="9164839998562321569">"Silenciar"</string>
-    <string name="add_star" msgid="3275117671153616270">"Añadir estrella"</string>
-    <string name="remove_star" msgid="9126690774161840733">"Eliminar estrella"</string>
+    <string name="add_star" msgid="3275117671153616270">"Destacar"</string>
+    <string name="remove_star" msgid="9126690774161840733">"No destacar"</string>
     <string name="remove_folder" msgid="2379905457788576297">"Eliminar de <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="5978663590021719939">"Archivar"</string>
     <string name="report_spam" msgid="4106897677959987340">"Marcar como spam"</string>
@@ -149,8 +149,8 @@
     <string name="message_retrying" msgid="5335188121407261331">"Reintentando..."</string>
     <string name="message_failed" msgid="7887650587384601790">"Error"</string>
     <string name="send_failed" msgid="2186285547449865010">"No se ha enviado el mensaje."</string>
-    <string name="me_object_pronoun" msgid="4674452244417913816">"yo"</string>
-    <string name="me_subject_pronoun" msgid="7479328865714008288">"yo"</string>
+    <string name="me_object_pronoun" msgid="4674452244417913816">"mí"</string>
+    <string name="me_subject_pronoun" msgid="7479328865714008288">"mí"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="7605755011865575440">"¿Eliminar esta conversación?"</item>
     <item quantity="other" msgid="1585660381208712562">"¿Eliminar estas <xliff:g id="COUNT">%1$d</xliff:g> conversaciones?"</item>
@@ -436,7 +436,7 @@
     <string name="view_entire_message" msgid="823281796655014454">"Ver todo el mensaje"</string>
     <string name="eml_loader_error_toast" msgid="6577383216635400167">"No se puede abrir el archivo"</string>
     <string name="help_and_info" msgid="3708286489943154681">"Ayuda"</string>
-    <string name="help_and_feedback" msgid="7211458338163287670">"Ayuda y opiniones"</string>
+    <string name="help_and_feedback" msgid="7211458338163287670">"Ayuda y sugerencias"</string>
     <string name="feedback" msgid="204247008751740034">"Enviar sugerencias"</string>
     <string name="copyright" msgid="3121335168340432582">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
     <string name="version" msgid="1161745345056656547">"<xliff:g id="APP_NAME">%1$s</xliff:g> versión <xliff:g id="VERSION">%2$s</xliff:g>"</string>

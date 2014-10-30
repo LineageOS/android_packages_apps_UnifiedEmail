@@ -73,15 +73,15 @@
     <string name="forward" msgid="4397585145490426320">"Переслати"</string>
     <string name="menu_compose" msgid="4575025207594709432">"Написати"</string>
     <string name="menu_change_folders" msgid="2194946192901276625">"Змінити папки"</string>
-    <string name="menu_move_to" msgid="7948877550284452830">"Перемістити в"</string>
-    <string name="menu_move_to_inbox" msgid="258554178236001444">"Перемістити до вхідних"</string>
+    <string name="menu_move_to" msgid="7948877550284452830">"Перемістити у"</string>
+    <string name="menu_move_to_inbox" msgid="258554178236001444">"Перемістити у вхідні"</string>
     <string name="menu_manage_folders" msgid="8486398523679534519">"Налаштування папки"</string>
     <string name="menu_show_original" msgid="2330398228979616661">"Не змінювати розмір"</string>
     <string name="menu_settings" msgid="7993485401501778040">"Налаштування"</string>
     <string name="menu_search" msgid="1949652467806052768">"Пошук"</string>
     <string name="drawer_title" msgid="3766219846644975778">"Панель навігації"</string>
     <string name="mark_important" msgid="8781680450177768820">"Позначити як важливу"</string>
-    <string name="mark_not_important" msgid="3342258155408116917">"Позначити як неважливу"</string>
+    <string name="mark_not_important" msgid="3342258155408116917">"Позначити як неважливе"</string>
     <string name="add_cc_label" msgid="2249679001141195213">"Додати копію/приховану копію"</string>
     <string name="add_bcc_label" msgid="963745641238037813">"Додати прихов. копію"</string>
     <string name="quoted_text" msgid="977782904293216533">"Додати цитований текст"</string>
@@ -132,13 +132,13 @@
     <!-- no translation found for num_selected (7990204488812654380) -->
     <skip />
   <plurals name="move_conversation">
-    <item quantity="one" msgid="237882018518207244">"Перемістити бесіду"</item>
-    <item quantity="other" msgid="6639576653114141743">"Перемістити бесід: <xliff:g id="ID_1">%1$d</xliff:g>"</item>
+    <item quantity="one" msgid="237882018518207244">"Перемістити ланцюжок"</item>
+    <item quantity="other" msgid="6639576653114141743">"Перемістити ланцюжки: <xliff:g id="ID_1">%1$d</xliff:g>"</item>
   </plurals>
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>, тема: <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>, тема: <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> о <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
-    <string name="read_string" msgid="5495929677508576520">"бесіду прочитано"</string>
-    <string name="unread_string" msgid="7342558841698083381">"бесіду не прочитано"</string>
+    <string name="read_string" msgid="5495929677508576520">"прочитано"</string>
+    <string name="unread_string" msgid="7342558841698083381">"не прочитано"</string>
     <string name="filtered_tag" msgid="721666921386074505">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="badge_and_subject" msgid="3979372269373936750">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g>"</string>
   <plurals name="draft">
@@ -152,12 +152,12 @@
     <string name="me_object_pronoun" msgid="4674452244417913816">"я"</string>
     <string name="me_subject_pronoun" msgid="7479328865714008288">"я"</string>
   <plurals name="confirm_delete_conversation">
-    <item quantity="one" msgid="7605755011865575440">"Видалити цю бесіду?"</item>
-    <item quantity="other" msgid="1585660381208712562">"Видалити ці бесіди (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
+    <item quantity="one" msgid="7605755011865575440">"Видалити ланцюжок?"</item>
+    <item quantity="other" msgid="1585660381208712562">"Видалити ці ланцюжки (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
-    <item quantity="one" msgid="9105551557653306945">"Архівувати цю бесіду?"</item>
-    <item quantity="other" msgid="2001972798185641108">"Архівувати ці бесіди (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
+    <item quantity="one" msgid="9105551557653306945">"Архівувати цей ланцюжок повідомлень?"</item>
+    <item quantity="other" msgid="2001972798185641108">"Архівувати ці ланцюжки (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
     <item quantity="one" msgid="2030421499893210789">"Відхилити повідомлення?"</item>
@@ -173,8 +173,8 @@
     <string name="getting_messages" msgid="8403333791332403244">"Завантаження повідомлень"</string>
     <string name="undo" msgid="8256285267701059609">"Відмінити"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="839233699150563831">"Видалення зірочки з <xliff:g id="COUNT">%1$d</xliff:g> бесіди."</item>
-    <item quantity="other" msgid="7677305734833709789">"Видалення зірочки з бесід: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
+    <item quantity="one" msgid="839233699150563831">"Ланцюжків, з яких знімається позначка: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
+    <item quantity="other" msgid="7677305734833709789">"Ланцюжків, з яких знімається позначка : <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3339638225564408438">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; проігноровано."</item>
@@ -268,7 +268,7 @@
     <item msgid="5442620760791553027">"Помилка сервера"</item>
   </string-array>
     <string name="tap_to_configure" msgid="137172348280050643">"Торкніться, щоб налаштувати"</string>
-    <string name="non_synced_folder_description" msgid="3044618511909304701">"Щоб переглядати бесіди, синхронізуйте цю папку."</string>
+    <string name="non_synced_folder_description" msgid="3044618511909304701">"Щоб переглядати ланцюжки, синхронізуйте цю папку."</string>
     <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"Синхронізувати папку"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ нов."</string>
@@ -277,13 +277,13 @@
     <item quantity="other" msgid="3863201473731766006">"Не прочитано: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
     <string name="actionbar_large_unread_count" msgid="753635978542372792">"Не прочитано: <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
-    <string name="view_more_conversations" msgid="8377920000247101901">"Переглянути інші бесіди"</string>
+    <string name="view_more_conversations" msgid="8377920000247101901">"Інші ланцюжки повідомлень"</string>
     <string name="loading_conversation" msgid="7931600025861500397">"Завантаження…"</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"Вибрати обліковий запис"</string>
     <string name="activity_folder_selection" msgid="8375243281001234750">"Вибрати папку"</string>
     <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"Папка \"Електронна пошта\""</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"Змінити папки"</string>
-    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"Перемістити в"</string>
+    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"Перемістити у"</string>
     <string name="search_hint" msgid="4916671414132334289">"Пошук у пошті"</string>
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
@@ -319,14 +319,14 @@
   <string-array name="prefEntries_autoAdvance">
     <item msgid="1505450878799459652">"Новіші"</item>
     <item msgid="8000986144872247139">"Старіші"</item>
-    <item msgid="8015001161633421314">"Список бесід"</item>
+    <item msgid="8015001161633421314">"Список ланцюжків"</item>
   </string-array>
   <string-array name="prefSummaries_autoAdvance">
-    <item msgid="8221665977497655719">"Показувати новішу бесіду після видалення"</item>
-    <item msgid="1721869262893378141">"Показувати старішу бесіду після видалення"</item>
-    <item msgid="880913657385630195">"Показувати список бесід після видалення"</item>
+    <item msgid="8221665977497655719">"Показувати новіший ланцюжок повідомлень після видалення"</item>
+    <item msgid="1721869262893378141">"Показувати старіший ланцюжок повідомлень після видалення"</item>
+    <item msgid="880913657385630195">"Показувати список ланцюжків повідомлень після видалення"</item>
   </string-array>
-    <string name="prefDialogTitle_autoAdvance" msgid="5459235590885640678">"Перейти до пункту"</string>
+    <string name="prefDialogTitle_autoAdvance" msgid="5459235590885640678">"Перехід"</string>
     <string name="clear_display_images_whitelist_title" msgid="2012677202404471778">"Заборонити показ зображень"</string>
     <string name="clear_display_images_whitelist_dialog_title" msgid="1942692501166848471">"Заборонити показ зображень?"</string>
     <string name="clear_display_images_whitelist_dialog_message" msgid="3952553078559373729">"Не показувати вставлені зображення від відправників, дозволені раніше."</string>
@@ -369,9 +369,9 @@
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"Використовувати за умовчанням для відповідей на повідомлення"</string>
     <string name="preference_swipe_title_archive" msgid="9122333537761282714">"Провести пальцем, щоб архівувати"</string>
     <string name="preference_swipe_title_delete" msgid="4860474024917543711">"Провести пальцем, щоб видалити"</string>
-    <string name="preference_swipe_description" msgid="3036560323237015010">"У списку бесід"</string>
+    <string name="preference_swipe_description" msgid="3036560323237015010">"У списку ланцюжків"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Зображення відправника"</string>
-    <string name="preference_sender_image_description" msgid="3586817690132199889">"Показувати біля імені в списку бесід"</string>
+    <string name="preference_sender_image_description" msgid="3586817690132199889">"Показувати біля імені в списку ланцюжків"</string>
     <string name="empty_trash" msgid="3385937024924728399">"Очистити кошик"</string>
     <string name="empty_spam" msgid="2911988289997281371">"Очистити папку для спаму"</string>
     <string name="empty_trash_dialog_title" msgid="2104898489663621508">"Очистити кошик?"</string>
@@ -382,8 +382,8 @@
   </plurals>
     <string name="drawer_open" msgid="2285557278907103851">"Висунути навігаційну панель"</string>
     <string name="drawer_close" msgid="2065829742127544297">"Сховати навігаційну панель"</string>
-    <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Торкніться зображення відправника, щоб вибрати бесіду."</string>
-    <string name="long_press_to_select_tip" msgid="1660881999120625177">"Торкніться й утримуйте, щоб вибрати одну бесіду, а потім ще раз, щоб вибрати інші."</string>
+    <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Торкніться зображення відправника, щоб вибрати ланцюжок повідомлень."</string>
+    <string name="long_press_to_select_tip" msgid="1660881999120625177">"Щоб вибрати кілька ланцюжків, натисніть і утримуйте один із них, а потім натискайте інші."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"Значок папки"</string>
     <string name="add_account" msgid="5905863370226612377">"Додати обліковий запис"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Закрити пораду"</string>

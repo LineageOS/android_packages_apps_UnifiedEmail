@@ -253,7 +253,7 @@
     <string name="enumeration_comma" msgid="2848850136844740850">", "</string>
     <string name="send_anyway" msgid="2727576121007079643">"Send anyway"</string>
     <string name="ok" msgid="6178802457914802336">"OK"</string>
-    <string name="done" msgid="344354738335270292">"Finished"</string>
+    <string name="done" msgid="344354738335270292">"Done"</string>
     <string name="cancel" msgid="4831678293149626190">"Cancel"</string>
     <string name="clear" msgid="765949970989448022">"Clear"</string>
     <string name="next" msgid="2662478712866255138">"Next"</string>
