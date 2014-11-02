@@ -466,7 +466,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mDiscardOutboxMenuItem = menu.findItem(R.id.discard_outbox);
         if (mDiscardOutboxMenuItem != null) {
             mDiscardOutboxMenuItem.setVisible(shouldShowDiscardOutbox);
-            mDiscardOutboxMenuItem.setEnabled(shouldEnableDiscardOutbox(conversations));
         }
         final boolean showDelete = mFolder != null && !mFolder.isType(FolderType.OUTBOX)
                 && mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
@@ -483,18 +482,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
 
         return true;
-    }
-
-    private boolean shouldEnableDiscardOutbox(Collection<Conversation> conversations) {
-        boolean shouldEnableDiscardOutbox = true;
-        // Java should be smart enough to realize that once showDiscardOutbox becomes false it can
-        // just skip everything remaining in the for-loop..
-        for (Conversation conv : conversations) {
-            shouldEnableDiscardOutbox &=
-                    conv.sendingState != UIProvider.ConversationSendingState.SENDING &&
-                    conv.sendingState != UIProvider.ConversationSendingState.RETRYING;
-        }
-        return shouldEnableDiscardOutbox;
     }
 
     @Override
@@ -532,10 +519,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             return;
         }
         updateCount();
-
-        if (mFolder.isType(FolderType.OUTBOX) && mDiscardOutboxMenuItem != null) {
-            mDiscardOutboxMenuItem.setEnabled(shouldEnableDiscardOutbox(set.values()));
-        }
     }
 
     /**
