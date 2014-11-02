@@ -786,7 +786,9 @@ function disablePostForms() {
             }
             elements = forms[i].elements;
             for (j = 0; j < elements.length; ++j) {
-                elements[j].readOnly = true;
+                if (elements[j].type != 'submit') {
+                    elements[j].disabled = true;
+                }
             }
         }
     }
