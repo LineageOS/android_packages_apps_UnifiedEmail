@@ -15,19 +15,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <selector>
-            <item android:state_pressed="true"
-                  android:drawable="@drawable/compose_button_pressed_background" />
-            <item android:state_focused="true"
-                  android:drawable="@drawable/compose_button_pressed_background" />
-            <item android:drawable="@drawable/compose_button_background" />
-        </selector>
-    </item>
 
-    <item>
-        <bitmap android:src="@drawable/ic_pencil_wht_24dp"
-                android:gravity="center" />
-    </item>
-</layer-list>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="oval">
+    <solid android:color="@color/compose_button_background_color" />
+    <size android:width="@dimen/compose_button_width"
+          android:height="@dimen/compose_button_width" />
+</shape>
