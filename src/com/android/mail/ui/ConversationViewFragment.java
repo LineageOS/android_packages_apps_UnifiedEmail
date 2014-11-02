@@ -444,6 +444,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         ConversationViewUtils.setTextZoom(getResources(), settings);
 
+        if (Utils.isRunningLOrLater()) {
+            CookieManager.getInstance().setAcceptThirdPartyCookies(mWebView, true /* accept */);
+        }
+
         mViewsCreated = true;
         mWebViewLoadedData = false;
 
