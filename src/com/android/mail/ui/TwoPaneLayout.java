@@ -89,6 +89,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     private TwoPaneController mController;
     private LayoutListener mListener;
+    private ConversationListLayoutListener mConversationListLayoutListener;
     private boolean mIsSearchResult;
 
     private View mMiscellaneousView;
@@ -246,6 +247,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView.setVisibility(listX >= 0 ? VISIBLE : INVISIBLE);
         mConversationView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
         mMiscellaneousView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
+
+        if (mConversationListLayoutListener != null) {
+            mConversationListLayoutListener.onConversationListLayout(convX, !mListCollapsible);
+        }
 
         mPositionedMode = mCurrentMode;
     }
@@ -440,5 +445,13 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     public boolean shouldShowPreviewPanel() {
         return !mListCollapsible;
+    }
+
+    public void setConversationListLayoutListener(ConversationListLayoutListener listener) {
+        mConversationListLayoutListener = listener;
+    }
+
+    public interface ConversationListLayoutListener {
+        void onConversationListLayout(int xEnd, boolean isTabletLandscape);
     }
 }
