@@ -358,12 +358,6 @@ public final class TwoPaneController extends AbstractActivityController implemen
         }
     }
 
-    @Override
-    protected boolean isComposeVisible(int mode) {
-        return super.isComposeVisible(mode) ||
-                (mIsTabletLandscape && mode == ViewMode.CONVERSATION);
-    }
-
     /**
      * Enable or disable the CAB mode based on the visibility of the conversation list fragment.
      */
