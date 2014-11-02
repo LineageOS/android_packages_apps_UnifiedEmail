@@ -24,6 +24,7 @@ import android.content.Loader;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -1403,9 +1404,18 @@ public class FolderListFragment extends ListFragment implements
 
         mCurrentFolderForUnreadCheck = folder;
         mSelectedFolderUri = folder.folderUri;
-        if (mFolderAdapter != null && viewChanged) {
-            mFolderAdapter.notifyDataSetChanged();
+        if (viewChanged) {
+            if (mFolderAdapter != null) {
+                mFolderAdapter.notifyDataSetChanged();
+            }
+            if (mMiniDrawerView != null) {
+                mMiniDrawerView.refresh();
+            }
         }
+    }
+
+    public boolean isSelectedFolder(@NonNull Folder folder) {
+        return folder.folderUri.equals(mSelectedFolderUri);
     }
 
     /**
