@@ -357,14 +357,17 @@ public class NotificationUtils {
      * @param cancelExisting True, if all notifications should be canceled before resending.
      *                       False, otherwise.
      * @param accountUri The {@link Uri} of the {@link Account} of the notification
-     *                   upon which an action occurred.
+     *                   upon which an action occurred, or {@code null}.
      * @param folderUri The {@link Uri} of the {@link Folder} of the notification
-     *                  upon which an action occurred.
+     *                  upon which an action occurred, or {@code null}.
      */
     public static void resendNotifications(Context context, final boolean cancelExisting,
             final Uri accountUri, final FolderUri folderUri,
             final ContactFetcher contactFetcher) {
-        LogUtils.d(LOG_TAG, "resendNotifications ");
+        LogUtils.i(LOG_TAG, "resendNotifications cancelExisting: %b, account: %s, folder: %s",
+                cancelExisting,
+                accountUri == null ? null : LogUtils.sanitizeName(LOG_TAG, accountUri.toString()),
+                folderUri == null ? null : LogUtils.sanitizeName(LOG_TAG, folderUri.toString()));
 
         if (cancelExisting) {
             LogUtils.d(LOG_TAG, "resendNotifications - cancelling all");
