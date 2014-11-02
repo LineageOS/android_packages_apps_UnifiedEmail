@@ -461,6 +461,11 @@ public final class ConversationListFragment extends Fragment implements
         mListView.setSwipeListener(this);
         mListView.setOnKeyListener(this);
         mListView.setOnItemClickListener(this);
+
+        // For tablets, the default left focus is the mini-drawer
+        if (mTabletDevice) {
+            mNextFocusLeftId = R.id.current_account_avatar;
+        }
         if (mNextFocusLeftId != 0) {
             mListView.setNextFocusLeftId(mNextFocusLeftId);
         }
