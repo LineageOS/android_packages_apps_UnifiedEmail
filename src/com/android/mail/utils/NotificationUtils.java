@@ -96,7 +96,6 @@ public class NotificationUtils {
     public static final String EXTRA_UNSEEN_COUNT = "unseen-count";
     public static final String EXTRA_GET_ATTENTION = "get-attention";
     private static final int PUBLIC_NOTIFICATIONS_VISIBLE_CHARS = 4;
-    private static final int MAX_CHARS = 5120;
 
     /** Contains a list of <(account, label), unread conversations> */
     private static NotificationMap sActiveNotificationMap = null;
@@ -1505,10 +1504,7 @@ public class NotificationUtils {
         final TextAppearanceSpan notificationSubjectSpan = new TextAppearanceSpan(
                 context, R.style.NotificationPrimaryText);
 
-        String snippet = getMessageBodyWithoutElidedText(message);
-        if (snippet.length() > MAX_CHARS) {
-            snippet = snippet.substring(0,  MAX_CHARS);
-        }
+        final String snippet = getMessageBodyWithoutElidedText(message);
 
         // Change multiple newlines (with potential white space between), into a single new line
         final String collapsedSnippet =
