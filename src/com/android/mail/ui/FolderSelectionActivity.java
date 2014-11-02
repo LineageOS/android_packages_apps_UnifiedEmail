@@ -320,7 +320,7 @@ public class FolderSelectionActivity extends ActionBarActivity implements OnClic
     }
 
     @Override
-    public ConversationSelectionSet getSelectedSet() {
+    public ConversationCheckedSet getCheckedSet() {
         return null;
     }
 
