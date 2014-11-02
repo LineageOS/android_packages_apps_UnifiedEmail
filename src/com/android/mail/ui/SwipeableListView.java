@@ -360,17 +360,9 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     @Override
     public boolean performItemClick(View view, int pos, long id) {
-        final int previousPosition = getCheckedItemPosition();
-        final boolean checkedSetEmpty = mConvCheckedSet.isEmpty();
-
         // Superclass method modifies the selection set
         final boolean handled = super.performItemClick(view, pos, id);
 
-        // If we are in CAB mode then a click shouldn't
-        // activate the new item, it should only add it to the selection set
-        if (!checkedSetEmpty && previousPosition != -1) {
-            setItemChecked(previousPosition, true);
-        }
         // Commit any existing destructive actions when the user selects a
         // conversation to view.
         commitDestructiveActions(true);
