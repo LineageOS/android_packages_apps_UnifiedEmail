@@ -139,7 +139,7 @@ public final class ConversationListFragment extends Fragment implements
     private FolderObserver mFolderObserver;
     private DataSetObserver mConversationCursorObserver;
 
-    private ConversationSelectionSet mSelectedSet;
+    private ConversationCheckedSet mCheckedSet;
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
@@ -325,7 +325,7 @@ public final class ConversationListFragment extends Fragment implements
         }
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), conversationCursor,
-                mActivity.getSelectedSet(), mActivity, mListView, specialItemViews);
+                mActivity.getCheckedSet(), mActivity, mListView, specialItemViews);
         mListAdapter.addFooter(mFooterView);
         // Show search result header only if we are in search mode
         final boolean showSearchHeader = ConversationListContext.isSearchResult(mViewContext);
@@ -337,8 +337,8 @@ public final class ConversationListFragment extends Fragment implements
         }
 
         mListView.setAdapter(mListAdapter);
-        mSelectedSet = mActivity.getSelectedSet();
-        mListView.setSelectionSet(mSelectedSet);
+        mCheckedSet = mActivity.getCheckedSet();
+        mListView.setCheckedSet(mCheckedSet);
         mListAdapter.setFooterVisibility(false);
         mFolderObserver = new FolderObserver(){
             @Override
@@ -583,7 +583,7 @@ public final class ConversationListFragment extends Fragment implements
         if (!(view instanceof ConversationItemView)) {
             return false;
         }
-        return ((ConversationItemView) view).toggleSelectedState("long_press");
+        return ((ConversationItemView) view).toggleCheckedState("long_press");
     }
 
     /**
@@ -612,13 +612,13 @@ public final class ConversationListFragment extends Fragment implements
         if (view instanceof ToggleableItem) {
             final boolean showSenderImage =
                     (mAccount.settings.convListIcon == ConversationListIcon.SENDER_IMAGE);
-            final boolean inCabMode = !mSelectedSet.isEmpty();
+            final boolean inCabMode = !mCheckedSet.isEmpty();
             if (!showSenderImage && inCabMode) {
-                ((ToggleableItem) view).toggleSelectedState();
+                ((ToggleableItem) view).toggleCheckedState();
             } else {
                 if (inCabMode) {
                     // this is a peek.
-                    Analytics.getInstance().sendEvent("peek", null, null, mSelectedSet.size());
+                    Analytics.getInstance().sendEvent("peek", null, null, mCheckedSet.size());
                 }
                 AnalyticsTimer.getInstance().trackStart(AnalyticsTimer.OPEN_CONV_VIEW_FROM_LIST);
                 viewConversation(position);
@@ -682,14 +682,14 @@ public final class ConversationListFragment extends Fragment implements
             restoreLastScrolledPosition();
         }
 
-        mSelectedSet.addObserver(mConversationSetObserver);
+        mCheckedSet.addObserver(mConversationSetObserver);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        mSelectedSet.removeObserver(mConversationSetObserver);
+        mCheckedSet.removeObserver(mConversationSetObserver);
 
         saveLastScrolledPosition();
     }
@@ -724,7 +724,7 @@ public final class ConversationListFragment extends Fragment implements
     public void onViewModeChanged(int newMode) {
         if (mTabletDevice) {
             if (ViewMode.isListMode(newMode)) {
-                // There are no selected conversations when in conversation list mode.
+                // There are no checked conversations when in conversation list mode.
                 clearChoicesAndActivated();
             }
         }
@@ -754,8 +754,8 @@ public final class ConversationListFragment extends Fragment implements
     }
 
     private void clearChoicesAndActivated() {
-        final int currentSelected = mListView.getCheckedItemPosition();
-        if (currentSelected != ListView.INVALID_POSITION) {
+        final int currentChecked = mListView.getCheckedItemPosition();
+        if (currentChecked != ListView.INVALID_POSITION) {
             mListView.setItemChecked(mListView.getCheckedItemPosition(), false);
         }
     }
@@ -811,37 +811,45 @@ public final class ConversationListFragment extends Fragment implements
          * special views in the list.
          */
         conv.position = cursor.getPosition();
-        setSelected(conv.position, true);
+        setActivated(conv.position, true);
         mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
     }
 
     /**
-     * Sets the selected conversation to the position given here.
+     * Sets the checked conversation to the position given here.
      * @param cursorPosition The position of the conversation in the cursor (as opposed to
      * in the list)
-     * @param different if the currently selected conversation is different from the one provided
+     * @param different if the currently checked conversation is different from the one provided
      * here.  This is a difference in conversations, not a difference in positions. For example, a
      * conversation at position 2 can move to position 4 as a result of new mail.
      */
-    public void setSelected(final int cursorPosition, boolean different) {
+    public void setActivated(final int cursorPosition, boolean different) {
         if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE) {
             return;
         }
 
-        final int position =
-                cursorPosition + getAnimatedAdapter().getPositionOffset(cursorPosition);
+        final int position = cursorPosition + mListAdapter.getPositionOffset(cursorPosition);
 
-        setRawSelected(position, different);
+        setRawActivated(position, different);
+    }
+
+    public void clearActivated() {
+        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_SINGLE) {
+            final int pos = mListView.getCheckedItemPosition();
+            if (pos >= 0) {
+                mListView.setItemChecked(pos, false);
+            }
+        }
     }
 
     /**
-     * Sets the selected conversation to the position given here.
+     * Sets the activated conversation to the position given here.
      * @param position The position of the item in the list
-     * @param different if the currently selected conversation is different from the one provided
+     * @param different if the currently activated conversation is different from the one provided
      * here.  This is a difference in conversations, not a difference in positions. For example, a
      * conversation at position 2 can move to position 4 as a result of new mail.
      */
-    public void setRawSelected(final int position, final boolean different) {
+    public void setRawActivated(final int position, final boolean different) {
         if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE) {
             return;
         }
@@ -849,6 +857,8 @@ public final class ConversationListFragment extends Fragment implements
         if (different) {
             mListView.smoothScrollToPosition(position);
         }
+        // Internally setItemChecked will set the activated bit if the item does not implement
+        // the Checkable interface. We use checked state to indicated CAB selection mode.
         mListView.setItemChecked(position, true);
     }
 
@@ -1018,7 +1028,7 @@ public final class ConversationListFragment extends Fragment implements
     }
 
     /**
-     * Changes the conversation cursor in the list and sets selected position if none is set.
+     * Changes the conversation cursor in the list and sets checked position if none is set.
      */
     private void onCursorUpdated() {
         if (mCallbacks == null || mListAdapter == null) {
@@ -1054,13 +1064,14 @@ public final class ConversationListFragment extends Fragment implements
             }
         }
 
-        // If a current conversation is available, and none is selected in the list, then ask
+        // If a current conversation is available, and none is activated in the list, then ask
         // the list to select the current conversation.
         final Conversation conv = mCallbacks.getCurrentConversation();
-        if (conv != null) {
+        final boolean currentConvIsPeeking = mCallbacks.isCurrentConversationJustPeeking();
+        if (conv != null && !currentConvIsPeeking) {
             if (mListView.getChoiceMode() != ListView.CHOICE_MODE_NONE
                     && mListView.getCheckedItemPosition() == -1) {
-                setSelected(conv.position, true);
+                setActivated(conv.position, true);
             }
         }
     }
@@ -1105,7 +1116,7 @@ public final class ConversationListFragment extends Fragment implements
 
     private final ConversationSetObserver mConversationSetObserver = new ConversationSetObserver() {
         @Override
-        public void onSetPopulated(final ConversationSelectionSet set) {
+        public void onSetPopulated(final ConversationCheckedSet set) {
             // Disable the swipe to refresh widget.
             mSwipeRefreshWidget.setEnabled(false);
         }
@@ -1116,7 +1127,7 @@ public final class ConversationListFragment extends Fragment implements
         }
 
         @Override
-        public void onSetChanged(final ConversationSelectionSet set) {
+        public void onSetChanged(final ConversationCheckedSet set) {
             // Do nothing
         }
     };

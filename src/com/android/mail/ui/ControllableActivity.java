@@ -50,7 +50,7 @@ public interface ControllableActivity extends RestrictedActivity,
      * In case no conversation is currently selected, it returns an empty selection set.
      * @return
      */
-    ConversationSelectionSet getSelectedSet();
+    ConversationCheckedSet getCheckedSet();
 
     /**
      * Returns the listener for folder list selection changes in the folder list
