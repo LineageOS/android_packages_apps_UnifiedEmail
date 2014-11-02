@@ -66,13 +66,9 @@
         <item name="android:paddingEnd">@dimen/folder_list_item_end_margin</item>
     </style>
 
-    <style name="FolderListItemStyle">
+    <style name="FolderListItemStyleBase">
         <item name="android:layout_marginStart">@dimen/folder_list_item_text_start_margin</item>
         <item name="android:layout_marginEnd">@dimen/folder_list_item_end_margin</item>
-    </style>
-
-    <style name="DrawerFooterListItemStyle">
-        <item name="android:paddingStart">@dimen/drawer_footer_text_padding_start</item>
     </style>
 
     <style name="DismissSeparatorStyle">
