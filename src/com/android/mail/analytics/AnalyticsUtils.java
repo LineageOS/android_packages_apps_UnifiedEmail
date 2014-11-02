@@ -17,38 +17,9 @@
 
 package com.android.mail.analytics;
 
-import android.text.TextUtils;
-
 import com.android.mail.R;
-import com.google.common.collect.ImmutableMap;
-
-import java.util.Map;
 
 public class AnalyticsUtils {
-
-    /**
-     * Map of email domains to tags sent to analytics.
-     */
-    private static final Map<String, String> DOMAIN_TO_EMAIL_PROVIDER_MAP =
-            ImmutableMap.<String,String>builder()
-                .put("gmail.com", "gmail")
-                .put("googlemail.com", "gmail")
-                .put("google.com", "google-corp")
-                .put("hotmail.com", "hotmail")
-                .put("outlook.com", "outlook")
-                .put("yahoo.com", "yahoo")
-                .build();
-
-    public static String getEmailProviderForAddress(String emailAddress) {
-        if (TextUtils.isEmpty(emailAddress)) {
-            return "unknown";
-        }
-        final String domain = emailAddress.substring(emailAddress.lastIndexOf('@') + 1)
-                .toLowerCase();
-        final String emailProvider = DOMAIN_TO_EMAIL_PROVIDER_MAP.get(domain);
-        return emailProvider != null ? emailProvider : "other";
-    }
-
     // individual apps should chain this method call with their own lookup tables if they have
     // app-specific menu items
     public static String getMenuItemString(int id) {
