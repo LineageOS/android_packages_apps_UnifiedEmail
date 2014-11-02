@@ -36,7 +36,7 @@ import com.android.mail.R;
  * Custom view for the action bar when search is displayed.
  */
 public class MaterialSearchActionView extends LinearLayout implements TextWatcher,
-        View.OnClickListener, TextView.OnEditorActionListener {
+        View.OnClickListener, TextView.OnEditorActionListener, View.OnKeyListener {
     private MaterialSearchViewController mController;
     private InputMethodManager mImm;
     private boolean mShowingClose;
@@ -86,6 +86,7 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
         mQueryText.addTextChangedListener(this);
         mQueryText.setOnClickListener(this);
         mQueryText.setOnEditorActionListener(this);
+        mQueryText.setOnKeyListener(this);
         mEndingButton = (ImageView) findViewById(R.id.search_actionbar_ending_button);
         mEndingButton.setOnClickListener(this);
     }
@@ -133,6 +134,16 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
     @Override
     public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            mController.onSearchPerformed(mQueryText.getText().toString());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        // Hardware keyboard doesn't represent Enter as Search through imeOptions, so we need to
+        // capture them manually here.
+        if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_ENTER) {
             mController.onSearchPerformed(mQueryText.getText().toString());
         }
         return false;
