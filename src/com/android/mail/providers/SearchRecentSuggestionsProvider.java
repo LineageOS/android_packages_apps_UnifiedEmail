@@ -24,11 +24,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.SystemClock;
-import android.text.TextUtils;
 
 import com.android.mail.R;
-import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 
@@ -40,9 +37,17 @@ public class SearchRecentSuggestionsProvider {
 
     // general database configuration and tables
     private SQLiteOpenHelper mOpenHelper;
-    private static final String sDatabaseName = "suggestions.db";
-    private static final String sSuggestions = "suggestions";
-    private static final String ORDER_BY = "date DESC";
+    private static final String DATABASE_NAME = "suggestions.db";
+    private static final String SUGGESTIONS_TABLE = "suggestions";
+
+    private static final String QUERY =
+            " SELECT _id" +
+            "   , display1 AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 +
+            "   , ? || query AS " + SearchManager.SUGGEST_COLUMN_QUERY +
+            "   , ? AS " + SearchManager.SUGGEST_COLUMN_ICON_1 +
+            " FROM " + SUGGESTIONS_TABLE +
+            " WHERE display1 LIKE ?" +
+            " ORDER BY date DESC";
 
     // Table of database versions.  Don't forget to update!
     // NOTE:  These version values are shifted left 8 bits (x 256) in order to create space for
@@ -56,14 +61,18 @@ public class SearchRecentSuggestionsProvider {
     private static final int DATABASE_VERSION_2 = 2 * 256;
     private static final int DATABASE_VERSION_3 = 3 * 256;
 
-    private String mSuggestSuggestionClause;
-    private String[] mSuggestionProjection;
+    private String mHistoricalIcon;
 
     protected final Context mContext;
+    private ArrayList<String> mFullQueryTerms;
 
     public SearchRecentSuggestionsProvider(Context context) {
         mContext = context;
         mOpenHelper = new DatabaseHelper(mContext, DATABASE_VERSION);
+
+        // The URI of the icon that we will include on every suggestion here.
+        mHistoricalIcon = ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
+                + mContext.getPackageName() + "/" + R.drawable.ic_history_24dp;
     }
 
     public void cleanup() {
@@ -79,19 +88,18 @@ public class SearchRecentSuggestionsProvider {
      */
     private static class DatabaseHelper extends SQLiteOpenHelper {
         public DatabaseHelper(Context context, int newVersion) {
-            super(context, sDatabaseName, null, newVersion);
+            super(context, DATABASE_NAME, null, newVersion);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("CREATE TABLE suggestions (" +
+            final String create = "CREATE TABLE suggestions (" +
                     "_id INTEGER PRIMARY KEY" +
                     ",display1 TEXT UNIQUE ON CONFLICT REPLACE" +
                     ",query TEXT" +
                     ",date LONG" +
-                    ");");
-            db.execSQL(builder.toString());
+                    ");";
+            db.execSQL(create);
         }
 
         @Override
@@ -109,56 +117,6 @@ public class SearchRecentSuggestionsProvider {
     }
 
     /**
-     * In order to use this class, you must extend it, and call this setup function from your
-     * constructor.  In your application or activities, you must provide the same values when
-     * you create the {@link android.provider.SearchRecentSuggestions} helper.
-     */
-    protected void setupSuggestions() {
-        // The URI of the icon that we will include on every suggestion here.
-        final String historicalIcon = ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
-                + mContext.getPackageName() + "/" + R.drawable.ic_history_24dp;
-
-        mSuggestSuggestionClause = "display1 LIKE ?";
-        mSuggestionProjection = new String [] {
-                "_id",
-                "display1 AS " + SearchManager.SUGGEST_COLUMN_TEXT_1,
-                "query AS " + SearchManager.SUGGEST_COLUMN_QUERY,
-                "'" + historicalIcon + "' AS " + SearchManager.SUGGEST_COLUMN_ICON_1
-        };
-    }
-
-    private ArrayList<String> mFullQueryTerms;
-
-    /**
-     *  Copy the projection, and change the query field alone.
-     * @param selectionArgs
-     * @return projection
-     */
-    private String[] createProjection(String[] selectionArgs) {
-        String[] newProjection = new String[mSuggestionProjection.length];
-        String queryAs;
-        int fullSize = (mFullQueryTerms != null) ? mFullQueryTerms.size() : 0;
-        if (fullSize > 0) {
-            String realQuery = "'";
-            for (int i = 0; i < fullSize; i++) {
-                realQuery+= mFullQueryTerms.get(i);
-                if (i < fullSize -1) {
-                    realQuery += QUERY_TOKEN_SEPARATOR;
-                }
-            }
-            queryAs = realQuery + " ' || query AS " + SearchManager.SUGGEST_COLUMN_QUERY;
-        } else {
-            queryAs = "query AS " + SearchManager.SUGGEST_COLUMN_QUERY;
-        }
-        for (int i = 0; i < mSuggestionProjection.length; i++) {
-            newProjection[i] = mSuggestionProjection[i];
-        }
-        // Assumes that newProjection[length-2] is the query field.
-        newProjection[mSuggestionProjection.length - 2] = queryAs;
-        return newProjection;
-    }
-
-    /**
      * Set the other query terms to be included in the user's query.
      * These are in addition to what is being looked up for suggestions.
      * @param terms
@@ -167,26 +125,19 @@ public class SearchRecentSuggestionsProvider {
         mFullQueryTerms = terms;
     }
 
-    // TODO: Confirm no injection attacks here, or rewrite.
-    public Cursor query(String[] projection, String selection, String[] selectionArgs,
-            String sortOrder) {
+    public Cursor query(String query) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
-        // special case for actual suggestions (from search manager)
-        String suggestSelection;
-        String[] myArgs;
-        if (TextUtils.isEmpty(selectionArgs[0])) {
-            suggestSelection = null;
-            myArgs = null;
-        } else {
-            String like = "%" + selectionArgs[0] + "%";
-            myArgs = new String[] { like };
-            suggestSelection = mSuggestSuggestionClause;
+        final StringBuilder builder = new StringBuilder();
+        if (mFullQueryTerms != null) {
+            for (String token : mFullQueryTerms) {
+                builder.append(token).append(QUERY_TOKEN_SEPARATOR);
+            }
         }
-        // Suggestions are always performed with the default sort order
-        Cursor c = db.query(sSuggestions, createProjection(selectionArgs), suggestSelection, myArgs,
-                null, null, ORDER_BY, null);
-        return c;
+
+        final String[] args = new String[] {builder.toString(), mHistoricalIcon, "%" + query + "%"};
+
+        return db.rawQuery(QUERY, args);
     }
 
     /**
@@ -200,11 +151,11 @@ public class SearchRecentSuggestionsProvider {
         values.put("query", query);
         values.put("date", System.currentTimeMillis());
         // Note:  This table has on-conflict-replace semantics, so insert() may actually replace()
-        db.insert(sSuggestions, null, values);
+        db.insert(SUGGESTIONS_TABLE, null, values);
     }
 
     public void clearHistory() {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        db.delete(sSuggestions, null, null);
+        db.delete(SUGGESTIONS_TABLE, null, null);
     }
 }

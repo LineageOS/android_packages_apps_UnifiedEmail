@@ -49,8 +49,6 @@ public class MaterialSearchSuggestionsList extends LinearLayout
     private List<SuggestionItem> mSuggestions = Lists.newArrayList();
     private String mQuery;
 
-    private View mDummyHolder;
-    private ListView mListView;
     private MaterialSearchViewListAdapter mAdapter;
     private QuerySuggestionsTask mQueryTask;
 
@@ -83,14 +81,14 @@ public class MaterialSearchSuggestionsList extends LinearLayout
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mListView = (ListView) findViewById(R.id.search_overlay_suggestion_list);
-        mListView.setOnItemClickListener(this);
-        mDummyHolder = findViewById(R.id.search_overlay_scrim);
-        mDummyHolder.setOnClickListener(this);
+        final ListView listView = (ListView) findViewById(R.id.search_overlay_suggestion_list);
+        listView.setOnItemClickListener(this);
+        final View dummyHolder = findViewById(R.id.search_overlay_scrim);
+        dummyHolder.setOnClickListener(this);
 
         // set up the adapter
         mAdapter = new MaterialSearchViewListAdapter(getContext(), R.layout.search_suggestion_item);
-        mListView.setAdapter(mAdapter);
+        listView.setAdapter(mAdapter);
     }
 
     @Override
@@ -125,8 +123,7 @@ public class MaterialSearchSuggestionsList extends LinearLayout
             Cursor c = null;
             final List<SuggestionItem> result = Lists.newArrayList();
             try {
-                c = mSuggestionsProvider.query(null, "query LIKE ?",
-                        new String[] { query }, null);
+                c = mSuggestionsProvider.query(query);
 
                 if (c != null && c.moveToFirst()) {
                     final int textIndex = c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY);
