@@ -475,7 +475,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
 
     @Override
     public void onDragStarted() {
-        mController.onDragStarted();
+        mController.onDrawerDragStarted();
     }
 
     @Override
@@ -503,13 +503,13 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         if (isFling) {
             // Drawer is minimized if velocity is toward the left or it's rtl.
             if (mIsRtl) {
-                mController.setDrawerState(velocityX >= 0);
+                mController.onDrawerDragEnded(velocityX >= 0);
             } else {
-                mController.setDrawerState(velocityX < 0);
+                mController.onDrawerDragEnded(velocityX < 0);
             }
         } else {
             // If we got past the half-way mark, animate it rest of the way.
-            mController.setDrawerState(computeDragPercentage(deltaX) < 0.5f);
+            mController.onDrawerDragEnded(computeDragPercentage(deltaX) < 0.5f);
         }
     }
 

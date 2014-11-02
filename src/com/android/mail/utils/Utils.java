@@ -922,7 +922,8 @@ public class Utils {
      * is enabled. Does nothing otherwise.
      */
     public static void enableHardwareLayer(View v) {
-        if (v != null && v.isHardwareAccelerated()) {
+        if (v != null && v.isHardwareAccelerated() &&
+                v.getLayerType() != View.LAYER_TYPE_HARDWARE) {
             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             v.buildLayer();
         }
