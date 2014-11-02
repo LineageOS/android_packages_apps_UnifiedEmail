@@ -233,6 +233,16 @@ public class Account implements Parcelable {
     public final String settingsFragmentClass;
 
     /**
+     * Nonzero value indicates that this account is on a security hold.
+     */
+    public final int securityHold;
+
+    /**
+     * Uri to launch the account security activity.
+     */
+    public final String accountSecurityUri;
+
+    /**
      * Transient cache of parsed {@link #accountFromAddresses}, plus an entry for the main account
      * address.
      */
@@ -285,6 +295,8 @@ public class Account implements Parcelable {
             json.put(AccountColumns.SYNC_AUTHORITY, syncAuthority);
             json.put(AccountColumns.QUICK_RESPONSE_URI, quickResponseUri);
             json.put(AccountColumns.SETTINGS_FRAGMENT_CLASS, settingsFragmentClass);
+            json.put(AccountColumns.SECURITY_HOLD, securityHold);
+            json.put(AccountColumns.ACCOUNT_SECURITY_URI, accountSecurityUri);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -417,6 +429,8 @@ public class Account implements Parcelable {
         syncAuthority = json.optString(AccountColumns.SYNC_AUTHORITY);
         quickResponseUri = Utils.getValidUri(json.optString(AccountColumns.QUICK_RESPONSE_URI));
         settingsFragmentClass = json.optString(AccountColumns.SETTINGS_FRAGMENT_CLASS, "");
+        securityHold = json.optInt(AccountColumns.SECURITY_HOLD);
+        accountSecurityUri = json.optString(AccountColumns.ACCOUNT_SECURITY_URI);
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -499,6 +513,13 @@ public class Account implements Parcelable {
                 cursor.getColumnIndex(AccountColumns.QUICK_RESPONSE_URI)));
         settingsFragmentClass = cursor.getString(cursor.getColumnIndex(
                 AccountColumns.SETTINGS_FRAGMENT_CLASS));
+        final int securityHoldIndex = cursor.getColumnIndex(AccountColumns.SECURITY_HOLD);
+        securityHold = (securityHoldIndex >= 0 ?
+                cursor.getInt(cursor.getColumnIndex(AccountColumns.SECURITY_HOLD)) : 0);
+        final int accountSecurityIndex =
+                cursor.getColumnIndex(AccountColumns.ACCOUNT_SECURITY_URI);
+        accountSecurityUri = (accountSecurityIndex >= 0 ?
+                cursor.getString(accountSecurityIndex) : "");
         settings = new Settings(cursor);
     }
 
@@ -608,6 +629,8 @@ public class Account implements Parcelable {
         }
         quickResponseUri = in.readParcelable(null);
         settingsFragmentClass = in.readString();
+        securityHold = in.readInt();
+        accountSecurityUri = in.readString();
         final int hasSettings = in.readInt();
         if (hasSettings == 0) {
             LogUtils.e(LOG_TAG, new Throwable(), "Unexpected null settings in Account(Parcel)");
@@ -652,6 +675,8 @@ public class Account implements Parcelable {
         dest.writeString(syncAuthority);
         dest.writeParcelable(quickResponseUri, 0);
         dest.writeString(settingsFragmentClass);
+        dest.writeInt(securityHold);
+        dest.writeString(accountSecurityUri);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
             dest.writeInt(0);
@@ -716,6 +741,8 @@ public class Account implements Parcelable {
                 Objects.equal(syncAuthority, other.syncAuthority) &&
                 Objects.equal(quickResponseUri, other.quickResponseUri) &&
                 Objects.equal(settingsFragmentClass, other.settingsFragmentClass) &&
+                Objects.equal(securityHold, other.securityHold) &&
+                Objects.equal(accountSecurityUri, other.accountSecurityUri) &&
                 Objects.equal(settings, other.settings);
     }
 
@@ -768,7 +795,9 @@ public class Account implements Parcelable {
                 updateSettingsUri,
                 enableMessageTransforms,
                 syncAuthority,
-                quickResponseUri);
+                quickResponseUri,
+                securityHold,
+                accountSecurityUri);
     }
 
     /**
@@ -930,6 +959,8 @@ public class Account implements Parcelable {
         map.put(AccountColumns.SYNC_AUTHORITY, syncAuthority);
         map.put(AccountColumns.QUICK_RESPONSE_URI, quickResponseUri);
         map.put(AccountColumns.SETTINGS_FRAGMENT_CLASS, settingsFragmentClass);
+        map.put(AccountColumns.SECURITY_HOLD, securityHold);
+        map.put(AccountColumns.ACCOUNT_SECURITY_URI, accountSecurityUri);
         settings.getValueMap(map);
 
         return map;
