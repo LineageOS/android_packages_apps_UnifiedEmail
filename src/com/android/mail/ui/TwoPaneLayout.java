@@ -438,6 +438,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
                 break;
             case ViewMode.CONVERSATION_LIST:
             case ViewMode.SEARCH_RESULTS_LIST:
+            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
                 dispatchConversationVisibilityChanged(false);
                 dispatchConversationListVisibilityChange(true);
 
