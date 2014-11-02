@@ -493,7 +493,7 @@ public final class ConversationListFragment extends Fragment implements
         sb.append(mViewContext.folder);
         if (mListView != null) {
             sb.append(" selectedPos=");
-            sb.append(mListView.getSelectedPosition());
+            sb.append(mListView.getSelectedConversationPosDebug());
             sb.append(" listSelectedPos=");
             sb.append(mListView.getSelectedItemPosition());
             sb.append(" isListInTouchMode=");
@@ -858,7 +858,7 @@ public final class ConversationListFragment extends Fragment implements
          * special views in the list.
          */
             conv.position = cursor.getPosition();
-            setActivated(conv.position, true);
+            setActivated(conv, true);
             mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
         } else {
             LogUtils.e(LOG_TAG,
@@ -869,41 +869,41 @@ public final class ConversationListFragment extends Fragment implements
 
     /**
      * Sets the checked conversation to the position given here.
-     * @param cursorPosition The position of the conversation in the cursor (as opposed to
-     * in the list)
+     * @param conversation the activated conversation.
      * @param different if the currently checked conversation is different from the one provided
      * here.  This is a difference in conversations, not a difference in positions. For example, a
      * conversation at position 2 can move to position 4 as a result of new mail.
      */
-    public void setActivated(final int cursorPosition, boolean different) {
-        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE) {
+    public void setActivated(final Conversation conversation, boolean different) {
+        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE || conversation == null) {
             return;
         }
 
+        final int cursorPosition = conversation.position;
         final int position = cursorPosition + mListAdapter.getPositionOffset(cursorPosition);
         setRawActivated(position, different);
-        setRawSelected(position);
+        setRawSelected(conversation, position);
     }
 
     /**
      * Set the selected conversation (used by the framework to indicate current focus in the list).
-     * @param cursorPosition The position of the conversation in the cursor (as opposed to
-     * in the list)
+     * @param conversation the selected conversation.
      */
-    public void setSelected(final int cursorPosition) {
-        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE) {
+    public void setSelected(final Conversation conversation) {
+        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE || conversation == null) {
             return;
         }
 
+        final int cursorPosition = conversation.position;
         final int position = cursorPosition + mListAdapter.getPositionOffset(cursorPosition);
-        setRawSelected(position);
+        setRawSelected(conversation, position);
     }
 
     /**
      * Set the selected conversation (used by the framework to indicate current focus in the list).
      * @param position The position of the item in the list
      */
-    private void setRawSelected(final int position) {
+    private void setRawSelected(Conversation conversation, final int position) {
         final View selectedView = mListView.getChildAt(
                 position - mListView.getFirstVisiblePosition());
         // Don't do anything if the view is already selected.
@@ -919,7 +919,7 @@ public final class ConversationListFragment extends Fragment implements
                 // setSelection calls setSelectionFromTop with y = 0.
                 mListView.setSelectionFromTop(position, selectedView.getTop());
             }
-            mListView.setSelectedPosition(position);
+            mListView.setSelectedConversation(conversation);
         }
     }
 
@@ -1154,7 +1154,7 @@ public final class ConversationListFragment extends Fragment implements
         if (conv != null && !currentConvIsPeeking) {
             if (mListView.getChoiceMode() != ListView.CHOICE_MODE_NONE
                     && mListView.getCheckedItemPosition() == -1) {
-                setActivated(conv.position, true);
+                setActivated(conv, true);
             }
         }
     }
