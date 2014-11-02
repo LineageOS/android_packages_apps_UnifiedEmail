@@ -26,11 +26,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Looper;
 import android.provider.ContactsContract;
@@ -1693,13 +1688,13 @@ public class NotificationUtils {
                 final Dimensions dimensions = new Dimensions(idealIconWidth, idealIconHeight,
                         Dimensions.SCALE_ONE);
 
-                contactIconInfo.icon = new LetterTileProvider(context).getLetterTile(dimensions,
-                        displayName, senderAddress);
+                contactIconInfo.icon = new LetterTileProvider(context.getResources())
+                        .getLetterTile(dimensions, displayName, senderAddress);
             }
 
             // Only turn the square photo/letter tile into a circle for L and later
             if (Utils.isRunningLOrLater()) {
-                contactIconInfo.icon = cropSquareIconToCircle(contactIconInfo.icon);
+                contactIconInfo.icon = BitmapUtil.frameBitmapInCircle(contactIconInfo.icon);
             }
         }
 
@@ -1785,28 +1780,6 @@ public class NotificationUtils {
         }
 
         return contactIconInfo;
-    }
-
-    /**
-     * Crop a square bitmap into a circular one. Used for both contact photos and letter tiles.
-     * @param icon Square bitmap to crop
-     * @return Circular bitmap
-     */
-    private static Bitmap cropSquareIconToCircle(Bitmap icon) {
-        final int iconWidth = icon.getWidth();
-        final Bitmap newIcon = Bitmap.createBitmap(iconWidth, iconWidth, Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(newIcon);
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, icon.getWidth(),
-                icon.getHeight());
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        canvas.drawCircle(iconWidth/2, iconWidth/2, iconWidth/2, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(icon, rect, rect, paint);
-
-        return newIcon;
     }
 
     private static String getMessageBodyWithoutElidedText(final Message message) {
