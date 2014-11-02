@@ -409,7 +409,7 @@ public class WidgetService extends RemoteViewsService {
 
                 ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
                 SendersView.format(mContext, conversation.conversationInfo, "",
-                        MAX_SENDERS_LENGTH, senders, null, null, mAccount.getEmailAddress(),
+                        MAX_SENDERS_LENGTH, senders, null, null, mAccount,
                         Folder.shouldShowRecipients(mFolderCapabilities), true);
                 final SpannableStringBuilder senderBuilder = elideParticipants(senders);
 

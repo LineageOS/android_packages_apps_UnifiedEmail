@@ -90,7 +90,6 @@ public class NotificationUtils {
     public static final String EXTRA_UNREAD_COUNT = "unread-count";
     public static final String EXTRA_UNSEEN_COUNT = "unseen-count";
     public static final String EXTRA_GET_ATTENTION = "get-attention";
-    private static final int PUBLIC_NOTIFICATIONS_VISIBLE_CHARS = 4;
 
     /** Contains a list of <(account, label), unread conversations> */
     private static NotificationMap sActiveNotificationMap = null;
@@ -954,7 +953,7 @@ public class NotificationUtils {
         Bitmap bg = sDefaultWearableBg.get();
         if (bg == null) {
             bg = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_email);
-            sDefaultWearableBg = new WeakReference<Bitmap>(bg);
+            sDefaultWearableBg = new WeakReference<>(bg);
         }
         return bg;
     }
@@ -969,8 +968,6 @@ public class NotificationUtils {
             final int unreadCount, final int unseenCount,
             final Folder folder, final long when, final ContactFetcher contactFetcher) {
         final Resources res = context.getResources();
-        final String notificationAccountDisplayName = account.getDisplayName();
-        final String notificationAccountEmail = account.getEmailAddress();
         final boolean multipleUnseen = unseenCount > 1;
 
         LogUtils.i(LOG_TAG, "Showing notification with unreadCount of %d and unseenCount of %d",
@@ -1002,7 +999,7 @@ public class NotificationUtils {
 
                 // The body of the notification is the account name, or the label name.
                 notificationBuilder.setSubText(
-                        isInbox ? notificationAccountDisplayName : notificationLabelName);
+                        isInbox ? account.getDisplayName() : notificationLabelName);
 
                 final NotificationCompat.InboxStyle digest =
                         new NotificationCompat.InboxStyle(notificationBuilder);
@@ -1057,7 +1054,7 @@ public class NotificationUtils {
                                         res.getInteger(R.integer.swipe_senders_length);
 
                                 sendersBuilder = getStyledSenders(context, conversationCursor,
-                                        sendersLength, notificationAccountEmail);
+                                        sendersLength, account);
                             } else {
                                 sendersBuilder =
                                         new SpannableStringBuilder(getWrappedFromString(from));
@@ -1108,7 +1105,6 @@ public class NotificationUtils {
                                     configureNotifForOneConversation(context, account,
                                     folderPreferences, conversationNotif, conversationWearExtender,
                                     conversationCursor, notificationIntent, folder, when, res,
-                                    notificationAccountDisplayName, notificationAccountEmail,
                                     isInbox, notificationLabelName, conversationNotificationId,
                                     contactFetcher);
                             msgNotifications.put(conversationNotificationId,
@@ -1142,7 +1138,7 @@ public class NotificationUtils {
             } else {
                 // The body of the notification is the account name, or the label name.
                 notificationBuilder.setContentText(
-                        isInbox ? notificationAccountDisplayName : notificationLabelName);
+                        isInbox ? account.getDisplayName() : notificationLabelName);
             }
         } else {
             // For notifications for a single new conversation, we want to get the information
@@ -1153,8 +1149,7 @@ public class NotificationUtils {
 
             final ConfigResult result = configureNotifForOneConversation(context, account,
                     folderPreferences, notificationBuilder, wearableExtender, conversationCursor,
-                    notificationIntent, folder, when, res, notificationAccountDisplayName,
-                    notificationAccountEmail, isInbox, notificationLabelName,
+                    notificationIntent, folder, when, res, isInbox, notificationLabelName,
                     summaryNotificationId, contactFetcher);
             notificationTicker = result.notificationTicker;
 
@@ -1194,7 +1189,6 @@ public class NotificationUtils {
             NotificationCompat.Builder notificationBuilder,
             NotificationCompat.WearableExtender wearExtender, Cursor conversationCursor,
             Intent notificationIntent, Folder folder, long when, Resources res,
-            String notificationAccountDisplayName, String notificationAccountEmail,
             boolean isInbox, String notificationLabelName, int notificationId,
             final ContactFetcher contactFetcher) {
 
@@ -1260,8 +1254,7 @@ public class NotificationUtils {
                     int sendersLength = res.getInteger(R.integer.swipe_senders_length);
 
                     final SpannableStringBuilder sendersBuilder = getStyledSenders(
-                            context, conversationCursor, sendersLength,
-                            notificationAccountEmail);
+                            context, conversationCursor, sendersLength, account);
 
                     notificationBuilder.setContentTitle(sendersBuilder);
                     // For a single new conversation, the ticker is based on the sender's name.
@@ -1281,7 +1274,7 @@ public class NotificationUtils {
                 // notifications, or will based on the the label name for user label
                 // notifications.
                 notificationBuilder.setSubText(isInbox ?
-                        notificationAccountDisplayName : notificationLabelName);
+                        account.getDisplayName() : notificationLabelName);
 
                 final NotificationCompat.BigTextStyle bigText =
                         new NotificationCompat.BigTextStyle(notificationBuilder);
@@ -1316,7 +1309,7 @@ public class NotificationUtils {
                 // notifications, or will based on the the label name for user label
                 // notifications.
                 notificationBuilder.setContentText(
-                        isInbox ? notificationAccountDisplayName : notificationLabelName);
+                        isInbox ? account.getDisplayName() : notificationLabelName);
 
                 // For a single new conversation, the ticker is based on the sender's name.
                 result.notificationTicker = from;
@@ -1427,11 +1420,11 @@ public class NotificationUtils {
     }
 
     private static SpannableStringBuilder getStyledSenders(final Context context,
-            final Cursor conversationCursor, final int maxLength, final String account) {
+            final Cursor conversationCursor, final int maxLength, final Account account) {
         final Conversation conversation = new Conversation(conversationCursor);
         final com.android.mail.providers.ConversationInfo conversationInfo =
                 conversation.conversationInfo;
-        final ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
+        final ArrayList<SpannableString> senders = new ArrayList<>();
         if (sNotificationUnreadStyleSpan == null) {
             sNotificationUnreadStyleSpan = new TextAppearanceSpan(
                     context, R.style.NotificationSendersUnreadTextAppearance);
