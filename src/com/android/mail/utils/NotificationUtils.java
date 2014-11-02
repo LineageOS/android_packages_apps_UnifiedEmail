@@ -1665,7 +1665,7 @@ public class NotificationUtils {
         }
 
         final ContactIconInfo contactIconInfo;
-        if (senderAddress == null) {
+        if (TextUtils.isEmpty(senderAddress)) {
             contactIconInfo = new ContactIconInfo();
         } else {
             // Get the ideal size for this icon.
