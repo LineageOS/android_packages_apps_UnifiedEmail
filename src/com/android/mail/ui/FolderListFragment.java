@@ -1538,7 +1538,7 @@ public class FolderListFragment extends ListFragment implements
 
     private class HelpItem extends FooterItem {
         protected HelpItem() {
-            super(R.drawable.ic_drawer_help, R.string.help_and_feedback);
+            super(R.drawable.ic_drawer_help_24dp, R.string.help_and_feedback);
         }
 
         @Override
@@ -1551,7 +1551,7 @@ public class FolderListFragment extends ListFragment implements
 
     private class SettingsItem extends FooterItem {
         protected SettingsItem() {
-            super(R.drawable.ic_drawer_settings, R.string.menu_settings);
+            super(R.drawable.ic_drawer_settings_24dp, R.string.menu_settings);
         }
 
         @Override
