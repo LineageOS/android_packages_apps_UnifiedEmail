@@ -49,6 +49,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:gravity="center_horizontal"
+            android:maxWidth="190dp"
             android:paddingTop="@dimen/snack_bar_margin_vertical"
             android:paddingBottom="@dimen/snack_bar_margin_vertical"
             android:textAllCaps="true"
