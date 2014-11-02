@@ -17,4 +17,5 @@
 -->
 <resources>
     <drawable name="ic_arrow_back_24dp_with_rtl">@drawable/ic_arrow_back_24dp</drawable>
+    <drawable name="ic_arrow_back_wht_24dp_with_rtl">@drawable/ic_arrow_back_wht_24dp</drawable>
 </resources>

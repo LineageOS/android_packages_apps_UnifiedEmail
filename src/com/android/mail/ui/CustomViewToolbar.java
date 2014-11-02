@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -78,26 +80,40 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
         });
     }
 
+    private void setSearchButtonVisibility() {
+        // Search button is ONLY visible in conversation list mode
+        final boolean visible = mController.shouldShowSearchMenuItem() &&
+                mActivity.getAccountController().getAccount().supportsSearch();
+        mSearchButton.setVisibility(visible ? VISIBLE : INVISIBLE);
+    }
+
     @Override
     public void onViewModeChanged(int newMode) {
-        // Search button is ONLY visible in conversation list mode
-        if (mController.shouldShowSearchMenuItem()) {
-            final boolean supportSearch =
-                    mActivity.getAccountController().getAccount().supportsSearch();
-            mSearchButton.setVisibility(supportSearch ? View.VISIBLE : View.INVISIBLE);
-        } else {
-            mSearchButton.setVisibility(View.INVISIBLE);
-        }
+        setSearchButtonVisibility();
     }
 
     @Override
     public void onConversationListLayout(int xEnd, boolean drawerOpen) {
         if (drawerOpen) {
-            mSearchButton.setClickable(false);
-            mSearchButton.animate().alpha(0).setDuration(FADE_ANIMATION_DURATION_MS).start();
+            mSearchButton.animate()
+                    .alpha(0f)
+                    .setDuration(FADE_ANIMATION_DURATION_MS)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mSearchButton.setVisibility(INVISIBLE);
+                        }
+                    });
         } else {
-            mSearchButton.setClickable(true);
-            mSearchButton.animate().alpha(1).setDuration(FADE_ANIMATION_DURATION_MS).start();
+            setSearchButtonVisibility();
+            // setListener(null) is necessary because the animator carries the previously set
+            // listener over, aka the listener for fade out.
+            if (mSearchButton.isShown()) {
+                mSearchButton.animate()
+                        .alpha(1f)
+                        .setDuration(FADE_ANIMATION_DURATION_MS)
+                        .setListener(null);
+            }
 
             final int[] coords = new int[2];
             mCustomView.getLocationInWindow(coords);

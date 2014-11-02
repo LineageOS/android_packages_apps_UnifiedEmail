@@ -48,18 +48,18 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     // we have to show the search actionbar on top while the user is not interacting with it.
     public static final int SEARCH_VIEW_STATE_ONLY_ACTIONBAR = 2;
 
-    private static final String EXTRA_VIEW_STATE = "extraSearchViewControllerViewState";
+    private static final String EXTRA_CONTROLLER_STATE = "extraSearchViewControllerViewState";
 
     private final MailActivity mActivity;
     private final ActivityController mController;
 
-    protected SearchRecentSuggestionsProvider mSuggestionsProvider;
+    private SearchRecentSuggestionsProvider mSuggestionsProvider;
 
-    protected MaterialSearchActionView mSearchActionView;
-    protected MaterialSearchSuggestionsList mSearchSuggestionList;
+    private MaterialSearchActionView mSearchActionView;
+    private MaterialSearchSuggestionsList mSearchSuggestionList;
 
     private int mViewMode;
-    private int mViewState;
+    private int mControllerState;
     private int mEndXCoordForTabletLandscape;
 
     private boolean mWaitToDestroyProvider;
@@ -82,8 +82,8 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
         mSearchActionView.setController(this, intent.getStringExtra(
                 ConversationListContext.EXTRA_SEARCH_QUERY), supportVoice);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_VIEW_STATE)) {
-            mViewState = savedInstanceState.getInt(EXTRA_VIEW_STATE);
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_CONTROLLER_STATE)) {
+            mControllerState = savedInstanceState.getInt(EXTRA_CONTROLLER_STATE);
         }
 
         mActivity.getViewMode().addListener(this);
@@ -97,19 +97,19 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     public void saveState(Bundle outState) {
-        outState.putInt(EXTRA_VIEW_STATE, mViewState);
+        outState.putInt(EXTRA_CONTROLLER_STATE, mControllerState);
     }
 
     @Override
     public void onViewModeChanged(int newMode) {
-        if (mController.shouldShowSearchBarByDefault()) {
-            showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
-        } else if (mViewMode == 0) {
-            showSearchActionBar(mViewState);
-        } else {
-            showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_GONE);
-        }
         mViewMode = newMode;
+        if (mController.shouldShowSearchBarByDefault()) {
+            showSearchActionBar(SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
+        } else if (mViewMode == 0) {
+            showSearchActionBar(mControllerState);
+        } else {
+            showSearchActionBar(SEARCH_VIEW_STATE_GONE);
+        }
     }
 
     @Override
@@ -130,10 +130,10 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     public boolean handleBackPress() {
         final boolean shouldShowSearchBar = mController.shouldShowSearchBarByDefault();
         if (shouldShowSearchBar && mSearchSuggestionList.isShown()) {
-            showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
+            showSearchActionBar(SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
             return true;
         } else if (!shouldShowSearchBar && mSearchActionView.isShown()) {
-            showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_GONE);
+            showSearchActionBar(SEARCH_VIEW_STATE_GONE);
             return true;
         }
         return false;
@@ -141,42 +141,43 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
     // Should use the view states specified in MaterialSearchViewController
     public void showSearchActionBar(int state) {
-        mViewState = state;
-        switch (state) {
-            case MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR:
-                // Only actionbar is only applicable in search mode
-                if (mController.shouldShowSearchBarByDefault()) {
-                    mSearchActionView.setVisibility(View.VISIBLE);
-                    mSearchSuggestionList.setVisibility(View.GONE);
-                    mSearchActionView.focusSearchBar(false);
-                    adjustViewForTwoPaneLandscape();
-                    break;
-                }
-                // Fallthrough to setting everything invisible
-            case MaterialSearchViewController.SEARCH_VIEW_STATE_GONE:
-                mSearchActionView.focusSearchBar(false);
-                mSearchActionView.setVisibility(View.GONE);
-                mSearchSuggestionList.setVisibility(View.GONE);
+        if (mControllerState != state) {
+            mControllerState = state;
+
+            // ACTIONBAR is only applicable in search mode
+            final boolean onlyActionBar = state == SEARCH_VIEW_STATE_ONLY_ACTIONBAR &&
+                    mController.shouldShowSearchBarByDefault();
+            final boolean isStateVisible = state == SEARCH_VIEW_STATE_VISIBLE;
+
+            final boolean isSearchBarVisible = isStateVisible || onlyActionBar;
+            mSearchActionView.setVisibility(isSearchBarVisible ? View.VISIBLE : View.GONE);
+            mSearchSuggestionList.setVisibility(isStateVisible ? View.VISIBLE : View.GONE);
+            mSearchActionView.focusSearchBar(isStateVisible);
+
+            // Specific actions for each view state
+            if (onlyActionBar) {
+                adjustViewForTwoPaneLandscape();
+            } else if (isStateVisible) {
+                // Set to default layout/assets
+                mSearchActionView.adjustViewForTwoPaneLandscape(false /* do not align */, 0);
+            } else {
                 // For non-search view mode, clear the query term for search
                 if (!ViewMode.isSearchMode(mViewMode)) {
                     mSearchActionView.clearSearchQuery();
                 }
-                break;
-            case MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE:
-                mSearchActionView.setVisibility(View.VISIBLE);
-                // Set to default layout/assets
-                mSearchActionView.adjustViewForTwoPaneLandscape(false /* do not align */, 0);
-                mSearchSuggestionList.setVisibility(View.VISIBLE);
-                mSearchActionView.focusSearchBar(true);
-                break;
+            }
         }
     }
 
     private void adjustViewForTwoPaneLandscape() {
-        final boolean alignWithTL = mController.isTwoPaneLandscape() &&
-                mViewState == MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR &&
-                ViewMode.isSearchMode(mViewMode);
-        mSearchActionView.adjustViewForTwoPaneLandscape(alignWithTL, mEndXCoordForTabletLandscape);
+        // Try to adjust if the layout happened already
+        if (mEndXCoordForTabletLandscape != 0) {
+            final boolean alignWithTL = mController.isTwoPaneLandscape() &&
+                    mControllerState == SEARCH_VIEW_STATE_ONLY_ACTIONBAR &&
+                    ViewMode.isSearchMode(mViewMode);
+            mSearchActionView.adjustViewForTwoPaneLandscape(alignWithTL,
+                    mEndXCoordForTabletLandscape);
+        }
     }
 
     public void onQueryTextChanged(String query) {
@@ -189,7 +190,8 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
             mActivity.setResult(Activity.RESULT_OK);
             mActivity.finish();
         } else {
-            showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_GONE);
+            mSearchActionView.clearSearchQuery();
+            showSearchActionBar(SEARCH_VIEW_STATE_GONE);
         }
     }
 
