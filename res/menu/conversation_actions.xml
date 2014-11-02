@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<!-- Action bar items for the tablet when viewing a conversation -->
+<!-- Action bar items when viewing a conversation -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
