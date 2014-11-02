@@ -29,6 +29,7 @@ import android.widget.ListAdapter;
 import com.android.mail.R;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -137,11 +138,12 @@ public class MiniDrawerView extends LinearLayout {
         }
 
         View child;
-
         // reset the inbox views for this account
         while ((child=getChildAt(1)) != mDotdotdot) {
             removeView(child);
         }
+        // Reset ellipsis visibility
+        mDotdotdot.setVisibility(View.VISIBLE);
         final ObjectCursor<Folder> folderCursor = mController.getFoldersCursor();
         if (folderCursor != null && !folderCursor.isClosed()) {
             int pos = -1;
@@ -177,5 +179,77 @@ public class MiniDrawerView extends LinearLayout {
         }
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (getChildCount() == 0) {
+            return;
+        }
+        final int availableHeight = getMeasuredHeight() - getPaddingBottom() - getPaddingTop();
 
+        int childHeight = 0;
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = getChildAt(i);
+            if (child.equals(mSpacer) || child.getVisibility() == View.GONE) {
+                continue;
+            }
+            final LayoutParams params = (LayoutParams) child.getLayoutParams();
+            childHeight += params.topMargin + params.bottomMargin + child.getMeasuredHeight();
+        }
+
+        if (childHeight <= availableHeight) {
+            // Nothing to do here
+            super.onLayout(changed, l, t, r, b);
+            return;
+        }
+
+        mDotdotdot.setVisibility(View.GONE);
+
+        final LayoutParams dotDotDotParams = (LayoutParams) mDotdotdot.getLayoutParams();
+        childHeight -= dotDotDotParams.topMargin + dotDotDotParams.bottomMargin
+                + mDotdotdot.getMeasuredHeight();
+
+        // Check again
+        if (childHeight <= availableHeight) {
+            // Fit the spacer to the remaining height
+            measureSpacer(availableHeight - childHeight);
+            super.onLayout(changed, l, t, r, b);
+            return;
+        }
+
+        // Sanity check
+        if (getChildAt(getChildCount() - 1).equals(mSpacer)) {
+            LogUtils.wtf(LogUtils.TAG, "The ellipsis was the last item in the minidrawer and " +
+                    "hiding it didn't help fit all the views");
+        }
+
+        final View childToHide = getChildAt(indexOfChild(mSpacer) + 1);
+        childToHide.setVisibility(View.GONE);
+
+        final LayoutParams childToHideParams = (LayoutParams) childToHide.getLayoutParams();
+        childHeight -= childToHideParams.topMargin + childToHideParams.bottomMargin +
+                childToHide.getMeasuredHeight();
+
+        // Check again
+        if (childHeight <= availableHeight) {
+            // Fit the spacer to the remaining height
+            measureSpacer(availableHeight - childHeight);
+            super.onLayout(changed, l, t, r, b);
+            return;
+        }
+
+        LogUtils.wtf(LogUtils.TAG,
+                "Hid two children in the minidrawer and still couldn't fit " +
+                        "all the views");
+    }
+
+    private void measureSpacer(int height) {
+        final LayoutParams spacerParams = (LayoutParams) mSpacer.getLayoutParams();
+        final int spacerHeight = height -
+                spacerParams.bottomMargin - spacerParams.topMargin;
+        final int spacerWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+        mSpacer.measure(MeasureSpec.makeMeasureSpec(spacerWidth, MeasureSpec.AT_MOST),
+                MeasureSpec.makeMeasureSpec(spacerHeight, MeasureSpec.EXACTLY));
+
+    }
 }
