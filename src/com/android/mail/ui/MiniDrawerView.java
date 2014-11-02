@@ -17,17 +17,20 @@
 package com.android.mail.ui;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 
 import com.android.mail.R;
-import com.android.mail.bitmap.AccountAvatarDrawable;
 import com.android.mail.content.ObjectCursor;
-import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  * A smaller version of the account- and folder-switching drawer view for tablet UIs.
@@ -35,14 +38,9 @@ import com.android.mail.providers.Folder;
 public class MiniDrawerView extends LinearLayout {
 
     private FolderListFragment mController;
-    // use the same dimen as AccountItemView to participate in recycling
-    // TODO: but Material account switcher doesn't recycle...
-    private final int mAvatarDecodeSize;
 
     private View mDotdotdot;
     private View mSpacer;
-
-    private AccountItem mCurrentAccount;
 
     private final LayoutInflater mInflater;
 
@@ -55,8 +53,6 @@ public class MiniDrawerView extends LinearLayout {
     public MiniDrawerView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mAvatarDecodeSize = getResources().getDimensionPixelSize(R.dimen.account_avatar_dimension);
-
         mInflater = LayoutInflater.from(context);
     }
 
@@ -64,7 +60,6 @@ public class MiniDrawerView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mCurrentAccount = new AccountItem((ImageView) findViewById(R.id.current_account_avatar));
         mSpacer = findViewById(R.id.spacer);
         mDotdotdot = findViewById(R.id.dotdotdot);
         mDotdotdot.setOnClickListener(new View.OnClickListener() {
@@ -77,13 +72,16 @@ public class MiniDrawerView extends LinearLayout {
 
     public void setController(FolderListFragment flf) {
         mController = flf;
+        final ListAdapter adapter = mController.getMiniDrawerAccountsAdapter();
+        adapter.registerDataSetObserver(new Observer());
+    }
 
-        if (!mController.isMiniDrawerEnabled()) {
-            return;
+    private class Observer extends DataSetObserver {
+
+        @Override
+        public void onChanged() {
+            refresh();
         }
-
-        // wait for the controller to set these up
-        mCurrentAccount.setupDrawable();
     }
 
     public void refresh() {
@@ -91,36 +89,35 @@ public class MiniDrawerView extends LinearLayout {
             return;
         }
 
-        final Account currentAccount = mController.getCurrentAccount();
-        if (currentAccount != null) {
-            mCurrentAccount.setAccount(currentAccount);
+        final ListAdapter adapter =
+                mController.getMiniDrawerAccountsAdapter();
+
+        if (adapter.getCount() > 0) {
+            final View oldCurrentAccountView = getChildAt(0);
+            if (oldCurrentAccountView != null) {
+                removeView(oldCurrentAccountView);
+            }
+            final View newCurrentAccountView = adapter.getView(0, oldCurrentAccountView, this);
+            addView(newCurrentAccountView, 0);
+        }
+
+        final int removePos = indexOfChild(mSpacer) + 1;
+        final int recycleCount = getChildCount() - removePos;
+        final Queue<View> recycleViews = new ArrayDeque<>(recycleCount);
+        for (int recycleIndex = 0; recycleIndex < recycleCount; recycleIndex++) {
+            final View recycleView = getChildAt(removePos);
+            recycleViews.add(recycleView);
+            removeView(recycleView);
+        }
+
+        final int adapterCount = Math.min(adapter.getCount(), NUM_RECENT_ACCOUNTS + 1);
+        for (int accountIndex = 1; accountIndex < adapterCount; accountIndex++) {
+            final View recycleView = recycleViews.poll();
+            final View accountView = adapter.getView(accountIndex, recycleView, this);
+            addView(accountView);
         }
 
         View child;
-
-        // TODO: figure out the N most recent accounts, don't just take the first few
-        final int removePos = indexOfChild(mSpacer) + 1;
-        if (getChildCount() > removePos) {
-            removeViews(removePos, getChildCount() - removePos);
-        }
-        final Account[] accounts = mController.getAllAccounts();
-        int count = 0;
-        for (Account a : accounts) {
-            if (count >= NUM_RECENT_ACCOUNTS) {
-                break;
-            }
-            if (currentAccount != null && currentAccount.uri.equals(a.uri)) {
-                continue;
-            }
-            final ImageView iv = (ImageView) mInflater.inflate(
-                    R.layout.mini_drawer_recent_account_item, this, false /* attachToRoot */);
-            final AccountItem item = new AccountItem(iv);
-            item.setupDrawable();
-            item.setAccount(a);
-            iv.setTag(item);
-            addView(iv);
-            count++;
-        }
 
         // reset the inbox views for this account
         while ((child=getChildAt(1)) != mDotdotdot) {
@@ -160,36 +157,5 @@ public class MiniDrawerView extends LinearLayout {
         }
     }
 
-    private class AccountItem implements View.OnClickListener {
-        private Account mAccount;
-        // FIXME: this codepath doesn't use GMS Core, resulting in inconsistent avatars
-        // vs. ownerslib. switch to a generic photo getter+listener interface on FLF
-        // so these drawables are obtainable regardless of how they are loaded.
-        private AccountAvatarDrawable mDrawable;
-        public final ImageView view;
-
-        public AccountItem(ImageView iv) {
-            view = iv;
-            view.setOnClickListener(this);
-        }
-
-        public void setupDrawable() {
-            mDrawable = new AccountAvatarDrawable(getResources(),
-                    mController.getBitmapCache(), mController.getContactResolver());
-            mDrawable.setDecodeDimensions(mAvatarDecodeSize, mAvatarDecodeSize);
-            view.setImageDrawable(mDrawable);
-        }
-
-        public void setAccount(Account acct) {
-            mAccount = acct;
-            mDrawable.bind(mAccount.getSenderName(), mAccount.getEmailAddress());
-        }
-
-        @Override
-        public void onClick(View v) {
-            mController.onAccountSelected(mAccount);
-        }
-
-    }
 
 }

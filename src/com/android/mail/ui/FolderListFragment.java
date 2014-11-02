@@ -40,6 +40,7 @@ import com.android.bitmap.UnrefedBitmapCache;
 import com.android.mail.R;
 import com.android.mail.adapter.DrawerItem;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.bitmap.AccountAvatarDrawable;
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.MergedAdapter;
 import com.android.mail.content.ObjectCursor;
@@ -206,7 +207,11 @@ public class FolderListFragment extends ListFragment implements
 
     private boolean mMiniDrawerEnabled;
     private boolean mIsMinimized;
-    private MiniDrawerView mMiniDrawerView;
+    protected MiniDrawerView mMiniDrawerView;
+    protected MiniDrawerAccountsAdapter mMiniDrawerAccountsAdapter;
+    // use the same dimen as AccountItemView to participate in recycling
+    // TODO: but Material account switcher doesn't recycle...
+    private int mMiniDrawerAvatarDecodeSize;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -295,6 +300,9 @@ public class FolderListFragment extends ListFragment implements
         }
         mActivity = (ControllableActivity) activity;
 
+        mMiniDrawerAvatarDecodeSize =
+                getResources().getDimensionPixelSize(R.dimen.account_avatar_dimension);
+
         final int avatarSize = getActivity().getResources().getDimensionPixelSize(
                 R.dimen.account_avatar_dimension);
 
@@ -305,12 +313,13 @@ public class FolderListFragment extends ListFragment implements
         mContactResolver = new ContactResolver(getActivity().getContentResolver(),
                 mImagesCache);
 
+        setupMiniDrawerAccountsAdapter();
         mMiniDrawerView.setController(this);
-        if (!mMiniDrawerEnabled) {
-            mMiniDrawerView.setVisibility(View.GONE);
-        } else {
+        if (mMiniDrawerEnabled) {
             // set up initial state
             setMinimized(isMinimized());
+        } else {
+            mMiniDrawerView.setVisibility(View.GONE);
         }
 
         final FolderController controller = mActivity.getFolderController();
@@ -374,9 +383,6 @@ public class FolderListFragment extends ListFragment implements
                     }
                     mFolderWatcher.updateAccountList(getAllAccounts());
                     rebuildAccountList();
-                    if (mMiniDrawerEnabled) {
-                        mMiniDrawerView.refresh();
-                    }
                 }
             };
             mAllAccountsObserver.initialize(accountController);
@@ -1203,17 +1209,22 @@ public class FolderListFragment extends ListFragment implements
     }
 
     public void rebuildAccountList() {
-        if (!mIsFolderSelectionActivity && mAccountsAdapter != null) {
-            mAccountsAdapter.setAccounts(buildAccountList());
+        if (!mIsFolderSelectionActivity) {
+            if (mAccountsAdapter != null) {
+                mAccountsAdapter.setAccounts(buildAccountListDrawerItems());
+            }
+            if (mMiniDrawerAccountsAdapter != null) {
+                mMiniDrawerAccountsAdapter.setAccounts(getAllAccounts(), mCurrentAccount);
+            }
         }
     }
 
-    protected class AccountsAdapter extends BaseAdapter {
+    protected static class AccountsAdapter extends BaseAdapter {
 
         private List<DrawerItem> mAccounts;
 
         public AccountsAdapter() {
-            mAccounts = new ArrayList<DrawerItem>();
+            mAccounts = new ArrayList<>();
         }
 
         public void setAccounts(List<DrawerItem> accounts) {
@@ -1249,9 +1260,9 @@ public class FolderListFragment extends ListFragment implements
     }
 
     /**
-     * Builds the list of accounts.
+     * Builds the drawer items for the list of accounts.
      */
-    private List<DrawerItem> buildAccountList() {
+    private List<DrawerItem> buildAccountListDrawerItems() {
         final Account[] allAccounts = getAllAccounts();
         final List<DrawerItem> accountList = new ArrayList<DrawerItem>(allAccounts.length);
         // Add all accounts and then the current account
@@ -1262,7 +1273,7 @@ public class FolderListFragment extends ListFragment implements
                     currentAccountUri.equals(account.uri), mImagesCache, mContactResolver));
         }
         if (mCurrentAccount == null) {
-            LogUtils.wtf(LOG_TAG, "buildAccountList() with null current account.");
+            LogUtils.wtf(LOG_TAG, "buildAccountListDrawerItems() with null current account.");
         }
         return accountList;
     }
@@ -1438,9 +1449,8 @@ public class FolderListFragment extends ListFragment implements
             mCurrentFolderForUnreadCheck = null;
 
             // also set/update the mini-drawer
-            if (mMiniDrawerEnabled) {
-                //foobar
-                mMiniDrawerView.refresh();
+            if (mMiniDrawerAccountsAdapter != null) {
+                mMiniDrawerAccountsAdapter.setAccounts(getAllAccounts(), mCurrentAccount);
             }
 
         } else if (account == null) {
@@ -1634,4 +1644,102 @@ public class FolderListFragment extends ListFragment implements
         throw new UnsupportedOperationException("Use getListView().getAdapter() instead "
                 + "which accounts for any header or footer views.");
     }
+
+    protected class MiniDrawerAccountsAdapter extends BaseAdapter {
+
+        private List<Account> mAccounts = new ArrayList<>();
+
+        public void setAccounts(Account[] accounts, Account currentAccount) {
+            mAccounts.clear();
+            if (currentAccount == null) {
+                notifyDataSetChanged();
+                return;
+            }
+            mAccounts.add(currentAccount);
+            // TODO: sort by most recent accounts
+            for (final Account account : accounts) {
+                if (!account.getEmailAddress().equals(currentAccount.getEmailAddress())) {
+                    mAccounts.add(account);
+                }
+            }
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return mAccounts.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            // Is there an attempt made to access outside of the drawer item list?
+            if (position >= mAccounts.size()) {
+                return null;
+            } else {
+                return mAccounts.get(position);
+            }
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem(position).hashCode();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final ImageView iv = convertView != null ? (ImageView) convertView :
+                    (ImageView) LayoutInflater.from(getActivity()).inflate(
+                    R.layout.mini_drawer_recent_account_item, parent, false /* attachToRoot */);
+            final FolderListFragment.MiniDrawerAccountItem
+                    item = createMiniDrawerAccountItem(iv);
+            item.setupDrawable();
+            item.setAccount(mAccounts.get(position));
+            iv.setTag(item);
+            return iv;
+        }
+    }
+
+    protected void setupMiniDrawerAccountsAdapter() {
+        mMiniDrawerAccountsAdapter = new MiniDrawerAccountsAdapter();
+    }
+
+    MiniDrawerAccountsAdapter getMiniDrawerAccountsAdapter() {
+        return mMiniDrawerAccountsAdapter;
+    }
+
+    private MiniDrawerAccountItem createMiniDrawerAccountItem(ImageView iv) {
+        return new MiniDrawerAccountItem(iv);
+    }
+
+    private class MiniDrawerAccountItem implements View.OnClickListener {
+        private Account mAccount;
+        // FIXME: this codepath doesn't use GMS Core, resulting in inconsistent avatars
+        // vs. ownerslib. switch to a generic photo getter+listener interface on FLF
+        // so these drawables are obtainable regardless of how they are loaded.
+        private AccountAvatarDrawable mDrawable;
+        public final ImageView view;
+
+        public MiniDrawerAccountItem(ImageView iv) {
+            view = iv;
+            view.setOnClickListener(this);
+        }
+
+        public void setupDrawable() {
+            mDrawable = new AccountAvatarDrawable(getResources(), getBitmapCache(),
+                    getContactResolver());
+            mDrawable.setDecodeDimensions(mMiniDrawerAvatarDecodeSize, mMiniDrawerAvatarDecodeSize);
+            view.setImageDrawable(mDrawable);
+        }
+
+        public void setAccount(Account acct) {
+            mAccount = acct;
+            mDrawable.bind(mAccount.getSenderName(), mAccount.getEmailAddress());
+        }
+
+        @Override
+        public void onClick(View v) {
+            onAccountSelected(mAccount);
+        }
+    }
+
 }
