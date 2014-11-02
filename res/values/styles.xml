@@ -963,8 +963,8 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="FolderTeaserMarginEndStyle">
-        <item name="android:layout_marginRight">@dimen/folder_teaser_end_padding</item>
+    <style name="FolderTeaserPaddingEndStyle">
+        <item name="android:paddingRight">@dimen/folder_teaser_end_padding</item>
     </style>
 
     <style name="ArrowStyle">
