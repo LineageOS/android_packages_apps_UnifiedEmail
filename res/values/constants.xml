@@ -49,7 +49,7 @@
     <!-- The smallest amount of time the toast bar must remain visible -->
     <integer name="toast_bar_min_duration_ms">500</integer>
     <!-- The largest amount of time the toast bar can remain visible -->
-    <integer name="toast_bar_max_duration_ms">5000</integer>
+    <integer name="toast_bar_max_duration_ms">8000</integer>
     <integer name="conversation_desired_font_size_px">14</integer>
     <!-- matches 'font-size' style in template_conversation_upper.html -->
     <integer name="conversation_unstyled_font_size_px">13</integer>
