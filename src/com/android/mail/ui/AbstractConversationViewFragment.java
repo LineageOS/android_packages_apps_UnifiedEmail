@@ -26,6 +26,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -278,7 +279,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     @Override
-    public MessageCursor getMessageCursor() {
+    public @Nullable MessageCursor getMessageCursor() {
         return mCursor;
     }
 
