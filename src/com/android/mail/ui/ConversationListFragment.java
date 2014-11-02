@@ -491,6 +491,14 @@ public final class ConversationListFragment extends Fragment implements
         sb.append(mListAdapter);
         sb.append(" folder=");
         sb.append(mViewContext.folder);
+        if (mListView != null) {
+            sb.append(" selectedPos=");
+            sb.append(mListView.getSelectedPosition());
+            sb.append(" listSelectedPos=");
+            sb.append(mListView.getSelectedItemPosition());
+            sb.append(" isListInTouchMode=");
+            sb.append(mListView.isInTouchMode());
+        }
         sb.append("}");
         return sb.toString();
     }
@@ -874,6 +882,45 @@ public final class ConversationListFragment extends Fragment implements
 
         final int position = cursorPosition + mListAdapter.getPositionOffset(cursorPosition);
         setRawActivated(position, different);
+        setRawSelected(position);
+    }
+
+    /**
+     * Set the selected conversation (used by the framework to indicate current focus in the list).
+     * @param cursorPosition The position of the conversation in the cursor (as opposed to
+     * in the list)
+     */
+    public void setSelected(final int cursorPosition) {
+        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_NONE) {
+            return;
+        }
+
+        final int position = cursorPosition + mListAdapter.getPositionOffset(cursorPosition);
+        setRawSelected(position);
+    }
+
+    /**
+     * Set the selected conversation (used by the framework to indicate current focus in the list).
+     * @param position The position of the item in the list
+     */
+    private void setRawSelected(final int position) {
+        final View selectedView = mListView.getChildAt(
+                position - mListView.getFirstVisiblePosition());
+        // Don't do anything if the view is already selected.
+        if (!(selectedView != null && selectedView.isSelected())) {
+            final int firstVisible = mListView.getFirstVisiblePosition();
+            final int lastVisible = mListView.getLastVisiblePosition();
+            // Check if the view is off the screen
+            if (selectedView == null || position < firstVisible || position > lastVisible) {
+                mListView.setSelection(position);
+            } else {
+                // If the view is on screen, we call setSelectionFromTop with a top offset. This
+                // prevents the list from stupidly scrolling the item to the top because
+                // setSelection calls setSelectionFromTop with y = 0.
+                mListView.setSelectionFromTop(position, selectedView.getTop());
+            }
+            mListView.setSelectedPosition(position);
+        }
     }
 
     /**
