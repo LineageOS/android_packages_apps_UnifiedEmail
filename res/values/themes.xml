@@ -42,7 +42,9 @@
         <item name="android:divider">@null</item>
     </style>
 
-    <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme.Appcompat" />
+    <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme.Appcompat">
+        <item name="contentInsetStart">0dp</item>
+    </style>
 
     <style name="ShortcutWidgetTheme" parent="@style/UnifiedEmailTheme.Appcompat" />
 
