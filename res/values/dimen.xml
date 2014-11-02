@@ -87,6 +87,9 @@
     <dimen name="compose_button_elevation">8dp</dimen>
     <dimen name="snack_bar_margin_horizontal">24dp</dimen>
     <dimen name="snack_bar_margin_vertical">14dp</dimen>
+    <!-- Default case for snack bar, we use other views for wrapping description text and do not rely on this min and max width -->
+    <dimen name="snack_bar_min_width">0dp</dimen>
+    <dimen name="snack_bar_max_width">0dp</dimen>
 
     <!-- Folder list & selection dimen -->
     <dimen name="folder_selection_margin_start">16dp</dimen>
