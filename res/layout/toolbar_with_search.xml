@@ -21,12 +21,36 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize">
 
-    <android.support.v7.widget.Toolbar
+    <com.android.mail.ui.CustomViewToolbar
         android:id="@+id/mail_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorPrimary"
-        app:theme="?attr/actionBarTheme" />
+        app:theme="?attr/actionBarTheme">
+
+        <!-- Custom view for search icon -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/actionbar_title"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                style="@style/ActionBarTitleStyle" />
+
+            <ImageView
+                android:id="@+id/actionbar_search_button"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:background="?android:attr/selectableItemBackground"
+                android:scaleType="center"
+                android:src="@drawable/ic_menu_search" />
+
+        </LinearLayout>
+
+    </com.android.mail.ui.CustomViewToolbar>
 
     <include layout="@layout/mail_actionbar_searchview" />
 
