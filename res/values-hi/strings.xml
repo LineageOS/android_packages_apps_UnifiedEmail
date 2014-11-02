@@ -44,10 +44,8 @@
     <string name="too_large_to_attach_additional" msgid="4964155563465970480">"फ़ाइल संलग्न नहीं हुई. <xliff:g id="MAXSIZE">%1$s</xliff:g> सीमा पूरी हो गई."</string>
     <string name="generic_attachment_problem" msgid="4683974765387240723">"फ़ाइल अनुलग्न नहीं की जा सकी."</string>
     <string name="recipient_needed" msgid="319816879398937214">"कम से कम एक प्राप्तकर्ता जोड़ें."</string>
-    <string name="recipient_error_dialog_title" msgid="760741480291963706">"प्राप्तकर्ता त्रुटि"</string>
-    <string name="confirm_send_title" msgid="4664971589247101530">"संदेश भेजें?"</string>
-    <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"संदेश के विषय में कोई पाठ नहीं है."</string>
-    <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"संदेश के मुख्य भाग में कोई पाठ नहीं है."</string>
+    <string name="confirm_send_message_with_no_subject" msgid="1442628074022609987">"संदेश के विषय में कोई लेख नहीं है."</string>
+    <string name="confirm_send_message_with_no_body" msgid="3329355318700201516">"संदेश के मुख्य भाग में कोई लेख नहीं है."</string>
     <string name="confirm_send_message" msgid="6211518590166222735">"यह संदेश भेजें?"</string>
     <string name="message_discarded" msgid="6792661321962262024">"संदेश छोड़ दिया गया."</string>
     <string name="signature" msgid="3172144541947408374">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
@@ -101,10 +99,8 @@
     <string name="attachment_unknown" msgid="3360536730101083926">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> फ़ाइल"</string>
     <string name="preview_attachment" msgid="6265457626086113833">"पूर्वावलोकन"</string>
     <string name="save_attachment" msgid="375685179032130033">"सहेजें"</string>
-    <string name="cancel_attachment" msgid="6900093625792891122">"रद्द करें"</string>
-    <string name="open_attachment" msgid="6100396056314739761">"खोलें"</string>
-    <string name="install_attachment" msgid="8119470822958087928">"इंस्‍टॉल"</string>
-    <string name="download_again" msgid="8195787340878328119">"पुनः डाउनलोड करें"</string>
+    <string name="download_again" msgid="8195787340878328119">"फिर से डाउनलोड करें"</string>
+    <string name="remove_attachment_desc" msgid="1478445871170879140">"<xliff:g id="ATTACHMENTNAME">%s</xliff:g> अटैचमेंट निकालें"</string>
     <string name="more_info_attachment" msgid="2899691682394864507">"जानकारी"</string>
     <string name="no_application_found" msgid="7309485680354949680">"कोई भी ऐप्स  इस अटैचमेंट को देखने के लिए नहीं खोल सकता."</string>
     <string name="fetching_attachment" msgid="2286628490159574159">"अनुलग्‍नक फ़ेच कर रहा है"</string>
@@ -181,8 +177,8 @@
     <item quantity="other" msgid="4276111931404654219">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को म्‍यूट कि‍या गया."</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; की स्पैम के रूप में रिपोर्ट की गई."</item>
-    <item quantity="other" msgid="5900913789259199137">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को अनचाहा के रूप में रिपोर्ट किया गया."</item>
+    <item quantity="one" msgid="1749550834135461470">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; की अनचाहा ईमेल के रूप में रिपोर्ट की गई"</item>
+    <item quantity="other" msgid="664292592683692920">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; की अनचाहा ईमेल के रूप में रिपोर्ट की गई"</item>
   </plurals>
   <plurals name="conversation_not_spam">
     <item quantity="one" msgid="2294904093653094150">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को अनचाहा नहीं के रूप में रिपोर्ट किया गया."</item>
@@ -197,8 +193,8 @@
     <item quantity="other" msgid="9218674052779504277">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को फ़िशिंग के रूप में रिपोर्ट किया गया."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="4127890884907503696">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को संग्रहीत कि‍या गया."</item>
-    <item quantity="other" msgid="7789480176789922968">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को संग्रहीत कि‍या गया."</item>
+    <item quantity="one" msgid="4859172326053399351">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ईमेल को संग्रहीत कि‍या गया"</item>
+    <item quantity="other" msgid="8520761617935818623">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ईमेल को संग्रहीत कि‍या गया"</item>
   </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="5591889079235938982">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को हटा दिया गया."</item>
@@ -364,8 +360,8 @@
     <item msgid="1510017057984222376">"केवल हटाएं दिखाएं"</item>
     <item msgid="3196207224108008441">"संगृहीत करें और हटाएं दिखाएं"</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"संगृहीत करें और हटाएं कार्यवाही"</string>
-    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"सभी को जवाब दें"</string>
+    <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"डिफ़ॉल्ट सेटिंग"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"सभी प्रषकों को उत्तर दें"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"संदेश के जवाबों के लिए डिफ़ॉल्ट के रूप में उपयोग करें"</string>
     <string name="preference_swipe_title_archive" msgid="9122333537761282714">"संगृहीत करने के लिए स्वाइप करें"</string>
     <string name="preference_swipe_title_delete" msgid="4860474024917543711">"हटाने के लिए स्वाइप करें"</string>
