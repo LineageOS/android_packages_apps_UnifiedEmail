@@ -348,6 +348,10 @@
         <item name="android:layout_marginEnd">@dimen/compose_content_end_padding</item>
     </style>
 
+    <style name="ComposeHeadingPadding">
+        <item name="android:paddingEnd">@dimen/compose_header_padding</item>
+    </style>
+
     <style name="ComposeFieldButton" parent="@style/BaseComposeFieldButton">
         <item name="android:layout_marginStart">@dimen/compose_header_btn_padding</item>
     </style>
