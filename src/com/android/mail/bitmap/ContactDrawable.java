@@ -41,9 +41,10 @@ import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
  * A drawable that encapsulates all the functionality needed to display a contact image,
  * including request creation/cancelling and data unbinding/re-binding. While no contact images
  * can be shown, a default letter tile will be shown instead.
- *
- * <p/>
+ * <p>
  * The actual contact resolving and decoding is handled by {@link ContactResolver}.
+ * <p>
+ * For better performance, you should define a cache with {@link #setBitmapCache(BitmapCache)}.
  */
 public class ContactDrawable extends Drawable implements ContactDrawableInterface {
 
@@ -252,7 +253,10 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
             mBitmap = null;
         }
 
-        mContactResolver.remove(mContactRequest, this);
+        if (mContactResolver != null) {
+            mContactResolver.remove(mContactRequest, this);
+        }
+
         mContactRequest = contactRequest;
 
         if (contactRequest == null) {
@@ -260,7 +264,11 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
             return;
         }
 
-        final ReusableBitmap cached = mCache.get(contactRequest, true /* incrementRefCount */);
+        ReusableBitmap cached = null;
+        if (mCache != null) {
+            cached = mCache.get(contactRequest, true /* incrementRefCount */);
+        }
+
         if (cached != null) {
             setBitmap(cached);
         } else {
