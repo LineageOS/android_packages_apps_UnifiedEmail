@@ -631,7 +631,7 @@ public class NotificationUtils {
 
             if (com.android.mail.utils.Utils.isRunningLOrLater()) {
                 notification.setColor(
-                        context.getResources().getColor(R.color.notification_icon_gmail_red));
+                        context.getResources().getColor(R.color.notification_icon_color));
             }
 
             if(unseenCount > 1) {
@@ -865,7 +865,7 @@ public class NotificationUtils {
                 .setWhen(when);
 
         if (com.android.mail.utils.Utils.isRunningLOrLater()) {
-            builder.setColor(context.getResources().getColor(R.color.notification_icon_gmail_red));
+            builder.setColor(context.getResources().getColor(R.color.notification_icon_color));
         }
 
         // if this public notification summarizes multiple single notifications, mark it as the
@@ -1082,7 +1082,7 @@ public class NotificationUtils {
                             if (com.android.mail.utils.Utils.isRunningLOrLater()) {
                                 conversationNotif.setColor(
                                         context.getResources()
-                                                .getColor(R.color.notification_icon_gmail_red));
+                                                .getColor(R.color.notification_icon_color));
                             }
                             conversationNotif.setContentText(digestLine);
                             Intent conversationNotificationIntent = createViewConversationIntent(

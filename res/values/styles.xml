@@ -244,14 +244,14 @@
     </style>
 
     <!-- Undo bar styles -->
-    <style name="AbstractUndoTextStyle">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">#aaaaaa</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="UndoTextStyle" parent="AbstractUndoTextStyle">
+    <style name="UndoTextStyle">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:paddingLeft">@dimen/undo_text_padding</item>
         <item name="android:paddingRight">@dimen/undo_text_padding</item>
+        <item name="android:text">@string/undo</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">#feb500</item>
+        <item name="android:textSize">16sp</item>
     </style>
     <!-- End undo bar styles -->
 
@@ -649,10 +649,6 @@
         <item name="android:layout_marginLeft">@dimen/attachment_icon_padding</item>
     </style>
 
-    <style name="UndoNotificationStyle">
-        <item name="android:layout_marginLeft">@android:dimen/notification_large_icon_width</item>
-    </style>
-
     <style name="UnreadCountWithMarginEndStyle" parent="UnreadCountRelativeLayout">
         <item name="android:layout_marginRight">@dimen/folder_list_item_end_margin</item>
         <item name="android:layout_alignParentRight">true</item>
@@ -954,11 +950,6 @@
 
     <style name="UndoDescriptionStyle">
         <item name="android:paddingLeft">@dimen/undo_description_padding</item>
-    </style>
-
-    <style name="UndoIconStyle">
-        <item name="android:paddingLeft">@dimen/undo_icon_padding_start</item>
-        <item name="android:paddingRight">@dimen/undo_icon_padding_end</item>
     </style>
 
     <style name="AccountItemNameStyle">
