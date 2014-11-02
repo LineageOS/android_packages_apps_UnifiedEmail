@@ -45,7 +45,7 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:textAlignment="viewStart"
-        android:textColor="@color/folder_item_text_color"
+        android:textColor="@color/text_color_black"
         android:textSize="@dimen/drawer_item_font_size"
         style="@style/FolderListItemStyle" />
 
