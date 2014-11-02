@@ -18,7 +18,6 @@ package com.android.mail.providers;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -26,17 +25,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.android.mail.R;
 import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursor;
-import com.android.mail.lib.base.Preconditions;
-import com.android.mail.lib.base.Strings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.SyncStatus;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.android.mail.common.base.Preconditions;
+import com.google.android.mail.common.base.Strings;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
