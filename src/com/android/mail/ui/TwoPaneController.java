@@ -98,8 +98,9 @@ public final class TwoPaneController extends AbstractActivityController implemen
         return mCurrentConversationJustPeeking;
     }
 
-    private boolean isConversationOnlyMode() {
-        return mViewMode.isConversationMode() && !mLayout.shouldShowPreviewPanel();
+    private boolean isHidingConversationList() {
+        return (mViewMode.isConversationMode() || mViewMode.isAdMode()) &&
+                !mLayout.shouldShowPreviewPanel();
     }
 
     /**
@@ -351,7 +352,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     public void resetActionBarIcon() {
         final ActionBar ab = mActivity.getSupportActionBar();
         final boolean isChildFolder = getFolder() != null && !Utils.isEmpty(getFolder().parent);
-        if (isConversationOnlyMode() || isChildFolder) {
+        if (isHidingConversationList() || isChildFolder) {
             ab.setHomeAsUpIndicator(R.drawable.ic_arrow_back_wht_24dp_with_rtl);
             ab.setHomeActionContentDescription(0 /* system default */);
         } else {
@@ -519,7 +520,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
      */
     @Override
     public boolean handleUpPress() {
-        if (isConversationOnlyMode()) {
+        if (isHidingConversationList()) {
             handleBackPress();
         } else {
             toggleDrawerState();
