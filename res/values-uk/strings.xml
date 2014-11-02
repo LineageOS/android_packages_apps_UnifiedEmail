@@ -127,18 +127,12 @@
     <string name="contextmenu_send_mail" msgid="3834654593200105396">"Надіслати електронний лист"</string>
     <string name="contextmenu_map" msgid="5118951927399465521">"Карта"</string>
     <string name="contextmenu_sharelink" msgid="8670940060477758709">"Поділитися посиланням"</string>
-    <string name="contextmenu_help" msgid="4209674157707873384">"Довідка"</string>
-    <string name="contextmenu_feedback" msgid="8319100902136337085">"Надіслати відгук"</string>
-    <!-- no translation found for num_selected (7990204488812654380) -->
-    <skip />
-  <plurals name="move_conversation">
-    <item quantity="one" msgid="237882018518207244">"Перемістити бесіду"</item>
-    <item quantity="other" msgid="6639576653114141743">"Перемістити бесід: <xliff:g id="ID_1">%1$d</xliff:g>"</item>
-  </plurals>
     <string name="content_description" msgid="854320355052962069">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>, тема: <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
     <string name="content_description_today" msgid="1634422834354116955">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g>, тема: <xliff:g id="SUBJECT">%3$s</xliff:g>, <xliff:g id="SNIPPET">%4$s</xliff:g> о <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>"</string>
-    <string name="read_string" msgid="5495929677508576520">"бесіду прочитано"</string>
-    <string name="unread_string" msgid="7342558841698083381">"бесіду не прочитано"</string>
+    <string name="content_description_with_folders" msgid="482368474097191879">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> на тему \"<xliff:g id="SUBJECT">%3$s</xliff:g>\": \"<xliff:g id="SNIPPET">%4$s</xliff:g>\"; о <xliff:g id="DATE">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>, мітки: <xliff:g id="FOLDERS">%7$s</xliff:g>"</string>
+    <string name="content_description_today_with_folders" msgid="860548626146933495">"<xliff:g id="TOHEADER">%1$s</xliff:g><xliff:g id="PARTICIPANT">%2$s</xliff:g> на тему \"<xliff:g id="SUBJECT">%3$s</xliff:g>\": \"<xliff:g id="SNIPPET">%4$s</xliff:g>\"; о <xliff:g id="TIME">%5$s</xliff:g>, <xliff:g id="READSTATE">%6$s</xliff:g>, мітки: <xliff:g id="FOLDERS">%7$s</xliff:g>"</string>
+    <string name="read_string" msgid="5495929677508576520">"прочитано"</string>
+    <string name="unread_string" msgid="7342558841698083381">"не прочитано"</string>
     <string name="filtered_tag" msgid="721666921386074505">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="badge_and_subject" msgid="3979372269373936750">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g>"</string>
   <plurals name="draft">
@@ -173,8 +167,8 @@
     <string name="getting_messages" msgid="8403333791332403244">"Завантаження повідомлень"</string>
     <string name="undo" msgid="8256285267701059609">"Відмінити"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="839233699150563831">"Видалення зірочки з <xliff:g id="COUNT">%1$d</xliff:g> бесіди."</item>
-    <item quantity="other" msgid="7677305734833709789">"Видалення зірочки з бесід: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
+    <item quantity="one" msgid="1701235480675303125">"Видалення зірочки з <xliff:g id="COUNT">%1$d</xliff:g> ланцюжка повідомлень"</item>
+    <item quantity="other" msgid="1154441830432477256">"Видалення зірочки з ланцюжків повідомлень (<xliff:g id="COUNT">%1$d</xliff:g>)"</item>
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3339638225564408438">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; проігноровано."</item>
@@ -276,15 +270,14 @@
   <plurals name="actionbar_unread_messages">
     <item quantity="other" msgid="3863201473731766006">"Не прочитано: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="actionbar_large_unread_count" msgid="753635978542372792">"Не прочитано: <xliff:g id="COUNT">%1$d</xliff:g>+"</string>
-    <string name="view_more_conversations" msgid="8377920000247101901">"Переглянути інші бесіди"</string>
+    <string name="view_more_conversations" msgid="8377920000247101901">"Інші ланцюжки повідомлень"</string>
     <string name="loading_conversation" msgid="7931600025861500397">"Завантаження…"</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"Вибрати обліковий запис"</string>
     <string name="activity_folder_selection" msgid="8375243281001234750">"Вибрати папку"</string>
     <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"Папка \"Електронна пошта\""</string>
     <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"Змінити папки"</string>
-    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"Перемістити в"</string>
-    <string name="search_hint" msgid="4916671414132334289">"Пошук у пошті"</string>
+    <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"Перемістити у"</string>
+    <string name="search_hint" msgid="7060626585689391003">"Пошук"</string>
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
     <skip />
     <string name="network_error" msgid="5931164247644972255">"Немає з’єднання"</string>
@@ -367,9 +360,8 @@
     <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"Архівування та видалення"</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Відповісти всім"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"Використовувати за умовчанням для відповідей на повідомлення"</string>
-    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"Провести пальцем, щоб архівувати"</string>
-    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"Провести пальцем, щоб видалити"</string>
-    <string name="preference_swipe_description" msgid="3036560323237015010">"У списку бесід"</string>
+    <string name="preference_swipe_title" msgid="2073613840893904205">"Провести пальцем"</string>
+    <string name="preference_swipe_description" msgid="3036560323237015010">"У списку ланцюжків"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Зображення відправника"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"Показувати біля імені в списку бесід"</string>
     <string name="empty_trash" msgid="3385937024924728399">"Очистити кошик"</string>

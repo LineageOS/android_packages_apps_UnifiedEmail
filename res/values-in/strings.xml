@@ -55,7 +55,8 @@
     <string name="send" msgid="4269810089682120826">"Kirim"</string>
     <string name="mark_read" msgid="579388143288052493">"Tandai telah dibaca"</string>
     <string name="mark_unread" msgid="6245060538061533191">"Tandai belum dibaca"</string>
-    <string name="mute" msgid="9164839998562321569">"Bungkam"</string>
+    <string name="toggle_read_unread" msgid="1006469736520919028">"Alihkan baca belum dibaca"</string>
+    <string name="mute" msgid="9164839998562321569">"Bisukan"</string>
     <string name="add_star" msgid="3275117671153616270">"Bintangi"</string>
     <string name="remove_star" msgid="9126690774161840733">"Hapus bintang"</string>
     <string name="remove_folder" msgid="2379905457788576297">"Hapus dari <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
@@ -173,12 +174,12 @@
     <string name="getting_messages" msgid="8403333791332403244">"Mendapatkan pesan Anda"</string>
     <string name="undo" msgid="8256285267701059609">"Urungkan"</string>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="839233699150563831">"Meredupkan bintang <xliff:g id="COUNT">%1$d</xliff:g> percakapan."</item>
-    <item quantity="other" msgid="7677305734833709789">"Meredupkan bintang <xliff:g id="COUNT">%1$d</xliff:g> percakapan."</item>
+    <item quantity="one" msgid="1701235480675303125">"Hapus bintang <xliff:g id="COUNT">%1$d</xliff:g> percapakan"</item>
+    <item quantity="other" msgid="1154441830432477256">"Hapus bintang <xliff:g id="COUNT">%1$d</xliff:g> percakapan"</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3339638225564408438">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; dibungkam."</item>
-    <item quantity="other" msgid="4276111931404654219">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; dibungkam."</item>
+    <item quantity="one" msgid="3622533556738049499">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; tidak ditampilkan"</item>
+    <item quantity="other" msgid="4559007262578295280">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; tidak ditampilkan"</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="6986172030710967687">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; dilaporkan sebagai spam."</item>
