@@ -653,9 +653,9 @@ public final class TwoPaneController extends AbstractActivityController implemen
         if (different && convList != null && conversation != null) {
             if (mCurrentConversationJustPeeking) {
                 convList.clearChoicesAndActivated();
-                convList.setSelected(conversation.position);
+                convList.setSelected(conversation);
             } else {
-                convList.setActivated(conversation.position, different);
+                convList.setActivated(conversation, different);
             }
         }
     }
