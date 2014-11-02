@@ -307,18 +307,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         // mSpecialViews only contains the views that are currently being displayed
         final int specialViewCount = mSpecialViews.size();
 
-        return super.getCount() + specialViewCount +
-                (mShowFooter ? 1 : 0) + mHeaders.size();
-    }
-
-    /**
-     * Returns the number of content items this adapter contains. Headers are not included in the
-     * content count because their availability is not affected by the underlying cursor.
-     *
-     * <b>Note that this count still includes the teasers since they are separate from headers.</b>
-     */
-    public int getContentCount() {
-        return getCount() - mHeaders.size();
+        // Headers are not included in the content count because their availability is not affected
+        // by the underlying cursor.
+        //
+        // !! This count still includes the teasers since they are separate from headers. !!
+        final int contentCount = super.getCount() + specialViewCount + (mShowFooter ? 1 : 0);
+        // Only add header count if the content count is not 0.
+        return (contentCount == 0) ? contentCount : contentCount + mHeaders.size();
     }
 
     /**
