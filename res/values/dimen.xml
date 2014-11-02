@@ -123,6 +123,7 @@
     <dimen name="send_mail_as_padding">8dip</dimen>
     <dimen name="dismiss_separator_padding">16dip</dimen>
     <dimen name="teaser_text_padding">16dp</dimen>
+    <dimen name="attachment_item_padding_start">8dp</dimen>
     <dimen name="attachment_padding_start">16dp</dimen>
     <dimen name="attachment_padding_end">16dp</dimen>
     <dimen name="attachment_icon_padding">5dip</dimen>
