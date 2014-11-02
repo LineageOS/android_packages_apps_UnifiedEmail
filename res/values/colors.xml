@@ -183,4 +183,7 @@
     <color name="compose_button_background_color">@color/primary_color</color>
     <color name="compose_button_pressed_background_color">@color/primary_dark_color</color>
     <color name="compose_button_tint">#20444444</color>
+
+    <color name="text_color_undo">#feb500</color>
+    <color name="text_color_undo_description">@android:color/white</color>
 </resources>
