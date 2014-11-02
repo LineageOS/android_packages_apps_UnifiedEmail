@@ -18,7 +18,7 @@
 
 <resources>
     <dimen name="account_avatar_dimension">40dp</dimen>
-    <dimen name="drawer_width">300dp</dimen>
+    <dimen name="drawer_width">264dp</dimen>
     <dimen name="two_pane_drawer_width_mini">72dp</dimen>
     <dimen name="two_pane_drawer_width_open">288dp</dimen>
     <dimen name="two_pane_tl_side">24dp</dimen>
