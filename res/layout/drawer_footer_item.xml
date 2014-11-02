@@ -23,8 +23,7 @@
     android:paddingLeft="@dimen/drawer_footer_item_padding"
     android:paddingRight="@dimen/drawer_footer_item_padding"
     android:minHeight="@dimen/drawer_footer_item_minimum_height"
-    android:gravity="center_vertical"
-    android:background="@drawable/nonfolder_item">
+    android:gravity="center_vertical">
 
     <ImageView
         android:id="@+id/drawer_footer_image"
