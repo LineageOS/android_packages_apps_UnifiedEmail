@@ -720,7 +720,13 @@ public class ConversationViewAdapter extends BaseAdapter {
             LogUtils.e(LOG_TAG, "not enough items in the adapter. count: %s", count);
             return null;
         }
-        return (ConversationFooterItem) mItems.get(count - 1);
+        final ConversationOverlayItem item = mItems.get(count - 1);
+        try {
+            return (ConversationFooterItem) item;
+        } catch (ClassCastException e) {
+            LogUtils.e(LOG_TAG, "Last item is not a conversation footer. type: %s", item.getType());
+            return null;
+        }
     }
 
     /**
