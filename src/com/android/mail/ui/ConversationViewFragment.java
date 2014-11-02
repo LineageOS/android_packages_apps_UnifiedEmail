@@ -768,7 +768,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
                 }
             } else {
                 // new messages that are not expanded default to being eligible for super-collapse
-                if (!msg.read || messageCursor.isLast()) {
+                if (msg.starred || !msg.read || messageCursor.isLast()) {
                     expandedState = ExpansionState.EXPANDED;
                 } else if (messageCursor.isFirst()) {
                     expandedState = ExpansionState.COLLAPSED;

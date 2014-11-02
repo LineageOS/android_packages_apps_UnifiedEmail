@@ -38,9 +38,8 @@
 
     <ImageView
         android:id="@+id/overflow"
-        android:layout_width="56dp"
         android:contentDescription="@string/overflow_description"
         android:src="@drawable/ic_overflow_24dp"
-        style="@style/MessageHeaderActionButtonStyle" />
+        style="@style/MessageHeaderOverflowButtonStyle" />
 
 </merge>
