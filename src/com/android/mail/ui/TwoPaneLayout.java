@@ -262,8 +262,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         final boolean listVisible = isRtl ? listX + mListView.getWidth() >= 0 : listX >= 0;
         mFoldersView.setVisibility(folderVisible ? VISIBLE : INVISIBLE);
         mListView.setVisibility(listVisible ? VISIBLE : INVISIBLE);
-        mConversationView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
-        mMiscellaneousView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
+        if (mConversationView.getVisibility() != GONE) {
+            mConversationView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
+        }
+        if (mMiscellaneousView.getVisibility() != GONE) {
+            mMiscellaneousView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
+        }
 
         if (mConversationListLayoutListener != null) {
             mConversationListLayoutListener.onConversationListLayout(
