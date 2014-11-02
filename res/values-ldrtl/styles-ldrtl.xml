@@ -45,10 +45,6 @@
         <item name="android:paddingEnd">@dimen/send_mail_as_padding</item>
     </style>
 
-    <style name="UndoTextStyle" parent="AbstractUndoTextStyle">
-        <item name="android:paddingEnd">@dimen/undo_text_padding</item>
-    </style>
-
     <style name="MessageHeaderIconStyle">
         <item name="android:layout_marginStart">@dimen/message_header_icon_additional_margin_start</item>
     </style>
@@ -103,10 +99,6 @@
 
     <style name="AttachmentIconStyle">
         <item name="android:layout_marginStart">@dimen/attachment_icon_padding</item>
-    </style>
-
-    <style name="UndoNotificationStyle">
-        <item name="android:layout_marginStart">@android:dimen/notification_large_icon_width</item>
     </style>
 
     <style name="UnreadCountWithMarginEndStyle" parent="UnreadCountRelativeLayout">
@@ -370,11 +362,6 @@
 
     <style name="UndoDescriptionStyle">
         <item name="android:paddingStart">@dimen/undo_description_padding</item>
-    </style>
-
-    <style name="UndoIconStyle">
-        <item name="android:paddingStart">@dimen/undo_icon_padding_start</item>
-        <item name="android:paddingEnd">@dimen/undo_icon_padding_end</item>
     </style>
 
     <style name="AccountItemNameStyle">
