@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import java.util.List;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
@@ -35,6 +37,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.android.mail.utils.ViewUtils;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 
 /**
  * This is a custom layout that manages the possible views of Gmail's large screen (read: tablet)
@@ -82,10 +85,15 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      */
     private int mCurrentMode = ViewMode.UNKNOWN;
     /**
-     * This mode represents the current positions of the three panes. This is split out from the
-     * current mode to give context to state transitions.
+     * This is a copy of {@link #mCurrentMode} that layout/positioning/animating code uses to
+     * compare to the 'new' current mode, to avoid unnecessarily calculation.
      */
     private int mPositionedMode = ViewMode.UNKNOWN;
+    /**
+     * Similar to {@link #mPositionedMode}; this is the value of {@link #isDrawerOpen()} from the
+     * last time layout ran, so we know not to run layout again if this hasn't changed.
+     */
+    private boolean mPositionedIsDrawerOpen;
 
     private TwoPaneController mController;
     private LayoutListener mListener;
@@ -99,16 +107,16 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private View mFloatingActionButton;
 
     private int mFloatingActionButtonEndMargin;
-    private int mPrevComposeEdgeX = -1;
+
+    private final List<Runnable> mTransitionCompleteJobs = Lists.newArrayList();
+
+    private final PaneAnimationListener mPaneAnimationListener = new PaneAnimationListener();
 
     public static final int MISCELLANEOUS_VIEW_ID = R.id.miscellaneous_pane;
 
-    private final Runnable mTransitionCompleteRunnable = new Runnable() {
-        @Override
-        public void run() {
-            onTransitionComplete();
-        }
-    };
+    public interface ConversationListLayoutListener {
+        void onConversationListLayout(int xEnd, boolean drawerOpen);
+    }
 
     public TwoPaneLayout(Context context) {
         this(context, null);
@@ -176,8 +184,15 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "TPL(%s).onLayout()", this);
-        positionPanes(getMeasuredWidth());
         super.onLayout(changed, l, t, r, b);
+        // Position/animate the panes only if the layout has truly changed in a way that affects
+        // their positioning (e.g. mode change or drawer state change).
+        // And do so only after the normal layout has happened to give children their positions,
+        // in case they depend on them (e.g. if they call child.getWidth()).
+        if (changed || mPositionedMode != mCurrentMode
+                || isDrawerOpen() != mPositionedIsDrawerOpen) {
+            positionPanes(getMeasuredWidth());
+        }
     }
 
     /**
@@ -204,15 +219,11 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      */
     private void positionPanes(int width) {
         final boolean isRtl = ViewUtils.isViewRtl(this);
-        // Always reset the FAB position to previous X (in case of rotation)
-        if (mPrevComposeEdgeX >= 0) {
-            mFloatingActionButton.setX(computeFloatingActionButtonX(mPrevComposeEdgeX, isRtl));
-            mFloatingActions.setVisibility(VISIBLE);
-        }
+        final boolean isDrawerOpen = isDrawerOpen();
 
         final int convX, listX, foldersX;
 
-        final int foldersW = isDrawerOpen() ? mDrawerWidthOpen : mDrawerWidthMini;
+        final int foldersW = isDrawerOpen ? mDrawerWidthOpen : mDrawerWidthMini;
         final int listW = getPaneWidth(mListView);
 
         boolean cvOnScreen = true;
@@ -254,36 +265,28 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             }
         }
 
+        // manually set FAB position the first time so it doesn't animate to its initial position
+        if (mFloatingActions.getVisibility() != VISIBLE && mCurrentMode != ViewMode.UNKNOWN) {
+            mFloatingActionButton.setX(computeFloatingActionButtonX(isRtl ? listX : convX, isRtl));
+            mFloatingActions.setVisibility(VISIBLE);
+        }
+
         animatePanes(foldersX, listX, convX, isRtl);
 
         // For views that are not on the screen, let's set their visibility for accessibility.
         final boolean folderVisible = isRtl ?
                 foldersX + mFoldersView.getWidth() >= 0 : foldersX >= 0;
         final boolean listVisible = isRtl ? listX + mListView.getWidth() >= 0 : listX >= 0;
-        mFoldersView.setVisibility(folderVisible ? VISIBLE : INVISIBLE);
-        mListView.setVisibility(listVisible ? VISIBLE : INVISIBLE);
-        if (mConversationView.getVisibility() != GONE) {
-            mConversationView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
-        }
-        if (mMiscellaneousView.getVisibility() != GONE) {
-            mMiscellaneousView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
-        }
+        adjustPaneVisibility(folderVisible, listVisible, cvOnScreen);
 
         if (mConversationListLayoutListener != null) {
             mConversationListLayoutListener.onConversationListLayout(
-                    isRtl ? listX : convX, isDrawerOpen());
+                    isRtl ? listX : convX, isDrawerOpen);
         }
 
         mPositionedMode = mCurrentMode;
-        mPrevComposeEdgeX = isRtl ? listX : convX;
+        mPositionedIsDrawerOpen = isDrawerOpen;
     }
-
-    private final AnimatorListenerAdapter mPaneAnimationListener = new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            onTransitionComplete();
-        }
-    };
 
     private void animatePanes(int foldersX, int listX, int convX, boolean isRtl) {
         // If positioning has not yet happened, we don't need to animate panes into place.
@@ -297,7 +300,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
             // listeners need to know that the "transition" is complete, even if one is not run.
             // defer notifying listeners because we're in a layout pass, and they might do layout.
-            post(mTransitionCompleteRunnable);
+            post(mPaneAnimationListener);
             return;
         }
 
@@ -308,9 +311,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
 
         mFoldersView.animate().x(foldersX);
-        mListView.animate()
-            .x(listX)
-            .setListener(mPaneAnimationListener);
+        mListView.animate().x(listX).setListener(mPaneAnimationListener);
         mFloatingActionButton.animate()
                 .x(computeFloatingActionButtonX(isRtl ? listX : convX, isRtl));
 
@@ -331,12 +332,52 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
     }
 
+    /**
+     * Adjusts the visibility of each pane before and after a transition. After the transition,
+     * any invisible panes should be marked invisible. But visible panes should not wait for the
+     * transition to finish-- they should be marked visible immediately.
+     *
+     */
+    private void adjustPaneVisibility(final boolean folderVisible, final boolean listVisible,
+            final boolean cvVisible) {
+        applyPaneVisibility(VISIBLE, folderVisible, listVisible, cvVisible);
+        mTransitionCompleteJobs.add(new Runnable() {
+            @Override
+            public void run() {
+                applyPaneVisibility(INVISIBLE, !folderVisible, !listVisible, !cvVisible);
+            }
+        });
+    }
+
+    private void applyPaneVisibility(int visibility, boolean applyToFolders, boolean applyToList,
+            boolean applyToCV) {
+        if (applyToFolders) {
+            mFoldersView.setVisibility(visibility);
+        }
+        if (applyToList) {
+            mListView.setVisibility(visibility);
+        }
+        if (applyToCV) {
+            if (mConversationView.getVisibility() != GONE) {
+                mConversationView.setVisibility(visibility);
+            }
+            if (mMiscellaneousView.getVisibility() != GONE) {
+                mMiscellaneousView.setVisibility(visibility);
+            }
+        }
+    }
+
     private void onTransitionComplete() {
         if (mController.isDestroyed()) {
             // quit early if the hosting activity was destroyed before the animation finished
             LogUtils.i(LOG_TAG, "IN TPL.onTransitionComplete, activity destroyed->quitting early");
             return;
         }
+
+        for (Runnable job : mTransitionCompleteJobs) {
+            job.run();
+        }
+        mTransitionCompleteJobs.clear();
 
         switch (mCurrentMode) {
             case ViewMode.CONVERSATION:
@@ -439,6 +480,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             mController.disablePagerUpdates();
         }
 
+        // notify of list visibility change up-front when going to list mode
+        // (so the transition runs with the full TL in view)
+        if (newMode == ViewMode.CONVERSATION_LIST) {
+            dispatchConversationListVisibilityChange(true);
+        }
+
         mCurrentMode = newMode;
         LogUtils.i(LOG_TAG, "onViewModeChanged(%d)", newMode);
 
@@ -483,7 +530,18 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mConversationListLayoutListener = listener;
     }
 
-    public interface ConversationListLayoutListener {
-        void onConversationListLayout(int xEnd, boolean drawerOpen);
+    private class PaneAnimationListener extends AnimatorListenerAdapter implements Runnable {
+
+        @Override
+        public void run() {
+            onTransitionComplete();
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            onTransitionComplete();
+        }
+
     }
+
 }

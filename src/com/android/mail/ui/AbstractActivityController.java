@@ -1162,6 +1162,8 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onConversationListVisibilityChanged(boolean visible) {
+        mFloatingComposeButton.setVisibility(visible ? View.VISIBLE : View.GONE);
+
         informCursorVisiblity(visible);
         commitAutoAdvanceOperation();
 
@@ -2208,23 +2210,12 @@ public abstract class AbstractActivityController implements ActivityController,
     protected abstract void resetActionBarIcon();
 
     /**
-     * When should the compose button be visible
-     */
-    protected boolean isComposeVisible(int mode) {
-        return mode == ViewMode.CONVERSATION_LIST;
-    }
-
-    /**
      * {@inheritDoc} Subclasses must override this to listen to mode changes
      * from the ViewMode. Subclasses <b>must</b> call the parent's
      * onViewModeChanged since the parent will handle common state changes.
      */
     @Override
     public void onViewModeChanged(int newMode) {
-        // The floating action compose button is only visible in the conversation/search lists
-        final int composeVisible = isComposeVisible(newMode) ? View.VISIBLE : View.GONE;
-        mFloatingComposeButton.setVisibility(composeVisible);
-
         // When we step away from the conversation mode, we don't have a current conversation
         // anymore. Let's blank it out so clients calling getCurrentConversation are not misled.
         if (!ViewMode.isConversationMode(newMode)) {
