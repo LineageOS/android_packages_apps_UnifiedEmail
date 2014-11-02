@@ -18,7 +18,7 @@
 <resources>
     <color name="text_color_grey">#757575</color>
     <color name="text_color_black">#212121</color>
-    <color name="accent_blue">#00bfd8</color>
+    <color name="accent_blue">#4285f4</color>
     <color name="text_color_blue">@color/accent_blue</color>
     <color name="text_color_draft_red">#da4336</color>
     <color name="gray_text_color">#777777</color>
@@ -63,7 +63,6 @@
     <!-- Must match the quoted_text_background_color_string -->
     <color name="compose_background_color">@android:color/white</color>
     <string name="quoted_text_font_color_string" translatable="false">@color/text_color_grey</string>
-    <color name="respond_inline_color">#00bfd8</color>
 
     <color name="conv_header_add_label_text">@android:color/black</color>
     <color name="conv_header_add_label_background">#eeeeee</color>
