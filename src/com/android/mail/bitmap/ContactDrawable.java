@@ -31,11 +31,12 @@ import com.android.mail.R;
  */
 public class ContactDrawable extends AbstractAvatarDrawable {
     /** Letter tile */
-    private static ColorPicker sTileColorPicker;
+    private ColorPicker mTileColorPicker;
+
+    /** Reusable components to avoid new allocations */
     private static int sTileLetterFontSize;
     private static int sTileFontColor;
     private static Bitmap DEFAULT_AVATAR;
-    /** Reusable components to avoid new allocations */
     private static final Paint sPaint = new Paint();
     private static final Rect sRect = new Rect();
     private static final char[] sFirstChar = new char[1];
@@ -58,8 +59,8 @@ public class ContactDrawable extends AbstractAvatarDrawable {
      * Sets the {@link ColorPicker} for the background tile used in letter avatars.
      * @param colorPicker
      */
-    public static void setTileColorPicker(ColorPicker colorPicker) {
-        sTileColorPicker = colorPicker;
+    public void setTileColorPicker(ColorPicker colorPicker) {
+        mTileColorPicker = colorPicker;
     }
 
     /**
@@ -68,10 +69,10 @@ public class ContactDrawable extends AbstractAvatarDrawable {
      * @return non-null color picker.
      */
     public ColorPicker getTileColorPicker() {
-        if (sTileColorPicker == null) {
-            sTileColorPicker = new ColorPicker.PaletteColorPicker(mResources);
+        if (mTileColorPicker == null) {
+            mTileColorPicker = new ColorPicker.PaletteColorPicker(mResources);
         }
-        return sTileColorPicker;
+        return mTileColorPicker;
     }
 
     @Override
