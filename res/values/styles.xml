@@ -494,13 +494,13 @@
     </style>
 
     <style name="SubjectAppearanceUnreadStyle">
-        <item name="android:textColor">@color/subject_text_color</item>
+        <item name="android:textColor">@color/subject_text_color_unread</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="SubjectAppearanceReadStyle">
         <item name="android:fontFamily" tools:ignore="NewApi">sans-serif-light</item>
-        <item name="android:textColor">@color/subject_text_color</item>
+        <item name="android:textColor">@color/subject_text_color_read</item>
     </style>
 
     <style name="NotificationSendersUnreadTextAppearance">
