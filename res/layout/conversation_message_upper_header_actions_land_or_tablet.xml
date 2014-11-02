@@ -37,4 +37,9 @@
         style="@style/MessageHeaderActionButtonStyle"
         android:src="@drawable/ic_forward_24dp"
         android:contentDescription="@string/forward" />
+    <ImageView
+        android:id="@+id/overflow"
+        style="@style/MessageHeaderOverflowButtonStyle"
+        android:src="@drawable/ic_overflow_24dp"
+        android:contentDescription="@string/overflow_description" />
 </merge>
