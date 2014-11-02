@@ -73,6 +73,7 @@ import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
+import com.android.mail.compose.ComposeActivity;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Account;
@@ -841,12 +842,15 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     }
 
     private MessageHeaderItem getLastMessageHeaderItem() {
-        final int count = mAdapter.getCount();
-        if (count < 3) {
-            LogUtils.wtf(LOG_TAG, "not enough items in the adapter. count: %s", count);
-            return null;
+        int pos = mAdapter.getCount();
+        while (--pos >= 0) {
+            final ConversationOverlayItem item = mAdapter.getItem(pos);
+            if (item instanceof MessageHeaderItem) {
+                return (MessageHeaderItem) item;
+            }
         }
-        return (MessageHeaderItem) mAdapter.getItem(count - 2);
+        LogUtils.wtf(LOG_TAG, "No message header found");
+        return null;
     }
 
     private void renderSuperCollapsedBlock(int start, int end, boolean hasDraft) {
@@ -1805,5 +1809,27 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     protected void printConversation() {
         PrintUtils.printConversation(mActivity.getActivityContext(), getMessageCursor(),
                 mAddressCache, mConversation.getBaseUri(mBaseUri), true /* useJavascript */);
+    }
+
+    @Override
+    protected void handleReply() {
+        final MessageHeaderItem item = getLastMessageHeaderItem();
+        if (item != null) {
+            final ConversationMessage msg = item.getMessage();
+            if (msg != null) {
+                ComposeActivity.reply(getActivity(), mAccount, msg);
+            }
+        }
+    }
+
+    @Override
+    protected void handleReplyAll() {
+        final MessageHeaderItem item = getLastMessageHeaderItem();
+        if (item != null) {
+            final ConversationMessage msg = item.getMessage();
+            if (msg != null) {
+                ComposeActivity.replyAll(getActivity(), mAccount, msg);
+            }
+        }
     }
 }
