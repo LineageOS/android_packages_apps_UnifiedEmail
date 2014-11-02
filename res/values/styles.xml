@@ -994,4 +994,10 @@
     <style name="AutoMirroredImageView">
         <item name="android:scaleX">1</item>
     </style>
+
+    <!-- Overridden in v21/styles to use selectableItemBackgroundBorderless -->
+    <style name="BorderlessBackground">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
 </resources>
