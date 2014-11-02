@@ -1132,6 +1132,11 @@ public class ComposeActivity extends ActionBarActivity
         message.dateReceivedMs = 0;
         message.bodyHtml = spannedBodyToHtml(body, true);
         message.bodyText = body.toString();
+        // Fallback to use the text version if html conversion fails for whatever the reason.
+        if (!TextUtils.isEmpty(message.bodyText) &&
+                TextUtils.isEmpty(Utils.convertHtmlToPlainText(message.bodyHtml))) {
+            message.bodyHtml = "<p>" + message.bodyText + "</p>";
+        }
         message.embedsExternalResources = false;
         message.refMessageUri = mRefMessage != null ? mRefMessage.uri : null;
         message.appendRefMessageContent = mQuotedTextView.getQuotedTextIfIncluded() != null;
@@ -3140,21 +3145,22 @@ public class ComposeActivity extends ActionBarActivity
         // bodyHtml already have the composing spans removed.
         final String htmlBody = message.bodyHtml;
         final String textBody = message.bodyText;
-        // fullbody will contain the actual body plus the quoted text.
-        final String fullBody;
-        final String quotedString;
+        // fullbodyhtml/fullbodytext will contain the actual body plus the quoted text.
+        String fullBodyHtml = htmlBody;
+        String fullBodyText = textBody;
+        String quotedString = null;
         final boolean hasQuotedText = !TextUtils.isEmpty(quotedText);
         if (hasQuotedText) {
             // The quoted text is HTML at this point.
             quotedString = quotedText.toString();
-            fullBody = htmlBody + quotedString;
+            fullBodyHtml = htmlBody + quotedString;
+            fullBodyText = textBody + Utils.convertHtmlToPlainText(quotedString);
             MessageModification.putForward(values, composeMode == ComposeActivity.FORWARD);
             MessageModification.putAppendRefMessageContent(values, true /* include quoted */);
-        } else {
-            fullBody = htmlBody;
-            quotedString = null;
         }
+
         // Only take refMessage into account if either one of its html/text is not empty.
+        int quotedTextPos = -1;
         if (refMessage != null && !(TextUtils.isEmpty(refMessage.bodyHtml) &&
                 TextUtils.isEmpty(refMessage.bodyText))) {
             // The code below might need to be revisited. The quoted text position is different
@@ -3163,17 +3169,15 @@ public class ComposeActivity extends ActionBarActivity
             // if both exist.  Issues like this made me file b/14256940 to make sure that we
             // properly handle the existing of both text/html and text/plain parts and to verify
             // that we are not making some assumptions that break if there is no text/html part.
-            int quotedTextPos = -1;
             if (!TextUtils.isEmpty(refMessage.bodyHtml)) {
-                MessageModification.putBodyHtml(values, fullBody);
+                MessageModification.putBodyHtml(values, fullBodyHtml);
                 if (hasQuotedText) {
                     quotedTextPos = htmlBody.length() +
                             QuotedTextView.getQuotedTextOffset(quotedString);
                 }
             }
             if (!TextUtils.isEmpty(refMessage.bodyText)) {
-                MessageModification.putBody(values,
-                        Utils.convertHtmlToPlainText(fullBody));
+                MessageModification.putBody(values, fullBodyText);
                 if (hasQuotedText && (quotedTextPos == -1)) {
                     quotedTextPos = textBody.length();
                 }
@@ -3187,8 +3191,8 @@ public class ComposeActivity extends ActionBarActivity
                 MessageModification.putQuoteStartPos(values, quotedTextPos);
             }
         } else {
-            MessageModification.putBodyHtml(values, fullBody);
-            MessageModification.putBody(values, Utils.convertHtmlToPlainText(fullBody));
+            MessageModification.putBodyHtml(values, fullBodyHtml);
+            MessageModification.putBody(values, fullBodyText);
         }
         int draftType = getDraftType(composeMode);
         MessageModification.putDraftType(values, draftType);
@@ -3202,11 +3206,13 @@ public class ComposeActivity extends ActionBarActivity
 
         SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(context, requestId,
                 values, refMessageId, message.getAttachments(), optionalAttachmentFds, save);
-        runSendOrSaveProviderCalls(sendOrSaveMessage, callback, currReplyFromAccount, originalReplyFromAccount);
+        runSendOrSaveProviderCalls(sendOrSaveMessage, callback, currReplyFromAccount,
+                originalReplyFromAccount);
 
         LogUtils.i(LOG_TAG, "[compose] SendOrSaveMessage [%s] posted (isSave: %s) - " +
-                "body length: %d, attachment count: %d", requestId, save, message.bodyText.length(),
-                message.getAttachmentCount(true));
+                "bodyHtml length: %d, bodyText length: %d, quoted text pos: %d, attach count: %d",
+                requestId, save, message.bodyHtml.length(), message.bodyText.length(),
+                quotedTextPos, message.getAttachmentCount(true));
     }
 
     /**
