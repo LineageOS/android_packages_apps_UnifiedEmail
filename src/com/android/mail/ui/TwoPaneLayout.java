@@ -253,12 +253,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private final AnimatorListenerAdapter mPaneAnimationListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
-            useHardwareLayer(false);
             onTransitionComplete();
-        }
-        @Override
-        public void onAnimationCancel(Animator animation) {
-            useHardwareLayer(false);
         }
     };
 
@@ -278,8 +273,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             return;
         }
 
-        useHardwareLayer(true);
-
         if (ViewMode.isAdMode(mCurrentMode)) {
             mMiscellaneousView.animate().x(convX);
         } else {
@@ -298,22 +291,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             v.animate()
                 .setInterpolator(mSlideInterpolator)
                 .setDuration(SLIDE_DURATION_MS);
-        }
-    }
-
-    private void useHardwareLayer(boolean useHardware) {
-        final int layerType = useHardware ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE;
-        mFoldersView.setLayerType(layerType, null);
-        mListView.setLayerType(layerType, null);
-        mConversationView.setLayerType(layerType, null);
-        mMiscellaneousView.setLayerType(layerType, null);
-        if (useHardware) {
-            // these buildLayer calls are safe because layout is the only way we get here
-            // (i.e. these views must already be attached)
-            mFoldersView.buildLayer();
-            mListView.buildLayer();
-            mConversationView.buildLayer();
-            mMiscellaneousView.buildLayer();
         }
     }
 
