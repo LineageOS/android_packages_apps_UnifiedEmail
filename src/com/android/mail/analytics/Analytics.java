@@ -65,11 +65,6 @@ public final class Analytics {
     public static final int CD_INDEX_USER_RETENTION_TYPE = 9;
 
     /**
-     * Custom dimension the analytics that saves the account type (IMAP, POP, EAS, etc.).
-     */
-    public static final int CD_INDEX_ACCOUNT_TYPE = 10;
-
-    /**
      * Value for {@link #CD_INDEX_USER_RETENTION_TYPE} meaning that the user has never used the
      * Mail app anywhere before.
      */
