@@ -29,10 +29,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationListFooterView;
-import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
@@ -60,7 +58,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  */
 public interface ActivityController extends LayoutListener,
         ModeChangeListener, ConversationListCallbacks,
-        FolderChangeListener, ConversationSetObserver, ConversationListener, FolderSelector,
+        ConversationSetObserver, ConversationListener, FolderSelector,
         UndoListener, ConversationUpdater, ErrorListener, FolderController, AccountController,
         ConversationPositionTracker.Callbacks, ConversationListFooterView.FooterViewClickListener,
         RecentFolderController, FragmentLauncher, KeyboardNavigationController {
@@ -68,15 +66,6 @@ public interface ActivityController extends LayoutListener,
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
 
-    /**
-     * Returns the current account.
-     */
-    Account getCurrentAccount();
-
-    /**
-     * Returns the current conversation list context.
-     */
-    ConversationListContext getCurrentListContext();
 
     /**
      * @see android.app.Activity#onActivityResult
@@ -95,12 +84,6 @@ public interface ActivityController extends LayoutListener,
      * event was not consumed.
      */
     boolean onBackPressed();
-
-    /**
-     * Called by the Mail activity when the up button is pressed.
-     * @return
-     */
-    boolean onUpPressed();
 
     /**
      * Called when the root activity calls onCreate. Any initialization needs to
@@ -230,19 +213,6 @@ public interface ActivityController extends LayoutListener,
     void onWindowFocusChanged(boolean hasFocus);
 
     /**
-     * Show the conversation List with the list context provided here. On certain layouts, this
-     * might show more than just the conversation list. For instance, on tablets this might show
-     * the conversations along with the conversation list.
-     * @param listContext context providing information on what conversation list to display.
-     */
-    void showConversationList(ConversationListContext listContext);
-
-    /**
-     * Show the wait for account initialization mode.
-     */
-    public void showWaitForInitialization();
-
-    /**
      * Handle a touch event.
      */
     void onTouchEvent(MotionEvent event);
@@ -266,11 +236,6 @@ public interface ActivityController extends LayoutListener,
     void startSearch();
 
     /**
-     * Exit the search mode, popping off one activity so that the back stack is fine.
-     */
-    void exitSearchMode();
-
-    /**
      * Supports dragging conversations to a folder.
      */
     boolean supportsDrag(DragEvent event, Folder folder);
@@ -281,19 +246,9 @@ public interface ActivityController extends LayoutListener,
     void handleDrop(DragEvent event, Folder folder);
 
     /**
-     * Load the default inbox associated with the current account.
-     */
-    public void loadAccountInbox();
-
-    /**
      * Return the folder currently being viewed by the activity.
      */
     public Folder getHierarchyFolder();
-
-    /**
-     * Set the folder currently selected in the folder selection hierarchy fragments.
-     */
-    void setHierarchyFolder(Folder folder);
 
     /**
      * Handles the animation end of the animated adapter.
