@@ -74,6 +74,7 @@
     <color name="conversation_view_text_color_dark">@color/text_color_black</color>
     <color name="conversation_view_text_color_link_blue">@color/text_color_blue</color>
     <color name="conversation_view_footer_text_color">#a7a7a7</color>
+    <color name="conversation_view_footer_load_more_text_color">@color/accent_blue</color>
 
     <!-- Widget colors -->
     <color name="widget_header_bg_color">@color/primary_color</color>
