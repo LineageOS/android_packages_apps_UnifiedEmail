@@ -335,9 +335,11 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     private void showCurrentConversationInPager() {
-        mPagerController.show(mAccount, mFolder, mConversationToShow,
-                false /* changeVisibility */);
-        mConversationToShow = null;
+        if (mConversationToShow != null) {
+            mPagerController.show(mAccount, mFolder, mConversationToShow,
+                    false /* changeVisibility */);
+            mConversationToShow = null;
+        }
     }
 
     @Override
