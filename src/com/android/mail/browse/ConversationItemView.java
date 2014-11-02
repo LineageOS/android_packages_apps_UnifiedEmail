@@ -662,8 +662,7 @@ public class ConversationItemView extends View
         }
         mHeader.viewWidth = mViewWidth;
 
-        mConfig.updateWidth(wSize).setViewMode(currentMode)
-                .setLayoutDirection(ViewCompat.getLayoutDirection(this));
+        mConfig.updateWidth(wSize).setLayoutDirection(ViewCompat.getLayoutDirection(this));
 
         Resources res = getResources();
         mHeader.standardScaledDimen = res.getDimensionPixelOffset(R.dimen.standard_scaled_dimen);
@@ -764,8 +763,8 @@ public class ConversationItemView extends View
             Context context = getContext();
             mHeader.messageInfoString = SendersView
                     .createMessageInfo(context, mHeader.conversation, true);
-            int maxChars = ConversationItemViewCoordinates.getSendersLength(context,
-                    mCoordinates.getMode(), mHeader.conversation.hasAttachments);
+            final int maxChars = ConversationItemViewCoordinates.getSendersLength(context,
+                    mHeader.conversation.hasAttachments);
 
             mHeader.mSenderAvatarModel.clear();
             mHeader.displayableNames.clear();
@@ -812,9 +811,8 @@ public class ConversationItemView extends View
         }
         if (mCoordinates.contactImagesWidth <= 0 || mCoordinates.contactImagesHeight <= 0) {
             LogUtils.w(LOG_TAG,
-                    "Contact image width(%d) or height(%d) is 0 for mode: (%d).",
-                    mCoordinates.contactImagesWidth, mCoordinates.contactImagesHeight,
-                    mCoordinates.getMode());
+                    "Contact image width(%d) or height(%d) is 0",
+                    mCoordinates.contactImagesWidth, mCoordinates.contactImagesHeight);
             return;
         }
 
