@@ -86,7 +86,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     /** The current account */
     private Account mAccount;
     private final Context mContext;
-    private final ConversationSelectionSet mBatchConversations;
+    private final ConversationCheckedSet mBatchConversations;
     private Runnable mCountDown;
     private final Handler mHandler;
     protected long mLastLeaveBehind = -1;
@@ -246,7 +246,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     private final ContactResolver mContactResolver;
 
     public AnimatedAdapter(Context context, ConversationCursor cursor,
-            ConversationSelectionSet batch, ControllableActivity activity,
+            ConversationCheckedSet batch, ControllableActivity activity,
             SwipeableListView listView, final List<ConversationSpecialItemView> specialViews) {
         super(context, -1, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;

@@ -75,7 +75,7 @@ import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
-import com.android.mail.ui.ConversationSelectionSet;
+import com.android.mail.ui.ConversationCheckedSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
 import com.android.mail.ui.FolderDisplayer;
@@ -111,6 +111,8 @@ public class ConversationItemView extends View
 
     private static final Typeface SANS_SERIF_LIGHT = Typeface.create("sans-serif-light",
             Typeface.NORMAL);
+
+    private static final int[] CHECKED_STATE = new int[] { android.R.attr.state_checked };
 
     // Static bitmaps.
     private static Bitmap STAR_OFF;
@@ -182,8 +184,8 @@ public class ConversationItemView extends View
 
     public ConversationItemViewModel mHeader;
     private boolean mDownEvent;
-    private boolean mSelected = false;
-    private ConversationSelectionSet mSelectedConversationSet;
+    private boolean mChecked = false;
+    private ConversationCheckedSet mCheckedConversationSet;
     private Folder mDisplayedFolder;
     private boolean mStarEnabled;
     private boolean mSwipeEnabled;
@@ -631,7 +633,7 @@ public class ConversationItemView extends View
     }
 
     public void bind(final Conversation conversation, final ControllableActivity activity,
-            final ConversationSelectionSet set, final Folder folder,
+            final ConversationCheckedSet set, final Folder folder,
             final int checkboxOrSenderImage,
             final boolean swipeEnabled, final boolean importanceMarkersEnabled,
             final boolean showChevronsEnabled, final AnimatedAdapter adapter) {
@@ -660,7 +662,7 @@ public class ConversationItemView extends View
 
     private void bind(final ConversationItemViewModel header, final ControllableActivity activity,
             final ConversationItemAreaClickListener conversationItemAreaClickListener,
-            final ConversationSelectionSet set, final Folder folder,
+            final ConversationCheckedSet set, final Folder folder,
             final int checkboxOrSenderImage,
             boolean swipeEnabled, final boolean importanceMarkersEnabled,
             final boolean showChevronsEnabled, final AnimatedAdapter adapter,
@@ -683,7 +685,7 @@ public class ConversationItemView extends View
 
             if (newlyBound) {
                 // Stop the photo flip animation
-                final boolean showSenders = !isSelected();
+                final boolean showSenders = !mChecked;
                 mSendersImageView.reset(showSenders);
             }
             Utils.traceEndSection();
@@ -691,9 +693,9 @@ public class ConversationItemView extends View
         mCoordinates = null;
         mHeader = header;
         mActivity = activity;
-        mSelectedConversationSet = set;
-        if (mSelectedConversationSet != null) {
-            mSelectedConversationSet.addObserver(this);
+        mCheckedConversationSet = set;
+        if (mCheckedConversationSet != null) {
+            mCheckedConversationSet.addObserver(this);
         }
         mDisplayedFolder = folder;
         mStarEnabled = folder != null && !folder.isTrash();
@@ -788,8 +790,8 @@ public class ConversationItemView extends View
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        if (mSelectedConversationSet != null) {
-            mSelectedConversationSet.removeObserver(this);
+        if (mCheckedConversationSet != null) {
+            mCheckedConversationSet.removeObserver(this);
         }
     }
 
@@ -925,10 +927,9 @@ public class ConversationItemView extends View
     private void calculateTextsAndBitmaps() {
         startTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
 
-        if (mSelectedConversationSet != null) {
-            mSelected = mSelectedConversationSet.contains(mHeader.conversation);
+        if (mCheckedConversationSet != null) {
+            setChecked(mCheckedConversationSet.contains(mHeader.conversation));
         }
-        setSelected(mSelected);
         mHeader.gadgetMode = mGadgetMode;
 
         updateBackground();
@@ -1443,12 +1444,24 @@ public class ConversationItemView extends View
             final int dividerTopY = dividerBottomY - sDividerHeight;
             canvas.drawRect(0, dividerTopY, getWidth(), dividerBottomY, sDividerPaint);
         }
+
+        // The focused bar
+        if (isSelected() || isActivated()) {
+            final int w = VISIBLE_CONVERSATION_HIGHLIGHT.getIntrinsicWidth();
+            final boolean isRtl = ViewUtils.isViewRtl(this);
+            // This bar is on the right side of the conv list if it's RTL
+            VISIBLE_CONVERSATION_HIGHLIGHT.setBounds(
+                    (isRtl) ? getWidth() - w : 0, 0,
+                    (isRtl) ? getWidth() : w, getHeight());
+            VISIBLE_CONVERSATION_HIGHLIGHT.draw(canvas);
+        }
+
         Utils.traceEndSection();
     }
 
     private void drawSendersImage(final Canvas canvas) {
         if (!mSendersImageView.isFlipping()) {
-            final boolean showSenders = !isSelected();
+            final boolean showSenders = !mChecked;
             mSendersImageView.reset(showSenders);
         }
         canvas.translate(mCoordinates.contactImagesX, mCoordinates.contactImagesY);
@@ -1505,37 +1518,50 @@ public class ConversationItemView extends View
     }
 
     @Override
-    public boolean toggleSelectedState() {
-        return toggleSelectedState(null);
+    protected int[] onCreateDrawableState(int extraSpace) {
+        final int[] curr = super.onCreateDrawableState(extraSpace + 1);
+        if (mChecked) {
+            mergeDrawableStates(curr, CHECKED_STATE);
+        }
+        return curr;
+    }
+
+    private void setChecked(boolean checked) {
+        mChecked = checked;
+        refreshDrawableState();
     }
 
     @Override
-    public boolean toggleSelectedState(final String sourceOpt) {
-        if (mHeader != null && mHeader.conversation != null && mSelectedConversationSet != null) {
-            mSelected = !mSelected;
-            setSelected(mSelected);
+    public boolean toggleCheckedState() {
+        return toggleCheckedState(null);
+    }
+
+    @Override
+    public boolean toggleCheckedState(final String sourceOpt) {
+        if (mHeader != null && mHeader.conversation != null && mCheckedConversationSet != null) {
+            setChecked(!mChecked);
             final Conversation conv = mHeader.conversation;
             // Set the list position of this item in the conversation
             final SwipeableListView listView = getListView();
 
             try {
-                conv.position = mSelected && listView != null ? listView.getPositionForView(this)
+                conv.position = mChecked && listView != null ? listView.getPositionForView(this)
                         : Conversation.NO_POSITION;
             } catch (final NullPointerException e) {
                 // TODO(skennedy) Remove this if we find the root cause b/9527863
             }
 
-            if (mSelectedConversationSet.isEmpty()) {
+            if (mCheckedConversationSet.isEmpty()) {
                 final String source = (sourceOpt != null) ? sourceOpt : "checkbox";
                 Analytics.getInstance().sendEvent("enter_cab_mode", source, null, 0);
             }
 
-            mSelectedConversationSet.toggle(conv);
-            if (mSelectedConversationSet.isEmpty()) {
+            mCheckedConversationSet.toggle(conv);
+            if (mCheckedConversationSet.isEmpty()) {
                 listView.commitDestructiveActions(true);
             }
 
-            final boolean front = !mSelected;
+            final boolean front = !mChecked;
             mSendersImageView.flipTo(front);
 
             // We update the background after the checked state has changed
@@ -1556,10 +1582,10 @@ public class ConversationItemView extends View
     }
 
     @Override
-    public void onSetPopulated(final ConversationSelectionSet set) { }
+    public void onSetPopulated(final ConversationCheckedSet set) { }
 
     @Override
-    public void onSetChanged(final ConversationSelectionSet set) { }
+    public void onSetChanged(final ConversationCheckedSet set) { }
 
     /**
      * Toggle the star on this view and update the conversation.
@@ -1588,7 +1614,7 @@ public class ConversationItemView extends View
 
         // Allow touching a little right of the contact photo when we're already in selection mode
         final float extra;
-        if (mSelectedConversationSet == null || mSelectedConversationSet.isEmpty()) {
+        if (mCheckedConversationSet == null || mCheckedConversationSet.isEmpty()) {
             extra = 0;
         } else {
             extra = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
@@ -1677,7 +1703,7 @@ public class ConversationItemView extends View
                 if (mDownEvent) {
                     if (isTouchInContactPhoto(x, y)) {
                         // Touch on the check mark
-                        toggleSelectedState();
+                        toggleCheckedState();
                     } else if (isTouchInInfoIcon(x, y)) {
                         if (mConversationItemAreaClickListener != null) {
                             mConversationItemAreaClickListener.onInfoIconClicked();
@@ -1729,7 +1755,7 @@ public class ConversationItemView extends View
                         // Touch on the check mark
                         Utils.traceEndSection();
                         mDownEvent = false;
-                        toggleSelectedState();
+                        toggleCheckedState();
                         Utils.traceEndSection();
                         return true;
                     } else if (isTouchInInfoIcon(x, y)) {
