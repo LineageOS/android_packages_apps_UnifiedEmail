@@ -21,8 +21,10 @@ import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -78,7 +80,7 @@ import static android.view.View.OnKeyListener;
  */
 public final class ConversationListFragment extends Fragment implements
         OnItemLongClickListener, ModeChangeListener, ListItemSwipedListener, OnRefreshListener,
-        SwipeListener, OnKeyListener, AdapterView.OnItemClickListener {
+        SwipeListener, OnKeyListener, AdapterView.OnItemClickListener, View.OnClickListener {
     /** Key used to pass data to {@link ConversationListFragment}. */
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     /** Key used to keep track of the scroll state of the list. */
@@ -135,6 +137,9 @@ public final class ConversationListFragment extends Fragment implements
 
     private ConversationListFooterView mFooterView;
     private ConversationListEmptyView mEmptyView;
+    private View mSecurityHoldView;
+    private TextView mSecurityHoldText;
+    private View mSecurityHoldButton;
     private View mLoadingView;
     private ErrorListener mErrorListener;
     private FolderObserver mFolderObserver;
@@ -170,6 +175,15 @@ public final class ConversationListFragment extends Fragment implements
         mListView.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
         mLoadingView.setVisibility(View.INVISIBLE);
+        mSecurityHoldView.setVisibility(View.INVISIBLE);
+    }
+
+    private void showSecurityHoldView() {
+        mListView.setVisibility(View.INVISIBLE);
+        mEmptyView.setVisibility(View.INVISIBLE);
+        mLoadingView.setVisibility(View.INVISIBLE);
+        setupSecurityHoldView();
+        mSecurityHoldView.setVisibility(View.VISIBLE);
     }
 
     private void showEmptyView() {
@@ -178,12 +192,19 @@ public final class ConversationListFragment extends Fragment implements
         mListView.setVisibility(View.INVISIBLE);
         mEmptyView.setVisibility(View.VISIBLE);
         mLoadingView.setVisibility(View.INVISIBLE);
+        mSecurityHoldView.setVisibility(View.INVISIBLE);
     }
 
     private void showLoadingView() {
         mListView.setVisibility(View.INVISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
         mLoadingView.setVisibility(View.VISIBLE);
+        mSecurityHoldView.setVisibility(View.INVISIBLE);
+    }
+
+    private void setupSecurityHoldView() {
+        mSecurityHoldText.setText(getString(R.string.security_hold_required_text,
+                mAccount.getDisplayName()));
     }
 
     private final Runnable mLoadingViewRunnable = new FragmentRunnable("LoadingRunnable", this) {
@@ -457,6 +478,10 @@ public final class ConversationListFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = (ConversationListEmptyView) rootView.findViewById(R.id.empty_view);
+        mSecurityHoldView = rootView.findViewById(R.id.security_hold_view);
+        mSecurityHoldText = (TextView)rootView.findViewById(R.id.security_hold_text);
+        mSecurityHoldButton = rootView.findViewById(R.id.security_hold_button);
+        mSecurityHoldButton.setOnClickListener(this);
         mLoadingView = rootView.findViewById(R.id.background_view);
         mLoadingView.setVisibility(View.GONE);
         mLoadingView.findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
@@ -960,7 +985,9 @@ public final class ConversationListFragment extends Fragment implements
 
         // Even though cursor might be empty, the list adapter might have teasers/footers.
         // So we check the list adapter count if the cursor is fully/partially loaded.
-        if (mListAdapter.getCount() == 0) {
+        if (mAccount.securityHold != 0) {
+            showSecurityHoldView();
+        } else if (mListAdapter.getCount() == 0) {
             showEmptyView();
         } else {
             showListView();
@@ -1243,6 +1270,14 @@ public final class ConversationListFragment extends Fragment implements
             // handles one of these directions, it will go to the left side regardless of RTL.
             mListView.setNextFocusLeftId(mNextFocusStartId);
             mListView.setNextFocusRightId(mNextFocusStartId);
+        }
+    }
+
+    public void onClick(View view) {
+        if (view == mSecurityHoldButton) {
+            final String accountSecurityUri = mAccount.accountSecurityUri;
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(accountSecurityUri));
+            startActivity(intent);
         }
     }
 }
