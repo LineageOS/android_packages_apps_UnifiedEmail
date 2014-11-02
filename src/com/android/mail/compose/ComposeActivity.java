@@ -1333,6 +1333,15 @@ public class ComposeActivity extends ActionBarActivity
         mFromStaticText = (TextView) findViewById(R.id.from_account_name);
         mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
         mFromSpinner = (FromAddressSpinner) findViewById(R.id.from_picker);
+
+        // Bottom placeholder to forward click events to the body
+        findViewById(R.id.composearea_tap_trap_bottom).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBodyView.requestFocus();
+                mBodyView.setSelection(mBodyView.getText().length());
+            }
+        });
     }
 
     private void initializeRecipientEditTextView(RecipientEditTextView view) {
