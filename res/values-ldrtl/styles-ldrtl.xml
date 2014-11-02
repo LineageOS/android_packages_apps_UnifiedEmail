@@ -206,7 +206,7 @@
         <item name="android:layout_marginStart">@dimen/attachment_icon_padding</item>
     </style>
 
-    <style name="FolderParentIconStyle">
+    <style name="FolderParentIconStyle" parent="AutoMirroredImageView">
         <item name="android:layout_alignParentEnd">true</item>
     </style>
 
@@ -393,5 +393,10 @@
     <style name="AccountItemNameStyle">
         <item name="android:paddingStart">@dimen/account_item_name_start_padding</item>
         <item name="android:paddingEnd">@dimen/account_item_name_end_padding</item>
+    </style>
+
+
+    <style name="AutoMirroredImageView">
+        <item name="android:scaleX">-1</item>
     </style>
 </resources>
