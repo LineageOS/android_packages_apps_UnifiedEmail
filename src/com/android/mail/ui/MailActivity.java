@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -35,7 +34,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.Window;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.bitmap.BitmapCache;
@@ -90,6 +88,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     protected static String sAccountName = null;
 
     private BitmapCache mSendersImageCache;
+
+    private CustomViewToolbar mCustomViewToolbar;
 
     /**
      * Create an NFC message (in the NDEF: Nfc Data Exchange Format) to instruct the recepient to
@@ -178,9 +178,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         final Toolbar toolbar = (Toolbar) findViewById(R.id.mail_toolbar);
         if (toolbar instanceof CustomViewToolbar) {
             // Tablets use CustomViewToolbar to override the default search menu item positioning.
-            final CustomViewToolbar customViewToolbar = (CustomViewToolbar) toolbar;
-            customViewToolbar.setController(this, mController, mViewMode);
-            mController.addConversationListLayoutListener(customViewToolbar);
+            mCustomViewToolbar = (CustomViewToolbar) toolbar;
+            mCustomViewToolbar.setController(this, mController, mViewMode);
+            mController.addConversationListLayoutListener(mCustomViewToolbar);
         }
 
         setSupportActionBar(toolbar);
@@ -331,6 +331,10 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     protected void onDestroy() {
         super.onDestroy();
         mController.onDestroy();
+
+        if (mCustomViewToolbar != null) {
+            mCustomViewToolbar.onDestroy();
+        }
     }
 
     @Override
