@@ -265,6 +265,11 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
+    public boolean shouldPreventListSwipesEntirely() {
+        return isDrawerOpen();
+    }
+
+    @Override
     public void onViewModeChanged(int newMode) {
         if (!mSavedMiscellaneousView && mMiscellaneousViewTransactionId >= 0) {
             final FragmentManager fragmentManager = mActivity.getFragmentManager();

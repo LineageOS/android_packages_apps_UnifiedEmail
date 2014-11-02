@@ -4312,6 +4312,11 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
+    public boolean shouldPreventListSwipesEntirely() {
+        return false;
+    }
+
+    @Override
     public DrawerController getDrawerController() {
         return mDrawerListener;
     }
