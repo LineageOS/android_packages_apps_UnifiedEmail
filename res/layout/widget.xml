@@ -47,7 +47,7 @@
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:scaleType="center"
-            android:src="@drawable/ic_widget_compose_wht_24dp"
+            android:src="@drawable/ic_pencil_wht_24dp"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/compose" />
     </LinearLayout>
