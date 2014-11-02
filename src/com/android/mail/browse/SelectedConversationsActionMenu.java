@@ -371,7 +371,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         boolean showMarkNotSpam = false;
         boolean showMarkAsPhishing = false;
 
-        // TODO(shahrk): Clean up these dirty calls using Utils.setMenuItemVisibility(...) or
+        // TODO(shahrk): Clean up these dirty calls using Utils.setMenuItemPresent(...) or
         // in another way
 
         for (Conversation conversation : conversations) {

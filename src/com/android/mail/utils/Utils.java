@@ -36,8 +36,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
 import android.support.annotation.Nullable;
-import android.support.v4.text.TextUtilsCompat;
-import android.support.v4.view.ViewCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -783,8 +781,19 @@ public class Utils {
        return 0x00ffffff & color;
    }
 
-    public static void setMenuItemVisibility(Menu menu, int itemId, boolean shouldShow) {
-        final MenuItem item = menu.findItem(itemId);
+    /**
+     * Note that this function sets both the visibility and enabled flags for the menu item so that
+     * if shouldShow is false then the menu item is also no longer valid for keyboard shortcuts.
+     */
+    public static void setMenuItemPresent(Menu menu, int itemId, boolean shouldShow) {
+        setMenuItemPresent(menu.findItem(itemId), shouldShow);
+    }
+
+    /**
+     * Note that this function sets both the visibility and enabled flags for the menu item so that
+     * if shouldShow is false then the menu item is also no longer valid for keyboard shortcuts.
+     */
+    public static void setMenuItemPresent(MenuItem item, boolean shouldShow) {
         if (item == null) {
             return;
         }
