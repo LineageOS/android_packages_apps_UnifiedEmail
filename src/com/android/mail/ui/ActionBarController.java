@@ -262,14 +262,9 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
                 // is added.
                 setConversationModeOptions(menu);
                 break;
-            case ViewMode.CONVERSATION_LIST:
-                // Show search if the account supports it
-                Utils.setMenuItemVisibility(menu, R.id.search, mAccount.supportsSearch());
-                break;
             case ViewMode.SEARCH_RESULTS_LIST:
                 // Hide compose and search
                 Utils.setMenuItemVisibility(menu, R.id.compose, false);
-                Utils.setMenuItemVisibility(menu, R.id.search, false);
                 break;
         }
 

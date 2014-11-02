@@ -74,6 +74,8 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
     private boolean mIsTabletLandscape;
 
+    private TwoPaneLayout.ConversationListLayoutListener mConversationListLayoutListener;
+
     public TwoPaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
     }
@@ -156,6 +158,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
             return false;
         }
+        mLayout.setConversationListLayoutListener(mConversationListLayoutListener);
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
         mActivity.getWindow().setBackgroundDrawable(null);
         mIsTabletLandscape = !mActivity.getResources().getBoolean(R.bool.list_collapsible);
@@ -642,5 +645,21 @@ public final class TwoPaneController extends AbstractActivityController implemen
         final int mode = mViewMode.getMode();
         return mode == ViewMode.SEARCH_RESULTS_LIST ||
                 (mIsTabletLandscape && mode == ViewMode.SEARCH_RESULTS_CONVERSATION);
+    }
+
+    @Override
+    public boolean shouldShowSearchMenuItem() {
+        final int mode = mViewMode.getMode();
+        return mode == ViewMode.CONVERSATION_LIST ||
+                (mIsTabletLandscape && mode == ViewMode.CONVERSATION);
+    }
+
+    @Override
+    public void setConversationListLayoutListener(
+            TwoPaneLayout.ConversationListLayoutListener listener) {
+        mConversationListLayoutListener = listener;
+        if (mLayout != null) {
+            mLayout.setConversationListLayoutListener(listener);
+        }
     }
 }
