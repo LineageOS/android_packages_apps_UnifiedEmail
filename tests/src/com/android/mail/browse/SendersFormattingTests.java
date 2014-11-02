@@ -87,7 +87,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ArrayList<SpannableString> strings = Lists.newArrayList();
         assertEquals(0, strings.size());
 
-        SendersView.format(getContext(), conv, "", 100, strings, null, null, null, false, false);
+        final Account account = createAccount();
+        SendersView.format(getContext(), conv, "", 100, strings, null, null, account, false, false);
         assertEquals(2, strings.size());
         assertNull(strings.get(0));
         assertEquals("Something", strings.get(1).toString());
@@ -134,8 +135,9 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
                 new ConversationItemViewModel.SenderAvatarModel();
 
+        final Account account = createAccount();
         SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
-                senderAvatarModel, null, false, false);
+                senderAvatarModel, account, false, false);
 
         assertEquals("b@b.com", senderAvatarModel.getEmailAddress());
         assertEquals("b", senderAvatarModel.getName());
@@ -152,8 +154,9 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
                 new ConversationItemViewModel.SenderAvatarModel();
 
+        final Account account = createAccount();
         SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
-                senderAvatarModel, null, false, false);
+                senderAvatarModel, account, false, false);
 
         assertEquals("c@c.com", senderAvatarModel.getEmailAddress());
         assertEquals("c", senderAvatarModel.getName());
@@ -193,8 +196,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
                 senderAvatarModel, account, false, false);
 
-        assertEquals("fflinstone@example.com", senderAvatarModel.getEmailAddress());
-        assertEquals("Fred Flinstone", senderAvatarModel.getName());
+        assertEquals("fflintstone@example.com", senderAvatarModel.getEmailAddress());
+        assertEquals("Fred Flintstone", senderAvatarModel.getName());
     }
 
     /**
@@ -211,8 +214,9 @@ public class SendersFormattingTests extends AndroidTestCase {
         final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
                 new ConversationItemViewModel.SenderAvatarModel();
 
+        final Account account = createAccount();
         SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
-                senderAvatarModel, null, false, false);
+                senderAvatarModel, account, false, false);
 
         assertEquals(2, displayableSenderNames.size());
         assertEquals("Andrew", displayableSenderNames.get(0));
@@ -222,8 +226,8 @@ public class SendersFormattingTests extends AndroidTestCase {
     private static Account createAccount() {
         try {
             final Map<String, Object> map = new HashMap<>(2);
-            map.put(UIProvider.AccountColumns.NAME, "Fred Flinstone");
-            map.put(UIProvider.AccountColumns.ACCOUNT_MANAGER_NAME, "fflinstone@example.com");
+            map.put(UIProvider.AccountColumns.NAME, "Fred Flintstone");
+            map.put(UIProvider.AccountColumns.ACCOUNT_MANAGER_NAME, "fflintstone@example.com");
             map.put(UIProvider.AccountColumns.TYPE, "IMAP");
             map.put(UIProvider.AccountColumns.PROVIDER_VERSION, 1);
             map.put(UIProvider.AccountColumns.CAPABILITIES, 0);
