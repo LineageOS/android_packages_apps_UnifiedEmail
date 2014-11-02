@@ -42,4 +42,12 @@
     <style name="BorderlessBackground">
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
+
+    <style name="NotificationPrimaryText">
+        <item name="android:textColor">@color/text_color_black</item>
+    </style>
+
+    <style name="NotificationSecondaryText">
+        <item name="android:textColor">@color/text_color_grey</item>
+    </style>
 </resources>
