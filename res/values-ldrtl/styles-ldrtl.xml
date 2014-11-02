@@ -58,11 +58,6 @@
         <item name="android:layout_marginEnd">@dimen/conversation_border_margin_side</item>
     </style>
 
-    <style name="NewMessageButtonStyle" parent="AbstractNewMessageButtonStyle">
-        <item name="android:layout_marginStart">@dimen/toast_bar_margin</item>
-        <item name="android:layout_marginEnd">@dimen/toast_bar_margin</item>
-    </style>
-
     <style name="DrawerNavigationStyle">
         <item name="android:nextFocusLeft">@+id/conversation_list_view</item>
     </style>

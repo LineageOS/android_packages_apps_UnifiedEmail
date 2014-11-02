@@ -26,10 +26,10 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -40,7 +40,7 @@ import com.android.mail.utils.Utils;
  */
 public class ActionableToastBar extends FrameLayout {
 
-    private boolean mHidden = false;
+    private boolean mHidden = true;
     private final Runnable mHideToastBarRunnable;
     private final Handler mHideToastBarHandler;
 
@@ -173,11 +173,14 @@ public class ActionableToastBar extends FrameLayout {
      * @param actionTextResourceId resource ID for the text to show in the action button
      * @param replaceVisibleToast if true, this toast should replace any currently visible toast.
      *                            Otherwise, skip showing this toast.
+     * @param autohide <tt>true</tt> indicates the toast will be automatically hidden after a time
+     *                 delay; <tt>false</tt> indicate the toast will remain visible until the user
+     *                 dismisses it
      * @param op the operation that corresponds to the specific toast being shown
      */
     public void show(final ActionClickedListener listener, final CharSequence descriptionText,
                      @StringRes final int actionTextResourceId, final boolean replaceVisibleToast,
-                     final ToastBarOperation op) {
+                     final boolean autohide, final ToastBarOperation op) {
         if (!mHidden && !replaceVisibleToast) {
             return;
         }
@@ -190,7 +193,7 @@ public class ActionableToastBar extends FrameLayout {
         setActionClickListener(new OnClickListener() {
             @Override
             public void onClick(View widget) {
-                if (op.shouldTakeOnActionClickedPrecedence()) {
+                if (op != null && op.shouldTakeOnActionClickedPrecedence()) {
                     op.onActionClicked(getContext());
                 } else {
                     listener.onActionClicked(getContext());
@@ -202,12 +205,17 @@ public class ActionableToastBar extends FrameLayout {
         setDescriptionText(descriptionText);
         setActionText(actionTextResourceId);
 
-        mHidden = false;
+        // if this toast bar is not yet hidden, animate it in place; otherwise we just update the
+        // text that it displays
+        if (mHidden) {
+            mHidden = false;
+            popupToast();
+        }
 
-        popupToast();
-
-        // Set up runnable to execute hide toast once delay is completed
-        mHideToastBarHandler.postDelayed(mHideToastBarRunnable, mMaxToastDuration);
+        if (autohide) {
+            // Set up runnable to execute hide toast once delay is completed
+            mHideToastBarHandler.postDelayed(mHideToastBarRunnable, mMaxToastDuration);
+        }
     }
 
     public ToastBarOperation getOperation() {
@@ -416,7 +424,7 @@ public class ActionableToastBar extends FrameLayout {
      */
     private int getAnimationDistance() {
         // total height over which the animation takes place is the toast bar height + bottom margin
-        final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
+        final ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) getLayoutParams();
         return getHeight() + params.bottomMargin;
     }
 

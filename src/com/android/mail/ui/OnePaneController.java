@@ -23,7 +23,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
@@ -451,7 +450,8 @@ public final class OnePaneController extends AbstractActivityController {
                             Utils.convertHtmlToPlainText
                                 (op.getDescription(mActivity.getActivityContext())),
                             R.string.undo,
-                            true,  /* replaceVisibleToast */
+                            true /* replaceVisibleToast */,
+                            true /* autohide */,
                             op);
                     break;
                 case ViewMode.SEARCH_RESULTS_LIST:
@@ -462,7 +462,8 @@ public final class OnePaneController extends AbstractActivityController {
                                 Utils.convertHtmlToPlainText
                                     (op.getDescription(mActivity.getActivityContext())),
                                 R.string.undo,
-                                true,  /* replaceVisibleToast */
+                                true /* replaceVisibleToast */,
+                                true /* autohide */,
                                 op);
                     } else {
                         mActivity.setPendingToastOperation(op);
