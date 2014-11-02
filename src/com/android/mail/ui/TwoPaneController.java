@@ -252,6 +252,15 @@ public final class TwoPaneController extends AbstractActivityController implemen
         final ConversationListFragment clf = getConversationListFragment();
         if (clf != null) {
             clf.setNextFocusLeftId(getClfNextFocusLeftId(flf.isMinimized()));
+
+            final SwipeableListView list = clf.getListView();
+            if (list != null) {
+                if (flf.isMinimized()) {
+                    list.stopPreventingSwipes();
+                } else {
+                    list.preventSwipesEntirely();
+                }
+            }
         }
     }
 
