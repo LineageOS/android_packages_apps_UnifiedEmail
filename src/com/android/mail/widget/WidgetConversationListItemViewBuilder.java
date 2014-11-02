@@ -38,8 +38,7 @@ import com.android.mail.utils.FolderUri;
 
 public class WidgetConversationListItemViewBuilder {
     // Static colors
-    private static int SUBJECT_TEXT_COLOR_READ;
-    private static int SUBJECT_TEXT_COLOR_UNREAD;
+    private static int SUBJECT_TEXT_COLOR;
     private static int SNIPPET_TEXT_COLOR;
     private static int DATE_TEXT_COLOR_READ;
     private static int DATE_TEXT_COLOR_UNREAD;
@@ -114,8 +113,7 @@ public class WidgetConversationListItemViewBuilder {
         final Resources res = context.getResources();
 
         // Initialize colors
-        SUBJECT_TEXT_COLOR_READ = res.getColor(R.color.subject_text_color_read);
-        SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
+        SUBJECT_TEXT_COLOR = res.getColor(R.color.subject_text_color);
         SNIPPET_TEXT_COLOR = res.getColor(R.color.snippet_text_color);
         DATE_TEXT_COLOR_READ = res.getColor(R.color.date_text_color_read);
         DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
@@ -166,8 +164,7 @@ public class WidgetConversationListItemViewBuilder {
             subjectBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        final int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
-        final CharacterStyle subjectStyle = new ForegroundColorSpan(subjectColor);
+        final CharacterStyle subjectStyle = new ForegroundColorSpan(SUBJECT_TEXT_COLOR);
         subjectBuilder.setSpan(subjectStyle, 0, subjectBuilder.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         final CharSequence styledSubject = addStyle(subjectBuilder, subjectFontSize, 0);
