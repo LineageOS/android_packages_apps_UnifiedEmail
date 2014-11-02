@@ -489,30 +489,4 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public SearchRecentSuggestionsProvider getSuggestionsProvider() {
         return new SuggestionsProvider(this);
     }
-
-    /**
-     * Returns the loader callback that can create a
-     * {@link AbstractActivityController#LOADER_WELCOME_TOUR_ACCOUNTS} followed by a
-     * {@link AbstractActivityController#LOADER_WELCOME_TOUR} which determines whether the welcome
-     * tour should be displayed.
-     *
-     * The base implementation returns {@code null} and subclasses should return an actual
-     * implementation if they want to be invoked at appropriate time.
-     */
-    public LoaderManager.LoaderCallbacks<?> getWelcomeCallbacks() {
-        return null;
-    }
-
-    /**
-     * Returns whether the latest version of the welcome tour was shown on this device.
-     * <p>
-     * The base implementation returns {@code true} and applications that implement a welcome tour
-     * should override this method in order to optimize
-     * {@link AbstractActivityController#perhapsStartWelcomeTour()}.
-     *
-     * @return Whether the latest version of the welcome tour was shown.
-     */
-    public boolean wasLatestWelcomeTourShownOnDeviceForAllAccounts() {
-        return true;
-    }
 }
