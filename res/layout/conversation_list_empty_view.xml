@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/empty_view_space"
             android:fontFamily="sans-serif-light"
-            android:textAlignment="center"
+            android:gravity="center"
             android:textColor="#80000000"
             android:textSize="@dimen/empty_view_text_size" />
 
