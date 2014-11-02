@@ -235,6 +235,10 @@
         <item name="android:paddingEnd">@dimen/widget_attachment_padding_end</item>
     </style>
 
+    <style name="WidgetHeaderStartMargin">
+        <item name="android:paddingStart">16dp</item>
+    </style>
+
     <!-- START Conversation list styles -->
     <style name="ConversationListContactImageStyle">
         <item name="android:layout_marginEnd">@dimen/conv_list_contact_image_padding_end</item>
