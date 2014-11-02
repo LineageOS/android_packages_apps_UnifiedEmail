@@ -37,6 +37,7 @@ public class ConversationViewFrame extends FrameLayout {
     public interface DownEventListener {
         boolean shouldBlockTouchEvents();
         void onConversationViewFrameTapped();
+        void onConversationViewTouchDown();
     }
 
     private DownEventListener mDownEventListener;
@@ -56,7 +57,14 @@ public class ConversationViewFrame extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mDownEventListener != null && mDownEventListener.shouldBlockTouchEvents();
+        final boolean steal = (mDownEventListener != null
+                && mDownEventListener.shouldBlockTouchEvents());
+        if (!steal && ev.getActionMasked() == MotionEvent.ACTION_DOWN
+                && mDownEventListener != null) {
+            // notify 2-pane that this CV is being interacted (to turn a peek->normal)
+            mDownEventListener.onConversationViewTouchDown();
+        }
+        return steal;
     }
 
     @Override
