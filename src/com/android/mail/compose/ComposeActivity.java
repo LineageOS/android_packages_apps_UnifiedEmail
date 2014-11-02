@@ -1139,7 +1139,8 @@ public class ComposeActivity extends ActionBarActivity
         message.bodyText = body.toString();
         // Fallback to use the text version if html conversion fails for whatever the reason.
         final String htmlInPlainText = Utils.convertHtmlToPlainText(message.bodyHtml);
-        if (!TextUtils.isEmpty(message.bodyText) && TextUtils.isEmpty(htmlInPlainText)) {
+        if (message.bodyText != null && message.bodyText.trim().length() > 0 &&
+                TextUtils.isEmpty(htmlInPlainText)) {
             LogUtils.w(LOG_TAG, "FAILED HTML CONVERSION: from %d to %d", message.bodyText.length(),
                     htmlInPlainText.length());
             Analytics.getInstance().sendEvent("errors", "failed_html_conversion", null, 0);
