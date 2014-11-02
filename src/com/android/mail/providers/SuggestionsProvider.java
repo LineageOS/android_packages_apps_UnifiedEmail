@@ -93,7 +93,10 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
             ArrayList<Cursor> cursors = new ArrayList<Cursor>();
             // Pass query; at this point it is either the last term OR the
             // only term.
-            cursors.add(super.query(query));
+            final Cursor c = super.query(query);
+            if (c != null) {
+                cursors.add(c);
+            }
 
             if (query.length() >= MIN_QUERY_LENGTH_FOR_CONTACTS) {
                 cursors.add(new ContactsCursor().query(query));
