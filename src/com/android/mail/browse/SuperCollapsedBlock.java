@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
+import com.android.mail.utils.ViewUtils;
 
 import java.text.NumberFormat;
 
@@ -95,9 +96,9 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     public void onClick(final View v) {
         mSuperCollapsedText.setVisibility(GONE);
         mSuperCollapsedProgress.setVisibility(VISIBLE);
-        final String contentDescription =
-                getResources().getQuantityString(R.plurals.show_messages_read, mCount, mCount);
-        setContentDescription(contentDescription);
+        final String announcement = getResources().getQuantityString(
+                R.plurals.super_collapsed_block_accessibility_announcement, mCount, mCount);
+        ViewUtils.announceForAccessibility(this, announcement);
 
         if (mClick != null) {
             getHandler().post(new Runnable() {
