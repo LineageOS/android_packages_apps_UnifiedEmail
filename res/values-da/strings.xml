@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"Mappeikon"</string>
     <string name="add_account" msgid="5905863370226612377">"Tilføj konto"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Afvis tip"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"Automatisk synkronisering er slået fra."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"Tryk for at slå til."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"Kontosynkronisering er slået fra."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"Aktivér i <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"Kontoindstillinger"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="NUMBER">%1$s</xliff:g> usendte meddelelser i <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"Vil du slå automatisk synkronisering til?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Ændringer, du foretager i alle apps og konti, ikke kun Gmail, synkroniseres mellem nettet, dine andre enheder og din <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>

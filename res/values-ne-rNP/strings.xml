@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"फोल्डर आइकन"</string>
     <string name="add_account" msgid="5905863370226612377">"खाता थप्नुहोस्"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"टिप खारेज गर्नुहोस्"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"स्वचालित सिङ्क बन्द छ।"</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"खोल्नको लागि छुनुहोस्।"</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"खाता सिङ्क बन्द छ।"</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> मा सक्रिय बनाउनुहोस्"</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"खाता सेटिङ्स"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g>मा नपठाइएको <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"स्वचालित सिङ्क सक्रिय पार्ने हो?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Gmail मा मात्र नभई, समपूर्ण अनुप्रयोग र खाताहरूमा तपाईँले गर्नुहुने वेब, तपाईँका अन्य उपकरणहरू र <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> मा सिङ्ख्रोनाइज हुनेछ।"</string>
