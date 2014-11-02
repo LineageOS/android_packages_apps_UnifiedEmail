@@ -15,8 +15,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
-    <color name="mini_drawer_activated_background_color">#e4e4e4</color>
-    <color name="text_color_undo_notification">@color/text_color_grey</color>
-    <color name="text_color_undo_notification_description">@color/text_color_black</color>
-</resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true">
+        <shape>
+            <corners android:radius="2dp" />
+            <solid android:color="@color/mini_drawer_activated_background_color" />
+        </shape>
+    </item>
+    <item android:drawable="@android:color/transparent" />
+</selector>
