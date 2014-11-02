@@ -61,6 +61,7 @@ import com.android.mail.ui.SwipeableListView.ListItemSwipedListener;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.ui.SwipeableListView.SwipeListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
+import com.android.mail.utils.KeyboardUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -155,10 +156,11 @@ public final class ConversationListFragment extends Fragment implements
     // True if NO DATA has returned, false if we either partially or fully loaded the data
     private boolean mInitialCursorLoading;
 
-    private @IdRes int mNextFocusLeftId;
+    private @IdRes int mNextFocusStartId;
     // Tracks if a onKey event was initiated from the listview (received ACTION_DOWN before
     // ACTION_UP). If not, the listview only receives ACTION_UP.
     private boolean mKeyInitiatedFromList;
+    private boolean mIsRtl;
 
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
@@ -467,13 +469,12 @@ public final class ConversationListFragment extends Fragment implements
         mListView.setOnKeyListener(this);
         mListView.setOnItemClickListener(this);
 
+        mIsRtl = Utils.isCurrentLocaleRtl();
         // For tablets, the default left focus is the mini-drawer
-        if (mTabletDevice) {
-            mNextFocusLeftId = R.id.current_account_avatar;
+        if (mTabletDevice && mNextFocusStartId == 0) {
+            mNextFocusStartId = R.id.current_account_avatar;
         }
-        if (mNextFocusLeftId != 0) {
-            mListView.setNextFocusLeftId(mNextFocusLeftId);
-        }
+        setNextFocusStartOnList();
 
         // enable animateOnLayout (equivalent of setLayoutTransition) only for >=JB (b/14302062)
         if (Utils.isRunningJellybeanOrLater()) {
@@ -639,7 +640,7 @@ public final class ConversationListFragment extends Fragment implements
         if (view instanceof  SwipeableListView) {
             SwipeableListView list = (SwipeableListView) view;
             // Don't need to handle ENTER because it's auto-handled as a "click".
-            if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            if (KeyboardUtils.isKeycodeDirectionEnd(keyCode, mIsRtl)) {
                 if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                     if (mKeyInitiatedFromList) {
                         onListItemSelected(list.getSelectedView(), list.getSelectedItemPosition());
@@ -649,14 +650,14 @@ public final class ConversationListFragment extends Fragment implements
                     mKeyInitiatedFromList = true;
                 }
                 return true;
-            } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-                    final int position = list.getSelectedItemPosition();
-                    final Object item = getAnimatedAdapter().getItem(position);
-                    if (item != null && item instanceof ConversationCursor) {
-                        final Conversation conv = ((ConversationCursor) item).getConversation();
-                        mCallbacks.onConversationFocused(conv);
-                    }
+            } else if ((keyCode == KeyEvent.KEYCODE_DPAD_UP ||
+                    keyCode == KeyEvent.KEYCODE_DPAD_DOWN) &&
+                    keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                final int position = list.getSelectedItemPosition();
+                final Object item = getAnimatedAdapter().getItem(position);
+                if (item != null && item instanceof ConversationCursor) {
+                    final Conversation conv = ((ConversationCursor) item).getConversation();
+                    mCallbacks.onConversationFocused(conv);
                 }
             }
         }
@@ -1225,10 +1226,18 @@ public final class ConversationListFragment extends Fragment implements
         return mListView;
     }
 
-    public void setNextFocusLeftId(@IdRes int id) {
-        mNextFocusLeftId = id;
-        if (mListView != null) {
-            mListView.setNextFocusLeftId(mNextFocusLeftId);
+    public void setNextFocusStartId(@IdRes int id) {
+        mNextFocusStartId = id;
+        setNextFocusStartOnList();
+    }
+
+    private void setNextFocusStartOnList() {
+        if (mListView != null && mNextFocusStartId != 0) {
+            // Since we manually handle right navigation from the list, let's just always set both
+            // the default left and right navigation to the left id so that whenever the framework
+            // handles one of these directions, it will go to the left side regardless of RTL.
+            mListView.setNextFocusLeftId(mNextFocusStartId);
+            mListView.setNextFocusRightId(mNextFocusStartId);
         }
     }
 }

@@ -82,6 +82,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ConversationViewState.ExpansionState;
 import com.android.mail.utils.ConversationViewUtils;
+import com.android.mail.utils.KeyboardUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -141,6 +142,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     private View mOriginalKeyedView;
     private int mMaxScreenHeight;
     private int mTopOfVisibleScreen;
+    private boolean mIsRtl;
 
     protected ConversationContainer mConversationContainer;
 
@@ -439,6 +441,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         mViewsCreated = true;
         mWebViewLoadedData = false;
+
+        mIsRtl = Utils.isCurrentLocaleRtl();
 
         return rootView;
     }
@@ -1178,8 +1182,8 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         if (mOriginalKeyedView != null) {
             final int id = mOriginalKeyedView.getId();
             final boolean isActionUp = keyEvent.getAction() == KeyEvent.ACTION_UP;
-            final boolean isLeft = keyCode == KeyEvent.KEYCODE_DPAD_LEFT;
-            final boolean isRight = keyCode == KeyEvent.KEYCODE_DPAD_RIGHT;
+            final boolean isStart = KeyboardUtils.isKeycodeDirectionStart(keyCode, mIsRtl);
+            final boolean isEnd = KeyboardUtils.isKeycodeDirectionEnd(keyCode, mIsRtl);
             final boolean isUp = keyCode == KeyEvent.KEYCODE_DPAD_UP;
             final boolean isDown = keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
 
@@ -1187,14 +1191,14 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             // We manually check if the view+direction combination should shift focus away from the
             // conversation view to the thread list in two-pane landscape mode.
             final boolean isTwoPaneLand = mNavigationController.isTwoPaneLandscape();
-            final boolean navigateAway = shouldNavigateAway(id, isLeft, isTwoPaneLand);
+            final boolean navigateAway = shouldNavigateAway(id, isStart, isTwoPaneLand);
             if (mNavigationController.onInterceptKeyFromCV(keyCode, keyEvent, navigateAway)) {
                 return true;
             }
 
             // If controller didn't handle the event, check directional interception.
-            if ((isLeft || isRight) && shouldInterceptLeftRightEvents(
-                    id, isLeft, isRight, isTwoPaneLand)) {
+            if ((isStart || isEnd) && shouldInterceptLeftRightEvents(
+                    id, isStart, isEnd, isTwoPaneLand)) {
                 return true;
             } else if (isUp || isDown) {
                 // We don't do anything on up/down for overlay
