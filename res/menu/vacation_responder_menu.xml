@@ -17,12 +17,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_cancel"
-          android:alphabeticShortcut="c"
           android:title="@string/cancel"
           android:icon="@drawable/ic_cancel_holo_light"
           app:showAsAction="withText|always" />
     <item android:id="@+id/action_done"
-          android:alphabeticShortcut="d"
           android:title="@string/done"
           android:icon="@drawable/ic_menu_done_holo_light"
           app:showAsAction="withText|always" />
