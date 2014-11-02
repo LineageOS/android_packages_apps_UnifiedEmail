@@ -91,7 +91,8 @@ public class WidgetConversationListItemViewBuilder {
                     continue;
                 }
                 remoteViews.setViewVisibility(viewId, View.VISIBLE);
-                int color[] = new int[] {folderValues.getBackgroundColor(mDefaultBgColor)};
+                int color[] = new int[]
+                        {folderValues.getBackgroundColor(mFolderDrawableResources.defaultBgColor)};
                 Bitmap bitmap = Bitmap.createBitmap(color, 1, 1, Bitmap.Config.RGB_565);
                 remoteViews.setImageViewBitmap(viewId, bitmap);
 
