@@ -25,6 +25,7 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1718,6 +1719,11 @@ public class FolderListFragment extends ListFragment implements
             public void setAccount(Account acct) {
                 mAccount = acct;
                 mDrawable.bind(mAccount.getSenderName(), mAccount.getEmailAddress());
+                String contentDescription = mAccount.getDisplayName();
+                if (TextUtils.isEmpty(contentDescription)) {
+                    contentDescription = mAccount.getEmailAddress();
+                }
+                view.setContentDescription(contentDescription);
             }
 
             @Override
