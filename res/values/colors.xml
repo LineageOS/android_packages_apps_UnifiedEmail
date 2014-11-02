@@ -170,6 +170,7 @@
     <color name="mail_activity_status_bar_color">#00000000</color>
     <color name="action_mode_background">@color/text_color_grey</color>
     <color name="action_mode_statusbar_color">#616161</color>
+    <color name="edge_effect_color">#263238</color>
 
     <color name="snack_bar_background_color">#323232</color>
     <color name="snack_bar_action_text_color">#f4b400</color>
