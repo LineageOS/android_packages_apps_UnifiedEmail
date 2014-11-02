@@ -1135,7 +1135,8 @@ public final class ConversationListFragment extends Fragment implements
     };
 
     private void saveLastScrolledPosition() {
-        if (mListAdapter.getCursor() == null) {
+        if (mFolder == null || mFolder.conversationListUri == null ||
+                mListAdapter.getCursor() == null) {
             // If you save your scroll position in an empty list, you're gonna have a bad time
             return;
         }
