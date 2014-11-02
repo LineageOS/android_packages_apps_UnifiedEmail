@@ -50,7 +50,7 @@ import com.android.mail.analytics.Analytics;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.SendersView;
-import com.android.mail.photo.ContactPhotoFetcher;
+import com.android.mail.photo.ContactFetcher;
 import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
@@ -340,10 +340,10 @@ public class NotificationUtils {
      * This happens when locale changes.
      **/
     public static void cancelAndResendNotificationsOnLocaleChange(
-            Context context, final ContactPhotoFetcher photoFetcher) {
+            Context context, final ContactFetcher contactFetcher) {
         LogUtils.d(LOG_TAG, "cancelAndResendNotificationsOnLocaleChange");
         sBidiFormatter = BidiFormatter.getInstance();
-        resendNotifications(context, true, null, null, photoFetcher);
+        resendNotifications(context, true, null, null, contactFetcher);
     }
 
     /**
@@ -363,7 +363,7 @@ public class NotificationUtils {
      */
     public static void resendNotifications(Context context, final boolean cancelExisting,
             final Uri accountUri, final FolderUri folderUri,
-            final ContactPhotoFetcher photoFetcher) {
+            final ContactFetcher contactFetcher) {
         LogUtils.d(LOG_TAG, "resendNotifications ");
 
         if (cancelExisting) {
@@ -396,7 +396,7 @@ public class NotificationUtils {
                     NotificationActionUtils.sUndoNotifications.get(notificationId);
             if (undoableAction == null) {
                 validateNotifications(context, folder, notification.account, true,
-                        false, notification, photoFetcher);
+                        false, notification, contactFetcher);
             } else {
                 // Create an undo notification
                 NotificationActionUtils.createUndoNotification(context, undoableAction);
@@ -490,7 +490,7 @@ public class NotificationUtils {
      */
     public static void setNewEmailIndicator(Context context, final int unreadCount,
             final int unseenCount, final Account account, final Folder folder,
-            final boolean getAttention, final ContactPhotoFetcher photoFetcher) {
+            final boolean getAttention, final ContactFetcher contactFetcher) {
         LogUtils.d(LOG_TAG, "setNewEmailIndicator unreadCount = %d, unseenCount = %d, account = %s,"
                 + " folder = %s, getAttention = %b", unreadCount, unseenCount,
                 account.getEmailAddress(), folder.folderUri, getAttention);
@@ -533,7 +533,7 @@ public class NotificationUtils {
 
         if (NotificationActionUtils.sUndoNotifications.get(notificationId) == null) {
             validateNotifications(context, folder, account, getAttention, ignoreUnobtrusiveSetting,
-                    key, photoFetcher);
+                    key, contactFetcher);
         }
     }
 
@@ -542,7 +542,7 @@ public class NotificationUtils {
      */
     private static void validateNotifications(Context context, final Folder folder,
             final Account account, boolean getAttention, boolean ignoreUnobtrusiveSetting,
-            NotificationKey key, final ContactPhotoFetcher photoFetcher) {
+            NotificationKey key, final ContactFetcher contactFetcher) {
 
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
 
@@ -717,7 +717,7 @@ public class NotificationUtils {
                     configureLatestEventInfoFromConversation(context, account, folderPreferences,
                             notification, wearableExtender, msgNotifications, notificationId,
                             cursor, clickIntent, notificationIntent, unreadCount, unseenCount,
-                            folder, when, photoFetcher);
+                            folder, when, contactFetcher);
                     eventInfoConfigured = true;
                 }
             }
@@ -961,13 +961,13 @@ public class NotificationUtils {
 
     private static void configureLatestEventInfoFromConversation(final Context context,
             final Account account, final FolderPreferences folderPreferences,
-            final NotificationCompat.Builder notification,
+            final NotificationCompat.Builder notificationBuilder,
             final NotificationCompat.WearableExtender wearableExtender,
             final Map<Integer, NotificationBuilders> msgNotifications,
             final int summaryNotificationId, final Cursor conversationCursor,
             final PendingIntent clickIntent, final Intent notificationIntent,
             final int unreadCount, final int unseenCount,
-            final Folder folder, final long when, final ContactPhotoFetcher photoFetcher) {
+            final Folder folder, final long when, final ContactFetcher contactFetcher) {
         final Resources res = context.getResources();
         final String notificationAccountDisplayName = account.getDisplayName();
         final String notificationAccountEmail = account.getEmailAddress();
@@ -992,7 +992,7 @@ public class NotificationUtils {
             notificationTicker = newMessagesString;
 
             // The title of the notification is the new messages string
-            notification.setContentTitle(newMessagesString);
+            notificationBuilder.setContentTitle(newMessagesString);
 
             // TODO(skennedy) Can we remove this check?
             if (com.android.mail.utils.Utils.isRunningJellybeanOrLater()) {
@@ -1001,15 +1001,17 @@ public class NotificationUtils {
                         R.integer.max_num_notification_digest_items);
 
                 // The body of the notification is the account name, or the label name.
-                notification.setSubText(
+                notificationBuilder.setSubText(
                         isInbox ? notificationAccountDisplayName : notificationLabelName);
 
                 final NotificationCompat.InboxStyle digest =
-                        new NotificationCompat.InboxStyle(notification);
+                        new NotificationCompat.InboxStyle(notificationBuilder);
 
                 // Group by account and folder
                 final String notificationGroupKey = createGroupKey(account, folder);
-                notification.setGroup(notificationGroupKey).setGroupSummary(true);
+                // Track all senders to later tag them along with the digest notification
+                final HashSet<String> sendersList = new HashSet<String>();
+                notificationBuilder.setGroup(notificationGroupKey).setGroupSummary(true);
 
                 ConfigResult firstResult = null;
                 int numDigestItems = 0;
@@ -1039,13 +1041,14 @@ public class NotificationUtils {
                                     fromAddress = "";
                                 }
                                 from = getDisplayableSender(fromAddress);
+                                sendersList.add(getSenderAddress(fromAddress));
                             }
                             while (messageCursor.moveToPosition(messageCursor.getPosition() - 1)) {
                                 final Message message = messageCursor.getMessage();
                                 if (!message.read &&
                                         !fromAddress.contentEquals(message.getFrom())) {
                                     multipleUnreadThread = true;
-                                    break;
+                                    sendersList.add(getSenderAddress(message.getFrom()));
                                 }
                             }
                             final SpannableStringBuilder sendersBuilder;
@@ -1107,7 +1110,7 @@ public class NotificationUtils {
                                     conversationCursor, notificationIntent, folder, when, res,
                                     notificationAccountDisplayName, notificationAccountEmail,
                                     isInbox, notificationLabelName, conversationNotificationId,
-                                    photoFetcher);
+                                    contactFetcher);
                             msgNotifications.put(conversationNotificationId,
                                     NotificationBuilders.of(conversationNotif,
                                             conversationWearExtender));
@@ -1126,6 +1129,10 @@ public class NotificationUtils {
                     }
                 } while (numDigestItems <= maxNumDigestItems && conversationCursor.moveToNext());
 
+                // Tag main digest notification with the senders
+                tagNotificationsWithPeople(context, notificationBuilder, sendersList,
+                        account.getAccountManagerAccount().name, contactFetcher);
+
                 if (firstResult != null && firstResult.contactIconInfo != null) {
                     wearableExtender.setBackground(firstResult.contactIconInfo.wearableBg);
                 } else {
@@ -1134,7 +1141,7 @@ public class NotificationUtils {
                 }
             } else {
                 // The body of the notification is the account name, or the label name.
-                notification.setContentText(
+                notificationBuilder.setContentText(
                         isInbox ? notificationAccountDisplayName : notificationLabelName);
             }
         } else {
@@ -1145,10 +1152,10 @@ public class NotificationUtils {
             seekToLatestUnreadConversation(conversationCursor);
 
             final ConfigResult result = configureNotifForOneConversation(context, account,
-                    folderPreferences, notification, wearableExtender, conversationCursor,
+                    folderPreferences, notificationBuilder, wearableExtender, conversationCursor,
                     notificationIntent, folder, when, res, notificationAccountDisplayName,
                     notificationAccountEmail, isInbox, notificationLabelName,
-                    summaryNotificationId, photoFetcher);
+                    summaryNotificationId, contactFetcher);
             notificationTicker = result.notificationTicker;
 
             if (result.contactIconInfo != null) {
@@ -1167,15 +1174,15 @@ public class NotificationUtils {
 
         if (notificationTicker != null) {
             // If we didn't generate a notification ticker, it will default to account name
-            notification.setTicker(notificationTicker);
+            notificationBuilder.setTicker(notificationTicker);
         }
 
         // Set the number in the notification
         if (unreadCount > 1) {
-            notification.setNumber(unreadCount);
+            notificationBuilder.setNumber(unreadCount);
         }
 
-        notification.setContentIntent(clickIntent);
+        notificationBuilder.setContentIntent(clickIntent);
     }
 
     /**
@@ -1184,17 +1191,19 @@ public class NotificationUtils {
      */
     private static ConfigResult configureNotifForOneConversation(Context context,
             Account account, FolderPreferences folderPreferences,
-            NotificationCompat.Builder notification,
+            NotificationCompat.Builder notificationBuilder,
             NotificationCompat.WearableExtender wearExtender, Cursor conversationCursor,
             Intent notificationIntent, Folder folder, long when, Resources res,
             String notificationAccountDisplayName, String notificationAccountEmail,
             boolean isInbox, String notificationLabelName, int notificationId,
-            final ContactPhotoFetcher photoFetcher) {
+            final ContactFetcher contactFetcher) {
 
         final ConfigResult result = new ConfigResult();
 
         final Conversation conversation = new Conversation(conversationCursor);
 
+        // Set of all unique senders for unseen messages
+        final HashSet<String> sendersList = new HashSet<String>();
         Cursor cursor = null;
         MessageCursor messageCursor = null;
         boolean multipleUnseenThread = false;
@@ -1220,8 +1229,9 @@ public class NotificationUtils {
                 from = getDisplayableSender(fromAddress);
                 result.contactIconInfo = getContactIcon(
                         context, account.getAccountManagerAccount().name, from,
-                        getSenderAddress(fromAddress), folder, photoFetcher);
-                notification.setLargeIcon(result.contactIconInfo.icon);
+                        getSenderAddress(fromAddress), folder, contactFetcher);
+                sendersList.add(getSenderAddress(fromAddress));
+                notificationBuilder.setLargeIcon(result.contactIconInfo.icon);
             }
 
             // Assume that the last message in this conversation is unread
@@ -1231,6 +1241,7 @@ public class NotificationUtils {
                 final boolean unseen = !message.seen;
                 if (unseen) {
                     firstUnseenMessagePos = messageCursor.getPosition();
+                    sendersList.add(getSenderAddress(message.getFrom()));
                     if (!multipleUnseenThread
                             && !fromAddress.contentEquals(message.getFrom())) {
                         multipleUnseenThread = true;
@@ -1252,28 +1263,28 @@ public class NotificationUtils {
                             context, conversationCursor, sendersLength,
                             notificationAccountEmail);
 
-                    notification.setContentTitle(sendersBuilder);
+                    notificationBuilder.setContentTitle(sendersBuilder);
                     // For a single new conversation, the ticker is based on the sender's name.
                     result.notificationTicker = sendersBuilder.toString();
                 } else {
                     from = getWrappedFromString(from);
                     // The title of a single message the sender.
-                    notification.setContentTitle(from);
+                    notificationBuilder.setContentTitle(from);
                     // For a single new conversation, the ticker is based on the sender's name.
                     result.notificationTicker = from;
                 }
 
                 // The notification content will be the subject of the conversation.
-                notification.setContentText(getSingleMessageLittleText(context, subject));
+                notificationBuilder.setContentText(getSingleMessageLittleText(context, subject));
 
                 // The notification subtext will be the subject of the conversation for inbox
                 // notifications, or will based on the the label name for user label
                 // notifications.
-                notification.setSubText(isInbox ?
+                notificationBuilder.setSubText(isInbox ?
                         notificationAccountDisplayName : notificationLabelName);
 
                 final NotificationCompat.BigTextStyle bigText =
-                        new NotificationCompat.BigTextStyle(notification);
+                        new NotificationCompat.BigTextStyle(notificationBuilder);
 
                 // Seek the message cursor to the first unread message
                 final Message message;
@@ -1290,7 +1301,7 @@ public class NotificationUtils {
                             folderPreferences.getNotificationActions(account);
 
                     NotificationActionUtils.addNotificationActions(context, notificationIntent,
-                            notification, wearExtender, account, conversation, message,
+                            notificationBuilder, wearExtender, account, conversation, message,
                             folder, notificationId, when, notificationActions);
                 }
             } else {
@@ -1298,18 +1309,21 @@ public class NotificationUtils {
 
                 // The title of a single conversation notification is built from both the sender
                 // and subject of the new message.
-                notification.setContentTitle(
+                notificationBuilder.setContentTitle(
                         getSingleMessageNotificationTitle(context, from, subject));
 
                 // The notification content will be the subject of the conversation for inbox
                 // notifications, or will based on the the label name for user label
                 // notifications.
-                notification.setContentText(
+                notificationBuilder.setContentText(
                         isInbox ? notificationAccountDisplayName : notificationLabelName);
 
                 // For a single new conversation, the ticker is based on the sender's name.
                 result.notificationTicker = from;
             }
+
+            tagNotificationsWithPeople(context, notificationBuilder, sendersList,
+                    account.getAccountManagerAccount().name, contactFetcher);
         } finally {
             if (messageCursor != null) {
                 messageCursor.close();
@@ -1319,6 +1333,88 @@ public class NotificationUtils {
             }
         }
         return result;
+    }
+
+    /**
+     * Iterates through all senders, retrieves contact lookup Uris for each sender, and tags the
+     * given notification with these Uris
+     * @param context
+     * @param notificationBuilder
+     * @param sendersList List of unique senders to be tagged with the conversation
+     * @param accountName
+     * @param contactFetcher Implementation of ContactLookupUriFetcher (null by default)
+     */
+    private static void tagNotificationsWithPeople(Context context,
+            NotificationCompat.Builder notificationBuilder, HashSet<String> sendersList,
+            String accountName, ContactFetcher contactFetcher) {
+        // If there is a ContactLookupUriFetcher, go through all unique senders
+        // in the combined notification and add each one as a person.
+        if (contactFetcher != null) {
+            for (final String sender : sendersList) {
+                final Uri contactLookupUri =
+                        contactFetcher.getContactLookupUri(context,
+                                accountName, sender);
+
+                if (contactLookupUri != null) {
+                    notificationBuilder.addPerson(contactLookupUri.toString());
+                }
+            }
+
+        // If implementation for the fetcher is not provided, rely on the ContentResolver
+        // to query for contacts and tag the notification
+        } else {
+            findAndTagContacts(context, sendersList, notificationBuilder);
+        }
+    }
+
+    /**
+     * Queries for contact id and lookup key to tag the notification with Person objects
+     * based on the addresses given.
+     * @param context
+     * @param addresses set of addresses to tag the single notification with
+     * @param notificationBuilder
+     */
+    private static void findAndTagContacts(Context context,
+            HashSet<String> addresses, NotificationCompat.Builder notificationBuilder) {
+        final ArrayList<String> whereArgs = new ArrayList<String>(addresses);
+        final StringBuilder whereBuilder = new StringBuilder();
+        final String[] questionMarks = new String[addresses.size()];
+
+        Arrays.fill(questionMarks, "?");
+        whereBuilder.append(Email.DATA1 + " IN (").
+                append(TextUtils.join(",", questionMarks)).
+                append(")");
+
+        final ContentResolver resolver = context.getContentResolver();
+        final Cursor c = resolver.query(Email.CONTENT_URI,
+                new String[] {Email.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY},
+                whereBuilder.toString(),
+                whereArgs.toArray(new String[0]), null);
+
+        if (c == null) {
+            // No query results - no contacts to tag
+            return;
+        }
+
+        final int contactIdCol = c.getColumnIndex(Email.CONTACT_ID);
+        final int lookupKeyCol = c.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY);
+
+        try {
+            while (c.moveToNext()) {
+                c.getString(lookupKeyCol);
+
+                // Get lookup uri based on id and lookup key
+                final Uri contactLookupUri = ContactsContract.Contacts.getLookupUri(
+                        c.getLong(contactIdCol), c.getString(lookupKeyCol));
+
+                // Add Person if uri is found
+                if (contactLookupUri != null) {
+                    notificationBuilder.addPerson(contactLookupUri.toString());
+                }
+            }
+        } finally {
+            c.close();
+        }
     }
 
     private static String getWrappedFromString(String from) {
@@ -1653,7 +1749,7 @@ public class NotificationUtils {
 
     private static ContactIconInfo getContactIcon(final Context context, String accountName,
             final String displayName, final String senderAddress, final Folder folder,
-            final ContactPhotoFetcher photoFetcher) {
+            final ContactFetcher contactFetcher) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             throw new IllegalStateException(
                     "getContactIcon should not be called on the main thread.");
@@ -1674,8 +1770,8 @@ public class NotificationUtils {
             final int idealWearableBgHeight =
                     res.getDimensionPixelSize(R.dimen.wearable_background_height);
 
-            if (photoFetcher != null) {
-                contactIconInfo = photoFetcher.getContactPhoto(context, accountName,
+            if (contactFetcher != null) {
+                contactIconInfo = contactFetcher.getContactPhoto(context, accountName,
                         senderAddress, idealIconWidth, idealIconHeight, idealWearableBgWidth,
                         idealWearableBgHeight);
             } else {

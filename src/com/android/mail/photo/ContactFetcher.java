@@ -17,12 +17,19 @@
 package com.android.mail.photo;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.android.mail.utils.NotificationUtils;
 
-public interface ContactPhotoFetcher {
+/**
+ * Interface for retrieving contact details for senders (given an account name).
+ */
+public interface ContactFetcher {
+
     NotificationUtils.ContactIconInfo getContactPhoto(
             Context context, String accountName, String senderAddress,
             int idealIconWidth, int idealIconHeight,
             int idealWearableBgWidth, int idealWearableBgHeight);
+
+    public Uri getContactLookupUri(Context context, String accountName, String senderAddress);
 }
