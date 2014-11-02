@@ -35,10 +35,7 @@ import java.util.ArrayList;
 /**
  * Simple extension / instantiation of SearchRecentSuggestionsProvider, independent
  * of mail account or account capabilities.  Offers suggestions from historical searches
- * and contact email addresses on the device. The authority fro for this provider is obtained
- * through the MailAppProvider as follows:
- * final String AUTHORITY = MailAppProvider.getInstance().getSuggestionAuthority()
- * It needs to be done after the MailAppProvider is constructed.
+ * and contact email addresses on the device.
  */
 public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
     /**
