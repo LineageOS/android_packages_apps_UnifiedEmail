@@ -848,7 +848,6 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         boolean photoSet = false;
         final String email = mSender.getAddress();
         final ContactInfo info = mContactInfoSource.getContactInfo(email);
-        final Resources res = getResources();
         if (info != null) {
             if (info.contactUri != null) {
                 mPhotoView.assignContactUri(info.contactUri);

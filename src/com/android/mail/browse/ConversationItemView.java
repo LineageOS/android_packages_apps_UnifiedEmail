@@ -210,7 +210,7 @@ public class ConversationItemView extends View
     private int mBackgroundOverrideResId = -1;
     /** The bitmap to use, or <code>null</code> for the default */
     private Bitmap mPhotoBitmap = null;
-    private Rect mPhotoRect = null;
+    private Rect mPhotoRect = new Rect();
 
     /**
      * A listener for clicks on the various areas of a conversation item.
@@ -672,8 +672,7 @@ public class ConversationItemView extends View
                 mAdapter.getCoordinatesCache());
 
         if (mPhotoBitmap != null) {
-            mPhotoRect = new Rect(0, 0, mCoordinates.contactImagesWidth,
-                    mCoordinates.contactImagesHeight);
+            mPhotoRect.set(0, 0, mCoordinates.contactImagesWidth, mCoordinates.contactImagesHeight);
         }
 
         final int h = (mAnimatedHeightFraction != 1.0f) ?
