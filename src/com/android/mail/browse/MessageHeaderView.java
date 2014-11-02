@@ -721,7 +721,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
 
         builder.append(to);
         builder.append(cc);
-        builder.append(bcc);
+        builder.appendBcc(bcc);
 
         return builder.build();
     }
@@ -740,7 +740,7 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
         private final BidiFormatter mBidiFormatter;
 
         int mRecipientCount = 0;
-        boolean mFirst = true;
+        boolean mSkipComma = true;
 
         public RecipientListsBuilder(Context context, String meEmailAddress, String myName,
                 Map<String, Address> addressCache, VeiledAddressMatcher matcher,
@@ -762,6 +762,20 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             }
         }
 
+        public void appendBcc(String[] recipients) {
+            final int addLimit = SUMMARY_MAX_RECIPIENTS - mRecipientCount;
+            if (shouldAppendRecipients(recipients, addLimit)) {
+                // add the comma before the bcc header
+                // and then reset mSkipComma so we don't add a comma after "bcc: "
+                if (!mSkipComma) {
+                    mBuilder.append(mComma);
+                    mSkipComma = true;
+                }
+                mBuilder.append(mContext.getString(R.string.bcc_header_for_recipient_summary));
+            }
+            append(recipients);
+        }
+
         /**
          * Appends formatted recipients of the message to the recipient list,
          * as long as there are recipients left to append and the maximum number
@@ -770,9 +784,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
          * @param maxToCopy The maximum number of addresses to append.
          * @return {@code true} if a recipient has been appended. {@code false}, otherwise.
          */
-        private boolean appendRecipients(String[] rawAddrs,
-                int maxToCopy) {
-            if (rawAddrs == null || rawAddrs.length == 0 || maxToCopy == 0) {
+        private boolean appendRecipients(String[] rawAddrs, int maxToCopy) {
+            if (!shouldAppendRecipients(rawAddrs, maxToCopy)) {
                 return false;
             }
 
@@ -795,8 +808,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
                 }
 
                 // duplicate TextUtils.join() logic to minimize temporary allocations
-                if (mFirst) {
-                    mFirst = false;
+                if (mSkipComma) {
+                    mSkipComma = false;
                 } else {
                     mBuilder.append(mComma);
                 }
@@ -804,6 +817,15 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             }
 
             return true;
+        }
+
+        /**
+         * @param rawAddrs The addresses to append.
+         * @param maxToCopy The maximum number of addresses to append.
+         * @return {@code true} if a recipient should be appended. {@code false}, otherwise.
+         */
+        private boolean shouldAppendRecipients(String[] rawAddrs, int maxToCopy) {
+            return rawAddrs != null && rawAddrs.length != 0 && maxToCopy != 0;
         }
 
         public CharSequence build() {
