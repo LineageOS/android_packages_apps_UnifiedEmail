@@ -85,6 +85,7 @@ import com.android.mail.utils.KeyboardUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.ViewUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -141,7 +142,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     private View mOriginalKeyedView;
     private int mMaxScreenHeight;
     private int mTopOfVisibleScreen;
-    private boolean mIsRtl;
 
     protected ConversationContainer mConversationContainer;
 
@@ -441,8 +441,6 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         mViewsCreated = true;
         mWebViewLoadedData = false;
-
-        mIsRtl = Utils.isCurrentLocaleRtl();
 
         return rootView;
     }
@@ -1181,9 +1179,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
         if (mOriginalKeyedView != null) {
             final int id = mOriginalKeyedView.getId();
+            final boolean isRtl = ViewUtils.isViewRtl(mOriginalKeyedView);
             final boolean isActionUp = keyEvent.getAction() == KeyEvent.ACTION_UP;
-            final boolean isStart = KeyboardUtils.isKeycodeDirectionStart(keyCode, mIsRtl);
-            final boolean isEnd = KeyboardUtils.isKeycodeDirectionEnd(keyCode, mIsRtl);
+            final boolean isStart = KeyboardUtils.isKeycodeDirectionStart(keyCode, isRtl);
+            final boolean isEnd = KeyboardUtils.isKeycodeDirectionEnd(keyCode, isRtl);
             final boolean isUp = keyCode == KeyEvent.KEYCODE_DPAD_UP;
             final boolean isDown = keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
 
