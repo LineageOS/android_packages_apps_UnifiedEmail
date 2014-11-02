@@ -630,9 +630,9 @@ public class NotificationUtils {
             }
 
             if(unseenCount > 1) {
-                notification.setSmallIcon(R.drawable.ic_notification_multiple_mail_wht_24dp);
+                notification.setSmallIcon(R.drawable.ic_notification_multiple_mail_24dp);
             } else {
-                notification.setSmallIcon(R.drawable.ic_notification_mail_wht_24dp);
+                notification.setSmallIcon(R.drawable.ic_notification_mail_24dp);
             }
             notification.setTicker(account.getDisplayName());
             notification.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
@@ -868,9 +868,9 @@ public class NotificationUtils {
         if (multipleUnseen) {
             builder.setGroup(createGroupKey(account, folder));
             builder.setGroupSummary(true);
-            builder.setSmallIcon(R.drawable.ic_notification_multiple_mail_wht_24dp);
+            builder.setSmallIcon(R.drawable.ic_notification_multiple_mail_24dp);
         } else {
-            builder.setSmallIcon(R.drawable.ic_notification_mail_wht_24dp);
+            builder.setSmallIcon(R.drawable.ic_notification_mail_24dp);
         }
 
         return builder.build();
@@ -1073,7 +1073,7 @@ public class NotificationUtils {
                             conversationNotif.setCategory(NotificationCompat.CATEGORY_EMAIL);
 
                             conversationNotif.setSmallIcon(
-                                    R.drawable.ic_notification_multiple_mail_wht_24dp);
+                                    R.drawable.ic_notification_multiple_mail_24dp);
 
                             if (com.android.mail.utils.Utils.isRunningLOrLater()) {
                                 conversationNotif.setColor(
