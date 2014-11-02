@@ -364,8 +364,8 @@
     <item msgid="1510017057984222376">"แสดงเฉพาะ \"ลบ\""</item>
     <item msgid="3196207224108008441">"แสดง \"เก็บ\" และ \"ลบ\""</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"การดำเนินการ \"เก็บ\" และ \"ลบ\""</string>
-    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ตอบทั้งหมด"</string>
+    <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"การดำเนินการเริ่มต้น"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"ตอบทุกคน"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"ใช้เป็นค่าเริ่มต้นสำหรับการตอบกลับข้อความ"</string>
     <string name="preference_swipe_title_archive" msgid="9122333537761282714">"กวาดนิ้วเพื่อเก็บถาวร"</string>
     <string name="preference_swipe_title_delete" msgid="4860474024917543711">"กวาดนิ้วเพื่อลบ"</string>
