@@ -368,58 +368,58 @@
     <string name="undo">Undo</string>
 
     <plurals name="conversation_unstarred">
-        <item quantity="one">Unstarring <xliff:g id="count">%1$d</xliff:g> conversation.</item>
-        <item quantity="other">Unstarring <xliff:g id="count">%1$d</xliff:g> conversations.</item>
+        <item quantity="one">Unstarring <xliff:g id="count">%1$d</xliff:g> conversation</item>
+        <item quantity="other">Unstarring <xliff:g id="count">%1$d</xliff:g> conversations</item>
     </plurals>
 
     <!-- The following are shown as a toast after the operation has completed --><skip />
     <plurals name="conversation_muted">
         <!-- Displayed while muting one conversation -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> muted.</item>
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> muted</item>
         <!-- Displayed while muting several conversations -->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> muted.</item>
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> muted</item>
     </plurals>
 
     <plurals name="conversation_spammed">
         <!-- Displayed while reporting one conversation as spam -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as spam.</item>
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as spam</item>
         <!-- Displayed while reporting several conversations as spam -->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as spam.</item>
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as spam</item>
     </plurals>
 
     <plurals name="conversation_not_spam">
         <!-- Displayed while reporting one conversation as not spam -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as not spam.</item>
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as not spam</item>
         <!-- Displayed while reporting several conversations as not spam -->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as not spam.</item>
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as not spam</item>
     </plurals>
 
     <plurals name="conversation_not_important">
         <!-- Displayed while reporting one conversation as not important in the important folder -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked not important.</item>
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked not important</item>
         <!-- Displayed while reporting several conversations as not important in the important folder -->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked not important.</item>
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked not important</item>
     </plurals>
 
     <plurals name="conversation_phished">
         <!-- Displayed while reporting one conversation as phishing -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as phishing.</item>
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as phishing</item>
         <!-- Displayed while reporting several conversations as phishing -->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as phishing.</item>
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as phishing</item>
     </plurals>
 
     <plurals name="conversation_archived">
         <!-- Displayed while archiving one conversation -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> archived.</item>
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> archived</item>
         <!-- Displayed while archiving multiple conversations -->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> archived.</item>
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> archived</item>
     </plurals>
 
     <plurals name="conversation_deleted">
         <!-- Displayed while deleting one conversation -->
-        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> deleted.</item>
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> deleted</item>
         <!-- Displayed while deleting multiple conversations -->
-        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> deleted.</item>
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> deleted</item>
     </plurals>
     <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
     <string name="deleted">Deleted</string>
@@ -430,9 +430,9 @@
 
     <plurals name="conversation_folder_changed">
         <!-- Displayed while adding and removing folders to a single conversation. [CHAR LIMIT=100] -->
-        <item quantity="one">Changed folder.</item>
+        <item quantity="one">Changed folder</item>
         <!-- Displayed while adding and removing folders to multiple conversations. [CHAR LIMIT=100] -->
-        <item quantity="other">Changed folders.</item>
+        <item quantity="other">Changed folders</item>
     </plurals>
 
     <!-- Displayed after moving a conversation to a different folder. [CHAR LIMIT=100] -->
@@ -448,11 +448,10 @@
           viewing it. [CHAR LIMIT=40] -->
     <string name="add_label">Add folder</string>
 
-    <!-- New Message notification text that appears over conversation view on incoming message. [CHAR LIMIT=40] -->
-    <string name="new_incoming_messages_one">Show new message from <xliff:g id="sender">%s</xliff:g>.</string>
-    <!-- New Message notification text that appears over conversation view on incoming messages. Will only be used if there is more than one new message. [CHAR LIMIT=40] -->
-    <plurals name="new_incoming_messages_many">
-        <item quantity="other">Show <xliff:g id="count">%1$d</xliff:g> new messages.</item>
+    <!-- New Message notification text that appears over conversation view on incoming messages. [CHAR LIMIT=40] -->
+    <plurals name="new_incoming_messages">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> new message</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> new messages</item>
     </plurals>
 
     <!-- Conversation message header strings -->
@@ -547,10 +546,10 @@
     <!-- Sync status errors. Please do not change the order [CHAR LIMIT=100] -->
     <string-array name="sync_status">
         <item>Success</item>
-        <item>No connection.</item>
-        <item>Couldn\'t sign in.</item>
-        <item>Security error.</item>
-        <item>Couldn\'t sync.</item>
+        <item>No connection</item>
+        <item>Couldn\'t sign in</item>
+        <item>Security error</item>
+        <item>Couldn\'t sync</item>
         <item>Internal Error</item>
         <item>Server Error</item>
     </string-array>
@@ -668,6 +667,8 @@
     <string name="info">Info</string>
     <!-- Button text for the button to click to report feedback. [CHAR LIMIT=20]-->
     <string name="report">Report</string>
+    <!-- Button text for the button to click to show newly received messages in the active thread. [CHAR LIMIT=20]-->
+    <string name="show">Show</string>
     <!-- Dialog title when a sync error occurs. [CHAR LIMIT=50]-->
     <string name="sync_error">Couldn\'t sync.</string>
     <!-- Dialog title when a sync error occurs. [CHAR LIMIT=100]-->

@@ -153,9 +153,6 @@
     <color name="vacation_responder_background">#ffe9e9e9</color>
     <color name="vacation_responder_spinner_text">#333333</color>
 
-    <!-- The color of the new message bar text. -->
-    <color name="new_message_bar_text">@color/dark_gray_text_color</color>
-
     <!-- Swipe refresh progress bar colors -->
     <color name="swipe_refresh_color1">#ff0f9d58</color>
     <color name="swipe_refresh_color2">#ffdb4437</color>
