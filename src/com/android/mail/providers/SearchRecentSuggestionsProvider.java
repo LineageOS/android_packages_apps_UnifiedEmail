@@ -28,6 +28,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.android.mail.R;
+import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 
@@ -54,12 +55,6 @@ public class SearchRecentSuggestionsProvider {
 
     private static final int DATABASE_VERSION_2 = 2 * 256;
     private static final int DATABASE_VERSION_3 = 3 * 256;
-
-    /**
-     * This mode bit configures the database to record recent queries.  <i>required</i>
-     * @see #setupSuggestions(int)
-     */
-    public static final int DATABASE_MODE_QUERIES = 1;
 
     private String mSuggestSuggestionClause;
     private String[] mSuggestionProjection;
@@ -101,6 +96,9 @@ public class SearchRecentSuggestionsProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            // When checking the old version clear the last 8 bits
+            oldVersion = oldVersion & ~0xff;
+            newVersion = newVersion & ~0xff;
             if (oldVersion == DATABASE_VERSION_2 && newVersion == DATABASE_VERSION_3) {
                 // Oops, didn't mean to upgrade this database. Ignore this upgrade.
                 return;
@@ -114,18 +112,8 @@ public class SearchRecentSuggestionsProvider {
      * In order to use this class, you must extend it, and call this setup function from your
      * constructor.  In your application or activities, you must provide the same values when
      * you create the {@link android.provider.SearchRecentSuggestions} helper.
-     *
-     * @param mode You can use mode flags here to determine certain functional aspects of your
-     * database.  Note, this value should not change from run to run, because when it does change,
-     * your suggestions database may be wiped.
-     *
-     * @see #DATABASE_MODE_QUERIES
      */
-    protected void setupSuggestions(int mode) {
-        if ((mode & DATABASE_MODE_QUERIES) == 0) {
-            throw new IllegalArgumentException();
-        }
-
+    protected void setupSuggestions() {
         // The URI of the icon that we will include on every suggestion here.
         final String historicalIcon = ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
                 + mContext.getPackageName() + "/" + R.drawable.ic_history_24dp;
