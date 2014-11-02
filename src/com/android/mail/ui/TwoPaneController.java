@@ -129,6 +129,8 @@ public final class TwoPaneController extends AbstractActivityController implemen
             sb.append(" mToShow.dueToKeyboard=");
             sb.append(mToShow.dueToKeyboard);
         }
+        sb.append(" mLayout=");
+        sb.append(mLayout);
     }
 
     @Override
