@@ -425,6 +425,11 @@
          <item name="android:padding">@dimen/single_folder_list_item_padding</item>
     </style>
 
+    <style name="MultiFolderSelectionItemStyle" parent="SingleFolderSelectionItemStyle">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>
+    </style>
+
     <!-- Widget styles -->
     <style name="WidgetTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:singleLine">true</item>
