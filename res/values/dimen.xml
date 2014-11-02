@@ -147,12 +147,10 @@
 
     <dimen name="compose_attachment_text_padding">8dip</dimen>
 
-    <dimen name="vacation_responder_width">800dip</dimen>
-    <dimen name="vacation_responder_padding_vertical">16dip</dimen>
-    <dimen name="vacation_responder_padding_horizontal">16dip</dimen>
-    <dimen name="vacation_responder_padding_horizontal_wide">80dip</dimen>
-    <dimen name="vacation_responder_inner_padding">12dip</dimen>
-    <dimen name="vacation_responder_padding_between_date_spinners">8dip</dimen>
+    <dimen name="vacation_responder_padding_horizontal">16dp</dimen>
+    <dimen name="vacation_responder_padding_between_date_spinners">16dp</dimen>
+    <dimen name="vacation_responder_main_text_size">16sp</dimen>
+    <dimen name="vacation_responder_header_text_size">12sp</dimen>
 
     <dimen name="message_attachment_bar_padding">8dip</dimen>
 

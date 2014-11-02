@@ -7,6 +7,6 @@
     <!--</style>-->
 
     <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme.Appcompat">
-        <item name="android:windowBackground">@color/vacation_responder_background</item>
+        <item name="android:windowBackground">@color/vacation_responder_window_background</item>
     </style>
 </resources>
