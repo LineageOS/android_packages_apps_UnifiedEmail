@@ -545,21 +545,6 @@
         <item name="android:textColor">@color/tip_teaser_link</item>
     </style>
 
-    <style name="AbstractNewMessageButtonStyleBase" parent="@android:style/Widget.Holo.Light.Button" />
-
-    <style name="AbstractNewMessageButtonStyle" parent="@style/AbstractNewMessageButtonStyleBase">
-        <item name="android:layout_marginBottom">@dimen/toast_bar_margin</item>
-        <item name="android:background">@drawable/new_message_toast_background</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/new_message_bar_text</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="NewMessageButtonStyle" parent="AbstractNewMessageButtonStyle">
-        <item name="android:layout_marginLeft">@dimen/toast_bar_margin</item>
-        <item name="android:layout_marginRight">@dimen/toast_bar_margin</item>
-    </style>
-
     <style name="MessageDetailsHeaderStyle">
         <item name="android:paddingLeft">@dimen/message_details_header_padding_start_expanded</item>
         <item name="android:paddingRight">@dimen/message_details_header_padding_end</item>
