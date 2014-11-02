@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
+import com.android.mail.utils.ViewUtils;
 
 /**
  * Custom toolbar that supports a custom view so we can display our search icon wherever we want.
@@ -38,6 +40,8 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
 
     protected TextView mActionBarTitle;
     protected View mSearchButton;
+
+    private boolean mIsTabletLandscape;
 
     public CustomViewToolbar(Context context) {
         super(context);
@@ -71,6 +75,8 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
                 mController.startSearch();
             }
         });
+
+        mIsTabletLandscape = getResources().getBoolean(R.bool.is_tablet_landscape);
     }
 
     @Override
@@ -86,12 +92,17 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
     }
 
     @Override
-    public void onConversationListLayout(int xEnd, boolean isTabletLandscape) {
+    public void onConversationListLayout(int xEnd) {
         // Only reposition in tablet landscape mode.
-        if (isTabletLandscape) {
-            int[] coords = new int[2];
+        if (mIsTabletLandscape) {
+            final int[] coords = new int[2];
             mActionBarTitle.getLocationInWindow(coords);
-            mActionBarTitle.setWidth(xEnd - coords[0] - mSearchButton.getWidth());
+            if (ViewUtils.isViewRtl(this)) {
+                mActionBarTitle.setWidth(coords[0] + mActionBarTitle.getWidth() - xEnd -
+                        mSearchButton.getWidth());
+            } else {
+                mActionBarTitle.setWidth(xEnd - coords[0] - mSearchButton.getWidth());
+            }
         }
     }
 
