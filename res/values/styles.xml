@@ -138,11 +138,7 @@
 
     <style name="ComposeArea" parent="AbstractComposeAreaWithRtl" />
 
-    <style name="ComposeAreaWrapper">
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:paddingLeft">@dimen/compose_wrapper_side_padding</item>
-        <item name="android:paddingRight">@dimen/compose_wrapper_side_padding</item>
-    </style>
+    <style name="ComposeAreaWrapper" />
 
     <style name="ComposeAttachmentTileTextEndStyle">
         <item name="android:paddingRight">@dimen/compose_attachment_tile_text_end_padding</item>
