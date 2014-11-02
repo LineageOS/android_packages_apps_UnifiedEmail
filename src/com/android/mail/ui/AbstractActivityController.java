@@ -874,8 +874,7 @@ public abstract class AbstractActivityController implements ActivityController,
              * this is not a child folder */
             final boolean isTopLevel = Folder.isRoot(folder);
             final int mode = mViewMode.getMode();
-            mDrawerToggle.setDrawerIndicatorEnabled(
-                    getShouldShowDrawerIndicator(mode, isTopLevel));
+            updateDrawerIndicator(mode, isTopLevel);
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
             mDrawerContainer.closeDrawers();
@@ -1301,7 +1300,11 @@ public abstract class AbstractActivityController implements ActivityController,
             mDrawerContainer.setDrawerShadow(
                     mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.START);
 
-            mDrawerToggle.setDrawerIndicatorEnabled(isDrawerEnabled());
+            // Disable default drawer indicator as we are setting the drawer indicator icons.
+            // TODO(shahrk): Once we can disable/enable drawer animation, go back to using
+            // drawer indicators.
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
         } else {
             final ActionBar ab = mActivity.getSupportActionBar();
             ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
@@ -2260,25 +2263,27 @@ public abstract class AbstractActivityController implements ActivityController,
             /** If the folder doesn't exist, or its parent URI is empty,
              * this is not a child folder */
             final boolean isTopLevel = Folder.isRoot(mFolder);
-            mDrawerToggle.setDrawerIndicatorEnabled(
-                    getShouldShowDrawerIndicator(newMode, isTopLevel));
+            updateDrawerIndicator(newMode, isTopLevel);
             mDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             closeDrawerIfOpen();
         }
     }
 
     /**
-     * Returns true if the drawer icon is shown
+     * Update the drawer indicator to either be the burger or the back arrow.
      * @param viewMode the current view mode
      * @param isTopLevel true if the current folder is not a child
-     * @return whether the drawer indicator is shown
      */
-    private boolean getShouldShowDrawerIndicator(final int viewMode,
-            final boolean isTopLevel) {
-        // If search list/conv mode: disable indicator
-        // Indicator is enabled either in conversation list or folder list mode.
-        return isDrawerEnabled() && !ViewMode.isSearchMode(viewMode)
-            && (viewMode == ViewMode.CONVERSATION_LIST  && isTopLevel);
+    private void updateDrawerIndicator(final int viewMode, final boolean isTopLevel) {
+        // Show burger if we're either in conversation list or folder list mode.
+        if (isDrawerEnabled() && !ViewMode.isSearchMode(viewMode)
+            && (viewMode == ViewMode.CONVERSATION_LIST  && isTopLevel)) {
+            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
+
+        // Otherwise, show the back arrow for the indicator.
+        } else {
+            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_arrow_back_wht_24dp_with_rtl);
+        }
     }
 
     public void disablePagerUpdates() {
@@ -4210,7 +4215,7 @@ public abstract class AbstractActivityController implements ActivityController,
             // When closed, we want to use either the burger, or up, based on where we are
             final int mode = mViewMode.getMode();
             final boolean isTopLevel = Folder.isRoot(mFolder);
-            mDrawerToggle.setDrawerIndicatorEnabled(getShouldShowDrawerIndicator(mode, isTopLevel));
+            updateDrawerIndicator(mode, isTopLevel);
 
             for (DrawerLayout.DrawerListener l : mObservers) {
                 l.onDrawerClosed(drawerView);
@@ -4263,9 +4268,6 @@ public abstract class AbstractActivityController implements ActivityController,
             }
 
             mOldSlideOffset = slideOffset;
-
-            // If we're sliding, we always want to show the burger
-            mDrawerToggle.setDrawerIndicatorEnabled(true /* enable */);
 
             for (DrawerLayout.DrawerListener l : mObservers) {
                 l.onDrawerSlide(drawerView, slideOffset);
