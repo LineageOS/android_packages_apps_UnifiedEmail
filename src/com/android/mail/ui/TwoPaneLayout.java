@@ -149,7 +149,17 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
             new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    invalidateShadow();
+                    if (mIsRtl) {
+                        // Get the right edge of list and use as left edge coord for shadow
+                        final int leftEdgeCoord = (int) mListView.getX() + mListView.getWidth();
+                        invalidate(leftEdgeCoord, 0, leftEdgeCoord + mShadowMinWidth,
+                                getBottom());
+                    } else {
+                        // Get the left edge of list and use as right edge coord for shadow
+                        final int rightEdgeCoord = (int) mListView.getX();
+                        invalidate(rightEdgeCoord - mShadowMinWidth, 0, rightEdgeCoord,
+                                getBottom());
+                    }
                 }
             };
 
@@ -203,21 +213,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         }
 
         mShadowDrawable.draw(canvas);
-    }
-
-    // Force the shadow to re-draw at the correct position
-    private void invalidateShadow() {
-        if (ViewUtils.isViewRtl(this)) {
-            // Get the right edge of list and use as left edge coord for shadow
-            final int leftEdgeCoord = (int) mListView.getX() + mListView.getWidth();
-            invalidate(leftEdgeCoord, 0, leftEdgeCoord + mShadowMinWidth,
-                    getBottom());
-        } else {
-            // Get the left edge of list and use as right edge coord for shadow
-            final int rightEdgeCoord = (int) mListView.getX();
-            invalidate(rightEdgeCoord - mShadowMinWidth, 0, rightEdgeCoord,
-                    getBottom());
-        }
     }
 
     @Override
@@ -495,7 +490,14 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         final float translationX = percentDragged *
                 (mIsRtl ? -mDrawerWidthDelta : mDrawerWidthDelta);
         translatePanes(translationX, 0 /* drawerDeltaX */, false /* animate */);
-        invalidateShadow();
+        // Invalidate the entire drawers region to ensure that we don't get the "ghosts" of the
+        // fake shadow for pre-L.
+        if (mIsRtl) {
+            invalidate((int) mListView.getX() + mListView.getWidth(), 0,
+                    (int) mFoldersView.getX() + mFoldersView.getWidth(), getBottom());
+        } else {
+            invalidate((int) mFoldersView.getX(), 0, (int) mListView.getX(), getBottom());
+        }
     }
 
     @Override
