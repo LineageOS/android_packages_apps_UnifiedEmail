@@ -694,11 +694,6 @@
         <item name="android:padding">4dp</item>
     </style>
 
-    <style name="VacationResponderScrollViewStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-    </style>
-
     <style name="VacationResponderDatePadding">
         <item name="android:layout_marginRight">@dimen/vacation_responder_padding_between_date_spinners</item>
     </style>
