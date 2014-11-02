@@ -14,11 +14,11 @@ Copyright (C) 2014 The Android Open Source Project
     limitations under the License.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="120.0dp"
-        android:height="120.0dp"
-        android:viewportWidth="120.0"
-        android:viewportHeight="120.0">
+        android:width="24.0dp"
+        android:height="24.0dp"
+        android:viewportWidth="24.0"
+        android:viewportHeight="24.0">
     <path
-        android:fillColor="#1e000000"
-        android:pathData="M106.667,0.0l-93.4,0.0c-7.36,0.0 -13.2,5.973 -13.2,13.333L0.0,106.667c0.0,7.36 5.907,13.333 13.267,13.333l93.4,0.0c7.36,0.0 13.333,-5.973 13.333,-13.333L120.0,13.333C120.001,5.973 114.027,0.0 106.667,0.0zM106.667,80.0L80.0,80.0c0.0,11.04 -8.953,20.0 -20.0,20.0c-11.04,0.0 -20.0,-8.96 -20.0,-20.0L13.267,80.0L13.267,13.333l93.4,0.0L106.667,80.0z"/>
+        android:fillColor="#ffffffff"
+        android:pathData="M7.5,18.0c-3.0,0.0 -5.5,-2.5 -5.5,-5.5S4.5,7.0 7.5,7.0L18.0,7.0c2.2,0.0 4.0,1.8 4.0,4.0s-1.8,4.0 -4.0,4.0L9.5,15.0C8.1,15.0 7.0,13.9 7.0,12.5S8.1,10.0 9.5,10.0L17.0,10.0l0.0,1.5L9.5,11.5c-0.6,0.0 -1.0,0.4 -1.0,1.0s0.4,1.0 1.0,1.0L18.0,13.5c1.4,0.0 2.5,-1.1 2.5,-2.5S19.4,8.5 18.0,8.5L7.5,8.5c-2.2,0.0 -4.0,1.8 -4.0,4.0s1.8,4.0 4.0,4.0L17.0,16.5L17.0,18.0L7.5,18.0z"/>
 </vector>
