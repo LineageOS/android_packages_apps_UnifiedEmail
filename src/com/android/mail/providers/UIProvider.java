@@ -238,7 +238,7 @@ public class UIProvider {
         /**
          * Whether the server sends us sanitized HTML (guaranteed to not contain malicious HTML).
          */
-        public static final int SANITIZED_HTML = 0x0080;
+        public static final int SERVER_SANITIZED_HTML = 0x0080;
         /**
          * Whether the server allows synchronization of draft messages. This does NOT require
          * SYNCABLE_FOLDERS to be set.
@@ -316,6 +316,10 @@ public class UIProvider {
          * Whether the account supports nested folders
          */
         public static final int NESTED_FOLDERS = 0x800000;
+        /**
+         * Whether the client is permitted to sanitize HTML for this account.
+         */
+        public static final int CLIENT_SANITIZED_HTML = 0x1000000;
     }
 
     public static final class AccountColumns implements BaseColumns {
