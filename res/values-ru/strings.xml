@@ -197,8 +197,8 @@
     <item quantity="other" msgid="9218674052779504277">"Цепочек, помеченных как фишинг: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="4127890884907503696">"Архивировано: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="7789480176789922968">"Архивировано: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="4859172326053399351">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; цепочка архивирована"</item>
+    <item quantity="other" msgid="8520761617935818623">"Цепочки архивированы: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
   </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="5591889079235938982">"Удалено цепочек: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
@@ -364,8 +364,8 @@
     <item msgid="1510017057984222376">"Только удалять"</item>
     <item msgid="3196207224108008441">"Архивировать или удалять"</item>
   </string-array>
-    <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"Я предпочитаю:"</string>
-    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Отвечать всем"</string>
+    <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"Действие по умолчанию"</string>
+    <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Функция \"Ответить всем\""</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"Использовать по умолчанию для всех ответов"</string>
     <string name="preference_swipe_title_archive" msgid="9122333537761282714">"Быстрая архивация"</string>
     <string name="preference_swipe_title_delete" msgid="4860474024917543711">"Быстрое удаление"</string>

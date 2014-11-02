@@ -221,7 +221,8 @@
   </plurals>
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;விவரங்களைக் காட்டு&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"விவரங்களை மறை"</string>
-    <string name="to_message_header" msgid="3954385178027011919">"<xliff:g id="RECIPIENTS">%1$s</xliff:g> க்கு அனுப்பப்பட்டது"</string>
+    <string name="to_message_header" msgid="3954385178027011919">"<xliff:g id="RECIPIENTS">%1$s</xliff:g> அனுப்பப்பட்டது"</string>
+    <string name="bcc_header_for_recipient_summary" msgid="1834716758549842454">"bcc: "</string>
     <string name="contact_info_string" msgid="6484930184867405276">"<xliff:g id="NAME">%1$s</xliff:g> க்கான தொடர்பு தகவலைக் காட்டு"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"தொடர்பு தகவலைக் காட்டு"</string>
   <plurals name="show_messages_read">
