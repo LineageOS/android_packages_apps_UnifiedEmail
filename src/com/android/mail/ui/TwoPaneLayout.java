@@ -97,7 +97,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     private TwoPaneController mController;
     private LayoutListener mListener;
-    private ConversationListLayoutListener mConversationListLayoutListener;
 
     private View mMiscellaneousView;
     private View mConversationView;
@@ -115,6 +114,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     public static final int MISCELLANEOUS_VIEW_ID = R.id.miscellaneous_pane;
 
     public interface ConversationListLayoutListener {
+        /**
+         * Used for two-pane landscape layout positioning when other views need to align themselves
+         * to the list view. Should be called only in tablet landscape mode!
+         * @param xEnd the ending x coordinate of the list view
+         * @param drawerOpen
+         */
         void onConversationListLayout(int xEnd, boolean drawerOpen);
     }
 
@@ -279,9 +284,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         final boolean listVisible = isRtl ? listX + mListView.getWidth() >= 0 : listX >= 0;
         adjustPaneVisibility(folderVisible, listVisible, cvOnScreen);
 
-        if (mConversationListLayoutListener != null) {
-            mConversationListLayoutListener.onConversationListLayout(
-                    isRtl ? listX : convX, isDrawerOpen);
+        final List<ConversationListLayoutListener> layoutListeners =
+                mController.getConversationListLayoutListeners();
+        for (ConversationListLayoutListener listener : layoutListeners) {
+            listener.onConversationListLayout(isRtl ? listX : convX, isDrawerOpen);
         }
 
         mPositionedMode = mCurrentMode;
@@ -524,10 +530,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
     public boolean shouldShowPreviewPanel() {
         return !mListCollapsible;
-    }
-
-    public void setConversationListLayoutListener(ConversationListLayoutListener listener) {
-        mConversationListLayoutListener = listener;
     }
 
     private class PaneAnimationListener extends AnimatorListenerAdapter implements Runnable {
