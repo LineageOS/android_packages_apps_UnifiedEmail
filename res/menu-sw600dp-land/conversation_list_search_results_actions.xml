@@ -29,7 +29,7 @@
         android:id="@+id/inside_conversation_unread"
         android:title="@string/mark_read"
         app:showAsAction="always"
-        android:icon="@drawable/ic_menu_mark_unread_wht_24dp" />
+        android:icon="@drawable/ic_mark_unread_wht_24dp" />
 
     <item
         android:id="@+id/change_folders"
