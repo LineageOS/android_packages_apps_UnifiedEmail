@@ -1153,4 +1153,7 @@
     <string name="update_security_text">update now</string>
     <!-- Shown when user submits a form. [CHAR LIMIT=40] -->
     <string name="forms_are_disabled">Forms are disabled in Gmail</string>
+
+    <!-- activity name of the photoviewer -->
+    <string name="photo_view_activity" translatable="false">com.android.mail.photo.MailPhotoViewActivity</string>
 </resources>
