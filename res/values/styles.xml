@@ -450,6 +450,12 @@
         <item name="android:background">@color/actionbar_color</item>
     </style>
 
+    <style name="ActionBarTitleStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
     <style name="WaitFragmentTitleBase" parent="@android:style/Widget.Holo.TextView" />
 
     <style name="WaitFragmentTitle" parent="@style/WaitFragmentTitleBase">

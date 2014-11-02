@@ -55,6 +55,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     private final ActivityController mController;
 
     protected SearchRecentSuggestionsProvider mSuggestionsProvider;
+
     protected View mSearchActionViewShadow;
     protected MaterialSearchActionView mSearchActionView;
     protected MaterialSearchSuggestionsList mSearchSuggestionList;
