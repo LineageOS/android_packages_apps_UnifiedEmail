@@ -25,5 +25,6 @@
         <item name="android:paddingTop">@dimen/two_pane_tl_top</item>
         <item name="android:paddingBottom">@dimen/two_pane_tl_top</item>
         <item name="android:clipToPadding">false</item>
+        <item name="android:divider">@null</item>
     </style>
 </resources>
