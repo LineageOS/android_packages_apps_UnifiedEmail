@@ -208,6 +208,7 @@
 
     <dimen name="compose_wrapper_top_padding">0dp</dimen>
     <dimen name="compose_wrapper_side_padding">0dp</dimen>
+    <dimen name="compose_header_padding">8dp</dimen>
     <dimen name="compose_header_btn_padding">8dp</dimen>
     <dimen name="compose_header_min_height">56dp</dimen>
     <dimen name="compose_header_text_size">16sp</dimen>
