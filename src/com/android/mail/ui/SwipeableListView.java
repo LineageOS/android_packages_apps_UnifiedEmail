@@ -49,6 +49,8 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class SwipeableListView extends ListView implements Callback, OnScrollListener {
+    private static final long INVALID_CONVERSATION_ID = -1;
+
     private final SwipeHelper mSwipeHelper;
     /**
      * Are swipes enabled on all items? (Each individual item can still prevent swiping.)<br>
@@ -72,7 +74,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     private SwipeListener mSwipeListener;
 
-    private int mSelectedPosition = ListView.INVALID_POSITION;
+    private long mSelectedConversationId = INVALID_CONVERSATION_ID;
 
     // Instantiated through view inflation
     @SuppressWarnings("unused")
@@ -411,20 +413,54 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     /**
      * Set the currently selected (focused by the list view) position.
      */
-    public void setSelectedPosition(int position) {
-        if (position == ListView.INVALID_POSITION) {
+    public void setSelectedConversation(Conversation conv) {
+        if (conv == null) {
             return;
         }
 
-        mSelectedPosition = position;
+        mSelectedConversationId = conv.id;
     }
 
-    public boolean isPositionSelected(int position) {
-        return mSelectedPosition != ListView.INVALID_POSITION && mSelectedPosition == position;
+    public boolean isConversationSelected(Conversation conv) {
+        return mSelectedConversationId != INVALID_CONVERSATION_ID && conv != null
+                && mSelectedConversationId == conv.id;
     }
 
-    public int getSelectedPosition() {
-        return mSelectedPosition;
+    /**
+     * This is only used for debugging/logging purposes. DO NOT call this function to try to get
+     * the currently selected position. Use {@link #mSelectedConversationId} instead.
+     */
+    public int getSelectedConversationPosDebug() {
+        for (int i = getFirstVisiblePosition(); i < getLastVisiblePosition(); i++) {
+            final Object item = getItemAtPosition(i);
+            if (item instanceof ConversationCursor) {
+                final Conversation c = ((ConversationCursor) item).getConversation();
+                if (c.id == mSelectedConversationId) {
+                    return i;
+                }
+            }
+        }
+        return ListView.INVALID_POSITION;
+    }
+
+    @Override
+    public void onTouchModeChanged(boolean isInTouchMode) {
+        super.onTouchModeChanged(isInTouchMode);
+        if (!isInTouchMode) {
+            // We need to invalidate going from touch mode -> keyboard mode because the currently
+            // selected item might have changed in touch mode. However, since from the framework's
+            // perspective the selected position doesn't matter in touch mode, when we enter
+            // keyboard mode via up/down arrow, the list view will ONLY invalidate the newly
+            // selected item and not the currently selected item. As a result, we might get an
+            // inconsistent UI where it looks like both the old and new selected items are focused.
+            final int index = getSelectedItemPosition();
+            if (index != ListView.INVALID_POSITION) {
+                final View child = getChildAt(index - getFirstVisiblePosition());
+                if (child != null) {
+                    child.invalidate();
+                }
+            }
+        }
     }
 
     @Override
