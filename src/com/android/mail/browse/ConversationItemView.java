@@ -444,7 +444,7 @@ public class ConversationItemView extends View
         mContext = context.getApplicationContext();
         final Resources res = mContext.getResources();
         mTabletDevice = Utils.useTabletUI(res);
-        mListCollapsible = res.getBoolean(R.bool.list_collapsible);
+        mListCollapsible = !res.getBoolean(R.bool.is_tablet_landscape);
         mAccount = account;
 
         getItemViewResources(mContext);

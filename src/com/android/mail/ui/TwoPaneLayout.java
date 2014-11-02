@@ -118,7 +118,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         // The conversation list might be visible now, depending on the layout: in portrait we
         // don't show the conversation list, but in landscape we do.  This information is stored
         // in the constants
-        mListCollapsible = res.getBoolean(R.bool.list_collapsible);
+        mListCollapsible = !res.getBoolean(R.bool.is_tablet_landscape);
 
         mDrawerWidthMini = res.getDimensionPixelSize(R.dimen.two_pane_drawer_width_mini);
         mDrawerWidthOpen = res.getDimensionPixelSize(R.dimen.two_pane_drawer_width_open);

@@ -161,7 +161,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         mLayout.setConversationListLayoutListener(mConversationListLayoutListener);
         mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
         mActivity.getWindow().setBackgroundDrawable(null);
-        mIsTabletLandscape = !mActivity.getResources().getBoolean(R.bool.list_collapsible);
+        mIsTabletLandscape = mActivity.getResources().getBoolean(R.bool.is_tablet_landscape);
 
         final FolderListFragment flf = getFolderListFragment();
         flf.setMiniDrawerEnabled(true);
