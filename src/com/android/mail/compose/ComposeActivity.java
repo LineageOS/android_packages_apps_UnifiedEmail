@@ -343,6 +343,19 @@ public class ComposeActivity extends ActionBarActivity
     private boolean mRespondedInline;
     private boolean mPerformedSendOrDiscard = false;
 
+    // OnKeyListener solely used for intercepting CTRL+ENTER event for SEND.
+    private final View.OnKeyListener mKeyListenerForSendShortcut = new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (event.hasModifiers(KeyEvent.META_CTRL_ON) &&
+                    keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
+                doSend();
+                return true;
+            }
+            return false;
+        }
+    };
+
     private final HtmlTree.ConverterFactory mSpanConverterFactory =
             new HtmlTree.ConverterFactory() {
             @Override
@@ -1331,20 +1344,25 @@ public class ComposeActivity extends ActionBarActivity
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
         mTo = (RecipientEditTextView) findViewById(R.id.to);
+        mTo.setOnKeyListener(mKeyListenerForSendShortcut);
         initializeRecipientEditTextView(mTo);
         mTo.setAlternatePopupAnchor(findViewById(R.id.compose_to_dropdown_anchor));
         mCc = (RecipientEditTextView) findViewById(R.id.cc);
+        mCc.setOnKeyListener(mKeyListenerForSendShortcut);
         initializeRecipientEditTextView(mCc);
         mBcc = (RecipientEditTextView) findViewById(R.id.bcc);
+        mBcc.setOnKeyListener(mKeyListenerForSendShortcut);
         initializeRecipientEditTextView(mBcc);
         // TODO: add special chips text change watchers before adding
         // this as a text changed watcher to the to, cc, bcc fields.
         mSubject = (TextView) findViewById(R.id.subject);
+        mSubject.setOnKeyListener(mKeyListenerForSendShortcut);
         mSubject.setOnEditorActionListener(this);
         mSubject.setOnFocusChangeListener(this);
         mQuotedTextView = (QuotedTextView) findViewById(R.id.quoted_text_view);
         mQuotedTextView.setRespondInlineListener(this);
         mBodyView = (EditText) findViewById(R.id.body);
+        mBodyView.setOnKeyListener(mKeyListenerForSendShortcut);
         mBodyView.setOnFocusChangeListener(this);
         mFromStatic = findViewById(R.id.static_from_content);
         mFromStaticText = (TextView) findViewById(R.id.from_account_name);
