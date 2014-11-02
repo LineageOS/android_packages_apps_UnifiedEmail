@@ -843,12 +843,8 @@ public class BasicHtmlSanitizerTest extends AndroidTestCase {
     }
 
     public void testSource() {
-        sanitize("<source/>", "<source />");
-        sanitize("<source media=\"something\"/>", "<source media=\"something\" />");
-        sanitize("<source type=\"mimeType\"/>", "<source type=\"mimeType\" />");
-        sanitize("<source src=\"http://www.reason.com/\"/source>",
-                "<source src=\"http://www.reason.com/\" />");
-        sanitize("<source src=\"javascript:badness()\"/source>", "<source />");
+        sanitize("<source/>", "");
+        sanitize("<source></source>", "");
     }
 
     public void testSpan() {
@@ -1012,15 +1008,8 @@ public class BasicHtmlSanitizerTest extends AndroidTestCase {
     }
 
     public void testTrack() {
-        sanitize("<track/>", "<track />");
-        sanitize("<track default=\"default\"/>", "<track default=\"default\" />");
-        sanitize("<track kind=\"captions\"/>", "<track kind=\"captions\" />");
-        sanitize("<track label=\"something\"/>", "<track label=\"something\" />");
-        sanitize("<track src=\"http://www.reason.com/\"/>",
-                "<track src=\"http://www.reason.com/\" />");
-        sanitize("<track srclang=\"fr_CA\"/>", "<track srclang=\"fr_CA\" />");
-
-        sanitize("<track src=\"javascript:badness()\"/>", "<track />");
+        sanitize("<track/>", "");
+        sanitize("<track></track>", "");
     }
 
     public void testTt() {
