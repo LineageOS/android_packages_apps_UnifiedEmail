@@ -70,7 +70,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -513,6 +512,9 @@ public class ComposeActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Change the title for accessibility so we announce "Compose" instead
+        // of the app_name while still showing the app_name in recents.
+        setTitle(R.string.compose_title);
         setContentView(R.layout.compose);
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
