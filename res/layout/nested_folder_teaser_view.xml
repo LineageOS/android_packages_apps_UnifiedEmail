@@ -36,7 +36,7 @@
         android:layout_gravity="center_vertical"
         android:background="@drawable/folder_teaser_item_background"
         android:minHeight="@dimen/folder_teaser_item_height"
-        style="@style/FolderTeaserMarginEndStyle">
+        style="@style/FolderTeaserPaddingEndStyle">
 
         <ImageView
             android:id="@+id/show_more_folders_icon"
