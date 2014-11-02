@@ -117,6 +117,8 @@ public final class MailPrefs extends VersionedPrefs {
 
         public static final String RECENT_ACCOUNTS = "recent-accounts";
 
+        public static final String REQUIRED_SANITIZER_VERSION_NUMBER = "required-sanitizer-version-number";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
@@ -526,5 +528,23 @@ public final class MailPrefs extends VersionedPrefs {
 
     public void setRecentAccounts(Set<String> recentAccounts) {
         getEditor().putStringSet(PreferenceKeys.RECENT_ACCOUNTS, recentAccounts).apply();
+    }
+
+    /**
+     * Returns the minimum version number of the {@link com.android.mail.utils.HtmlSanitizer} which
+     * is trusted. If the version of the HtmlSanitizer does not meet or exceed this value,
+     * sanitization will be deemed untrustworthy and emails will be displayed in a sandbox that does
+     * not allow script execution.
+     */
+    public int getRequiredSanitizerVersionNumber() {
+        return getSharedPreferences().getInt(PreferenceKeys.REQUIRED_SANITIZER_VERSION_NUMBER, 1);
+    }
+
+    /**
+     * @param versionNumber the minimum version number of the
+     *      {@link com.android.mail.utils.HtmlSanitizer} which produces trusted output
+     */
+    public void setRequiredSanitizerVersionNumber(int versionNumber) {
+        getEditor().putInt(PreferenceKeys.REQUIRED_SANITIZER_VERSION_NUMBER, versionNumber).apply();
     }
 }

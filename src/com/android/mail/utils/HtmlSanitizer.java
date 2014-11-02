@@ -44,6 +44,17 @@ import java.util.List;
  * or comparable.
  */
 public final class HtmlSanitizer {
+
+    /**
+     * This version number should be bumped each time a meaningful change is made to this sanitizer
+     * configuration which influences its output. It is compared against a minimum target version
+     * number. If it meets or exceeds the minimum target version, the result of the sanitizer is
+     * free to be shown in a standard webview. If it does not meet the minimum target version then
+     * the sanitized output is deemed untrustworthy and is shown in a sandboxed webview with
+     * javascript execution disabled.
+     */
+    public static final int VERSION = 1;
+
     private static final String LOG_TAG = LogTag.getLogTag();
 
     /**
@@ -90,7 +101,7 @@ public final class HtmlSanitizer {
                 final String value = attrs.remove(idIndex + 1);
                 attrs.remove(idIndex);
 
-                // AOL uses a specifc id value to indicate quoted text
+                // AOL uses a specific id value to indicate quoted text
                 showHideQuotedText = value.startsWith("AOLMsgPart");
             }
 
