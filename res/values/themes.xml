@@ -2,10 +2,18 @@
 <resources>
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:actionBarWidgetTheme">@style/ActionBarWidgetTheme</item>
         <item name="android:actionModeBackground">@color/action_mode_background</item>
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
+    </style>
+
+    <style name="ActionBarWidgetTheme" parent="@android:style/Theme.Holo">
+        <item name="android:dropDownListViewStyle">@style/ActionBarDividerlessListViewStyle</item>
+        <item name="android:popupMenuStyle">@android:style/Widget.Holo.Light.ListPopupWindow</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/ActionBarTextAppearanceLargeStyle</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/ActionBarTextAppearanceSmallStyle</item>
     </style>
 
     <style name="UnifiedEmailTheme.Appcompat" parent="@style/Theme.AppCompat.Light.DarkActionBar">
