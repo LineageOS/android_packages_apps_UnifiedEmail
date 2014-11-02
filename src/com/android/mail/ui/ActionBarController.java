@@ -181,6 +181,9 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
 
     @Override
     public void onViewModeChanged(int newMode) {
+        final boolean mIsTabletLandscape =
+                mContext.getResources().getBoolean(R.bool.is_tablet_landscape);
+
         mActivity.supportInvalidateOptionsMenu();
         // Check if we are either on a phone, or in Conversation mode on tablet. For these, the
         // recent folders is enabled.
@@ -195,6 +198,13 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
                 setEmptyMode();
                 break;
             case ViewMode.CONVERSATION:
+                // If on tablet landscape, show current folder instead of emptying the action bar
+                if (mIsTabletLandscape) {
+                    mActionBar.setDisplayHomeAsUpEnabled(true);
+                    showNavList();
+                    break;
+                }
+                // Otherwise, fall through to default behavior, shared with Ads ViewMode.
             case ViewMode.AD:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 setEmptyMode();
