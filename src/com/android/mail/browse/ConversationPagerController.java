@@ -120,7 +120,7 @@ public class ConversationPagerController {
                     && !mPagerAdapter.isDetached()) {
                 final int pos = mPagerAdapter.getConversationPosition(initialConversation);
                 if (pos >= 0) {
-                    mPager.setCurrentItem(pos);
+                    setCurrentItem(pos);
                     return;
                 }
             }
@@ -165,7 +165,7 @@ public class ConversationPagerController {
             final int initialPos = mPagerAdapter.getConversationPosition(initialConversation);
             if (initialPos >= 0) {
                 LogUtils.d(LOG_TAG, "*** pager fragment init pos=%d", initialPos);
-                mPager.setCurrentItem(initialPos);
+                setCurrentItem(initialPos);
             }
         }
         Utils.sConvLoadTimer.mark("pager setAdapter");
@@ -196,9 +196,28 @@ public class ConversationPagerController {
         cleanup();
     }
 
+    /**
+     * Part of a delicate dance to kill fragments on restore after rotation if
+     * the device configuration no longer calls for them. You must call
+     * {@link #show(Account, Folder, Conversation, boolean, boolean)} first, and you probably want
+     * to call {@link #hide(boolean)} afterwards to finish the cleanup. See go/xqaxk. Sorry...
+     *
+     */
+    public void killRestoredFragments() {
+        mPagerAdapter.killRestoredFragments();
+    }
+
     // Explicitly set the focus to the conversation pager, specifically the conv overlay.
     public void focusPager() {
         mPager.requestFocus();
+    }
+
+    private void setCurrentItem(int pos) {
+        // disable onPageSelected notifications during this operation. that listener is only there
+        // to update the rest of the app when the user swipes to another page.
+        mPagerAdapter.enablePageChangeListener(false);
+        mPager.setCurrentItem(pos);
+        mPagerAdapter.enablePageChangeListener(true);
     }
 
     public boolean isInitialConversationLoading() {
