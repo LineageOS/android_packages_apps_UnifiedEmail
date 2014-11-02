@@ -85,21 +85,22 @@ public class PrintUtils {
      *
      * Sets up a webview to perform the printing work.
      */
-    @SuppressLint("NewApi")
+    @SuppressLint({"NewApi", "SetJavaScriptEnabled"})
     private static void printHtml(Context context, String html,
             String baseUri, String subject, boolean useJavascript) {
         final WebView webView = new WebView(context);
         final WebSettings settings = webView.getSettings();
         settings.setBlockNetworkImage(false);
         settings.setJavaScriptEnabled(useJavascript);
-        webView.loadDataWithBaseURL(baseUri, html,
-                "text/html", "utf-8", null);
+        webView.loadDataWithBaseURL(baseUri, html, "text/html", "utf-8", null);
         final PrintManager printManager =
                 (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
 
         final String printJobName = buildPrintJobName(context, subject);
         printManager.print(printJobName,
-                webView.createPrintDocumentAdapter(),
+                Utils.isRunningLOrLater() ?
+                        webView.createPrintDocumentAdapter(printJobName) :
+                        webView.createPrintDocumentAdapter(),
                 new PrintAttributes.Builder().build());
     }
 
