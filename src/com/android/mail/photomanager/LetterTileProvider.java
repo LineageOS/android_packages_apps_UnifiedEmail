@@ -29,6 +29,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 
 import com.android.mail.R;
+import com.android.mail.bitmap.ColorPicker;
 import com.android.mail.ui.ImageCanvas.Dimensions;
 import com.android.mail.utils.BitmapUtil;
 import com.android.mail.utils.LogTag;
@@ -54,14 +55,11 @@ public class LetterTileProvider {
     private final int mTileLetterFontSizeSmall;
     private final int mTileFontColor;
     private final TextPaint mPaint = new TextPaint();
-    private final TypedArray mColors;
-    private final int mColorCount;
-    private final int mDefaultColor;
     private final Canvas mCanvas = new Canvas();
-    private final Dimensions mDims = new Dimensions();
     private final char[] mFirstChar = new char[1];
 
     private static final int POSSIBLE_BITMAP_SIZES = 3;
+    private ColorPicker sTileColorPicker;
 
     public LetterTileProvider(Context context) {
         final Resources res = context.getResources();
@@ -80,9 +78,9 @@ public class LetterTileProvider {
         mDefaultBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_generic_man);
         mDefaultBitmapCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
 
-        mColors = res.obtainTypedArray(R.array.letter_tile_colors);
-        mColorCount = mColors.length();
-        mDefaultColor = res.getColor(R.color.letter_tile_default_color);
+        if (sTileColorPicker == null) {
+            sTileColorPicker = new ColorPicker.PaletteColorPicker(res);
+        }
     }
 
     public Bitmap getLetterTile(final Dimensions dimensions, final String displayName,
@@ -100,7 +98,7 @@ public class LetterTileProvider {
 
         final Canvas c = mCanvas;
         c.setBitmap(bitmap);
-        c.drawColor(pickColor(address));
+        c.drawColor(sTileColorPicker.pickColor(address));
 
         // If its a valid English alphabet letter,
         // draw the letter on top of the color
@@ -162,12 +160,5 @@ public class LetterTileProvider {
         } else {
             return mTileLetterFontSizeSmall;
         }
-    }
-
-    private int pickColor(String emailAddress) {
-        // String.hashCode() implementation is not supposed to change across java versions, so
-        // this should guarantee the same email address always maps to the same color.
-        int color = Math.abs(emailAddress.hashCode()) % mColorCount;
-        return mColors.getColor(color, mDefaultColor);
     }
 }
