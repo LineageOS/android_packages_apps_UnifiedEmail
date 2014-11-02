@@ -226,9 +226,6 @@ public class FolderListFragment extends ListFragment implements
     private AnimatorListenerAdapter mMiniDrawerFadeInListener;
     private AnimatorListenerAdapter mListViewFadeInListener;
 
-    private ObjectAnimator mCurrentMiniDrawerAnimator;
-    private ObjectAnimator mCurrentListViewAnimator;
-
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
@@ -793,14 +790,6 @@ public class FolderListFragment extends ListFragment implements
 
         mIsMinimized = minimized;
 
-        // Cancel any current running animation if exists
-        if (mCurrentMiniDrawerAnimator != null) {
-            mCurrentMiniDrawerAnimator.cancel();
-        }
-        if (mCurrentListViewAnimator != null) {
-            mCurrentListViewAnimator.cancel();
-        }
-
         Utils.enableHardwareLayer(mMiniDrawerView);
         Utils.enableHardwareLayer(mListView);
         if (mIsMinimized) {
@@ -810,11 +799,15 @@ public class FolderListFragment extends ListFragment implements
             mMiniDrawerView.setVisibility(View.VISIBLE);
 
             // Animate the mini-drawer to fade in.
-            mCurrentMiniDrawerAnimator = createFadeAnimation(mMiniDrawerView, 1f, duration,
-                    mMiniDrawerFadeInListener);
+            mMiniDrawerView.animate()
+                    .alpha(1f)
+                    .setDuration(duration)
+                    .setListener(mMiniDrawerFadeInListener);
             // Animate the list view to fade out.
-            mCurrentListViewAnimator = createFadeAnimation(mListView, 0f, duration,
-                    mListViewFadeOutListener);
+            mListView.animate()
+                    .alpha(0f)
+                    .setDuration(duration)
+                    .setListener(mListViewFadeOutListener);
         } else {
             // From the current state (either minimized or partially dragged) to maximized.
             final float startAlpha = mMiniDrawerView.getAlpha();
@@ -823,23 +816,16 @@ public class FolderListFragment extends ListFragment implements
             mListView.requestFocus();
 
             // Animate the mini-drawer to fade out.
-            mCurrentMiniDrawerAnimator = createFadeAnimation(mMiniDrawerView, 0f, duration,
-                    mMiniDrawerFadeOutListener);
+            mMiniDrawerView.animate()
+                    .alpha(0f)
+                    .setDuration(duration)
+                    .setListener(mMiniDrawerFadeOutListener);
             // Animate the list view to fade in.
-            mCurrentListViewAnimator = createFadeAnimation(mListView, 1f, duration,
-                    mListViewFadeInListener);
+            mListView.animate()
+                    .alpha(1f)
+                    .setDuration(duration)
+                    .setListener(mListViewFadeInListener);
         }
-
-        mCurrentMiniDrawerAnimator.start();
-        mCurrentListViewAnimator.start();
-    }
-
-    private ObjectAnimator createFadeAnimation(View v, float alpha, long duration,
-            AnimatorListenerAdapter listener) {
-        final ObjectAnimator anim = ObjectAnimator.ofFloat(v, "alpha", alpha);
-        anim.setDuration(duration);
-        anim.addListener(listener);
-        return anim;
     }
 
     public void onDrawerDragStarted() {
