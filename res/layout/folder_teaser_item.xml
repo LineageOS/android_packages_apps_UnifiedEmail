@@ -19,6 +19,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/folder_teaser_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/folder_teaser_item_height"
