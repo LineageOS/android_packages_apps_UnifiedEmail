@@ -42,11 +42,11 @@ import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.utils.EmptyStateUtils;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
@@ -668,7 +668,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         // it's also possible to get here when the dataset changes and the current CV is
         // repositioned in the dataset, so make sure the current conv is actually being switched
         // before clearing the peek state
-        if (!Objects.equals(conversation, mCurrentConversation)) {
+        if (!Objects.equal(conversation, mCurrentConversation)) {
             LogUtils.i(LOG_TAG, "CPA reported a page change. resetting peek to false. new conv=%s",
                     conversation);
             mCurrentConversationJustPeeking = false;
