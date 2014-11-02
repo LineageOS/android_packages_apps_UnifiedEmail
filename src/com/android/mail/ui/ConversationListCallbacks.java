@@ -97,6 +97,12 @@ public interface ConversationListCallbacks {
      */
     void setDetachedMode();
 
+    /**
+     * @return true if the List fragment should start up with list swipes disabled entirely
+     * (with no UI reaction)
+     */
+    boolean shouldPreventListSwipesEntirely();
+
     String CONVERSATION_LIST_SCROLL_POSITION_INDEX = "index";
     String CONVERSATION_LIST_SCROLL_POSITION_OFFSET = "offset";
 

@@ -354,6 +354,11 @@ public final class ConversationListFragment extends Fragment implements
         // force setting the mode manually this time around.
         onViewModeChanged(mActivity.getViewMode().getMode());
         mActivity.getViewMode().addListener(this);
+        if (mActivity.getListHandler().shouldPreventListSwipesEntirely()) {
+            mListView.preventSwipesEntirely();
+        } else {
+            mListView.stopPreventingSwipes();
+        }
 
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
