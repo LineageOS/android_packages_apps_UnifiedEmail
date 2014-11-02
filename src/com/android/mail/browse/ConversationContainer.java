@@ -20,7 +20,7 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.DataSetObserver;
-import android.support.annotation.IdRes;
+import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -41,8 +41,10 @@ import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.InputSmoother;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * A specialized ViewGroup container for conversation view. It is designed to contain a single
@@ -1015,29 +1017,26 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         LogUtils.d(TAG, msg, params);
     }
 
+    @Override
+    protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
+        mOverlayAdapter.focusFirstMessageHeader();
+        return true;
+    }
+
     public void focusFirstMessageHeader() {
         mOverlayAdapter.focusFirstMessageHeader();
     }
 
-    public int getOverlayCount() {
-        return mOverlayAdapter.getCount();
-    }
-
-    public int getViewPosition(View v) {
-        return mOverlayAdapter.getViewPosition(v);
-    }
-
-    public View getNextOverlayView(int position, boolean isDown) {
-        return mOverlayAdapter.getNextOverlayView(position, isDown);
-    }
-
-    public boolean shouldInterceptLeftRightEvents(@IdRes int id, boolean isLeft, boolean isRight,
-            boolean twoPaneLand) {
-        return mOverlayAdapter.shouldInterceptLeftRightEvents(id, isLeft, isRight, twoPaneLand);
-    }
-
-    public boolean shouldNavigateAway(@IdRes int id, boolean isLeft, boolean twoPaneLand) {
-        return mOverlayAdapter.shouldNavigateAway(id, isLeft, twoPaneLand);
+    public View getNextOverlayView(View curr, boolean isDown) {
+        // Find the scraps that we should avoid when fetching the next view.
+        final Set<View> scraps = Sets.newHashSet();
+        mScrapViews.visitAll(new DequeMap.Visitor<View>() {
+            @Override
+            public void visit(View item) {
+                scraps.add(item);
+            }
+        });
+        return mOverlayAdapter.getNextOverlayView(curr, isDown, scraps);
     }
 
     private class AdapterObserver extends DataSetObserver {
