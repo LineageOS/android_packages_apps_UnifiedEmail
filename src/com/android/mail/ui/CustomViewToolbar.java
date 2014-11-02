@@ -41,8 +41,6 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
     protected TextView mActionBarTitle;
     protected View mSearchButton;
 
-    private boolean mIsTabletLandscape;
-
     public CustomViewToolbar(Context context) {
         super(context);
     }
@@ -75,8 +73,6 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
                 mController.startSearch();
             }
         });
-
-        mIsTabletLandscape = getResources().getBoolean(R.bool.is_tablet_landscape);
     }
 
     @Override
@@ -93,29 +89,26 @@ public class CustomViewToolbar extends Toolbar implements ViewMode.ModeChangeLis
 
     @Override
     public void onConversationListLayout(int xEnd, boolean drawerOpen) {
-        // Only reposition in tablet landscape mode.
-        if (mIsTabletLandscape) {
-            if (drawerOpen) {
-                mSearchButton.setVisibility(INVISIBLE);
+        if (drawerOpen) {
+            mSearchButton.setVisibility(INVISIBLE);
+        } else {
+            mSearchButton.setVisibility(VISIBLE);
+            // Since we no longer shift the search button when the drawer opens/closes, only set
+            // the width of the title on the first pass (when width is 0) so we avoid changing
+            // width during layout passes.
+            final int[] coords = new int[2];
+            mActionBarTitle.getLocationInWindow(coords);
+            final int newWidth;
+            if (ViewUtils.isViewRtl(this)) {
+                newWidth = coords[0] + mActionBarTitle.getWidth() - xEnd -
+                        mSearchButton.getWidth();
             } else {
-                mSearchButton.setVisibility(VISIBLE);
-                // Since we no longer shift the search button when the drawer opens/closes, only set
-                // the width of the title on the first pass (when width is 0) so we avoid changing
-                // width during layout passes.
-                final int[] coords = new int[2];
-                mActionBarTitle.getLocationInWindow(coords);
-                final int newWidth;
-                if (ViewUtils.isViewRtl(this)) {
-                    newWidth = coords[0] + mActionBarTitle.getWidth() - xEnd -
-                            mSearchButton.getWidth();
-                } else {
-                    newWidth = xEnd - coords[0] - mSearchButton.getWidth();
-                }
+                newWidth = xEnd - coords[0] - mSearchButton.getWidth();
+            }
 
-                // Only set the width if it's different than before so we avoid draw on layout pass.
-                if (mActionBarTitle.getWidth() != newWidth) {
-                    mActionBarTitle.setWidth(newWidth);
-                }
+            // Only set the width if it's different than before so we avoid draw on layout pass.
+            if (mActionBarTitle.getWidth() != newWidth) {
+                mActionBarTitle.setWidth(newWidth);
             }
         }
     }
