@@ -75,6 +75,7 @@
         android:id="@+id/compose_button"
         android:contentDescription="@string/compose"
         android:focusable="false"
+        android:focusableInTouchMode="false"
         style="@style/FloatingActionButtonStyle" />
 
 </LinearLayout>
