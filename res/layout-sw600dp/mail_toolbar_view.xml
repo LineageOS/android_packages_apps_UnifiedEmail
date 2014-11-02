@@ -37,14 +37,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:ellipsize="end"
             android:gravity="center_vertical|start"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:singleLine="true"
-            android:textAlignment="viewStart"
-            android:textColor="@android:color/white"
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
+            style="@style/ToolbarTitleStyle" />
 
         <ImageView
             android:id="@+id/actionbar_search_button"
