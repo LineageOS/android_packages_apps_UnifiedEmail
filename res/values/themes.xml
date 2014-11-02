@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
         <item name="android:actionBarWidgetTheme">@style/ActionBarWidgetTheme</item>
@@ -21,8 +21,8 @@
         <item name="actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle.Appcompat</item>
         <item name="android:colorPrimary">@color/actionbar_color</item>
         <!-- Used by the StatusBar and NavBar (currently broken?) -->
-        <item name="android:colorPrimaryDark">@color/statusbar_color</item>
-        <item name="android:colorAccent">@color/accent_blue</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="colorAccent">@color/accent_blue</item>
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
     </style>
 
@@ -31,10 +31,14 @@
         <item name="actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle.Appcompat</item>
         <item name="colorPrimary">@color/actionbar_color</item>
         <!-- Used by the StatusBar and NavBar (currently broken?) -->
-        <item name="colorPrimaryDark">@color/statusbar_color</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
         <item name="colorAccent">@color/accent_blue</item>
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp</item>
         <item name="windowActionModeOverlay">true</item>
+        <!-- Tell SystemUI that our activity window will draw the background for the status bar. -->
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:ignore="NewApi">true</item>
+        <!-- Set the status bar to fully transparent. We’ll draw it ourselves since we want to draw other content over it. -->
+        <item name="android:statusBarColor">@color/mail_activity_status_bar_color</item>
     </style>
 
     <style name="MailActivityTheme" parent="@style/UnifiedEmailTheme.Appcompat.Toolbar" />

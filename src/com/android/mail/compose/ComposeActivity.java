@@ -3999,7 +3999,7 @@ public class ComposeActivity extends ActionBarActivity
             final Window window = getWindow();
             if (window != null) {
                 window.setStatusBarColor(
-                        getResources().getColor(R.color.statusbar_color));
+                        getResources().getColor(R.color.primary_dark_color));
             }
         }
     }
