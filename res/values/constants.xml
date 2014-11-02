@@ -83,9 +83,6 @@
     <!-- The width or height of the preview will not exceed this -->
     <integer name="attachment_preview_max_size">256</integer>
 
-    <!-- Whether or not to use a nice transition when showing the folder list fragment; used in 2-pane layouts -->
-    <integer name="use_folder_list_fragment_transition">1</integer>
-
     <!-- The timeout, in milliseconds, before the "Undo" notification is removed. -->
     <integer name="undo_notification_timeout">6000</integer>
 

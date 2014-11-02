@@ -20,14 +20,14 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Fragment;
-import android.app.SearchManager;
+import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -37,12 +37,9 @@ import android.os.Bundle;
 import android.provider.Browser;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.CharacterStyle;
-import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -131,8 +128,6 @@ public class Utils {
     public static final boolean ENABLE_CONV_LOAD_TIMER = false;
     public static final SimpleTimer sConvLoadTimer =
             new SimpleTimer(ENABLE_CONV_LOAD_TIMER).withSessionName("ConvLoadTimer");
-
-    private static final int[] STYLE_ATTR = new int[] {android.R.attr.background};
 
     public static boolean isRunningJellybeanOrLater() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
@@ -250,31 +245,93 @@ public class Utils {
         return text.substring(0, realMax) + extension;
     }
 
+    /**
+     * This lock must be held before accessing any of the following fields
+     */
+    private static final Object sStaticResourcesLock = new Object();
+    private static ComponentCallbacksListener sComponentCallbacksListener;
     private static int sMaxUnreadCount = -1;
-    private static final CharacterStyle ACTION_BAR_UNREAD_STYLE = new StyleSpan(Typeface.BOLD);
     private static String sUnreadText;
     private static String sUnseenText;
     private static String sLargeUnseenText;
     private static int sDefaultFolderBackgroundColor = -1;
-    private static int sUseFolderListFragmentTransition = -1;
+
+    private static class ComponentCallbacksListener implements ComponentCallbacks {
+
+        @Override
+        public void onConfigurationChanged(Configuration configuration) {
+            synchronized (sStaticResourcesLock) {
+                sMaxUnreadCount = -1;
+                sUnreadText = null;
+                sUnseenText = null;
+                sLargeUnseenText = null;
+                sDefaultFolderBackgroundColor = -1;
+            }
+        }
+
+        @Override
+        public void onLowMemory() {}
+    }
+
+    public static void getStaticResources(Context context) {
+        synchronized (sStaticResourcesLock) {
+            if (sUnreadText == null) {
+                final Resources r = context.getResources();
+                sMaxUnreadCount = r.getInteger(R.integer.maxUnreadCount);
+                sUnreadText = r.getString(R.string.widget_large_unread_count);
+                sUnseenText = r.getString(R.string.unseen_count);
+                sLargeUnseenText = r.getString(R.string.large_unseen_count);
+                sDefaultFolderBackgroundColor = r.getColor(R.color.default_folder_background_color);
+
+                if (sComponentCallbacksListener == null) {
+                    sComponentCallbacksListener = new ComponentCallbacksListener();
+                    context.getApplicationContext()
+                            .registerComponentCallbacks(sComponentCallbacksListener);
+                }
+            }
+        }
+    }
+
+    private static int getMaxUnreadCount(Context context) {
+        synchronized (sStaticResourcesLock) {
+            getStaticResources(context);
+            return sMaxUnreadCount;
+        }
+    }
+
+    private static String getUnreadText(Context context) {
+        synchronized (sStaticResourcesLock) {
+            getStaticResources(context);
+            return sUnreadText;
+        }
+    }
+
+    private static String getUnseenText(Context context) {
+        synchronized (sStaticResourcesLock) {
+            getStaticResources(context);
+            return sUnseenText;
+        }
+    }
+
+    private static String getLargeUnseenText(Context context) {
+        synchronized (sStaticResourcesLock) {
+            getStaticResources(context);
+            return sLargeUnseenText;
+        }
+    }
+
+    public static int getDefaultFolderBackgroundColor(Context context) {
+        synchronized (sStaticResourcesLock) {
+            getStaticResources(context);
+            return sDefaultFolderBackgroundColor;
+        }
+    }
 
     /**
      * Returns a boolean indicating whether the table UI should be shown.
      */
     public static boolean useTabletUI(Resources res) {
         return res.getBoolean(R.bool.use_tablet_ui);
-    }
-
-    /**
-     * Returns a boolean indicating whether or not we should animate in the
-     * folder list fragment.
-     */
-    public static boolean useFolderListFragmentTransition(Context context) {
-        if (sUseFolderListFragmentTransition == -1) {
-            sUseFolderListFragmentTransition  = context.getResources().getInteger(
-                    R.integer.use_folder_list_fragment_transition);
-        }
-        return sUseFolderListFragmentTransition != 0;
     }
 
     /**
@@ -361,16 +418,11 @@ public class Utils {
      */
     public static String getUnreadCountString(Context context, int unreadCount) {
         final String unreadCountString;
-        final Resources resources = context.getResources();
-        if (sMaxUnreadCount == -1) {
-            sMaxUnreadCount = resources.getInteger(R.integer.maxUnreadCount);
-        }
-        if (unreadCount > sMaxUnreadCount) {
-            if (sUnreadText == null) {
-                sUnreadText = resources.getString(R.string.widget_large_unread_count);
-            }
+        final int maxUnreadCount = getMaxUnreadCount(context);
+        if (unreadCount > maxUnreadCount) {
+            final String unreadText = getUnreadText(context);
             // Localize "99+" according to the device language
-            unreadCountString = String.format(sUnreadText, sMaxUnreadCount);
+            unreadCountString = String.format(unreadText, maxUnreadCount);
         } else if (unreadCount <= 0) {
             unreadCountString = "";
         } else {
@@ -385,49 +437,18 @@ public class Utils {
      */
     public static String getUnseenCountString(Context context, int unseenCount) {
         final String unseenCountString;
-        final Resources resources = context.getResources();
-        if (sMaxUnreadCount == -1) {
-            sMaxUnreadCount = resources.getInteger(R.integer.maxUnreadCount);
-        }
-        if (unseenCount > sMaxUnreadCount) {
-            if (sLargeUnseenText == null) {
-                sLargeUnseenText = resources.getString(R.string.large_unseen_count);
-            }
+        final int maxUnreadCount = getMaxUnreadCount(context);
+        if (unseenCount > maxUnreadCount) {
+            final String largeUnseenText = getLargeUnseenText(context);
             // Localize "99+" according to the device language
-            unseenCountString = String.format(sLargeUnseenText, sMaxUnreadCount);
+            unseenCountString = String.format(largeUnseenText, maxUnreadCount);
         } else if (unseenCount <= 0) {
             unseenCountString = "";
         } else {
-            if (sUnseenText == null) {
-                sUnseenText = resources.getString(R.string.unseen_count);
-            }
             // Localize unseen count according to the device language
-            unseenCountString = String.format(sUnseenText, unseenCount);
+            unseenCountString = String.format(getUnseenText(context), unseenCount);
         }
         return unseenCountString;
-    }
-
-    /**
-     * Get the correct display string for the unread count in the actionbar.
-     */
-    public static CharSequence getUnreadMessageString(Context context, int unreadCount) {
-        final SpannableString message;
-        final Resources resources = context.getResources();
-        if (sMaxUnreadCount == -1) {
-            sMaxUnreadCount = resources.getInteger(R.integer.maxUnreadCount);
-        }
-        if (unreadCount > sMaxUnreadCount) {
-            message = new SpannableString(
-                    resources.getString(R.string.actionbar_large_unread_count, sMaxUnreadCount));
-        } else {
-             message = new SpannableString(resources.getQuantityString(
-                     R.plurals.actionbar_unread_messages, unreadCount, unreadCount));
-        }
-
-        message.setSpan(CharacterStyle.wrap(ACTION_BAR_UNREAD_STYLE), 0,
-                message.toString().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        return message;
     }
 
     /**
@@ -666,15 +687,6 @@ public class Utils {
     }
 
     /**
-     * Retrieves the mailbox search query associated with an intent (or null if not available),
-     * doing proper sanitizing (e.g. trims whitespace).
-     */
-    public static String mailSearchQueryForIntent(Intent intent) {
-        String query = intent.getStringExtra(SearchManager.QUERY);
-        return TextUtils.isEmpty(query) ? null : query.trim();
-   }
-
-    /**
      * Split out a filename's extension and return it.
      * @param filename a file name
      * @return the file extension (max of 5 chars including period, like ".docx"), or null
@@ -801,23 +813,6 @@ public class Utils {
         return sw.toString();
     }
 
-    public static void dumpViewTree(ViewGroup root) {
-        dumpViewTree(root, "");
-    }
-
-    private static void dumpViewTree(ViewGroup g, String prefix) {
-        LogUtils.i(LOG_TAG, "%sVIEWGROUP: %s childCount=%s", prefix, g, g.getChildCount());
-        final String childPrefix = prefix + "  ";
-        for (int i = 0; i < g.getChildCount(); i++) {
-            final View child = g.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                dumpViewTree((ViewGroup) child, childPrefix);
-            } else {
-                LogUtils.i(LOG_TAG, "%sCHILD #%s: %s", childPrefix, i, child);
-            }
-        }
-    }
-
     /**
      * Executes an out-of-band command on the cursor.
      * @param cursor
@@ -914,14 +909,6 @@ public class Utils {
     }
 
     /**
-     * This utility method returns the conversation Uri at the current cursor position.
-     * @return the conversation id at the cursor.
-     */
-    public static String getConversationUri(ConversationCursor cursor) {
-        return cursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
-    }
-
-    /**
      * @return whether to show two pane or single pane search results.
      */
     public static boolean showTwoPaneSearchResults(Context context) {
@@ -937,14 +924,6 @@ public class Utils {
             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             v.buildLayer();
         }
-    }
-
-    public static int getDefaultFolderBackgroundColor(Context context) {
-        if (sDefaultFolderBackgroundColor == -1) {
-            sDefaultFolderBackgroundColor = context.getResources().getColor(
-                    R.color.default_folder_background_color);
-        }
-        return sDefaultFolderBackgroundColor;
     }
 
     /**
@@ -964,25 +943,6 @@ public class Utils {
             }
         }
         return 0;
-    }
-
-    /**
-     * @return an intent which, if launched, will reply to the conversation
-     */
-    public static Intent createReplyIntent(final Context context, final Account account,
-            final Uri messageUri, final boolean isReplyAll) {
-        final Intent intent =
-                ComposeActivity.createReplyIntent(context, account, messageUri, isReplyAll);
-        return intent;
-    }
-
-    /**
-     * @return an intent which, if launched, will forward the conversation
-     */
-    public static Intent createForwardIntent(
-            final Context context, final Account account, final Uri messageUri) {
-        final Intent intent = ComposeActivity.createForwardIntent(context, account, messageUri);
-        return intent;
     }
 
     public static Uri appendVersionQueryParameter(final Context context, final Uri uri) {
@@ -1108,7 +1068,6 @@ public class Utils {
      */
     public static Spanned insertStringWithStyle(Context context,
             String entireString, String subString, int appearance) {
-        final Resources resources = context.getResources();
         final int index = entireString.indexOf(subString);
         final SpannableString descriptionText = new SpannableString(entireString);
         descriptionText.setSpan(
