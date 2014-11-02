@@ -363,7 +363,7 @@
     </style>
 
     <style name="MessageHeaderOverflowButtonStyle" parent="@style/OverflowButtonStyle">
-        <item name="android:layout_width">@dimen/message_header_action_button_width</item>
+        <item name="android:layout_width">@dimen/message_header_overflow_button_width</item>
         <item name="android:layout_height">@dimen/message_header_action_button_height</item>
         <item name="android:layout_marginTop">@dimen/message_header_action_button_margin_top</item>
     </style>
@@ -445,10 +445,6 @@
     </style>
 
     <style name="ActionBarOverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_menu_moreoverflow_mtrl_alpha</item>
-    </style>
-
-    <style name="ActionBarOverflowButtonStyle.Appcompat" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_menu_moreoverflow_mtrl_alpha</item>
     </style>
 

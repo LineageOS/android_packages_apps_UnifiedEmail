@@ -18,7 +18,6 @@
 
     <style name="UnifiedEmailTheme.Appcompat" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="actionModeBackground">@color/action_mode_background</item>
-        <item name="actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle.Appcompat</item>
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_dark_color</item>
         <item name="colorAccent">@color/accent_blue</item>
@@ -29,7 +28,6 @@
     <style name="UnifiedEmailTheme.Appcompat.Toolbar" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="actionModeBackground">@color/action_mode_background</item>
-        <item name="actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle.Appcompat</item>
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_dark_color</item>
         <item name="colorAccent">@color/accent_blue</item>
