@@ -24,11 +24,6 @@ public class UnifiedAccountCacheProvider extends MailAppProvider {
     // The authority of our conversation provider (a forwarding provider)
     // This string must match the declaration in AndroidManifest.xml
     private static final String sAuthority = "com.android.mail.accountcache";
-    /**
-     * Authority for the suggestions provider. This is specified in AndroidManifest.xml and
-     * res/xml/searchable.xml.
-     */
-    private static final String sSuggestionsAuthority = "com.android.mail.suggestionsprovider";
 
     @Override
     protected String getAuthority() {
@@ -36,12 +31,13 @@ public class UnifiedAccountCacheProvider extends MailAppProvider {
     }
 
     @Override
-    protected Intent getNoAccountsIntent(Context context) {
+    public String getSuggestionAuthority() {
+        // UnifiedEmail does not use the default search.
         return null;
     }
 
     @Override
-    public String getSuggestionAuthority() {
-        return sSuggestionsAuthority;
+    protected Intent getNoAccountsIntent(Context context) {
+        return null;
     }
 }

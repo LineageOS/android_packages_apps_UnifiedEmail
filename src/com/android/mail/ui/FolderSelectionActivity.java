@@ -39,6 +39,7 @@ import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
+import com.android.mail.providers.SearchRecentSuggestionsProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MailObservable;
@@ -485,6 +486,12 @@ public class FolderSelectionActivity extends ActionBarActivity implements OnClic
 
     @Override
     public void showHelp(Account account, int viewMode) {
-        //Unsupported
+        // Unsupported
+    }
+
+    @Override
+    public SearchRecentSuggestionsProvider getSuggestionsProvider() {
+        // Unsupported;
+        return null;
     }
 }

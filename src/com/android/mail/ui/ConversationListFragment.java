@@ -722,7 +722,6 @@ public final class ConversationListFragment extends Fragment implements
         // Set default navigation
         if (ViewMode.isListMode(newMode)) {
             mListView.setNextFocusRightId(R.id.conversation_list_view);
-            mListView.requestFocus();
         } else if (ViewMode.isConversationMode(newMode)) {
             // This would only happen in two_pane
             mListView.setNextFocusRightId(R.id.conversation_pager);
