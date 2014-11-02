@@ -635,6 +635,7 @@ public class NotificationActionUtils {
 
         builder.setSmallIcon(R.drawable.ic_notification_mail_24dp);
         builder.setWhen(notificationAction.getWhen());
+        builder.setCategory(NotificationCompat.CATEGORY_EMAIL);
 
         final RemoteViews undoView =
                 new RemoteViews(context.getPackageName(), R.layout.undo_notification);

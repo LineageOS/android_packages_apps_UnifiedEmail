@@ -644,6 +644,7 @@ public class NotificationUtils {
             }
             notification.setTicker(account.getDisplayName());
             notification.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
+            notification.setCategory(NotificationCompat.CATEGORY_EMAIL);
 
             final long when;
 
@@ -863,6 +864,7 @@ public class NotificationUtils {
                 .setContentIntent(clickIntent)
                 .setNumber(unreadCount)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setCategory(NotificationCompat.CATEGORY_EMAIL)
                 .setWhen(when);
 
         if (com.android.mail.utils.Utils.isRunningLOrLater()) {
@@ -1075,6 +1077,7 @@ public class NotificationUtils {
                             // Adding conversation notification for Wear.
                             NotificationCompat.Builder conversationNotif =
                                     new NotificationCompat.Builder(context);
+                            conversationNotif.setCategory(NotificationCompat.CATEGORY_EMAIL);
 
                             conversationNotif.setSmallIcon(
                                     R.drawable.ic_notification_multiple_mail_24dp);
