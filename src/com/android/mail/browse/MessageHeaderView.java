@@ -954,6 +954,10 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             ComposeActivity.replyAll(getContext(), getAccount(), mMessage);
         } else if (id == R.id.forward) {
             ComposeActivity.forward(getContext(), getAccount(), mMessage);
+        } else if (id == R.id.add_star) {
+            mMessage.star(true);
+        } else if (id == R.id.remove_star) {
+            mMessage.star(false);
         } else if (id == R.id.print_message) {
             printMessage();
         } else if (id == R.id.report_rendering_problem) {
@@ -979,6 +983,15 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             m.findItem(R.id.reply).setVisible(defaultReplyAll);
             m.findItem(R.id.reply_all).setVisible(!defaultReplyAll);
             m.findItem(R.id.print_message).setVisible(Utils.isRunningKitkatOrLater());
+
+            final boolean isStarred = mMessage.starred;
+            boolean showStar = true;
+            final Conversation conversation = mMessage.getConversation();
+            if (conversation != null) {
+                showStar = !conversation.isInTrash();
+            }
+            m.findItem(R.id.add_star).setVisible(showStar && !isStarred);
+            m.findItem(R.id.remove_star).setVisible(showStar && isStarred);
 
             final boolean reportRendering = ENABLE_REPORT_RENDERING_PROBLEM
                 && mCallbacks.supportsMessageTransforms();

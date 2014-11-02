@@ -116,7 +116,9 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
 
     public void setStarred(boolean isStarred) {
         mStarView.setStarred(isStarred);
-        mStarView.setVisibility(View.VISIBLE);
+        boolean showStar = mConversation != null && !mConversation.isInTrash();
+        mStarView.setStarred(isStarred);
+        mStarView.setVisibility(showStar ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void bind(ConversationHeaderItem headerItem) {
@@ -125,7 +127,7 @@ public class ConversationViewHeader extends LinearLayout implements OnClickListe
         if (mSubjectAndFolderView != null) {
             mSubjectAndFolderView.bind(headerItem);
         }
-        mStarView.setVisibility(mConversation != null ? View.VISIBLE : View.INVISIBLE);
+        setStarred(mConversation.starred);
     }
 
     private int measureHeight() {
