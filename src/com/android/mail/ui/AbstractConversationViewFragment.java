@@ -348,7 +348,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         // Only show option if we support message transforms and message has been transformed.
-        Utils.setMenuItemVisibility(menu, R.id.show_original, supportsMessageTransforms() &&
+        Utils.setMenuItemPresent(menu, R.id.show_original, supportsMessageTransforms() &&
                 mHasConversationBeenTransformed && !mHasConversationTransformBeenReverted);
 
         final MenuItem printMenuItem = menu.findItem(R.id.print_all);
