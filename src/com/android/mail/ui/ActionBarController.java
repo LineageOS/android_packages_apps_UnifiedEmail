@@ -396,8 +396,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
         Utils.setMenuItemPresent(menu, R.id.mark_not_important, !showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
         final boolean isOutbox = mFolder.isType(FolderType.OUTBOX);
-        final boolean showDiscardOutbox = mFolder != null && isOutbox &&
-                mCurrentConversation.sendingState == UIProvider.ConversationSendingState.SEND_ERROR;
+        final boolean showDiscardOutbox = mFolder != null && isOutbox;
         Utils.setMenuItemPresent(menu, R.id.discard_outbox, showDiscardOutbox);
         final boolean showDelete = !isOutbox && mFolder != null &&
                 mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
