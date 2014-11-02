@@ -172,6 +172,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     public void onSearchPerformed(String query) {
+        query = query.trim();
         if (!TextUtils.isEmpty(query)) {
             mSearchActionView.clearSearchQuery();
             mController.executeSearch(query);
