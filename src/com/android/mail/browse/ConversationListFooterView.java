@@ -200,7 +200,7 @@ public final class ConversationListFooterView extends LinearLayout implements Vi
 
     private Drawable getNormalBackground() {
         if (sNormalBackground == null) {
-            sNormalBackground = getBackground(R.drawable.conversation_item_background_selector);
+            sNormalBackground = getBackground(R.drawable.conversation_item_background);
         }
         return sNormalBackground;
     }

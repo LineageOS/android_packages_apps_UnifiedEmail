@@ -1512,7 +1512,7 @@ public class ConversationItemView extends View
         if (mBackgroundOverrideResId > 0) {
             background = mBackgroundOverrideResId;
         } else {
-            background = R.drawable.conversation_item_background_selector;
+            background = R.drawable.conversation_item_background;
         }
         setBackgroundResource(background);
     }
