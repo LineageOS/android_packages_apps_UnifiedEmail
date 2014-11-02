@@ -18,6 +18,7 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -137,6 +138,15 @@ public class MiniDrawerView extends LinearLayout {
                     addView(iv, 1 + numInboxes);
                     numInboxes++;
                 }
+            }
+        }
+    }
+
+    @Override
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+        if (gainFocus && getFocusedChild() == null) {
+            if (getChildCount() > 0) {
+                getChildAt(0).requestFocus();
             }
         }
     }
