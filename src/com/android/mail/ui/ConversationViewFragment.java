@@ -1659,10 +1659,11 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         // Temporarily remove the ConversationFooterItem and its view.
         // It will get re-added right after the new message is added.
         final ConversationFooterItem footerItem = mAdapter.removeFooterItem();
+        // if no footer, just skip the work for it. The rest should be fine to do.
         if (footerItem != null) {
-            // no footer, so just skip the work for it.
             mConversationContainer.removeViewAtAdapterIndex(footerItem.getPosition());
         }
+
         mTemplates.reset();
         // this method will add some items to mAdapter, but we deliberately want to avoid notifying
         // adapter listeners (i.e. ConversationContainer) until onWebContentGeometryChange is next
