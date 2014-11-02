@@ -18,10 +18,10 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_cancel"
           android:title="@string/cancel"
-          android:icon="@drawable/ic_cancel_holo_light"
+          android:icon="@drawable/ic_close_wht_24dp"
           app:showAsAction="withText|always" />
     <item android:id="@+id/action_done"
           android:title="@string/done"
-          android:icon="@drawable/ic_menu_done_holo_light"
+          android:icon="@drawable/ic_check_wht_24dp"
           app:showAsAction="withText|always" />
 </menu>

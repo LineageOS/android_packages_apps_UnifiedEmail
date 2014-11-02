@@ -17,84 +17,158 @@
 -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_gravity="center_horizontal|top"
-            android:fillViewport="true"
-            style="@style/VacationResponderScrollViewStyle">
+    android:layout_gravity="center_horizontal|top"
+    android:fillViewport="true"
+    style="@style/VacationResponderScrollViewStyle">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/vacation_responder_view_background"
+        android:paddingLeft="@dimen/vacation_responder_padding_horizontal"
+        android:paddingRight="@dimen/vacation_responder_padding_horizontal">
+
+        <Switch
+            android:id="@+id/vacation_responder_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/vacation_responder_padding_vertical"
-            android:paddingBottom="@dimen/vacation_responder_padding_vertical"
-            android:background="@color/vacation_responder_foreground"
-            style="@style/VacationResponderStyle">
+            android:background="?android:attr/selectableItemBackground"
+            android:minHeight="56dp"
+            android:text="@string/preferences_vacation_responder_title"
+            android:textColor="@color/vacation_responder_main_text_color"
+            android:textSize="@dimen/vacation_responder_main_text_size" />
 
-        <Switch android:id="@+id/vacation_responder_switch"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp">
+
+            <!-- Start date -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dip"
-                android:text="@string/preferences_vacation_responder_title"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                style="@style/VacationResponderSwitch"/>
+                android:layout_weight="1"
+                android:orientation="vertical"
+                style="@style/VacationResponderDatePadding">
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginBottom="-12dip"
-                      android:minHeight="24dip">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pick_start_date_title"
+                    android:textColor="@color/vacation_responder_header_text_color"
+                    android:textSize="@dimen/vacation_responder_header_text_size" />
 
-            <TextView android:text="@string/pick_start_date_title"
-                      style="@style/VactionResponderStartDateLabel" />
+                <!-- date selector -->
+                <LinearLayout
+                    android:id="@+id/start_date_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground">
 
-            <TextView android:text="@string/pick_end_date_title"
-                      style="@style/VactionResponderEndDateLabel" />
+                    <TextView
+                        android:id="@+id/start_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:textColor="@color/vacation_responder_main_text_color"
+                        android:textSize="@dimen/vacation_responder_main_text_size" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_drop_down_24dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_marginTop="8dp"
+                    style="@style/DefaultDividerStyle" />
+
+            </LinearLayout>
+
+            <!-- End date -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pick_end_date_title"
+                    android:textColor="@color/vacation_responder_header_text_color"
+                    android:textSize="@dimen/vacation_responder_header_text_size" />
+
+                <!-- date selector -->
+                <LinearLayout
+                    android:id="@+id/end_date_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <TextView
+                        android:id="@+id/end_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:textColor="@color/vacation_responder_main_text_color"
+                        android:textSize="@dimen/vacation_responder_main_text_size" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_drop_down_24dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_marginTop="8dp"
+                    style="@style/DefaultDividerStyle" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="-6dip">
+        <com.android.mail.compose.EnterSubject
+            android:id="@+id/subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/subject_hint"
+            android:imeOptions="actionDone|flagNoExtractUi|flagNoFullscreen"
+            android:inputType="textEmailSubject|textAutoCorrect|textCapSentences|textImeMultiLine|textMultiLine"
+            android:maxLength="@integer/vacation_responder_subject_length"
+            style="@style/VacationResponderInputField" />
 
-            <Button android:id="@+id/start_date"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    style="@style/VactionResponderStartDateSpinner" />
+        <View style="@style/DefaultDividerStyle" />
 
-            <Button android:id="@+id/end_date"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    style="@style/VactionResponderEndDateSpinner"/>
+        <EditText
+            android:id="@+id/body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/vacation_responder_body_hint_text"
+            android:imeOptions="flagNoFullscreen|actionDone|flagNoEnterAction"
+            android:inputType="textLongMessage|textMultiLine|textAutoCorrect|textCapSentences"
+            android:maxLength="@integer/vacation_responder_body_length"
+            style="@style/VacationResponderInputField" />
 
-        </LinearLayout>
+        <View style="@style/DefaultDividerStyle" />
 
-        <RelativeLayout style="@style/ComposeFieldLayout">
-            <!-- Subject: localization cannot control what field pressing tab
-                 will bring the user to. This is controlled at runtime.  -->
-            <com.android.mail.compose.EnterSubject
-                    android:id="@+id/subject"
-                    style="@style/VacationResponderSubject" />
-        </RelativeLayout>
+        <CheckedTextView
+            android:id="@+id/checkbox_send_to_contacts"
+            android:text="@string/send_to_contacts_text"
+            style="@style/VacationResponderCheckBox" />
 
-        <RelativeLayout android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:id="@+id/body_wrapper"
-                        style="@style/ComposeFieldLayout">
+        <CheckedTextView
+            android:id="@+id/checkbox_send_to_domain"
+            style="@style/VacationResponderCheckBox" />
 
-            <EditText android:id="@+id/body"
-                      android:hint="@string/vacation_responder_body_hint_text"
-                      style="@style/VacationResponderBody" />
-
-        </RelativeLayout>
-
-        <CheckedTextView android:id="@+id/checkbox_send_to_contacts"
-                         android:text="@string/send_to_contacts_text"
-                         style="@style/VacationResponderCheckBox" />
-
-        <CheckedTextView android:id="@+id/checkbox_send_to_domain"
-                         tools:text="Send only to Google.com"
-                         style="@style/VacationResponderCheckBox" />
     </LinearLayout>
 </ScrollView>
