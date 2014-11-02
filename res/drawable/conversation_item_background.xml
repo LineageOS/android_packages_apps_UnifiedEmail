@@ -17,10 +17,10 @@
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true"
-          android:drawable="@color/conversation_item_blue_background" />
+          android:drawable="@color/conversation_item_grey_pressed_color" />
     <item android:state_checked="true"
-          android:drawable="@color/conversation_item_blue_background" />
+          android:drawable="@color/conversation_item_grey_background_color" />
     <item android:state_activated="true"
-          android:drawable="@color/conversation_item_blue_background" />
+          android:drawable="@color/conversation_item_blue_background_color" />
     <item android:drawable="@android:color/white" />
 </selector>
