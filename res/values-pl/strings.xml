@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"Ikona folderu"</string>
     <string name="add_account" msgid="5905863370226612377">"Dodaj konto"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Zamknij wskazówkę"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"Autosynchronizacja jest wyłączona."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"Kliknij, by włączyć."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"Synchronizacja konta jest wyłączona."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"Włącz w sekcji <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"Ustawienia konta"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"Niewysłane wiadomości w folderze <xliff:g id="OUTBOX">%2$s</xliff:g>: <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"Włączyć autosynchronizację?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Synchronizacja zmian wprowadzonych przez Ciebie nie tylko w Gmailu, ale we wszystkich aplikacjach i na wszystkich kontach, obejmie internet, Twoje pozostałe urządzenia i Twój <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>

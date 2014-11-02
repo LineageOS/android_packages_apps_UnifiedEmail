@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"फ़ोल्डर आइकन"</string>
     <string name="add_account" msgid="5905863370226612377">"खाता जोड़ें"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"युक्ति ख़ारिज करें"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"स्वत: समन्वयन बंद है."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"चालू करने के लिए स्पर्श करें."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"खाता समन्वयन बंद है."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> में चालू करें."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"खाता सेटिंग"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g> में <xliff:g id="NUMBER">%1$s</xliff:g> अप्रेषित"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"स्वत:-समन्वयन चालू करें?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"आपके द्वारा न केवल Gmail में, बल्कि सभी ऐप्स  और खातों में किए जाने वाले बदलाव, वेब, आपके अन्य डिवाइस, और आपके <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> के बीच समन्वयित किए जाएंगे."</string>

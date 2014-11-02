@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"폴더 아이콘"</string>
     <string name="add_account" msgid="5905863370226612377">"계정 추가"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"도움말 닫기"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"자동 동기화가 사용 중지되어 있습니다."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"사용하려면 터치합니다."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"계정 동기화가 사용 중지되어 있습니다."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>에서 동기화를 설정하세요."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"계정 설정"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g>에 보내지 않은 메일 <xliff:g id="NUMBER">%1$s</xliff:g>개 있음"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"자동 동기화를 사용하시겠습니까?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Gmail뿐만 아니라 모든 앱 및 계정의 변경사항이 웹, 다른 기기, <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> 간에 동기화됩니다."</string>
