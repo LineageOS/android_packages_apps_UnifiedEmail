@@ -938,8 +938,8 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="SpinnerAccountAddressStyle" parent="ComposeFromTextViewStyle">
-        <item name="android:paddingLeft">@dimen/custom_from_inner_padding</item>
+    <style name="SpinnerAccountNameStyle" parent="ComposeFromTextViewStyle">
+        <item name="android:paddingRight">@dimen/custom_from_inner_padding</item>
     </style>
 
     <style name="FolderTeaserUnreadCountTextStyle">
