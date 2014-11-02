@@ -121,4 +121,8 @@
     <integer name="conversation_list_max_folder_count">4</integer>
     <integer name="folder_max_width_proportion">31</integer>
     <integer name="folder_cell_max_width_proportion">22</integer>
+
+    <!-- Maximum width in characters of the senders in the thread list -->
+    <integer name="senders_with_attachment_lengths">25</integer>
+    <integer name="senders_lengths">27</integer>
 </resources>
