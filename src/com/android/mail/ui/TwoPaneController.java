@@ -736,7 +736,14 @@ public final class TwoPaneController extends AbstractActivityController implemen
         if (isHidingConversationList()) {
             handleBackPress();
         } else {
-            toggleDrawerState();
+            final boolean isTopLevel = Folder.isRoot(mFolder);
+
+            if (isTopLevel) {
+                // Show the drawer.
+                toggleDrawerState();
+            } else {
+                navigateUpFolderHierarchy();
+            }
         }
 
         return true;
