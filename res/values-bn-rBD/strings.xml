@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"ফোল্ডার আইকন"</string>
     <string name="add_account" msgid="5905863370226612377">"অ্যাকাউন্ট জুড়ুন"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"টিপ খারিজ করুন"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"স্বয়ং-সিঙ্ক বন্ধ আছে।"</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"চালু করতে স্পর্শ করুন।"</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"অ্যাকাউন্ট সিঙ্ক বন্ধ আছে।"</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> এর মধ্যে চালু করুন।"</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"অ্যাকাউন্ট সেটিংস"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g> এ <xliff:g id="NUMBER">%1$s</xliff:g>টি অপ্রেরিত"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"স্বয়ং-সিঙ্ক চালু করবেন?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"শুধুমাত্র Gmail এ নয়, সমস্ত অ্যাপ্লিকেশনে এবং অ্যাকাউন্টে আপনার করা পরিবর্তনগুলি, ওয়েব, আপনার অন্যান্য ডিভাইস, এবং আপনার <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> এর মধ্যে সিঙ্ক্রোনাইজ হবে।"</string>

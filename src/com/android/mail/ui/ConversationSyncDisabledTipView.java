@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.Html;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -36,6 +38,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.StyleUtils;
 import com.android.mail.utils.Utils;
 
 /**
@@ -160,23 +163,10 @@ public class ConversationSyncDisabledTipView extends ConversationTipView {
                 case ReasonSyncOff.ACCOUNT_SYNC_OFF:
                     // Create the "Turn on in Account settings." text where "Account settings" appear as
                     // a blue link.
-                    final String subString = resources.getString(R.string.account_settings_param);
-                    final String entireString = resources.getString(
-                            R.string.account_sync_off, subString);
-                    final SpannableString spannableString = new SpannableString(entireString);
-                    final int index = entireString.indexOf(subString);
-                    if (index >= 0) {
-                        spannableString.setSpan(
-                                new TextAppearanceSpan(
-                                        getContext(), R.style.LinksInTipTextAppearance),
-                                index,
-                                index + subString.length(),
-                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    } else {
-                        LogUtils.wtf(LOG_TAG,
-                                "Translation bug: account_settings missing in account_sync_off");
-                    }
-                    setText(spannableString);
+                    Spannable accountSyncOff = new SpannableString(
+                            Html.fromHtml(resources.getString(R.string.account_sync_off)));
+                    StyleUtils.stripUnderlinesAndLinkUrls(accountSyncOff, null);
+                    setText(accountSyncOff);
                     break;
                 default:
             }
