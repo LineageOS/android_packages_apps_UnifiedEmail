@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -151,12 +152,13 @@ public class MiniDrawerView extends LinearLayout {
             while (folderCursor.moveToPosition(++pos)) {
                 final Folder f = folderCursor.getModel();
                 if (f.isInbox()) {
-                    final ImageView iv = (ImageView) mInflater.inflate(
+                    final View view = mInflater.inflate(
                             R.layout.mini_drawer_folder_item, this, false /* attachToRoot */);
+                    final ImageView iv = (ImageView) view.findViewById(R.id.image_view);
                     iv.setTag(new FolderItem(f, iv));
                     iv.setContentDescription(f.name);
-                    iv.setActivated(mController.isSelectedFolder(f));
-                    addView(iv, 1 + numInboxes);
+                    view.setActivated(mController.isSelectedFolder(f));
+                    addView(view, 1 + numInboxes);
                     numInboxes++;
                 }
             }
