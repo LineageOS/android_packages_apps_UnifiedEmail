@@ -290,6 +290,8 @@ public class ComposeActivity extends ActionBarActivity
         ALTERNATE_DATA_DIRECTORY_ROOT = DATA_DIRECTORY_ROOT + DATA_DIRECTORY_ROOT;
     }
 
+    private final Rect mRect = new Rect();
+
     private ScrollView mScrollView;
     private RecipientEditTextView mTo;
     private RecipientEditTextView mCc;
@@ -2339,9 +2341,8 @@ public class ComposeActivity extends ActionBarActivity
                 mCc.getLocationOnScreen(coords);
 
                 // Subtract status bar and action bar height from y-coord.
-                final Rect rect = new Rect();
-                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-                final int deltaY = coords[1] - getSupportActionBar().getHeight() - rect.top;
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(mRect);
+                final int deltaY = coords[1] - getSupportActionBar().getHeight() - mRect.top;
 
                 // Only scroll down
                 if (deltaY > 0) {
