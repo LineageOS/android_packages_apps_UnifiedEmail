@@ -456,19 +456,26 @@ public class ConversationItemView extends View
 
         mSubjectTextView = new TextView(mContext);
         mSubjectTextView.setEllipsize(TextUtils.TruncateAt.END);
-        mSubjectTextView.setMaxLines(1);
         mSubjectTextView.setIncludeFontPadding(false);
         ViewCompat.setLayoutDirection(mSubjectTextView, layoutDir);
         ViewUtils.setTextAlignment(mSubjectTextView, View.TEXT_ALIGNMENT_VIEW_START);
 
         mSnippetTextView = new TextView(mContext);
         mSnippetTextView.setEllipsize(TextUtils.TruncateAt.END);
-        mSnippetTextView.setMaxLines(1);
         mSnippetTextView.setIncludeFontPadding(false);
         mSnippetTextView.setTypeface(SANS_SERIF_LIGHT);
         mSnippetTextView.setTextColor(getResources().getColor(R.color.snippet_text_color));
         ViewCompat.setLayoutDirection(mSnippetTextView, layoutDir);
         ViewUtils.setTextAlignment(mSnippetTextView, View.TEXT_ALIGNMENT_VIEW_START);
+
+        // hack for b/16345519. Root cause is b/17280038.
+        if (layoutDir == LAYOUT_DIRECTION_RTL) {
+            mSubjectTextView.setMaxLines(1);
+            mSnippetTextView.setMaxLines(1);
+        } else {
+            mSubjectTextView.setSingleLine();
+            mSnippetTextView.setSingleLine();
+        }
 
         mSendersImageView = new CheckableContactFlipDrawable(res, sCabAnimationDuration);
         mSendersImageView.setCallback(this);
