@@ -161,7 +161,8 @@ public class PrintUtils {
         final long when = message.dateReceivedMs;
         final String date = dateBuilder.formatDateTimeForPrinting(when);
 
-        templates.appendMessage(fromAddress.getPersonal(), fromAddress.getAddress(), date,
+        templates.appendMessage(fromAddress == null ? "" : fromAddress.getPersonal(),
+                fromAddress == null ? "" : fromAddress.getAddress(), date,
                 renderRecipients(res, addressCache, message), message.getBodyAsHtml(),
                 renderAttachments(context, res, message));
     }
