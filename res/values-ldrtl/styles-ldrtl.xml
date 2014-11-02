@@ -165,6 +165,7 @@
 
     <style name="MessageHeaderSubtitleStyle" parent="AbstractMessageHeaderSubtitleStyle">
         <item name="android:layout_alignParentStart">true</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="FloatingActionButtonStyle" parent="AbstractFloatingActionButtonStyle">
