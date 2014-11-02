@@ -40,6 +40,7 @@
 
     <style name="ComposeDropdownListViewStyle" parent="@style/Widget.AppCompat.Light.ListView.DropDown">
         <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
     </style>
 
     <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme.Appcompat">
