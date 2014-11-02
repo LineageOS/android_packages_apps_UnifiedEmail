@@ -163,6 +163,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListener = controller;
 
         ((ConversationViewFrame) mConversationView).setDownEventListener(mController);
+        ((ConversationViewFrame) mMiscellaneousView).setDownEventListener(mController);
     }
 
     @Override
