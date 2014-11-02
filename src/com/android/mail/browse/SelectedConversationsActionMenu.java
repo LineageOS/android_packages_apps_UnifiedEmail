@@ -526,7 +526,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     private void updateCount() {
         if (mActionMode != null) {
-            mActionMode.setTitle(Integer.toString(mCheckedSet.size()));
+            mActionMode.setTitle(String.format("%d", mCheckedSet.size()));
         }
     }
 
