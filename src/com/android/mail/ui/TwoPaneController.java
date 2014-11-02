@@ -271,8 +271,19 @@ public final class TwoPaneController extends AbstractActivityController implemen
             LogUtils.w(LOG_TAG, "no drawer to toggle open/closed");
             return;
         }
-        flf.setMinimized(!flf.isMinimized());
-        mLayout.requestLayout();
+
+        setDrawerState(!flf.isMinimized());
+    }
+
+    protected void setDrawerState(boolean minimized) {
+        final FolderListFragment flf = getFolderListFragment();
+        if (flf == null) {
+            LogUtils.w(LOG_TAG, "no drawer to toggle open/closed");
+            return;
+        }
+
+        flf.setMinimized(minimized);
+        mLayout.animateDrawer(minimized);
         resetActionBarIcon();
 
         final ConversationListFragment clf = getConversationListFragment();
@@ -281,7 +292,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
             final SwipeableListView list = clf.getListView();
             if (list != null) {
-                if (flf.isMinimized()) {
+                if (minimized) {
                     list.stopPreventingSwipes();
                 } else {
                     list.preventSwipesEntirely();
