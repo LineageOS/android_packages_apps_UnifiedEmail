@@ -46,7 +46,15 @@
                 android:layout_height="match_parent"
                 style="@style/ConversationListFade" />
 
-            <include layout="@layout/conversation_load_spinner" />
+            <ProgressBar
+                android:id="@+id/conversation_list_loading_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:indeterminateBehavior="repeat"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                style="?android:attr/progressBarStyle" />
 
         </FrameLayout>
 
