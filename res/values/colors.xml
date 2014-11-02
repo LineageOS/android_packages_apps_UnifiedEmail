@@ -43,7 +43,7 @@
     <color name="ap_overflow_text_color">#ff4f4c4c</color>
 
     <color name="attachment_bg_color">#ffdddddd</color>
-    <color name="swiped_bg_color">#ff999999</color>
+    <color name="swiped_bg_color">@color/text_color_grey</color>
     <color name="holo_light_background_color">#ffe8e8e8</color>
     <!-- Keep the following two colors in sync with LabelColorUtils.DEFAULT_COLORS (UnifiedGmail) -->
     <color name="default_folder_background_color">#dddddd</color>
@@ -98,8 +98,7 @@
     <color name="low_spam_color">#333333</color>
     <color name="low_spam_warning_background_color">#FFF1A8</color>
 
-    <color name="notification_template_icon_low_bg">#0cffffff</color>
-    <color name="notification_icon_gmail_red">#da4336</color>
+    <color name="notification_icon_color">#da4336</color>
 
     <!-- Search colors -->
     <color name="search_query_hint_text">@color/light_gray</color>

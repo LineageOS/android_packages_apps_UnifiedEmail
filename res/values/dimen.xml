@@ -119,7 +119,6 @@
     <dimen name="tile_divider_width">1dp</dimen>
     <dimen name="checked_text_padding">16dip</dimen>
     <dimen name="send_mail_as_padding">8dip</dimen>
-    <dimen name="undo_text_padding">16dip</dimen>
     <dimen name="dismiss_separator_padding">16dip</dimen>
     <dimen name="teaser_text_padding">16dp</dimen>
     <dimen name="attachment_padding_start">16dp</dimen>
@@ -197,9 +196,8 @@
     <dimen name="avatar_border_width">.5dp</dimen>
     <dimen name="progress_bar_height">12dp</dimen>
 
-    <dimen name="undo_description_padding">16dip</dimen>
-    <dimen name="undo_icon_padding_start">12dip</dimen>
-    <dimen name="undo_icon_padding_end">8dip</dimen>
+    <dimen name="undo_text_padding">24dp</dimen>
+    <dimen name="undo_description_padding">24dp</dimen>
 
     <!-- The width of the wearable image background. -->
     <dimen name="wearable_background_width">320dp</dimen>
