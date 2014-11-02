@@ -453,8 +453,6 @@
     <style name="NotificationSecondaryText">
     </style>
 
-    <style name="TwoPaneConversationList" />
-
     <style name="AttachmentButtonStyle">
         <item name="android:clickable">true</item>
         <item name="android:layout_width">48dip</item>
