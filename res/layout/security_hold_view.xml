@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_marginTop="60dp"
         android:text="@string/update_security_text"
-        android:textColor="#00BFD8"
+        android:textColor="@color/text_color_blue"
         android:textSize="@dimen/security_hold_view_text_size"/>
 
 </LinearLayout>
