@@ -956,7 +956,7 @@ public final class ConversationListFragment extends Fragment implements
 
         // Even though cursor might be empty, the list adapter might have teasers/footers.
         // So we check the list adapter count if the cursor is fully/partially loaded.
-        if (mListAdapter.getContentCount() == 0) {
+        if (mListAdapter.getCount() == 0) {
             showEmptyView();
         } else {
             showListView();
