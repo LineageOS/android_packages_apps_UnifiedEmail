@@ -21,7 +21,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Loader;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.text.BidiFormatter;
@@ -77,14 +76,15 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
 
     private final SparseArrayCompat<FolderHolder> mFolderHolders =
             new SparseArrayCompat<FolderHolder>();
+    private ImmutableSortedSet<FolderHolder> mSortedFolderHolders;
 
     private final int mFolderItemUpdateDelayMs;
 
-    private int mAnimatedHeight = -1;
-
+    private final LayoutInflater mInflater;
     private ViewGroup mNestedFolderContainer;
 
     private View mShowMoreFoldersRow;
+    private ImageView mShowMoreFoldersIcon;
     private TextView mShowMoreFoldersTextView;
     private TextView mShowMoreFoldersCountTextView;
 
@@ -93,12 +93,6 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
      * <code>false</code>, we show all folders.
      */
     private boolean mCollapsed = true;
-
-    private View mTeaserRightEdge;
-    /** Whether we are on a tablet device or not */
-    private final boolean mTabletDevice;
-    /** When in conversation mode, true if the list is hidden */
-    private final boolean mListCollapsible;
 
     /** If <code>true</code>, the list of folders has updated since the view was last shown. */
     private boolean mListUpdated;
@@ -190,24 +184,23 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
                     resources.getInteger(R.integer.nested_folders_collapse_threshold);
         }
 
-        mFolderItemUpdateDelayMs =
-                resources.getInteger(R.integer.folder_item_refresh_delay_ms);
-
-        mTabletDevice = com.android.mail.utils.Utils.useTabletUI(resources);
-        mListCollapsible = resources.getBoolean(R.bool.list_collapsible);
+        mFolderItemUpdateDelayMs = resources.getInteger(R.integer.folder_item_refresh_delay_ms);
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
     protected void onFinishInflate() {
         mNestedFolderContainer = (ViewGroup) findViewById(R.id.nested_folder_container);
-        mTeaserRightEdge = findViewById(R.id.teaser_right_edge);
 
         mShowMoreFoldersRow = findViewById(R.id.show_more_folders_row);
         mShowMoreFoldersRow.setOnClickListener(mShowMoreOnClickListener);
 
-        mShowMoreFoldersTextView = (TextView) findViewById(R.id.show_more_folders_textView);
+        mShowMoreFoldersIcon =
+                (ImageView) mShowMoreFoldersRow.findViewById(R.id.show_more_folders_icon);
+        mShowMoreFoldersTextView =
+                (TextView) mShowMoreFoldersRow.findViewById(R.id.show_more_folders_textView);
         mShowMoreFoldersCountTextView =
-                (TextView) findViewById(R.id.show_more_folders_count_textView);
+                (TextView) mShowMoreFoldersRow.findViewById(R.id.show_more_folders_count_textView);
     }
 
     public void bind(final Account account, final FolderSelector listener) {
@@ -219,13 +212,8 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
      * Creates a {@link FolderHolder}.
      */
     private FolderHolder createFolderHolder(final CharSequence folderName) {
-        final View itemView =
-                LayoutInflater.from(getContext()).inflate(R.layout.folder_teaser_item, null);
-
-        final ImageView imageView = (ImageView) itemView.findViewById(R.id.folder_imageView);
-        imageView.setImageResource(R.drawable.ic_menu_move_to_holo_light);
-        // Remove background
-        imageView.setBackgroundColor(Color.TRANSPARENT);
+        final View itemView = mInflater.inflate(R.layout.folder_teaser_item, mNestedFolderContainer,
+                false /* attachToRoot */);
 
         ((TextView) itemView.findViewById(R.id.folder_textView)).setText(folderName);
         final TextView sendersTextView = (TextView) itemView.findViewById(R.id.senders_textView);
@@ -282,33 +270,14 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
             // Clear out the folder views
             mNestedFolderContainer.removeAllViews();
 
-            // Sort the folders by name
-            // TODO(skennedy) recents? starred?
-            final ImmutableSortedSet.Builder<FolderHolder> folderHoldersBuilder =
-                    new ImmutableSortedSet.Builder<FolderHolder>(FolderHolder.NAME_COMPARATOR);
-
-            for (int i = 0; i < mFolderHolders.size(); i++) {
-                folderHoldersBuilder.add(mFolderHolders.valueAt(i));
-            }
-
-            final ImmutableSortedSet<FolderHolder> folderHolders = folderHoldersBuilder.build();
-
-            // Add all folder views to the teaser
-            int added = 0;
-            // If we're only over the limit by one, don't truncate the list.
-            boolean truncate = folderHolders.size() > sCollapsedFolderThreshold + 1;
-            for (final FolderHolder folderHolder : folderHolders) {
-                mNestedFolderContainer.addView(folderHolder.getItemView());
-                added++;
-
-                if (truncate && added >= sCollapsedFolderThreshold && mCollapsed) {
-                    // We will display the rest when "Show more" is clicked
-                    break;
+            // We either show all folders if it's not over the threshold, or we show none.
+            if (mSortedFolderHolders.size() <= sCollapsedFolderThreshold || !mCollapsed) {
+                for (final FolderHolder folderHolder : mSortedFolderHolders) {
+                    mNestedFolderContainer.addView(folderHolder.getItemView());
                 }
             }
 
             updateShowMoreView();
-
             mListUpdated = false;
         }
     }
@@ -325,32 +294,28 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
     private void updateShowMoreView() {
         final int total = mFolderHolders.size();
         final int displayed = mNestedFolderContainer.getChildCount();
-        final int notShown = total - displayed;
 
-        if (notShown > 0) {
+        if (displayed == 0) {
             // We are not displaying all the folders
             mShowMoreFoldersRow.setVisibility(VISIBLE);
+            mShowMoreFoldersIcon.setImageResource(R.drawable.ic_drawer_folder_24dp);
             mShowMoreFoldersTextView.setText(String.format(
-                    getContext().getString(R.string.show_n_more_folders), notShown));
+                    getContext().getString(R.string.show_n_more_folders), total));
             mShowMoreFoldersCountTextView.setVisibility(VISIBLE);
 
             // Get a count of unread messages in other folders
             int unreadCount = 0;
             for (int i = 0; i < mFolderHolders.size(); i++) {
                 final FolderHolder holder = mFolderHolders.valueAt(i);
-
-                if (holder.getItemView().getParent() == null) {
-                    // This view is not shown, so we want to use its unread count
-                    // TODO(skennedy) We want a "nested" unread count, that includes the unread
-                    // count of nested folders
-                    unreadCount += holder.getFolder().unreadCount;
-                }
+                // TODO(skennedy) We want a "nested" unread count, that includes the unread
+                // count of nested folders
+                unreadCount += holder.getFolder().unreadCount;
             }
-
             mShowMoreFoldersCountTextView.setText(Integer.toString(unreadCount));
-        } else if (displayed > sCollapsedFolderThreshold + 1) {
+        } else if (displayed > sCollapsedFolderThreshold) {
             // We are expanded
             mShowMoreFoldersRow.setVisibility(VISIBLE);
+            mShowMoreFoldersIcon.setImageResource(R.drawable.ic_collapse_24dp);
             mShowMoreFoldersTextView.setText(R.string.hide_folders);
             mShowMoreFoldersCountTextView.setVisibility(GONE);
         } else {
@@ -362,13 +327,21 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
     private void updateViews(final FolderHolder folderHolder) {
         final Folder folder = folderHolder.getFolder();
 
+        // Update unread count
         final String unreadText = Utils.getUnreadCountString(getContext(), folder.unreadCount);
         folderHolder.getCountTextView().setText(unreadText.isEmpty() ? "0" : unreadText);
 
+        // Update unread senders
         final String sendersText = TextUtils.join(
                 getResources().getString(R.string.enumeration_comma),
                 folderHolder.getUnreadSenders());
-        folderHolder.getSendersTextView().setText(sendersText);
+        final TextView sendersTextView = folderHolder.getSendersTextView();
+        if (!TextUtils.isEmpty(sendersText)) {
+            sendersTextView.setVisibility(VISIBLE);
+            sendersTextView.setText(sendersText);
+        } else {
+            sendersTextView.setVisibility(GONE);
+        }
     }
 
     @Override
@@ -429,22 +402,6 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
     public boolean acceptsUserTaps() {
         // The teaser does not allow user tap in the list.
         return false;
-    }
-
-    @Override
-    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        if (com.android.mail.utils.Utils.getDisplayListRightEdgeEffect(mTabletDevice,
-                mListCollapsible, mAdapter.getViewMode())) {
-            mTeaserRightEdge.setVisibility(VISIBLE);
-        } else {
-            mTeaserRightEdge.setVisibility(GONE);
-        }
-
-        if (mAnimatedHeight == -1) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        } else {
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
-        }
     }
 
     private static int getLoaderId(final int folderId) {
@@ -511,6 +468,15 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
                         oldFolderIds.remove(Integer.valueOf(folder.id));
                     } while (data.moveToNext());
                 }
+
+                // Sort the folders by name
+                // TODO(skennedy) recents? starred?
+                final ImmutableSortedSet.Builder<FolderHolder> folderHoldersBuilder =
+                        new ImmutableSortedSet.Builder<FolderHolder>(FolderHolder.NAME_COMPARATOR);
+                for (int i = 0; i < mFolderHolders.size(); i++) {
+                    folderHoldersBuilder.add(mFolderHolders.valueAt(i));
+                }
+                mSortedFolderHolders = folderHoldersBuilder.build();
 
                 for (final int folderId : oldFolderIds) {
                     // We have a folder that no longer exists

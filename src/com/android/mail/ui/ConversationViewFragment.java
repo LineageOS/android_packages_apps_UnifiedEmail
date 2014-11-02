@@ -826,7 +826,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         final boolean applyTransforms = shouldApplyTransforms();
 
         // If the conversation has specified a base uri, use it here, otherwise use mBaseUri
-        return mTemplates.endConversation(convFooterPx, mBaseUri,
+        return mTemplates.endConversation(mWebView.screenPxToWebPx(convFooterPx), mBaseUri,
                 mConversation.getBaseUri(mBaseUri),
                 mWebView.getViewportWidth(), mWebView.getWidthInDp(mSideMarginPx),
                 enableContentReadySignal, isOverviewMode(mAccount), applyTransforms,

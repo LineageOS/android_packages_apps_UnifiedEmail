@@ -1423,7 +1423,7 @@ public class ComposeActivity extends ActionBarActivity
         }
         if (mComposeMode == ComposeActivity.COMPOSE) {
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            actionBar.setTitle(R.string.compose);
+            actionBar.setTitle(R.string.compose_title);
         } else {
             actionBar.setTitle(null);
             if (mComposeModeAdapter == null) {
