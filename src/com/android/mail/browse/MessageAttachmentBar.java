@@ -313,7 +313,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
 
     private boolean shouldShowExtraOption1() {
         return !mHideExtraOptionOne &&
-                mActionHandler.shouldShowExtraOption1(mAttachment.getContentType());
+                mActionHandler.shouldShowExtraOption1(mAccount.getType(),
+                        mAttachment.getContentType());
     }
 
     private boolean shouldShowOverflow() {
