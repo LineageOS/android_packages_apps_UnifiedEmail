@@ -253,8 +253,6 @@ public class ConversationItemView extends View
                     res.getDimensionPixelOffset(R.dimen.folder_tl_gradient_padding);
             mFolderDrawableResources.folderHorizontalPadding =
                     res.getDimensionPixelOffset(R.dimen.folder_tl_cell_content_padding);
-            mFolderDrawableResources.folderVerticalPadding =
-                    res.getDimensionPixelOffset(R.dimen.folder_tl_top_bottom_padding);
             mFolderDrawableResources.folderFontSize =
                     res.getDimensionPixelOffset(R.dimen.folder_tl_font_size);
         }
@@ -315,8 +313,10 @@ public class ConversationItemView extends View
             sFoldersPaint.setTypeface(coordinates.foldersTypeface);
 
             // Initialize space and cell size based on the current mode.
+            final Paint.FontMetricsInt fm = sFoldersPaint.getFontMetricsInt();
             final int foldersCount = measurements.length;
             final int width = sumWidth(measurements);
+            final int height = fm.bottom - fm.top;
             int xStart = (isRtl) ? coordinates.snippetX + width : right - width;
 
             int index = 0;
@@ -326,8 +326,6 @@ public class ConversationItemView extends View
                 }
 
                 final int actualStart = isRtl ? xStart - measurements[index] : xStart;
-                final int height = (int) coordinates.foldersFontSize +
-                        2 * mFolderDrawableResources.folderVerticalPadding;
                 drawFolder(canvas, actualStart, y, measurements[index], height, folder,
                         mFolderDrawableResources, mFormatter, sFoldersPaint);
 
