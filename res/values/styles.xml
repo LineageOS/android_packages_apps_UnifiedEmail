@@ -420,7 +420,6 @@
     </style>
 
     <style name="MultiFolderSelectionItemStyle" parent="SingleFolderSelectionItemStyle">
-        <item name="android:background">?android:attr/selectableItemBackground</item>
         <item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>
     </style>
 
