@@ -526,7 +526,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void setConversationListLayoutListener(
+    public void addConversationListLayoutListener(
             TwoPaneLayout.ConversationListLayoutListener listener) {
         // Do nothing
     }

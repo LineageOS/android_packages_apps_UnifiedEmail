@@ -1322,6 +1322,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
         mSearchViewController = new MaterialSearchViewController(mActivity, this, intent,
                 savedState);
+        addConversationListLayoutListener(mSearchViewController);
 
         // Immediately handle a clean launch with intent, and any state restoration
         // that does not rely on restored fragments or loader data
