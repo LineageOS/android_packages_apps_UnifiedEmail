@@ -650,10 +650,10 @@ public final class TwoPaneController extends AbstractActivityController implemen
         super.setCurrentConversation(conversation);
 
         final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null && conversation != null) {
+        if (different && convList != null && conversation != null) {
             if (mCurrentConversationJustPeeking) {
                 convList.clearChoicesAndActivated();
-                // TODO: set the list highlight to this new item
+                convList.setSelected(conversation.position);
             } else {
                 convList.setActivated(conversation.position, different);
             }
