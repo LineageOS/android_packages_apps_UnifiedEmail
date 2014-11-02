@@ -544,6 +544,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (isModeChangePending()) {
+            return false;
+        }
+
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 final float x = ev.getX();
