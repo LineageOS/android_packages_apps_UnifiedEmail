@@ -420,7 +420,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
-                    LogUtils.wtf(LOG_TAG, "JS: %s (%s:%d) f=%s", consoleMessage.message(),
+                    LogUtils.e(LOG_TAG, "JS: %s (%s:%d) f=%s", consoleMessage.message(),
                             consoleMessage.sourceId(), consoleMessage.lineNumber(),
                             ConversationViewFragment.this);
                 } else {
