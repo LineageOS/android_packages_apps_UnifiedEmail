@@ -353,7 +353,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         final ActionBar ab = mActivity.getSupportActionBar();
         final boolean isChildFolder = getFolder() != null && !Utils.isEmpty(getFolder().parent);
         if (isConversationOnlyMode() || isChildFolder) {
-            ab.setHomeAsUpIndicator(R.drawable.ic_arrow_back_wht_24dp);
+            ab.setHomeAsUpIndicator(R.drawable.ic_arrow_back_wht_24dp_with_rtl);
             ab.setHomeActionContentDescription(0 /* system default */);
         } else {
             ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
