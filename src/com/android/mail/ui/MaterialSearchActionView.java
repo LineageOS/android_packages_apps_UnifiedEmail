@@ -22,7 +22,10 @@ import android.content.res.Resources;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.ActionMode;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -88,6 +91,27 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
         mQueryText.setOnClickListener(this);
         mQueryText.setOnEditorActionListener(this);
         mQueryText.setOnKeyListener(this);
+        // Disable CAB for search edittext
+        mQueryText.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+        });
         mEndingButton = (ImageView) findViewById(R.id.search_actionbar_ending_button);
         mEndingButton.setOnClickListener(this);
         setupEndingButton(mQueryText.getText());

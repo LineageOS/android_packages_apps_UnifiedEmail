@@ -26,8 +26,6 @@
         android:id="@+id/search_overlay_item_icon"
         android:layout_width="@dimen/search_leading_button_width"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/search_button_padding"
-        android:paddingRight="@dimen/search_button_padding"
         android:scaleType="center" />
 
     <TextView
