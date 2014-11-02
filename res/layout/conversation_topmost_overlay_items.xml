@@ -28,7 +28,7 @@
         android:id="@+id/new_message_notification_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|start"
         android:layout_marginLeft="@dimen/conversation_view_snack_bar_margin"
         android:layout_marginRight="@dimen/conversation_view_snack_bar_margin"
         android:layout_marginBottom="@dimen/conversation_view_snack_bar_margin"
