@@ -53,15 +53,16 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="left" >
+
                 <FrameLayout
                     android:id="@+id/conversation_list_place_holder"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
                 <ImageButton
                     android:id="@+id/compose_button"
-                    android:layout_gravity="end|bottom"
-                    android:contentDescription="@string/compose"
                     style="@style/FloatingActionButtonStyle" />
+
             </FrameLayout>
 
             <com.android.mail.ui.ConversationViewFrame

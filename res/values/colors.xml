@@ -21,7 +21,7 @@
     <color name="text_color_black">#212121</color>
     <color name="accent_blue">#4285f4</color>
     <color name="text_color_blue">@color/accent_blue</color>
-    <color name="text_color_draft_red">#da4336</color>
+    <color name="text_color_draft_red">@color/actionbar_color</color>
     <color name="text_color_hint_grey">#949494</color>
     <color name="gray_text_color">#777777</color>
     <color name="dark_gray_text_color">#58585b</color>
@@ -77,7 +77,7 @@
     <color name="conversation_view_footer_text_color">#a7a7a7</color>
 
     <!-- Widget colors -->
-    <color name="widget_header_bg_color">#da4336</color>
+    <color name="widget_header_bg_color">@color/actionbar_color</color>
     <color name="widget_conversation_list_divider_color">#e5e5e5</color>
 
     <color name="attachment_name_color">#333333</color>
@@ -96,7 +96,7 @@
     <color name="low_spam_color">#333333</color>
     <color name="low_spam_warning_background_color">#FFF1A8</color>
 
-    <color name="notification_icon_color">#da4336</color>
+    <color name="notification_icon_color">@color/actionbar_color</color>
 
     <!-- Search colors -->
     <color name="search_query_hint_text">@color/text_color_grey</color>
@@ -179,4 +179,8 @@
     <color name="conversation_item_grey_background_color">#ececec</color>
     <color name="conversation_item_grey_pressed_color">#d9d9d9</color>
     <color name="conversation_item_grey_ripple_color">#20444444</color>
+
+    <color name="compose_button_background_color">@color/actionbar_color</color>
+    <color name="compose_button_pressed_background_color">@color/primary_dark_color</color>
+    <color name="compose_button_tint">#20444444</color>
 </resources>
