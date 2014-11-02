@@ -316,7 +316,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     private @IdRes int getClfNextFocusStartId(boolean drawerMinimized) {
-        return (drawerMinimized) ? R.id.current_account_avatar : android.R.id.list;
+        return (drawerMinimized) ? R.id.mini_drawer : android.R.id.list;
     }
 
     @Override
