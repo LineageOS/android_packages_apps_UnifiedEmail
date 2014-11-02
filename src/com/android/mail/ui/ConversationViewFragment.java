@@ -41,6 +41,7 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -1231,6 +1232,23 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     public class ConversationWebViewClient extends AbstractConversationWebViewClient {
         public ConversationWebViewClient(Account account) {
             super(account);
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            // try to locate the message associated with the url
+            final ConversationMessage cm = getMessageForClickedUrl(url);
+            if (cm != null) {
+                // try to load the url assuming it is a cid url
+                final Uri uri = Uri.parse(url);
+                final WebResourceResponse response = loadCIDUri(uri, cm);
+                if (response != null) {
+                    return response;
+                }
+            }
+
+            // otherwise, attempt the default handling
+            return super.shouldInterceptRequest(view, url);
         }
 
         @Override

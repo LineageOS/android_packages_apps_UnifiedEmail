@@ -504,6 +504,11 @@ function rewriteRelativeImageSrc(imgElement) {
         return src;
     }
 
+    // preserve cid urls as is
+    if (src.substring(0, 4) == "cid:") {
+        return src;
+    }
+
     return null;
 };
 
