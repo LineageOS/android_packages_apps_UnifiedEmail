@@ -551,11 +551,24 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
                 if (drawerOpen) {
                     // Only start intercepting if the down event is inside the list pane or in
                     // landscape conv pane
-                    final float listX1 = mListLeft + mListView.getTranslationX();
-                    final float listX2 = listX1 + mListView.getWidth();
+                    final float left;
+                    final float right;
+                    if (mShouldShowPreviewPanel) {
+                        final boolean isAdMode = ViewMode.isAdMode(mCurrentMode);
+                        left = mIsRtl ?
+                                (isAdMode ? mMiscellaneousView.getX() : mConversationView.getX()) :
+                                mListView.getX();
+                        right = mIsRtl ? mListView.getX() + mListView.getWidth() :
+                                isAdMode ?
+                                mMiscellaneousView.getX() + mMiscellaneousView.getWidth() :
+                                mConversationView.getX() + mConversationView.getWidth();
+                    } else {
+                        left = mListView.getX();
+                        right = left + mListView.getWidth();
+                    }
 
                     // Set the potential start drag states
-                    mShouldInterceptCurrentTouch = x >= listX1 && x <= listX2;
+                    mShouldInterceptCurrentTouch = x >= left && x <= right;
                     mXThreshold = null;
                     if (mIsRtl) {
                         mCurrentDragMode = GmailDragHelper.CAPTURE_LEFT_TO_RIGHT;
@@ -564,9 +577,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
                     }
                 } else {
                     // Only capture within the mini drawer
-                    final float foldersX1 = mIsRtl ? mFoldersLeft +
-                            (mDrawerWidthOpen - mDrawerWidthMini) + mFoldersView.getTranslationX() :
-                            mFoldersLeft + mFoldersView.getTranslationX();
+                    final float foldersX1 = mIsRtl ? mFoldersView.getX() + mDrawerWidthDelta :
+                            mFoldersView.getX();
                     final float foldersX2 = foldersX1 + mDrawerWidthMini;
 
                     // Set the potential start drag states
