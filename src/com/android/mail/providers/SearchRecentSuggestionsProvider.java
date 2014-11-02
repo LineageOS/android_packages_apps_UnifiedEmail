@@ -198,7 +198,7 @@ public class SearchRecentSuggestionsProvider {
         ContentValues values = new ContentValues(3);
         values.put("display1", query);
         values.put("query", query);
-        values.put("date", SystemClock.elapsedRealtime());
+        values.put("date", System.currentTimeMillis());
         // Note:  This table has on-conflict-replace semantics, so insert() may actually replace()
         db.insert(sSuggestions, null, values);
     }
