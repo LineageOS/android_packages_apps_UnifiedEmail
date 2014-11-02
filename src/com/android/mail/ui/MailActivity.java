@@ -29,6 +29,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -170,9 +171,13 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
         setContentView(mController.getContentViewResource());
 
-        final CustomViewToolbar toolbar = (CustomViewToolbar) findViewById(R.id.mail_toolbar);
-        toolbar.setController(this, mController, mViewMode);
-        mController.setConversationListLayoutListener(toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.mail_toolbar);
+        if (toolbar instanceof CustomViewToolbar) {
+            // Tablets use CustomViewToolbar to override the default search menu item positioning.
+            final CustomViewToolbar customViewToolbar = (CustomViewToolbar) toolbar;
+            customViewToolbar.setController(this, mController, mViewMode);
+            mController.setConversationListLayoutListener(customViewToolbar);
+        }
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(mController.getNavigationViewClickListener());
 
