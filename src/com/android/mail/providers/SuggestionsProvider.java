@@ -60,13 +60,10 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
 
     public SuggestionsProvider(Context context) {
         super(context);
-        setupSuggestions();
     }
 
     @Override
-    public Cursor query(String[] projection, String selection, String[] selectionArgs,
-            String sortOrder) {
-        String query = selectionArgs[0];
+    public Cursor query(String query) {
         MergeCursor mergeCursor = null;
 
         synchronized (mTermsLock) {
@@ -96,7 +93,7 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
             ArrayList<Cursor> cursors = new ArrayList<Cursor>();
             // Pass query; at this point it is either the last term OR the
             // only term.
-            cursors.add(super.query(projection, selection, new String[] { query }, sortOrder));
+            cursors.add(super.query(query));
 
             if (query.length() >= MIN_QUERY_LENGTH_FOR_CONTACTS) {
                 cursors.add(new ContactsCursor().query(query));
@@ -154,8 +151,8 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
         final StringBuilder query = new StringBuilder();
         if (mFullQueryTerms != null) {
             synchronized (mTermsLock) {
-                for (int i = 0, size = mFullQueryTerms.size(); i < size; i++) {
-                    query.append(mFullQueryTerms.get(i)).append(QUERY_TOKEN_SEPARATOR);
+                for (String token : mFullQueryTerms) {
+                    query.append(token).append(QUERY_TOKEN_SEPARATOR);
                 }
             }
         }
