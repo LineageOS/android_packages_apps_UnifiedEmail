@@ -27,7 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -69,7 +69,7 @@ public abstract class ConversationTipView extends LinearLayout
         mShrinkAnimationDuration = resources.getInteger(
                 R.integer.shrink_animation_duration);
 
-        final FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+        final AbsListView.LayoutParams params = new AbsListView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
 
