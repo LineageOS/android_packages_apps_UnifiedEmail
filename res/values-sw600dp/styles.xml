@@ -25,4 +25,8 @@
         <item name="android:layout_width">@dimen/vacation_responder_width</item>
         <item name="android:layout_height">match_parent</item>
     </style>
+
+    <style name="ComposeAreaWrapper">
+        <item name="android:background">@color/holo_light_background_color</item>
+    </style>
 </resources>
