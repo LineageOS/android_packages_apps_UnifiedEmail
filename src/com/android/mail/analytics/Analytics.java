@@ -33,7 +33,11 @@ public final class Analytics {
 
     public static final String EVENT_CATEGORY_MENU_ITEM = "menu_item";
 
-    public static final int CD_INDEX_ACCOUNT_TYPE = 1;
+    /**
+     * The email provider for this account, as listed in
+     * {@link com.android.mail.analytics.AnalyticsUtils#DOMAIN_TO_EMAIL_PROVIDER}.
+     */
+    public static final int CD_INDEX_ACCOUNT_EMAIL_PROVIDER = 1;
 
     public static final int CD_INDEX_ACCOUNT_COUNT = 2;
 
@@ -49,6 +53,27 @@ public final class Analytics {
     public static final int CD_INDEX_REPLY_ALL_SETTING = 7;
 
     public static final int CD_INDEX_AUTO_ADVANCE = 8;
+
+    /**
+     * Custom dimension in Google analytics to describe if the user already interacted with the app.
+     */
+    public static final int CD_INDEX_USER_RETENTION_TYPE = 9;
+
+    /**
+     * Value for  {@link #CD_INDEX_USER_RETENTION_TYPE} meaning that the user has never used the
+     * Mail app anywhere before.
+     */
+    public static final String CD_VALUE_USER_RETENTION_TYPE_NEW = "new";
+    /**
+     * Value for  {@link #CD_INDEX_USER_RETENTION_TYPE} meaning that the user has used an older
+     * version of the Mail app before.
+     */
+    public static final String CD_VALUE_USER_RETENTION_TYPE_UPGRADING = "upgrading";
+    /**
+     * Value for  {@link #CD_INDEX_USER_RETENTION_TYPE} meaning that the user has already this
+     * version of the Mail app before.
+     */
+    public static final String CD_VALUE_USER_RETENTION_TYPE_RETURNING = "returning";
 
     private static Tracker sInstance;
 
