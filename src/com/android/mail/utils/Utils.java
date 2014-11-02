@@ -97,7 +97,7 @@ public class Utils {
     public static final String EXTRA_IGNORE_INITIAL_CONVERSATION_LIMIT =
             "ignore-initial-conversation-limit";
 
-    private static final String MAILTO_SCHEME = "mailto";
+    public static final String MAILTO_SCHEME = "mailto";
 
     /** Extra tag for debugging the blank fragment problem. */
     public static final String VIEW_DEBUGGING_TAG = "MailBlankFragment";
