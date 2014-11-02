@@ -14,11 +14,11 @@ Copyright (C) 2014 The Android Open Source Project
     limitations under the License.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="120.0dp"
-        android:height="120.0dp"
-        android:viewportWidth="120.0"
-        android:viewportHeight="120.0">
+        android:width="56.0dp"
+        android:height="56.0dp"
+        android:viewportWidth="56.0"
+        android:viewportHeight="56.0">
     <path
-        android:fillColor="#1e000000"
-        android:pathData="M106.667,0.0l-93.4,0.0c-7.36,0.0 -13.2,5.973 -13.2,13.333L0.0,106.667c0.0,7.36 5.907,13.333 13.267,13.333l93.4,0.0c7.36,0.0 13.333,-5.973 13.333,-13.333L120.0,13.333C120.001,5.973 114.027,0.0 106.667,0.0zM106.667,80.0L80.0,80.0c0.0,11.04 -8.953,20.0 -20.0,20.0c-11.04,0.0 -20.0,-8.96 -20.0,-20.0L13.267,80.0L13.267,13.333l93.4,0.0L106.667,80.0z"/>
+        android:fillColor="#33000000"
+        android:pathData="M4.445252,50.0L50.926315,50.0C51.683216,50.0 52.297043,48.43342 51.847057,47.650127C44.175934,34.297085 36.50481,20.944044 28.83369,7.5910025C28.384596,6.8092675 26.592989,6.800956 26.146282,7.5785356L3.1414018,47.62289C2.6722271,48.43958 3.5554307,50.0 4.445252,50.0ZM25.0,37.0L31.0,37.0L31.0,43.0L25.0,43.0L25.0,37.0ZM25.0,23.0L31.0,23.0L31.0,33.0L25.0,33.0L25.0,23.0Z"/>
 </vector>

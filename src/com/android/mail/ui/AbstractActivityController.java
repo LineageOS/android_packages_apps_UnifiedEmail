@@ -1303,10 +1303,10 @@ public abstract class AbstractActivityController implements ActivityController,
             // TODO(shahrk): Once we can disable/enable drawer animation, go back to using
             // drawer indicators.
             mDrawerToggle.setDrawerIndicatorEnabled(false);
-            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
+            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_menu_wht_24dp);
         } else {
             final ActionBar ab = mActivity.getSupportActionBar();
-            ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
+            ab.setHomeAsUpIndicator(R.drawable.ic_menu_wht_24dp);
             ab.setHomeActionContentDescription(R.string.drawer_open);
             ab.setDisplayHomeAsUpEnabled(true);
         }
@@ -2266,7 +2266,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // Show burger if we're either in conversation list or folder list mode.
         if (isDrawerEnabled() && !ViewMode.isSearchMode(viewMode)
             && (viewMode == ViewMode.CONVERSATION_LIST  && isTopLevel)) {
-            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
+            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_menu_wht_24dp);
 
         // Otherwise, show the back arrow for the indicator.
         } else {
