@@ -387,10 +387,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 break;
             }
         }
+        final boolean canStar = mFolder != null && !mFolder.isTrash();
         final MenuItem star = menu.findItem(R.id.star);
-        star.setVisible(showStar);
+        star.setVisible(showStar && canStar);
         final MenuItem unstar = menu.findItem(R.id.remove_star);
-        unstar.setVisible(!showStar);
+        unstar.setVisible(!showStar && canStar);
         final MenuItem read = menu.findItem(R.id.read);
         read.setVisible(!showMarkUnread);
         final MenuItem unread = menu.findItem(R.id.unread);
