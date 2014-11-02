@@ -41,7 +41,6 @@ import com.android.mail.utils.LogUtils;
  * tile. If there is no English alphabet character (or digit), it creates a
  * bitmap with the default contact avatar.
  */
-@Deprecated
 public class LetterTileProvider {
     private static final String TAG = LogTag.getLogTag();
     private final Bitmap mDefaultBitmap;
@@ -75,7 +74,7 @@ public class LetterTileProvider {
         mPaint.setAntiAlias(true);
         mBitmapBackgroundCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
 
-        mDefaultBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_generic_man);
+        mDefaultBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_anonymous_avatar_48dp);
         mDefaultBitmapCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
 
         mTileColorPicker = colorPicker;
