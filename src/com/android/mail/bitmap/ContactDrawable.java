@@ -98,7 +98,7 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
         if (sTileLetterFontSize == 0) {
             sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size_small);
             sTileFontColor = res.getColor(R.color.letter_tile_font_color);
-            DEFAULT_AVATAR = BitmapFactory.decodeResource(res, R.drawable.ic_generic_man);
+            DEFAULT_AVATAR = BitmapFactory.decodeResource(res, R.drawable.ic_anonymous_avatar_48dp);
 
             sPaint.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
             sPaint.setTextAlign(Align.CENTER);
