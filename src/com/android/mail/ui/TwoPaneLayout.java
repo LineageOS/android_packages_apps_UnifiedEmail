@@ -196,6 +196,21 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
     }
 
     @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("{mTranslatedMode=");
+        sb.append(mTranslatedMode);
+        sb.append(" mCurrDragMode=");
+        sb.append(mCurrentDragMode);
+        sb.append(" mShouldInterceptCurrentTouch=");
+        sb.append(mShouldInterceptCurrentTouch);
+        sb.append(" mTransitionCompleteJobs=");
+        sb.append(mTransitionCompleteJobs);
+        sb.append("}");
+        return sb.toString();
+    }
+
+    @Override
     protected void dispatchDraw(@NonNull Canvas canvas) {
         // Draw children/update the canvas first.
         super.dispatchDraw(canvas);
@@ -695,12 +710,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
 
         // If this is the first view mode change, we can't perform any translations yet because
         // the view doesn't have any measurements.
-        if (mTranslatedMode != ViewMode.UNKNOWN) {
+        final int width = getMeasuredWidth();
+        if (width != 0) {
             // On view mode changes, ensure that we animate the panes & notify visibility changes.
             if (mShouldShowPreviewPanel) {
                 onTransitionComplete();
             } else {
-                final int width = getMeasuredWidth();
                 translateDueToViewMode(width, true /* animate */);
             }
         }
