@@ -120,7 +120,8 @@ public final class MailPrefs extends VersionedPrefs {
 
         public static final String RECENT_ACCOUNTS = "recent-accounts";
 
-        public static final String REQUIRED_SANITIZER_VERSION_NUMBER = "required-sanitizer-version-number";
+        public static final String REQUIRED_SANITIZER_VERSION_NUMBER =
+                "required-sanitizer-version-number";
 
         public static final String MIGRATION_STATE = "migration-state";
 
@@ -169,7 +170,7 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String ARCHIVE_AND_DELETE = "archive-and-delete";
     }
 
-    public static MailPrefs get(final Context c) {
+    public static synchronized MailPrefs get(final Context c) {
         if (sInstance == null) {
             sInstance = new MailPrefs(c, PREFS_NAME);
         }
