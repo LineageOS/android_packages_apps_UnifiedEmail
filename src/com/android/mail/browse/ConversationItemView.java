@@ -135,8 +135,7 @@ public class ConversationItemView extends View
     private static String sElidedPaddingToken;
 
     // Static colors.
-    private static int sSendersTextColorRead;
-    private static int sSendersTextColorUnread;
+    private static int sSendersTextColor;
     private static int sDateTextColorRead;
     private static int sDateTextColorUnread;
     private static int sStarTouchSlop;
@@ -599,9 +598,8 @@ public class ConversationItemView extends View
 
             // Initialize colors.
             sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(
-                    res.getColor(R.color.senders_text_color_read)));
-            sSendersTextColorRead = res.getColor(R.color.senders_text_color_read);
-            sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
+                    res.getColor(R.color.senders_text_color)));
+            sSendersTextColor = res.getColor(R.color.senders_text_color);
             sSubjectTextUnreadSpan = new TextAppearanceSpan(context,
                     R.style.SubjectAppearanceUnreadStyle);
             sSubjectTextReadSpan = new TextAppearanceSpan(
@@ -1365,7 +1363,7 @@ public class ConversationItemView extends View
         if (mHeader.sendersDisplayLayout != null) {
             sPaint.setTextSize(mCoordinates.sendersFontSize);
             sPaint.setTypeface(SendersView.getTypeface(isUnread));
-            sPaint.setColor(isUnread ? sSendersTextColorUnread : sSendersTextColorRead);
+            sPaint.setColor(sSendersTextColor);
             canvas.translate(mSendersX, mCoordinates.sendersY
                     + mHeader.sendersDisplayLayout.getTopPadding());
             mHeader.sendersDisplayLayout.draw(canvas);
