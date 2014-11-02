@@ -24,9 +24,9 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.support.v4.text.BidiFormatter;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
@@ -146,8 +146,8 @@ public class SendersView {
         SpannableStringBuilder messageInfo = new SpannableStringBuilder();
 
         try {
-            ConversationInfo conversationInfo = conv.conversationInfo;
-            int sendingStatus = conv.sendingState;
+            final ConversationInfo conversationInfo = conv.conversationInfo;
+            final int sendingStatus = conv.sendingState;
             boolean hasSenders = false;
             // This covers the case where the sender is "me" and this is a draft
             // message, which means this will only run once most of the time.
@@ -158,56 +158,48 @@ public class SendersView {
                 }
             }
             getSenderResources(context, resourceCachingRequired);
-            int count = conversationInfo.messageCount;
-            int draftCount = conversationInfo.draftCount;
+            final int count = conversationInfo.messageCount;
+            final int draftCount = conversationInfo.draftCount;
             if (count > 1) {
-                messageInfo.append(count + "");
-            }
-            messageInfo.setSpan(CharacterStyle.wrap(
-                    conv.read ? sMessageInfoReadStyleSpan : sMessageInfoUnreadStyleSpan),
-                    0, messageInfo.length(), 0);
-            if (draftCount > 0) {
-                // If we are showing a message count or any draft text and there
-                // is at least 1 sender, prepend the sending state text with a
-                // comma.
-                if (hasSenders || count > 1) {
-                    messageInfo.append(sSendersSplitToken);
-                }
-                SpannableStringBuilder draftString = new SpannableStringBuilder();
-                if (draftCount == 1) {
-                    draftString.append(sDraftSingularString);
-                } else {
-                    draftString.append(sDraftPluralString).append(
-                            String.format(sDraftCountFormatString, draftCount));
-                }
-                draftString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0,
-                        draftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                messageInfo.append(draftString);
+                appendMessageInfo(messageInfo, Integer.toString(count), CharacterStyle.wrap(
+                        conv.read ? sMessageInfoReadStyleSpan : sMessageInfoUnreadStyleSpan),
+                        false, conv.read);
             }
 
-            boolean showState = sendingStatus == UIProvider.ConversationSendingState.SENDING ||
+            boolean appendSplitToken = hasSenders || count > 1;
+            if (draftCount > 0) {
+                final CharSequence draftText;
+                if (draftCount == 1) {
+                    draftText = sDraftSingularString;
+                } else {
+                    draftText = sDraftPluralString +
+                            String.format(sDraftCountFormatString, draftCount);
+                }
+
+                appendMessageInfo(messageInfo, draftText, sDraftsStyleSpan, appendSplitToken,
+                        conv.read);
+            }
+
+            final boolean showState = sendingStatus == UIProvider.ConversationSendingState.SENDING ||
                     sendingStatus == UIProvider.ConversationSendingState.RETRYING ||
                     sendingStatus == UIProvider.ConversationSendingState.SEND_ERROR;
             if (showState) {
-                // If we are showing a message count or any draft text, prepend
-                // the sending state text with a comma.
-                if (count > 1 || draftCount > 0) {
-                    messageInfo.append(sSendersSplitToken);
-                }
+                appendSplitToken |= draftCount > 0;
 
-                SpannableStringBuilder stateSpan = new SpannableStringBuilder();
-
+                final CharSequence statusText;
+                final Object span;
                 if (sendingStatus == UIProvider.ConversationSendingState.SENDING) {
-                    stateSpan.append(sSendingString);
-                    stateSpan.setSpan(sSendingStyleSpan, 0, stateSpan.length(), 0);
+                    statusText = sSendingString;
+                    span = sSendingStyleSpan;
                 } else if (sendingStatus == UIProvider.ConversationSendingState.RETRYING) {
-                    stateSpan.append(sRetryingString);
-                    stateSpan.setSpan(sRetryingStyleSpan, 0, stateSpan.length(), 0);
-                } else if (sendingStatus == UIProvider.ConversationSendingState.SEND_ERROR) {
-                    stateSpan.append(sFailedString);
-                    stateSpan.setSpan(sFailedStyleSpan, 0, stateSpan.length(), 0);
+                    statusText = sRetryingString;
+                    span = sRetryingStyleSpan;
+                } else {
+                    statusText = sFailedString;
+                    span = sFailedStyleSpan;
                 }
-                messageInfo.append(stateSpan);
+
+                appendMessageInfo(messageInfo, statusText, span, appendSplitToken, conv.read);
             }
 
             // Prepend a space if we are showing other message info text.
@@ -221,6 +213,21 @@ public class SendersView {
         }
 
         return messageInfo;
+    }
+
+    private static void appendMessageInfo(SpannableStringBuilder sb, CharSequence text,
+            Object span, boolean appendSplitToken, boolean convRead) {
+        int startIndex = sb.length();
+        if (appendSplitToken) {
+            sb.append(sSendersSplitToken);
+            sb.setSpan(CharacterStyle.wrap(convRead ?
+                    sMessageInfoReadStyleSpan : sMessageInfoUnreadStyleSpan),
+                    startIndex, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        startIndex = sb.length();
+        sb.append(text);
+        sb.setSpan(span, startIndex, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     public static void format(Context context, ConversationInfo conversationInfo,
