@@ -60,12 +60,14 @@ public class DrawerItem {
     public static final int VIEW_FOLDER = 0;
     /** A text-label which serves as a header in sectioned lists. */
     public static final int VIEW_HEADER = 1;
-    /** A text-label which serves as a header in sectioned lists. */
+    /** A blank divider which serves as a header in sectioned lists. */
     public static final int VIEW_BLANK_HEADER = 2;
+    /** A spacer which serves as a footer below the last item. */
+    public static final int VIEW_BOTTOM_SPACE = 3;
     /** An account object, which allows switching accounts rather than folders. */
-    public static final int VIEW_ACCOUNT = 3;
+    public static final int VIEW_ACCOUNT = 4;
     /** An expandable object for expanding/collapsing more of the list */
-    public static final int VIEW_WAITING_FOR_SYNC = 4;
+    public static final int VIEW_WAITING_FOR_SYNC = 5;
     /** The value (1-indexed) of the last View type.  Useful when returning the number of types. */
     private static final int LAST_FIELD = VIEW_WAITING_FOR_SYNC + 1;
 
@@ -110,6 +112,8 @@ public class DrawerItem {
                 return headerToString();
             case VIEW_BLANK_HEADER:
                 return blankHeaderToString();
+            case VIEW_BOTTOM_SPACE:
+                return bottomSpaceToString();
             case VIEW_ACCOUNT:
                 return accountToString();
             case VIEW_WAITING_FOR_SYNC:
@@ -230,6 +234,15 @@ public class DrawerItem {
         return "[DrawerItem VIEW_BLANK_HEADER]";
     }
 
+    public static DrawerItem ofBottomSpace(ControllableActivity activity) {
+        return new DrawerItem(VIEW_BOTTOM_SPACE, activity, null, INERT_HEADER, null, 0, false, null,
+                null);
+    }
+
+    private String bottomSpaceToString() {
+        return "[DrawerItem VIEW_BOTTOM_SPACE]";
+    }
+
     /**
      * Create a "waiting for initialization" item.
      *
@@ -242,7 +255,7 @@ public class DrawerItem {
     }
 
     private static String waitToString() {
-        return "[DrawerItem VIEW_WAITING_FOR_SYNC ]";
+        return "[DrawerItem VIEW_WAITING_FOR_SYNC]";
     }
 
     /**
@@ -260,6 +273,9 @@ public class DrawerItem {
                 break;
             case VIEW_BLANK_HEADER:
                 result = getBlankHeaderView(convertView, parent);
+                break;
+            case VIEW_BOTTOM_SPACE:
+                result = getBottomSpaceView(convertView, parent);
                 break;
             case VIEW_ACCOUNT:
                 result = getAccountView(convertView, parent);
@@ -297,6 +313,7 @@ public class DrawerItem {
         switch (mType) {
             case VIEW_HEADER:
             case VIEW_BLANK_HEADER:
+            case VIEW_BOTTOM_SPACE:
                 // Headers are never enabled.
                 return false;
             case VIEW_FOLDER:
@@ -333,6 +350,7 @@ public class DrawerItem {
         switch (mType) {
             case VIEW_HEADER:
             case VIEW_BLANK_HEADER:
+            case VIEW_BOTTOM_SPACE:
                 // Headers are never highlighted
                 return false;
             case VIEW_FOLDER:
@@ -405,6 +423,23 @@ public class DrawerItem {
             blankHeaderView = convertView;
         } else {
             blankHeaderView = mInflater.inflate(R.layout.folder_list_blank_header, parent, false);
+        }
+        return blankHeaderView;
+    }
+
+    /**
+     * Returns a blank spacer
+     *
+     * @param convertView A previous view, perhaps null
+     * @param parent the parent of this view
+     * @return a blank spacer
+     */
+    private View getBottomSpaceView(View convertView, ViewGroup parent) {
+        final View blankHeaderView;
+        if (convertView != null) {
+            blankHeaderView = convertView;
+        } else {
+            blankHeaderView = mInflater.inflate(R.layout.folder_list_bottom_space, parent, false);
         }
         return blankHeaderView;
     }
