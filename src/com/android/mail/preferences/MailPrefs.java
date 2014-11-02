@@ -113,6 +113,9 @@ public final class MailPrefs extends VersionedPrefs {
 
         public static final String CONVERSATION_OVERVIEW_MODE = "conversation-overview-mode";
 
+        public static final String ALWAYS_LAUNCH_GMAIL_FROM_EMAIL_TOMBSTONE =
+                "always-launch-gmail-from-email-tombstone";
+
         public static final String SNAP_HEADER_MODE = "snap-header-mode";
 
         public static final String RECENT_ACCOUNTS = "recent-accounts";
@@ -517,6 +520,18 @@ public final class MailPrefs extends VersionedPrefs {
 
     public boolean isConversationOverviewModeSet() {
         return getSharedPreferences().contains(PreferenceKeys.CONVERSATION_OVERVIEW_MODE);
+    }
+
+    public void setAlwaysLaunchGmailFromEmailTombstone(final boolean alwaysLaunchGmail) {
+        getEditor()
+                .putBoolean(PreferenceKeys.ALWAYS_LAUNCH_GMAIL_FROM_EMAIL_TOMBSTONE,
+                        alwaysLaunchGmail)
+                .apply();
+    }
+
+    public boolean getAlwaysLaunchGmailFromEmailTombstone() {
+        return getSharedPreferences()
+                .getBoolean(PreferenceKeys.ALWAYS_LAUNCH_GMAIL_FROM_EMAIL_TOMBSTONE, false);
     }
 
     public void setSnapHeaderMode(final int snapHeaderMode) {
