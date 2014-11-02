@@ -182,8 +182,13 @@
         <item name="android:paddingEnd">@dimen/snack_bar_margin_horizontal</item>
     </style>
 
+    <style name="MiniDrawerFolderStyle" parent="@style/MiniDrawerFolderStyleBase">
+        <item name="android:scaleX">-1</item>
+    </style>
+
     <style name="SingleFolderListIconStyle">
         <item name="android:layout_marginStart">@dimen/single_folder_list_item_start_margin</item>
+        <item name="android:scaleX">-1</item>
     </style>
 
     <style name="FolderSelectionItemStyle" parent="AbstractFolderSelectionItemStyle">
@@ -194,6 +199,7 @@
     <style name="FolderListIconStyle">
         <item name="android:layout_marginStart">@dimen/folder_list_item_start_margin</item>
         <item name="android:layout_alignParentStart">true</item>
+        <item name="android:scaleX">-1</item>
     </style>
 
     <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderSmallStyle">

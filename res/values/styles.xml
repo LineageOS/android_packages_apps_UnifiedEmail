@@ -577,11 +577,15 @@
         <item name="android:scaleType">fitCenter</item>
     </style>
 
-    <style name="MiniDrawerFolderStyle" parent="@style/MiniDrawerItemStyleBase">
+    <style name="MiniDrawerFolderStyleBase" parent="@style/MiniDrawerItemStyleBase">
         <item name="android:paddingTop">16dp</item>
         <item name="android:paddingBottom">16dp</item>
         <item name="android:paddingLeft">24dp</item>
         <item name="android:paddingRight">24dp</item>
+    </style>
+
+    <style name="MiniDrawerFolderStyle" parent="@style/MiniDrawerFolderStyleBase">
+        <item name="android:scaleX">1</item>
     </style>
 
     <style name="MiniDrawerAccountStyle" parent="@style/MiniDrawerItemStyleBase">
@@ -593,6 +597,7 @@
 
     <style name="SingleFolderListIconStyle">
         <item name="android:layout_marginLeft">@dimen/single_folder_list_item_start_margin</item>
+        <item name="android:scaleX">1</item>
     </style>
 
     <style name="FolderListItemStartStyle">
@@ -602,6 +607,7 @@
     <style name="FolderListIconStyle">
         <item name="android:layout_marginLeft">@dimen/folder_list_item_start_margin</item>
         <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:scaleX">1</item>
     </style>
 
     <style name="FolderListItemEndStyle">
