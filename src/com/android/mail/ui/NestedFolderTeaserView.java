@@ -217,9 +217,9 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
 
         ((TextView) itemView.findViewById(R.id.folder_textView)).setText(folderName);
         final TextView sendersTextView = (TextView) itemView.findViewById(R.id.senders_textView);
-        final TextView countTextView = (TextView) itemView.findViewById(R.id.count_textView);
+        final TextView countTextView = (TextView) itemView.findViewById(R.id.unread_count_textView);
         final FolderHolder holder = new FolderHolder(itemView, sendersTextView, countTextView);
-
+        countTextView.setVisibility(View.VISIBLE);
         attachOnClickListener(itemView, holder);
 
         return holder;
