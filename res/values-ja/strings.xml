@@ -367,8 +367,7 @@
     <string name="prefDialogTitle_removal_action" msgid="266548424110393246">"アーカイブ/削除操作"</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"全員に返信"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"返信時の既定値として使用する"</string>
-    <string name="preference_swipe_title_archive" msgid="9122333537761282714">"スワイプしてアーカイブ"</string>
-    <string name="preference_swipe_title_delete" msgid="4860474024917543711">"スワイプして削除"</string>
+    <string name="preference_swipe_title" msgid="2073613840893904205">"スワイプの動作"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"スレッドリスト内"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"送信者の画像"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"スレッドリストの名前の横に表示する"</string>

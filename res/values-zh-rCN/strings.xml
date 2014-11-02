@@ -181,12 +181,12 @@
     <item quantity="other" msgid="4276111931404654219">"已忽略 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话。"</item>
   </plurals>
   <plurals name="conversation_spammed">
-    <item quantity="one" msgid="6986172030710967687">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为垃圾邮件。"</item>
-    <item quantity="other" msgid="5900913789259199137">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为垃圾邮件。"</item>
+    <item quantity="one" msgid="1749550834135461470">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为垃圾邮件"</item>
+    <item quantity="other" msgid="664292592683692920">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为垃圾邮件"</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="2294904093653094150">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为非垃圾邮件。"</item>
-    <item quantity="other" msgid="4966164423991098144">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为非垃圾邮件。"</item>
+    <item quantity="one" msgid="3680479171846552641">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为非垃圾邮件"</item>
+    <item quantity="other" msgid="6351739502184556635">"已将&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;个会话列为非垃圾邮件"</item>
   </plurals>
   <plurals name="conversation_not_important">
     <item quantity="one" msgid="3824809189993339030">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话标记为不重要。"</item>
