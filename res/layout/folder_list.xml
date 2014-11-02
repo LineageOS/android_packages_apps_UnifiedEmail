@@ -24,8 +24,8 @@
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:nextFocusRight="@+id/conversation_list_view"
-        android:fadingEdge="none" />
+        android:fadingEdge="none"
+        style="@style/DrawerNavigationStyle" />
 
     <com.android.mail.ui.MiniDrawerView
         android:id="@+id/mini_drawer"

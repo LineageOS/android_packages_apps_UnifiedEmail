@@ -594,10 +594,13 @@
         <item name="android:layout_marginRight">@dimen/conversation_border_margin_side</item>
     </style>
 
-    <style name="MiniDrawerItemStyleBase">
+    <style name="DrawerNavigationStyle">
+        <item name="android:nextFocusRight">@+id/conversation_list_view</item>
+    </style>
+
+    <style name="MiniDrawerItemStyleBase" parent="@style/DrawerNavigationStyle">
         <item name="android:background">?android:attr/selectableItemBackground</item>
         <item name="android:focusable">true</item>
-        <item name="android:nextFocusRight">@+id/conversation_list_view</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
 
