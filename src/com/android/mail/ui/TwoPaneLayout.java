@@ -262,7 +262,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mMiscellaneousView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
 
         if (mConversationListLayoutListener != null) {
-            mConversationListLayoutListener.onConversationListLayout(convX, !mListCollapsible);
+            mConversationListLayoutListener.onConversationListLayout(isRtl ? listX : convX);
         }
 
         mPositionedMode = mCurrentMode;
@@ -473,6 +473,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     }
 
     public interface ConversationListLayoutListener {
-        void onConversationListLayout(int xEnd, boolean isTabletLandscape);
+        void onConversationListLayout(int xEnd);
     }
 }

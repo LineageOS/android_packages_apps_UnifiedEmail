@@ -29,8 +29,10 @@
         android:layout_width="@dimen/search_leading_button_width"
         android:layout_height="match_parent"
         android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/ic_arrow_back_24dp_with_rtl"
-        style="@style/SearchViewLeadingButton" />
+        android:paddingLeft="@dimen/search_button_padding"
+        android:paddingRight="@dimen/search_button_padding"
+        android:scaleType="center"
+        android:src="@drawable/ic_arrow_back_24dp_with_rtl" />
 
     <EditText
         android:id="@+id/search_actionbar_query_text"
@@ -42,7 +44,10 @@
         android:hint="@string/search_hint"
         android:imeOptions="actionSearch|flagNoExtractUi"
         android:inputType="text|textNoSuggestions"
+        android:paddingLeft="@dimen/search_main_text_padding"
+        android:paddingRight="@dimen/search_main_text_padding"
         android:singleLine="true"
+        android:textAlignment="viewStart"
         android:textColor="@color/search_query_text"
         android:textColorHint="@color/search_query_hint_text"
         android:textSize="16sp" />
@@ -52,8 +57,8 @@
         android:layout_width="@dimen/search_ending_button_width"
         android:layout_height="match_parent"
         android:background="?android:attr/selectableItemBackground"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="@dimen/search_button_padding"
+        android:paddingRight="@dimen/search_button_padding"
         android:scaleType="center"
         android:src="@drawable/ic_mic_24dp" />
 
