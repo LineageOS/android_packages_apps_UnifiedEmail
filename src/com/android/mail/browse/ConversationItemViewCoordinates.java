@@ -375,10 +375,9 @@ public class ConversationItemViewCoordinates {
         snippetFontSize = snippet.getTextSize();
 
         if (config.areFoldersVisible()) {
-            // vertically align folders min left edge with subject
             foldersLeft = getX(folders);
             foldersRight = foldersLeft + folders.getWidth();
-            foldersY = getY(folders) + sendersTopAdjust;
+            foldersY = getY(folders);
             foldersTypeface = folders.getTypeface();
             foldersFontSize = folders.getTextSize();
         } else {
