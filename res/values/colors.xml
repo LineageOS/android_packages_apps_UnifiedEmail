@@ -22,6 +22,7 @@
     <color name="accent_blue">#4285f4</color>
     <color name="text_color_blue">@color/accent_blue</color>
     <color name="text_color_draft_red">#da4336</color>
+    <color name="text_color_hint_grey">#949494</color>
     <color name="gray_text_color">#777777</color>
     <color name="dark_gray_text_color">#58585b</color>
     <color name="light_gray">#cccccc</color>
@@ -58,7 +59,7 @@
     <!-- Compose colors -->
     <color name="compose_label_text">@color/text_color_grey</color>
     <color name="compose_user_text">@color/text_color_black</color>
-    <color name="compose_label_hint">#999999</color>
+    <color name="compose_label_hint">@color/text_color_hint_grey</color>
     <color name="compose_divider_color">@color/light_gray</color>
     <!-- Must match the quoted_text_background_color_string -->
     <color name="compose_background_color">@android:color/white</color>
@@ -75,7 +76,7 @@
     <color name="conversation_view_text_color_light">@color/text_color_grey</color>
     <color name="conversation_view_text_color_dark">@color/text_color_black</color>
     <color name="conversation_view_text_color_link_blue">@color/text_color_blue</color>
-    <color name="conversation_view_footer_text_color">#999999</color>
+    <color name="conversation_view_footer_text_color">#a7a7a7</color>
 
     <!-- Widget colors -->
     <color name="widget_header_bg_color">#da4336</color>
@@ -84,7 +85,7 @@
     <!--  Color of the semi-transparent shadow box on attachment tiles -->
     <color name="attachment_tile_shadow_box_color">#7F000000</color>
     <!--  Color of the subtitle message in the attachment tile -->
-    <color name="attachment_tile_subtitle_color">#999999</color>
+    <color name="attachment_tile_subtitle_color">@color/text_color_hint_grey</color>
     <color name="attachment_image_background_color">#E5E5E5</color>
 
     <!-- Color of the parent folders and dividers for hierarchical folder descriptions in the move to folder -->
