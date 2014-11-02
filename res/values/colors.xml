@@ -103,6 +103,9 @@
     <color name="notification_icon_gmail_red">#da4336</color>
 
     <!-- Search colors -->
+    <color name="search_query_hint_text">@color/light_gray</color>
+    <color name="search_query_text">@color/text_color_black</color>
+    <color name="search_suggestion_item_text">@color/text_color_grey</color>
     <color name="search_banner_bg">#f6f6f6</color>
     <color name="search_banner_text">@color/text_color_grey</color>
 
