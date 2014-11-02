@@ -169,9 +169,7 @@
                     android:id="@+id/folders"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:includeFontPadding="false"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/folder_tl_font_size"
                     style="@style/ConversationListSnippetAndFoldersStyle"/>
 
             </RelativeLayout>

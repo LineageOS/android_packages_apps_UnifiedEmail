@@ -20,12 +20,14 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.v4.text.BidiFormatter;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ReplacementSpan;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -37,7 +39,6 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.text.ChangeLabelsSpan;
 import com.android.mail.text.FolderSpan;
-import com.android.mail.text.CenteredDrawableSpan;
 import com.android.mail.ui.FolderDisplayer;
 
 /**
@@ -111,24 +112,21 @@ public class SubjectAndFolderView extends TextView implements FolderSpan.FolderS
         final int start = sb.length();
         if (settings.importanceMarkersEnabled && conv.isImportant()) {
             sb.append(".\u0020");
-            sb.setSpan(new CenteredDrawableSpan() {
+            sb.setSpan(new ReplacementSpan() {
                 @Override
-                protected int getDrawableWidth() {
+                public int getSize(Paint paint, CharSequence text, int start, int end,
+                        Paint.FontMetricsInt fm) {
                     return mImportanceMarkerDrawable.getIntrinsicWidth();
                 }
 
                 @Override
-                protected int getDrawableHeight() {
-                    return mImportanceMarkerDrawable.getIntrinsicHeight();
-                }
-
-                @Override
-                protected void drawOnCanvas(Canvas canvas, float x, float y) {
+                public void draw(Canvas canvas, CharSequence text, int start, int end, float x,
+                        int top, int baseline, int bottom, Paint paint) {
                     canvas.save();
-                    canvas.translate(x, y);
+                    final int transY = baseline - mImportanceMarkerDrawable.getIntrinsicHeight();
+                    canvas.translate(x, transY);
                     mImportanceMarkerDrawable.draw(canvas);
                     canvas.restore();
-
                 }
             }, start, start + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
@@ -183,8 +181,6 @@ public class SubjectAndFolderView extends TextView implements FolderSpan.FolderS
             mFolderDrawableResources.overflowGradientPadding = 0;   // not applicable
             mFolderDrawableResources.folderHorizontalPadding =
                     res.getDimensionPixelOffset(R.dimen.folder_cv_cell_content_padding);
-            mFolderDrawableResources.folderVerticalPadding =
-                    res.getDimensionPixelOffset(R.dimen.folder_cv_top_bottom_padding);
             mFolderDrawableResources.folderFontSize =
                     res.getDimensionPixelOffset(R.dimen.folder_cv_font_size);
         }
