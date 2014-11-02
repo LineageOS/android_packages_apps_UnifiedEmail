@@ -43,7 +43,7 @@
     </style>
 
     <style name="VacationResponderTheme" parent="@style/UnifiedEmailTheme.Appcompat">
-        <item name="contentInsetStart">0dp</item>
+        <item name="actionBarStyle">@style/VacationResponderActionBarStyle</item>
     </style>
 
     <style name="ShortcutWidgetTheme" parent="@style/UnifiedEmailTheme.Appcompat" />
