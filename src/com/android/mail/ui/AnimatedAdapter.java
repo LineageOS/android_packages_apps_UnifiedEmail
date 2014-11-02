@@ -380,12 +380,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     }
 
     public View createConversationItemView(SwipeableConversationItemView view, Context context,
-            Conversation conv, int position) {
+            Conversation conv) {
         if (view == null) {
             view = new SwipeableConversationItemView(context, mAccount);
         }
         view.bind(conv, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
-                mSwipeEnabled, mImportanceMarkersEnabled, mShowChevronsEnabled, this, position);
+                mSwipeEnabled, mImportanceMarkersEnabled, mShowChevronsEnabled, this);
         return view;
     }
 
@@ -556,7 +556,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
             ((SwipeableConversationItemView) convertView).reset();
         }
         final View v = createConversationItemView((SwipeableConversationItemView) convertView,
-                mContext, conv, position);
+                mContext, conv);
         Utils.traceEndSection();
         return v;
     }
@@ -790,7 +790,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
                 position, null, parent);
         view.reset();
         view.bind(conversation, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
-                mSwipeEnabled, mImportanceMarkersEnabled, mShowChevronsEnabled, this, position);
+                mSwipeEnabled, mImportanceMarkersEnabled, mShowChevronsEnabled, this);
         mAnimatingViews.put(conversation.id, view);
         return view;
     }
