@@ -737,14 +737,15 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     // This should be a safe call since all containers should have at least a conv header and a
     // message header.
-    // TODO: what to do when the first header is off the screen and recycled?
-    public void focusFirstMessageHeader() {
+    public boolean focusFirstMessageHeader() {
         if (mItems.size() > 1) {
             final View v = mItems.get(1).getFocusableView();
-            if (v != null) {
+            if (v != null && v.isShown() && v.isFocusable()) {
                 v.requestFocus();
+                return true;
             }
         }
+        return false;
     }
 
     /**
