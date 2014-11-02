@@ -387,11 +387,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"ಫೋಲ್ಡರ್ ಐಕಾನ್"</string>
     <string name="add_account" msgid="5905863370226612377">"ಖಾತೆಯನ್ನು ಸೇರಿಸಿ"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"ಸಲಹೆ ವಜಾಗೊಳಿಸು"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"ಸ್ವಯಂ-ಸಿಂಕ್ ಆಫ್ ಆಗಿದೆ."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"ಆನ್ ಮಾಡಲು ಸ್ಪರ್ಶಿಸಿ."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"ಖಾತೆ ಸಿಂಕ್ ಆಫ್ ಆಗಿದೆ."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> ನಲ್ಲಿ ಆನ್ ಮಾಡಿ."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"ಖಾತೆ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g> ನಲ್ಲಿ <xliff:g id="NUMBER">%1$s</xliff:g> ಕಳುಹಿಸದಿರುವ"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"ಸ್ವಯಂ-ಸಿಂಕ್‌ ಆನ್‌‌ ಮಾಡುವುದೇ?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"ಕೇವಲ Gmail ಮಾತ್ರವಲ್ಲ, ಎಲ್ಲಾ ಅಪ್ಲಿಕೇಶನ್‍‍ಗಳು ಮತ್ತು ಖಾತೆಗಳಿಗೆ ನೀವು ಮಾಡುವ ಬದಲಾವಣೆಗಳು, ವೆಬ್, ನಿಮ್ಮ ಇತರೆ ಸಾಧನಗಳು, ಮತ್ತು ನಿಮ್ಮ <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> ನ ಮದ್ಯ ಸಿಂಕ್ರೊನೈಜ್ ಆಗುತ್ತವೆ."</string>

@@ -389,11 +389,6 @@
     <string name="folder_icon_desc" msgid="6272938864914794739">"Папка сүрөтчөсү"</string>
     <string name="add_account" msgid="5905863370226612377">"Каттоо эсебин кошуу"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Кеңешти этибарга албоо"</string>
-    <string name="auto_sync_off" msgid="3664082916022670831">"Авто-шайкештештирүү өчүрүлгөн."</string>
-    <string name="tap_to_enable_sync" msgid="30588010316606899">"Күйгүзүү үчүн тийип коюңуз."</string>
-    <string name="account_sync_off" msgid="1351286883806741348">"Каттоо эсебинин шайкештештирилүүсү өчүрүлгөн."</string>
-    <string name="enable_sync_in_account_settings" msgid="2596841920743507047">"<xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g> ичинен күйгүзүү."</string>
-    <string name="account_settings_param" msgid="3649244241101156660">"Каттоо эсебинин жөндөөлөрү"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="OUTBOX">%2$s</xliff:g> ичинен <xliff:g id="NUMBER">%1$s</xliff:g> жөнөтүлө элек"</string>
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"Авто-шайкештештирүү күйгүзүлсүнбү?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Gmail\'де гана эмес, бардык колдонмолордо жана каттоо эсептеринде жасалган өзгөртүүлөр желе, башка түзмөктөр жана сиздин <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> ортолорунда шайкештештирилет."</string>
