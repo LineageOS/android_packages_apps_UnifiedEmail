@@ -24,7 +24,6 @@ import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.text.style.CharacterStyle;
 import android.util.LruCache;
 import android.util.Pair;
 
@@ -119,21 +118,20 @@ public class ConversationItemViewModel {
     private String mContentDescription;
 
     /**
-     * Email addresses corresponding to the senders/recipients that will be displayed on the top
-     * line; used to generate the conversation icon.
+     * The email address and name of the sender whose avatar will be drawn as a conversation icon.
      */
-    public ArrayList<String> displayableEmails;
+    public final SenderAvatarModel mSenderAvatarModel = new SenderAvatarModel();
 
     /**
      * Display names corresponding to the email address for the senders/recipients that will be
      * displayed on the top line.
      */
-    public ArrayList<String> displayableNames;
+    public final ArrayList<String> displayableNames = new ArrayList<>();
 
     /**
      * A styled version of the {@link #displayableNames} to be displayed on the top line.
      */
-    public ArrayList<SpannableString> styledNames;
+    public final ArrayList<SpannableString> styledNames = new ArrayList<>();
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
@@ -316,6 +314,47 @@ public class ConversationItemViewModel {
         if (!old.equals(newUri)) {
             sCachedModelsFolder = folder;
             sConversationHeaderMap.evictAll();
+        }
+    }
+
+    /**
+     * This mutable model stores the name and email address of the sender for whom an avatar will
+     * be drawn as the conversation icon.
+     */
+    public static final class SenderAvatarModel {
+        private String mEmailAddress;
+        private String mName;
+
+        public String getEmailAddress() {
+            return mEmailAddress;
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+        /**
+         * Removes the name and email address of the participant of this avatar.
+         */
+        public void clear() {
+            populate(null, null);
+        }
+
+        /**
+         * @param name the name of the participant of this avatar
+         * @param emailAddress the email address of the participant of this avatar
+         */
+        public void populate(String name, String emailAddress) {
+            mName = name;
+            mEmailAddress = emailAddress;
+        }
+
+        /**
+         * @return <tt>true</tt> if this model does not yet contain enough data to produce an
+         *      avatar image; <tt>false</tt> otherwise
+         */
+        public boolean isNotPopulated() {
+            return mEmailAddress == null;
         }
     }
 }

@@ -112,4 +112,98 @@ public class SendersFormattingTests extends AndroidTestCase {
         assertEquals(before.firstUnreadSnippet, after.firstUnreadSnippet);
         assertEquals(before.lastSnippet, after.lastSnippet);
     }
+
+    public void testSenderAvatarIsSenderOfFirstUnreadMessage() {
+        final ConversationInfo conv = createConversationInfo();
+        conv.addParticipant(new ParticipantInfo("a", "a@a.com", 0, true));
+        conv.addParticipant(new ParticipantInfo("b", "b@b.com", 0, false));
+        conv.addParticipant(new ParticipantInfo("c", "c@c.com", 0, false));
+
+        final ArrayList<SpannableString> styledSenders = Lists.newArrayList();
+        final ArrayList<String> displayableSenderNames = Lists.newArrayList();
+        final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
+                new ConversationItemViewModel.SenderAvatarModel();
+
+        SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
+                senderAvatarModel, null, false, false);
+
+        assertEquals("b@b.com", senderAvatarModel.getEmailAddress());
+        assertEquals("b", senderAvatarModel.getName());
+    }
+
+    public void testSenderAvatarIsLastSenderIfAllMessagesAreRead() {
+        final ConversationInfo conv = createConversationInfo();
+        conv.addParticipant(new ParticipantInfo("a", "a@a.com", 0, true));
+        conv.addParticipant(new ParticipantInfo("b", "b@b.com", 0, true));
+        conv.addParticipant(new ParticipantInfo("c", "c@c.com", 0, true));
+
+        final ArrayList<SpannableString> styledSenders = Lists.newArrayList();
+        final ArrayList<String> displayableSenderNames = Lists.newArrayList();
+        final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
+                new ConversationItemViewModel.SenderAvatarModel();
+
+        SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
+                senderAvatarModel, null, false, false);
+
+        assertEquals("c@c.com", senderAvatarModel.getEmailAddress());
+        assertEquals("c", senderAvatarModel.getName());
+    }
+
+    public void testSenderAvatarIsLastSenderThatIsNotTheCurrentAccountIfAllMessagesAreRead() {
+        final ConversationInfo conv = createConversationInfo();
+        conv.addParticipant(new ParticipantInfo("a", "a@a.com", 0, true));
+        conv.addParticipant(new ParticipantInfo("b", "b@b.com", 0, true));
+        // empty name indicates it is the current account
+        conv.addParticipant(new ParticipantInfo("", "c@c.com", 0, true));
+
+        final ArrayList<SpannableString> styledSenders = Lists.newArrayList();
+        final ArrayList<String> displayableSenderNames = Lists.newArrayList();
+        final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
+                new ConversationItemViewModel.SenderAvatarModel();
+
+        SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
+                senderAvatarModel, null, false, false);
+
+        assertEquals("b@b.com", senderAvatarModel.getEmailAddress());
+        assertEquals("b", senderAvatarModel.getName());
+    }
+
+    public void testSenderAvatarIsCurrentAccountIfAllSendersAreCurrentAccount() {
+        final ConversationInfo conv = createConversationInfo();
+        // empty name indicates it is the current account
+        conv.addParticipant(new ParticipantInfo("", "a@a.com", 0, true));
+
+        final ArrayList<SpannableString> styledSenders = Lists.newArrayList();
+        final ArrayList<String> displayableSenderNames = Lists.newArrayList();
+        final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
+                new ConversationItemViewModel.SenderAvatarModel();
+
+        SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
+                senderAvatarModel, null, false, false);
+
+        assertEquals("a@a.com", senderAvatarModel.getEmailAddress());
+        assertEquals("", senderAvatarModel.getName());
+    }
+
+    /**
+     * Two senders in a thread should be kept distinct if they have unique email addresses, even if
+     * they happen to share the same name.
+     */
+    public void testSenderNamesWhenNamesMatchButEmailAddressesDiffer() {
+        final ConversationInfo conv = createConversationInfo();
+        conv.addParticipant(new ParticipantInfo("Andrew", "aholmes@awesome.com", 0, true));
+        conv.addParticipant(new ParticipantInfo("Andrew", "ajohnson@wicked.com", 0, true));
+
+        final ArrayList<SpannableString> styledSenders = Lists.newArrayList();
+        final ArrayList<String> displayableSenderNames = Lists.newArrayList();
+        final ConversationItemViewModel.SenderAvatarModel senderAvatarModel =
+                new ConversationItemViewModel.SenderAvatarModel();
+
+        SendersView.format(getContext(), conv, "", 100, styledSenders, displayableSenderNames,
+                senderAvatarModel, null, false, false);
+
+        assertEquals(2, displayableSenderNames.size());
+        assertEquals("Andrew", displayableSenderNames.get(0));
+        assertEquals("Andrew", displayableSenderNames.get(1));
+    }
 }
