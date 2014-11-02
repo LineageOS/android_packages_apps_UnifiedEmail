@@ -224,10 +224,8 @@ public class ConversationItemViewCoordinates {
     final int foldersLeft;
     final int foldersRight;
     final int foldersY;
-    final int foldersHeight;
     final Typeface foldersTypeface;
     final float foldersFontSize;
-    final int foldersTextBottomPadding;
 
     // Info icon
     final int infoIconX;
@@ -381,18 +379,13 @@ public class ConversationItemViewCoordinates {
             foldersLeft = getX(folders);
             foldersRight = foldersLeft + folders.getWidth();
             foldersY = getY(folders) + sendersTopAdjust;
-            foldersHeight = folders.getHeight();
             foldersTypeface = folders.getTypeface();
-            foldersTextBottomPadding = res
-                    .getDimensionPixelSize(R.dimen.folders_text_bottom_padding);
             foldersFontSize = folders.getTextSize();
         } else {
             foldersLeft = 0;
             foldersRight = 0;
             foldersY = 0;
-            foldersHeight = 0;
             foldersTypeface = null;
-            foldersTextBottomPadding = 0;
             foldersFontSize = 0;
         }
 
