@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:background="@drawable/folder_teaser_item_background"
+        android:background="?android:attr/selectableItemBackground"
         android:minHeight="@dimen/folder_teaser_item_height"
         style="@style/FolderTeaserPaddingEndStyle">
 
