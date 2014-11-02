@@ -45,6 +45,7 @@
     <!-- CV folder chips -->
     <dimen name="folder_cv_cell_content_padding">8dp</dimen>
     <dimen name="folder_cv_font_size">12sp</dimen>
+    <dimen name="folder_cv_vertical_offset">1dp</dimen>
 
     <dimen name="conversation_page_gutter">16dp</dimen>
     <dimen name="conversation_message_content_margin_side">16dp</dimen>
