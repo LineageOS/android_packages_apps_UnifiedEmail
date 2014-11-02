@@ -2341,7 +2341,7 @@ public class ComposeActivity extends ActionBarActivity
                     : (Intent.ACTION_SEND.equals(action)
                             || Intent.ACTION_SEND_MULTIPLE.equals(action)
                             || Intent.ACTION_SENDTO.equals(action)
-                            || shouldSave()));
+                            || isDraftDirty()));
 
         final MenuItem helpItem = menu.findItem(R.id.help_info_menu_item);
         final MenuItem sendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
@@ -2812,14 +2812,14 @@ public class ComposeActivity extends ActionBarActivity
      */
     public void updateSaveUi() {
         if (mSave != null) {
-            mSave.setEnabled((shouldSave() && !isBlank()));
+            mSave.setEnabled((isDraftDirty() && !isBlank()));
         }
     }
 
     /**
-     * Returns true if we need to save the current draft.
+     * Returns true if the current draft is modified from the version we previously saved.
      */
-    private boolean shouldSave() {
+    private boolean isDraftDirty() {
         synchronized (mDraftLock) {
             // The message should only be saved if:
             // It hasn't been sent AND
@@ -3663,9 +3663,15 @@ public class ComposeActivity extends ActionBarActivity
     }
 
     private void doDiscard() {
-        final DialogFragment frag = new DiscardConfirmDialogFragment();
-        frag.show(getFragmentManager(), "discard confirm");
+        // Only need to ask for confirmation if the draft is in a dirty state.
+        if (isDraftDirty()) {
+            final DialogFragment frag = new DiscardConfirmDialogFragment();
+            frag.show(getFragmentManager(), "discard confirm");
+        } else {
+            doDiscardWithoutConfirmation();
+        }
     }
+
     /**
      * Effectively discard the current message.
      *
@@ -3707,7 +3713,7 @@ public class ComposeActivity extends ActionBarActivity
             return;
         }
 
-        if (shouldSave()) {
+        if (isDraftDirty()) {
             doSave(!mAddingAttachment /* show toast */);
         }
     }
