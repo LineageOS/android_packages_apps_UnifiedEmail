@@ -21,8 +21,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
-import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -33,7 +31,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -58,7 +55,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.SparseArray;
 import android.util.TypedValue;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +81,6 @@ import com.android.mail.ui.DividedImageCanvas.InvalidateCallback;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.SwipeableListView;
-import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.HardwareLayerEnabler;
 import com.android.mail.utils.LogTag;
@@ -193,8 +188,6 @@ public class ConversationItemView extends View
     private boolean mStarEnabled;
     private boolean mSwipeEnabled;
     private boolean mDividerEnabled;
-    private int mLastTouchX;
-    private int mLastTouchY;
     private AnimatedAdapter mAdapter;
     private float mAnimatedHeightFraction = 1.0f;
     private final String mAccount;
@@ -1511,26 +1504,13 @@ public class ConversationItemView extends View
         setBackgroundResource(background);
     }
 
-    /**
-     * Toggle the check mark on this view and update the conversation or begin
-     * drag, if drag is enabled.
-     */
-    @Override
-    public boolean toggleSelectedStateOrBeginDrag() {
-        ViewMode mode = mActivity.getViewMode();
-        if (mTabletDevice && mode.isListMode()) {
-            return beginDragMode();
-        } else {
-            return toggleSelectedState("long_press");
-        }
-    }
-
     @Override
     public boolean toggleSelectedState() {
         return toggleSelectedState(null);
     }
 
-    private boolean toggleSelectedState(final String sourceOpt) {
+    @Override
+    public boolean toggleSelectedState(final String sourceOpt) {
         if (mHeader != null && mHeader.conversation != null && mSelectedConversationSet != null) {
             mSelected = !mSelected;
             setSelected(mSelected);
@@ -1681,8 +1661,6 @@ public class ConversationItemView extends View
 
         int x = (int) event.getX();
         int y = (int) event.getY();
-        mLastTouchX = x;
-        mLastTouchY = y;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (isTouchInContactPhoto(x, y) || isTouchInInfoIcon(x, y) || isTouchInStar(x, y)) {
@@ -1733,8 +1711,6 @@ public class ConversationItemView extends View
         Utils.traceBeginSection("on touch event");
         int x = (int) event.getX();
         int y = (int) event.getY();
-        mLastTouchX = x;
-        mLastTouchY = y;
         if (!mSwipeEnabled) {
             Utils.traceEndSection();
             return onTouchEventNoSwipe(event);
@@ -1924,99 +1900,6 @@ public class ConversationItemView extends View
     @Override
     public SwipeableView getSwipeableView() {
         return SwipeableView.from(this);
-    }
-
-    /**
-     * Begin drag mode. Keep the conversation selected (NOT toggle selection) and start drag.
-     */
-    private boolean beginDragMode() {
-        if (mLastTouchX < 0 || mLastTouchY < 0 ||  mSelectedConversationSet == null) {
-            return false;
-        }
-        // If this is already checked, don't bother unchecking it!
-        if (!mSelected) {
-            toggleSelectedState();
-        }
-
-        // Clip data has form: [conversations_uri, conversationId1,
-        // maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]
-        final int count = mSelectedConversationSet.size();
-        String description = Utils.formatPlural(mContext, R.plurals.move_conversation, count);
-
-        final ClipData data = ClipData.newUri(mContext.getContentResolver(), description,
-                Conversation.MOVE_CONVERSATIONS_URI);
-        for (Conversation conversation : mSelectedConversationSet.values()) {
-            data.addItem(new Item(String.valueOf(conversation.position)));
-        }
-        // Protect against non-existent views: only happens for monkeys
-        final int width = this.getWidth();
-        final int height = this.getHeight();
-        final boolean isDimensionNegative = (width < 0) || (height < 0);
-        if (isDimensionNegative) {
-            LogUtils.e(LOG_TAG, "ConversationItemView: dimension is negative: "
-                        + "width=%d, height=%d", width, height);
-            return false;
-        }
-        mActivity.startDragMode();
-        // Start drag mode
-        startDrag(data, new ShadowBuilder(this, count, mLastTouchX, mLastTouchY), null, 0);
-
-        return true;
-    }
-
-    /**
-     * Handles the drag event.
-     *
-     * @param event the drag event to be handled
-     */
-    @Override
-    public boolean onDragEvent(DragEvent event) {
-        switch (event.getAction()) {
-            case DragEvent.ACTION_DRAG_ENDED:
-                mActivity.stopDragMode();
-                return true;
-        }
-        return false;
-    }
-
-    private class ShadowBuilder extends DragShadowBuilder {
-        private final Drawable mBackground;
-
-        private final View mView;
-        private final String mDragDesc;
-        private final int mTouchX;
-        private final int mTouchY;
-        private int mDragDescX;
-        private int mDragDescY;
-
-        public ShadowBuilder(View view, int count, int touchX, int touchY) {
-            super(view);
-            mView = view;
-            mBackground = mView.getResources().getDrawable(R.drawable.list_pressed_holo);
-            mDragDesc = Utils.formatPlural(mView.getContext(), R.plurals.move_conversation, count);
-            mTouchX = touchX;
-            mTouchY = touchY;
-        }
-
-        @Override
-        public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
-            final int width = mView.getWidth();
-            final int height = mView.getHeight();
-
-            sPaint.setTextSize(mCoordinates.subjectFontSize);
-            mDragDescX = mCoordinates.sendersX;
-            mDragDescY = (height - (int) mCoordinates.subjectFontSize) / 2 ;
-            shadowSize.set(width, height);
-            shadowTouchPoint.set(mTouchX, mTouchY);
-        }
-
-        @Override
-        public void onDrawShadow(Canvas canvas) {
-            mBackground.setBounds(0, 0, mView.getWidth(), mView.getHeight());
-            mBackground.draw(canvas);
-            sPaint.setTextSize(mCoordinates.subjectFontSize);
-            canvas.drawText(mDragDesc, mDragDescX, mDragDescY - sPaint.ascent(), sPaint);
-        }
     }
 
     @Override

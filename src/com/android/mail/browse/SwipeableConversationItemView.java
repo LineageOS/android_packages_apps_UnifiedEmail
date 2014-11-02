@@ -84,8 +84,8 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
     }
 
     @Override
-    public boolean toggleSelectedStateOrBeginDrag() {
-        return mConversationItemView.toggleSelectedStateOrBeginDrag();
+    public boolean toggleSelectedState(String sourceForAnalytics) {
+        return mConversationItemView.toggleSelectedState(sourceForAnalytics);
     }
 
     @Override

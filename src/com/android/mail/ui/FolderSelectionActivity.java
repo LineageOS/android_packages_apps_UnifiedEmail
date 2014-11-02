@@ -27,7 +27,6 @@ import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,7 +38,6 @@ import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
-import com.android.mail.providers.SearchRecentSuggestionsProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MailObservable;
@@ -346,16 +344,6 @@ public class FolderSelectionActivity extends ActionBarActivity implements OnClic
     }
 
     @Override
-    public boolean supportsDrag(DragEvent event, Folder folder) {
-        return false;
-    }
-
-    @Override
-    public void handleDrop(DragEvent event, Folder folder) {
-        // Do nothing.
-    }
-
-    @Override
     public void onUndoAvailable(ToastBarOperation undoOp) {
         // Do nothing.
     }
@@ -406,16 +394,6 @@ public class FolderSelectionActivity extends ActionBarActivity implements OnClic
 
     @Override
     public void onFooterViewLoadMoreClick(Folder folder) {
-        // Unsupported
-    }
-
-    @Override
-    public void startDragMode() {
-        // Unsupported
-    }
-
-    @Override
-    public void stopDragMode() {
         // Unsupported
     }
 
