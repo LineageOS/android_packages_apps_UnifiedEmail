@@ -74,13 +74,11 @@ public class Account implements Parcelable {
     /**
      * Account type. MUST MATCH SYSTEM ACCOUNT MANAGER TYPE
      */
-
     private final String type;
 
     /**
      * Cached android.accounts.Account based on the above two values
      */
-
     private android.accounts.Account amAccount;
 
     /**
@@ -173,10 +171,12 @@ public class Account implements Parcelable {
     public final Uri composeIntentUri;
 
     public final String mimeType;
+
     /**
      * URI for recent folders for this account.
      */
     public final Uri recentFolderListUri;
+
     /**
      * The color used for this account in combined view (Email)
      */
@@ -185,6 +185,7 @@ public class Account implements Parcelable {
      * URI for default recent folders for this account, if any.
      */
     public final Uri defaultRecentFolderListUri;
+
     /**
      * Settings object for this account.
      */
@@ -564,6 +565,13 @@ public class Account implements Parcelable {
      */
     public boolean isAccountReady() {
         return !isAccountInitializationRequired() && !isAccountSyncRequired();
+    }
+
+    /**
+     * @return The account manager account type.
+     */
+    public String getType() {
+        return type;
     }
 
     protected Account(Parcel in, ClassLoader loader) {
