@@ -268,9 +268,15 @@ public final class OnePaneController extends AbstractActivityController {
         mConversationListNeverShown = false;
     }
 
+    /**
+     * Override showConversation with animation parameter so that we animate in the pager when
+     * selecting in the conversation, but don't animate on opening the app from an intent.
+     * @param conversation
+     * @param shouldAnimate true if we want to animate the conversation in, false otherwise
+     */
     @Override
-    protected void showConversation(Conversation conversation) {
-        super.showConversation(conversation);
+    protected void showConversation(Conversation conversation, boolean shouldAnimate) {
+        super.showConversation(conversation, shouldAnimate);
 
         mConversationListVisible = false;
         if (conversation == null) {
@@ -285,7 +291,7 @@ public final class OnePaneController extends AbstractActivityController {
         }
 
         mPagerController.show(mAccount, mFolder, conversation, true /* changeVisibility */,
-                mPagerAnimationListener);
+                shouldAnimate? mPagerAnimationListener : null);
         onConversationVisibilityChanged(true);
         onConversationListVisibilityChanged(false);
     }
