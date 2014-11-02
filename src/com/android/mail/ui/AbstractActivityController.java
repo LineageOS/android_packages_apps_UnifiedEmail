@@ -70,6 +70,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.ConversationItemViewModel;
 import com.android.mail.browse.ConversationMessage;
+import com.android.mail.browse.ConversationPagerAdapter;
 import com.android.mail.browse.ConversationPagerController;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.SyncErrorDialogFragment;
@@ -464,7 +465,7 @@ public abstract class AbstractActivityController implements ActivityController,
     /** A wait fragment we added, if any. */
     private WaitFragment mWaitFragment;
     /** True if we have results from a search query */
-    private boolean mHaveSearchResults = false;
+    protected boolean mHaveSearchResults = false;
     /** If a confirmation dialog is being show, the listener for the positive action. */
     private OnClickListener mDialogListener;
     /**
@@ -536,6 +537,19 @@ public abstract class AbstractActivityController implements ActivityController,
         mIsTablet = Utils.useTabletUI(r);
         mConversationListLoadFinishedIgnored = false;
     }
+
+    @Override
+    public final String toString() {
+        final StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("{");
+        sb.append("mCurrentConversation=");
+        sb.append(mCurrentConversation);
+        appendToString(sb);
+        sb.append("}");
+        return sb.toString();
+    }
+
+    protected void appendToString(StringBuilder sb) {}
 
     public Account getCurrentAccount() {
         return mAccount;
@@ -1279,7 +1293,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * {@inheritDoc}
      */
     @Override
-    public boolean onCreate(Bundle savedState) {
+    public void onCreate(Bundle savedState) {
         initializeActionBar();
         initializeDevLoggingService();
         // Allow shortcut keys to function for the ActionBar and menus.
@@ -1351,7 +1365,6 @@ public abstract class AbstractActivityController implements ActivityController,
         // Create the accounts loader; this loads the account switch spinner.
         mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, Bundle.EMPTY,
                 mAccountCallbacks);
-        return true;
     }
 
     /**
@@ -1756,9 +1769,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void markConversationMessagesUnread(final Conversation conv,
             final Set<Uri> unreadMessageUris, final byte[] originalConversationInfo) {
-        // The only caller of this method is the conversation view, from where marking unread should
-        // *always* take you back to list mode.
-        showConversation(null);
+        onPreMarkUnread();
 
         // locally mark conversation unread (the provider is supposed to propagate message unread
         // to conversation unread)
@@ -1777,6 +1788,18 @@ public abstract class AbstractActivityController implements ActivityController,
             LogUtils.d(LOG_TAG, "markConversationMessagesUnread(id=%d), performing", conv.id);
             doMarkConversationMessagesUnread(conv, unreadMessageUris, originalConversationInfo);
         }
+    }
+
+    /**
+     * Hook to do stuff before actually marking a conversation unread (only called from within
+     * conversation view). Most configurations do the default behavior of popping out of
+     * CV to go back to TL.
+     *
+     */
+    protected void onPreMarkUnread() {
+        // The only caller of this method is the conversation view, from where marking unread should
+        // take you back to list mode in most cases. Two-pane view is the exception.
+        showConversation(null);
     }
 
     private void doMarkConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
@@ -1833,6 +1856,24 @@ public abstract class AbstractActivityController implements ActivityController,
                     }
                 }
             }.run(mResolver, authority, ops);
+        }
+    }
+
+    /**
+     * Mark a single conversation 'seen', which is a combination of 'viewed' and 'read'. In some
+     * configurations (peek mode), this operation may be prevented and the method will return false.
+     *
+     * @param conv the conversation to mark seen
+     * @return true if the operation was a success
+     */
+    @Override
+    public boolean markConversationSeen(Conversation conv) {
+        if (isCurrentConversationJustPeeking()) {
+            LogUtils.i(LOG_TAG, "AAC is in peek mode, not marking seen. conv=%s", conv);
+            return false;
+        } else {
+            markConversationsRead(Arrays.asList(conv), true /* read */, true /* viewed */);
+            return true;
         }
     }
 
@@ -1964,16 +2005,28 @@ public abstract class AbstractActivityController implements ActivityController,
             final int autoAdvance = (autoAdvanceSetting == AutoAdvance.UNSET) ?
                     AutoAdvance.DEFAULT : autoAdvanceSetting;
 
-            final Conversation next = mTracker.getNextConversation(autoAdvance, target);
-            LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
             // Set mAutoAdvanceOp *before* showConversation() to ensure that it runs when the
             // transition doesn't run (i.e. it "completes" immediately).
             mAutoAdvanceOp = operation;
-            showConversation(next);
+            doShowNextConversation(target, autoAdvance);
             return (mAutoAdvanceOp == null);
         }
 
         return true;
+    }
+
+    /**
+     * Do the actual work of selecting a next conversation to show and showing it. Two-pane
+     * overrides this in landscape to prefer peeking rather than staring at an empty CV pane when
+     * auto-advance=LIST.
+     *
+     * @param target conversations being destroyed, of which the current convo is one
+     * @param autoAdvance auto-advance pref value
+     */
+    protected void doShowNextConversation(Collection<Conversation> target, int autoAdvance) {
+        final Conversation next = mTracker.getNextConversation(autoAdvance, target);
+        LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
+        showConversation(next);
     }
 
     @Override
@@ -2105,8 +2158,8 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return mActionBarController.onPrepareOptionsMenu(menu);
+    public void onPrepareOptionsMenu(Menu menu) {
+        mActionBarController.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -2348,12 +2401,7 @@ public abstract class AbstractActivityController implements ActivityController,
         if (savedState.containsKey(SAVED_CONVERSATION)) {
             // Open the conversation.
             final Conversation conversation = savedState.getParcelable(SAVED_CONVERSATION);
-            if (conversation != null && conversation.position < 0) {
-                // Set the position to 0 on this conversation, as we don't know where it is
-                // in the list
-                conversation.position = 0;
-            }
-            showConversation(conversation);
+            restoreConversation(conversation);
         }
 
         if (savedState.containsKey(SAVED_TOAST_BAR_OP)) {
@@ -2480,7 +2528,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * Returns true if we should enter conversation mode with search.
      */
     protected final boolean shouldEnterSearchConvMode() {
-        return mHaveSearchResults && Utils.showTwoPaneSearchResults(mActivity.getActivityContext());
+        return mHaveSearchResults && shouldShowFirstConversation();
     }
 
     /**
@@ -2501,6 +2549,15 @@ public abstract class AbstractActivityController implements ActivityController,
 
         // putAll will take care of calling our registered onSetPopulated method
         mCheckedSet.putAll(selectedSet);
+    }
+
+    protected void restoreConversation(Conversation conversation) {
+        if (conversation != null && conversation.position < 0) {
+            // Set the position to 0 on this conversation, as we don't know where it is
+            // in the list
+            conversation.position = 0;
+        }
+        showConversation(conversation);
     }
 
     /**
@@ -2657,6 +2714,22 @@ public abstract class AbstractActivityController implements ActivityController,
             mActionBarController.setCurrentConversation(mCurrentConversation);
             mActivity.invalidateOptionsMenu();
         }
+    }
+
+    /**
+     * Invoked by {@link ConversationPagerAdapter} when a new page in the ViewPager is selected.
+     *
+     * @param conversation the conversation of the now currently visible fragment
+     *
+     */
+    @Override
+    public void onConversationViewSwitched(Conversation conversation) {
+        setCurrentConversation(conversation);
+    }
+
+    @Override
+    public boolean isCurrentConversationJustPeeking() {
+        return false;
     }
 
     /**
@@ -3122,7 +3195,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     mConversationListCursor, getConversationListFragment().getAnimatedAdapter());
         }
         mTracker.onCursorUpdated();
-        perhapsShowFirstSearchResult();
+        perhapsShowFirstConversation();
     }
 
     @Override
@@ -3374,7 +3447,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 // check and inform the cursor of the change in visibility here.
                 informCursorVisiblity(true);
             }
-            perhapsShowFirstSearchResult();
+            perhapsShowFirstConversation();
         }
 
         @Override
@@ -3673,20 +3746,11 @@ public abstract class AbstractActivityController implements ActivityController,
 
     /**
      * Updates controller state based on search results and shows first conversation if required.
+     * Be sure to call the super-implementation if overriding.
      */
-    private void perhapsShowFirstSearchResult() {
-        if (mCurrentConversation == null) {
-            // Shown for search results in two-pane mode only.
-            mHaveSearchResults = Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
-                    && mConversationListCursor.getCount() > 0;
-            if (!shouldShowFirstConversation()) {
-                return;
-            }
-            mConversationListCursor.moveToPosition(0);
-            final Conversation conv = new Conversation(mConversationListCursor);
-            conv.position = 0;
-            onConversationSelected(conv, true /* checkSafeToModifyFragments */);
-        }
+    protected void perhapsShowFirstConversation() {
+        mHaveSearchResults = Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
+                && mConversationListCursor.getCount() > 0;
     }
 
     /**

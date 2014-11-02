@@ -169,7 +169,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public boolean onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         mDrawerContainer = (DrawerLayout) mActivity.findViewById(R.id.drawer_container);
         mDrawerContainer.setDrawerTitle(Gravity.START,
                 mActivity.getActivityContext().getString(R.string.drawer_title));
@@ -182,7 +182,7 @@ public final class OnePaneController extends AbstractActivityController {
         mActivity.findViewById(R.id.conversation_pager).setVisibility(View.GONE);
 
         // The parent class sets the correct viewmode and starts the application off.
-        return super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -222,12 +222,9 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder(super.toString());
+    protected void appendToString(StringBuilder sb) {
         sb.append(" lastConvListTransId=");
         sb.append(mLastConversationListTransactionId);
-        sb.append("}");
-        return sb.toString();
     }
 
     @Override
@@ -562,8 +559,4 @@ public final class OnePaneController extends AbstractActivityController {
         // Do nothing
     }
 
-    @Override
-    public boolean isCurrentConversationJustPeeking() {
-        return false;
-    }
 }
