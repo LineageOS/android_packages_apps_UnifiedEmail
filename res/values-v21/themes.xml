@@ -5,7 +5,7 @@
         <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Material.Light.ListView</item>
         <!-- ActionBar color -->
-        <item name="android:colorPrimary">@color/actionbar_color</item>
+        <item name="android:colorPrimary">@color/primary_color</item>
         <!-- Used by the StatusBar and NavBar (currently broken?) -->
         <item name="android:colorPrimaryDark">@color/primary_dark_color</item>
         <item name="android:colorAccent">@color/accent_blue</item>
