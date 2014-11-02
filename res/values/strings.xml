@@ -580,9 +580,6 @@
         <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> unread</item>
     </plurals>
 
-    <!-- Displayed in the actionbar when unread count > 99. [CHAR LIMIT=30] -->
-    <string name="actionbar_large_unread_count"><xliff:g id="count">%1$d</xliff:g>+ unread</string>
-
     <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
     <string name="view_more_conversations">View more conversations</string>
 
