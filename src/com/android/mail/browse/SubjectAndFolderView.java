@@ -152,8 +152,8 @@ public class SubjectAndFolderView extends TextView
             ConversationViewHeaderCallbacks callbacks, Account account, Conversation conv) {
         mVisibleFolders = true;
         final BidiFormatter bidiFormatter = getBidiFormatter();
-        final SpannableStringBuilder sb =
-                new SpannableStringBuilder(bidiFormatter.unicodeWrap(mSubject));
+        final String wrappedSubject = mSubject == null ? "" : bidiFormatter.unicodeWrap(mSubject);
+        final SpannableStringBuilder sb = new SpannableStringBuilder(wrappedSubject);
         sb.append('\u0020');
         final Settings settings = account.settings;
         final int start = sb.length();
