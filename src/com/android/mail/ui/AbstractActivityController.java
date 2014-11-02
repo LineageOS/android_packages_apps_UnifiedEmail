@@ -1983,7 +1983,7 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
 
-        msg.starred = starred;
+        msg.setStarredInConversation(starred);
 
         // locally propagate the change to the owning conversation
         // (figure the provider will properly propagate the change when it commits it)

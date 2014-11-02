@@ -94,6 +94,21 @@ public final class ConversationMessage extends Message {
         return c != null && c.isConversationStarred();
     }
 
+    /**
+     * Sets the starred state of this Message object and also updates the cached instance in
+     * {@link MessageCursor} (if not null)
+     *
+     * @param starred new starred state
+     */
+    public void setStarredInConversation(boolean starred) {
+        this.starred = starred;
+        final MessageCursor c = mController.getMessageCursor();
+        if (c != null) {
+            final ConversationMessage other = c.getMessageForId(id);
+            other.starred = starred;
+        }
+    }
+
     public void star(boolean newStarred) {
         final ConversationUpdater listController = mController.getListController();
         if (listController != null) {
