@@ -57,7 +57,6 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
     protected SearchRecentSuggestionsProvider mSuggestionsProvider;
 
-    protected View mSearchActionViewShadow;
     protected MaterialSearchActionView mSearchActionView;
     protected MaterialSearchSuggestionsList mSearchSuggestionList;
 
@@ -84,7 +83,6 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
                 R.id.search_actionbar_view);
         mSearchActionView.setController(this, intent.getStringExtra(
                 ConversationListContext.EXTRA_SEARCH_QUERY), supportVoice);
-        mSearchActionViewShadow = mActivity.findViewById(R.id.search_actionbar_shadow);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_VIEW_STATE)) {
             mViewState = savedInstanceState.getInt(EXTRA_VIEW_STATE);
@@ -137,7 +135,6 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
                 // Only actionbar is only applicable in search mode
                 if (mController.shouldShowSearchBarByDefault()) {
                     mSearchActionView.setVisibility(View.VISIBLE);
-                    mSearchActionViewShadow.setVisibility(View.VISIBLE);
                     mSearchSuggestionList.setVisibility(View.GONE);
                     mSearchActionView.focusSearchBar(false);
                     break;
@@ -146,7 +143,6 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
             case MaterialSearchViewController.SEARCH_VIEW_STATE_GONE:
                 mSearchActionView.focusSearchBar(false);
                 mSearchActionView.setVisibility(View.GONE);
-                mSearchActionViewShadow.setVisibility(View.GONE);
                 mSearchSuggestionList.setVisibility(View.GONE);
                 // For non-search view mode, clear the query term for search
                 if (!ViewMode.isSearchMode(mViewMode)) {
@@ -155,7 +151,6 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
                 break;
             case MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE:
                 mSearchActionView.setVisibility(View.VISIBLE);
-                mSearchActionViewShadow.setVisibility(View.VISIBLE);
                 mSearchSuggestionList.setVisibility(View.VISIBLE);
                 mSearchActionView.focusSearchBar(true);
                 break;
