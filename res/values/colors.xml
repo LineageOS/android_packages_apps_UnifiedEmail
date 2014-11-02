@@ -62,7 +62,6 @@
     <color name="compose_label_text">@color/text_color_grey</color>
     <color name="compose_user_text">@color/text_color_black</color>
     <color name="compose_label_hint">@color/text_color_hint_grey</color>
-    <color name="compose_divider_color">@color/light_gray</color>
     <string name="quoted_text_font_color_string" translatable="false">@color/text_color_grey</string>
 
     <color name="conv_header_add_label_text">@android:color/black</color>
@@ -146,9 +145,10 @@
     <!-- The color of the icon background in the teaser -->
     <color name="folder_teaser_icon_background">#eeeeee</color>
 
-    <color name="vacation_responder_foreground">@android:color/white</color>
-    <color name="vacation_responder_background">#ffe9e9e9</color>
-    <color name="vacation_responder_spinner_text">#333333</color>
+    <color name="vacation_responder_view_background">@android:color/white</color>
+    <color name="vacation_responder_window_background">#ffe9e9e9</color>
+    <color name="vacation_responder_header_text_color">@color/text_color_grey</color>
+    <color name="vacation_responder_main_text_color">@color/text_color_black</color>
 
     <!-- Swipe refresh progress bar colors -->
     <color name="swipe_refresh_color1">#ff0f9d58</color>
