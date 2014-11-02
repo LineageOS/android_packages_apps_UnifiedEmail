@@ -1344,6 +1344,9 @@ public class NotificationUtils {
         // in the combined notification and add each one as a person.
         if (contactFetcher != null) {
             for (final String sender : sendersList) {
+                if (TextUtils.isEmpty(sender)) {
+                    continue;
+                }
                 final Uri contactLookupUri =
                         contactFetcher.getContactLookupUri(context,
                                 accountName, sender);
