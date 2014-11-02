@@ -26,16 +26,20 @@
         android:id="@+id/search_overlay_item_icon"
         android:layout_width="@dimen/search_leading_button_width"
         android:layout_height="wrap_content"
-        style="@style/SearchViewLeadingButton" />
+        android:paddingLeft="@dimen/search_button_padding"
+        android:paddingRight="@dimen/search_button_padding"
+        android:scaleType="center" />
 
     <TextView
         android:id="@+id/search_overlay_item_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_vertical|start"
         android:layout_weight="1"
+        android:paddingLeft="@dimen/search_main_text_padding"
+        android:paddingRight="@dimen/search_main_text_padding"
+        android:textAlignment="viewStart"
         android:textColor="@color/search_suggestion_item_text"
-        android:textSize="16sp"
-        style="@style/SearchSuggestionTextStyle" />
+        android:textSize="16sp" />
 
 </LinearLayout>
