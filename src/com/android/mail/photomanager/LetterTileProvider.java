@@ -74,7 +74,7 @@ public class LetterTileProvider {
         mPaint.setAntiAlias(true);
         mBitmapBackgroundCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
 
-        mDefaultBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_anonymous_avatar_48dp);
+        mDefaultBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_anonymous_avatar_40dp);
         mDefaultBitmapCache = new Bitmap[POSSIBLE_BITMAP_SIZES];
 
         mTileColorPicker = colorPicker;
