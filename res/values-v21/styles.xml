@@ -29,12 +29,18 @@
 
     <style name="MinTimeProgressDialogStyleBase" parent="@android:style/Theme.Material.Light.Dialog" />
 
-    <style name="MessageButtonStyleBase" parent="android:Widget.Material.Button.Borderless" />
+    <style name="MessageButtonStyleBase" parent="android:Widget.Material.Button.Borderless">
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
 
     <style name="AbstractVacationResponderDateSpinnerBase"
            parent="android:Widget.Material.Light.Spinner" />
 
     <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextViewStyleBase">
         <item name="android:popupElevation">0dp</item>
+    </style>
+
+    <style name="BorderlessBackground">
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 </resources>

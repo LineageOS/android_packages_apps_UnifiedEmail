@@ -41,9 +41,9 @@
         android:layout_width="@dimen/conversation_header_star_size"
         android:layout_height="@dimen/conversation_header_star_size"
         android:layout_gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground"
         android:scaleType="center"
         android:visibility="invisible"
-        android:src="@drawable/star" />
+        android:src="@drawable/star"
+        style="@style/BorderlessBackground" />
 
 </com.android.mail.browse.ConversationViewHeader>
