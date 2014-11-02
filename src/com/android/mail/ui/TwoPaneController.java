@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -413,10 +412,12 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    public final void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
+    public void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
         super.onConversationSelected(conversation, inLoaderCallbacks);
-        // Shift the focus to the conversation in landscape mode
-        mPagerController.focusPager();
+        if (!mCurrentConversationJustPeeking) {
+            // Shift the focus to the conversation in landscape mode.
+            mPagerController.focusPager();
+        }
     }
 
     @Override
