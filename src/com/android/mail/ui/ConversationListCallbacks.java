@@ -124,4 +124,9 @@ public interface ConversationListCallbacks {
      *            {@link #CONVERSATION_LIST_SCROLL_POSITION_OFFSET}
      */
     void setConversationListScrollPosition(String folderUri, Parcelable savedPosition);
+
+    /**
+     * Is the user peeking the current conversation or actually viewing it.
+     */
+    boolean isCurrentConversationJustPeeking();
 }

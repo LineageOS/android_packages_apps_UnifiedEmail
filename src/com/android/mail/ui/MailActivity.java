@@ -351,8 +351,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public ConversationSelectionSet getSelectedSet() {
-        return mController.getSelectedSet();
+    public ConversationCheckedSet getCheckedSet() {
+        return mController.getCheckedSet();
     }
 
     @Override

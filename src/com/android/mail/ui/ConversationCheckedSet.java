@@ -42,23 +42,23 @@ import java.util.Set;
  * class <b>does not allow modifications</b> to the collection in observers when
  * responding to change events.
  */
-public class ConversationSelectionSet implements Parcelable {
-    public static final ClassLoaderCreator<ConversationSelectionSet> CREATOR =
-            new ClassLoaderCreator<ConversationSelectionSet>() {
+public class ConversationCheckedSet implements Parcelable {
+    public static final ClassLoaderCreator<ConversationCheckedSet> CREATOR =
+            new ClassLoaderCreator<ConversationCheckedSet>() {
 
         @Override
-        public ConversationSelectionSet createFromParcel(Parcel source) {
-            return new ConversationSelectionSet(source, null);
+        public ConversationCheckedSet createFromParcel(Parcel source) {
+            return new ConversationCheckedSet(source, null);
         }
 
         @Override
-        public ConversationSelectionSet createFromParcel(Parcel source, ClassLoader loader) {
-            return new ConversationSelectionSet(source, loader);
+        public ConversationCheckedSet createFromParcel(Parcel source, ClassLoader loader) {
+            return new ConversationCheckedSet(source, loader);
         }
 
         @Override
-        public ConversationSelectionSet[] newArray(int size) {
-            return new ConversationSelectionSet[size];
+        public ConversationCheckedSet[] newArray(int size) {
+            return new ConversationCheckedSet[size];
         }
 
     };
@@ -75,11 +75,11 @@ public class ConversationSelectionSet implements Parcelable {
     /**
      * Create a new object,
      */
-    public ConversationSelectionSet() {
+    public ConversationCheckedSet() {
         // Do nothing.
     }
 
-    private ConversationSelectionSet(Parcel source, ClassLoader loader) {
+    private ConversationCheckedSet(Parcel source, ClassLoader loader) {
         Parcelable[] conversations = source.readParcelableArray(loader);
         for (Parcelable parceled : conversations) {
             Conversation conversation = (Conversation) parceled;
@@ -276,7 +276,7 @@ public class ConversationSelectionSet implements Parcelable {
      * set.
      * @see java.util.HashMap#putAll(java.util.Map)
      */
-    public void putAll(ConversationSelectionSet other) {
+    public void putAll(ConversationCheckedSet other) {
         if (other == null) {
             return;
         }

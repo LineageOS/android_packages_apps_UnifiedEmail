@@ -18,6 +18,6 @@
 package com.android.mail.browse;
 
 public interface ToggleableItem {
-    boolean toggleSelectedState(String sourceForAnalytics);
-    boolean toggleSelectedState();
+    boolean toggleCheckedState(String sourceForAnalytics);
+    boolean toggleCheckedState();
 }

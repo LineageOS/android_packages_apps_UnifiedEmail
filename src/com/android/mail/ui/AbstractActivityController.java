@@ -142,7 +142,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private static final String SAVED_FOLDER = "saved-folder";
     /** Tag for {@link #mCurrentConversation} */
     private static final String SAVED_CONVERSATION = "saved-conversation";
-    /** Tag for {@link #mSelectedSet} */
+    /** Tag for {@link #mCheckedSet} */
     private static final String SAVED_SELECTED_SET = "saved-selected-set";
     /** Tag for {@link ActionableToastBar#getOperation()} */
     private static final String SAVED_TOAST_BAR_OP = "saved-toast-bar-op";
@@ -276,7 +276,7 @@ public abstract class AbstractActivityController implements ActivityController,
     /**
      * Selected conversations, if any.
      */
-    private final ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
+    private final ConversationCheckedSet mCheckedSet = new ConversationCheckedSet();
 
     private final int mFolderItemUpdateDelayMs;
 
@@ -524,7 +524,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mTracker = new ConversationPositionTracker(this);
         // Allow the fragment to observe changes to its own selection set. No other object is
         // aware of the selected set.
-        mSelectedSet.addObserver(this);
+        mCheckedSet.addObserver(this);
 
         final Resources r = mContext.getResources();
         mFolderItemUpdateDelayMs = r.getInteger(R.integer.folder_item_refresh_delay_ms);
@@ -2035,8 +2035,8 @@ public abstract class AbstractActivityController implements ActivityController,
         // Batch selections are cleared in the end of the action, so not done for batch actions.
         if (!isBatch) {
             for (final Conversation conv : target) {
-                if (mSelectedSet.contains(conv)) {
-                    mSelectedSet.toggle(conv);
+                if (mCheckedSet.contains(conv)) {
+                    mCheckedSet.toggle(conv);
                 }
             }
         }
@@ -2111,8 +2111,8 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mCurrentConversation != null && mViewMode.isConversationMode()) {
             outState.putParcelable(SAVED_CONVERSATION, mCurrentConversation);
         }
-        if (!mSelectedSet.isEmpty()) {
-            outState.putParcelable(SAVED_SELECTED_SET, mSelectedSet);
+        if (!mCheckedSet.isEmpty()) {
+            outState.putParcelable(SAVED_SELECTED_SET, mCheckedSet);
         }
         if (mToastBar.getVisibility() == View.VISIBLE) {
             outState.putParcelable(SAVED_TOAST_BAR_OP, mToastBar.getOperation());
@@ -2462,17 +2462,17 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     private void restoreSelectedConversations(Bundle savedState) {
         if (savedState == null) {
-            mSelectedSet.clear();
+            mCheckedSet.clear();
             return;
         }
-        final ConversationSelectionSet selectedSet = savedState.getParcelable(SAVED_SELECTED_SET);
+        final ConversationCheckedSet selectedSet = savedState.getParcelable(SAVED_SELECTED_SET);
         if (selectedSet == null || selectedSet.isEmpty()) {
-            mSelectedSet.clear();
+            mCheckedSet.clear();
             return;
         }
 
         // putAll will take care of calling our registered onSetPopulated method
-        mSelectedSet.putAll(selectedSet);
+        mCheckedSet.putAll(selectedSet);
     }
 
     /**
@@ -2954,7 +2954,7 @@ public abstract class AbstractActivityController implements ActivityController,
             }
             refreshConversationList();
             if (mIsSelectedSet) {
-                mSelectedSet.clear();
+                mCheckedSet.clear();
             }
         }
 
@@ -3091,7 +3091,7 @@ public abstract class AbstractActivityController implements ActivityController,
     public final void onDataSetChanged() {
         updateConversationListFragment();
         mConversationListObservable.notifyChanged();
-        mSelectedSet.validateAgainstCursor(mConversationListCursor);
+        mCheckedSet.validateAgainstCursor(mConversationListCursor);
     }
 
     /**
@@ -3173,7 +3173,7 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void onSetPopulated(ConversationSelectionSet set) {
+    public void onSetPopulated(ConversationCheckedSet set) {
         mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set, mFolder);
         if (mViewMode.isListMode() || (mIsTablet && mViewMode.isConversationMode())) {
             enableCabMode();
@@ -3181,13 +3181,13 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void onSetChanged(ConversationSelectionSet set) {
+    public void onSetChanged(ConversationCheckedSet set) {
         // Do nothing. We don't care about changes to the set.
     }
 
     @Override
-    public ConversationSelectionSet getSelectedSet() {
-        return mSelectedSet;
+    public ConversationCheckedSet getCheckedSet() {
+        return mCheckedSet;
     }
 
     /**
@@ -3215,7 +3215,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * Re-enable CAB mode only if we have an active selection
      */
     protected void maybeEnableCabMode() {
-        if (!mSelectedSet.isEmpty()) {
+        if (!mCheckedSet.isEmpty()) {
             if (mCabActionMenu != null) {
                 mCabActionMenu.activate();
             }
@@ -3226,7 +3226,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * Unselect conversations and exit CAB mode.
      */
     protected final void exitCabMode() {
-        mSelectedSet.clear();
+        mCheckedSet.clear();
     }
 
     @Override
@@ -3704,7 +3704,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public final DestructiveAction getBatchAction(int action, UndoCallback undoCallback) {
-        final DestructiveAction da = new ConversationAction(action, mSelectedSet.values(), true);
+        final DestructiveAction da = new ConversationAction(action, mCheckedSet.values(), true);
         da.setUndoCallback(undoCallback);
         registerDestructiveAction(da);
         return da;
@@ -3712,7 +3712,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public final DestructiveAction getDeferredBatchAction(int action, UndoCallback undoCallback) {
-        return getDeferredAction(action, mSelectedSet.values(), true, undoCallback);
+        return getDeferredAction(action, mCheckedSet.values(), true, undoCallback);
     }
 
     /**
@@ -3811,7 +3811,7 @@ public abstract class AbstractActivityController implements ActivityController,
             }
             refreshConversationList();
             if (mIsSelectedSet) {
-                mSelectedSet.clear();
+                mCheckedSet.clear();
             }
         }
 
@@ -4064,7 +4064,7 @@ public abstract class AbstractActivityController implements ActivityController,
             UndoCallback undoCallback) {
         final Collection<Conversation> target;
         if (isBatch) {
-            target = mSelectedSet.values();
+            target = mCheckedSet.values();
         } else {
             LogUtils.d(LOG_TAG, "Will act upon %s", mCurrentConversation);
             target = Conversation.listOf(mCurrentConversation);

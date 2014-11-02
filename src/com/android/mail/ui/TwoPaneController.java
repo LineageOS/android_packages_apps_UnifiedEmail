@@ -27,7 +27,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.ActionBar;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
@@ -80,6 +79,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         super(activity, viewMode);
     }
 
+    @Override
     public boolean isCurrentConversationJustPeeking() {
         return mCurrentConversationJustPeeking;
     }
@@ -350,7 +350,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    public void onSetPopulated(ConversationSelectionSet set) {
+    public void onSetPopulated(ConversationCheckedSet set) {
         super.onSetPopulated(set);
 
         boolean showSenderImage =
@@ -373,6 +373,9 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
     @Override
     protected void showConversation(Conversation conversation, boolean markAsRead) {
+        // Make sure that we set the peeking flag before calling super (since some functionality
+        // in super depends on the flag.
+        mCurrentConversationJustPeeking = !markAsRead;
         super.showConversation(conversation, markAsRead);
 
         // 2-pane can ignore inLoaderCallbacks because it doesn't use
@@ -399,7 +402,6 @@ public final class TwoPaneController extends AbstractActivityController implemen
         // When a mode change is required, wait for onConversationVisibilityChanged(), the signal
         // that the mode change animation has finished, before rendering the conversation.
         mConversationToShow = conversation;
-        mCurrentConversationJustPeeking = !markAsRead;
 
         final int mode = mViewMode.getMode();
         LogUtils.i(LOG_TAG, "IN TPC.showConv, oldMode=%s conv=%s", mode, mConversationToShow);
@@ -445,7 +447,11 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null && conversation != null) {
-            convList.setSelected(conversation.position, different);
+            if (mCurrentConversationJustPeeking) {
+                convList.clearActivated();
+            } else {
+                convList.setActivated(conversation.position, different);
+            }
         }
     }
 
@@ -609,7 +615,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         }
 
         if (selectPosition >= 0) {
-            getConversationListFragment().setRawSelected(selectPosition, true);
+            getConversationListFragment().setRawActivated(selectPosition, true);
         }
     }
 
