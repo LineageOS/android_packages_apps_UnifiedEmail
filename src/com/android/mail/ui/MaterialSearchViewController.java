@@ -62,7 +62,8 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     private int mControllerState;
     private int mEndXCoordForTabletLandscape;
 
-    private boolean mWaitToDestroyProvider;
+    private boolean mSavePending;
+    private boolean mDestroyProvider;
 
     public MaterialSearchViewController(MailActivity activity, ActivityController controller,
             Intent intent, Bundle savedInstanceState) {
@@ -93,7 +94,8 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
      * This controller should not be used after this is called.
      */
     public void onDestroy() {
-        if (!mWaitToDestroyProvider) {
+        mDestroyProvider = mSavePending;
+        if (!mSavePending) {
             mSuggestionsProvider.cleanup();
         }
         mActivity.getViewMode().removeListener(this);
@@ -232,11 +234,11 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     // static asynctask to save the query in the background.
-    class SaveRecentQueryTask extends AsyncTask<String, Void, Void> {
+    private class SaveRecentQueryTask extends AsyncTask<String, Void, Void> {
 
         @Override
         protected void onPreExecute() {
-            mWaitToDestroyProvider = true;
+            mSavePending = true;
         }
 
         @Override
@@ -247,10 +249,11 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (mWaitToDestroyProvider) {
+            if (mDestroyProvider) {
                 mSuggestionsProvider.cleanup();
-                mWaitToDestroyProvider = false;
+                mDestroyProvider = false;
             }
+            mSavePending = false;
         }
     }
 }
