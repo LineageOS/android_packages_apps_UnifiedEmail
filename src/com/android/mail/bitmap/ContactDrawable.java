@@ -16,7 +16,6 @@
 package com.android.mail.bitmap;
 
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -48,6 +47,7 @@ import com.android.mail.bitmap.ContactResolver.ContactDrawableInterface;
  */
 public class ContactDrawable extends Drawable implements ContactDrawableInterface {
 
+    private final Resources mResources;
     private BitmapCache mCache;
     private ContactResolver mContactResolver;
 
@@ -56,9 +56,7 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
     private final Paint mPaint;
 
     /** Letter tile */
-    private static TypedArray sColors;
-    private static int sColorCount;
-    private static int sDefaultColor;
+    private static ColorPicker sTileColorPicker;
     private static int sTileLetterFontSize;
     private static int sTileFontColor;
     private static Bitmap DEFAULT_AVATAR;
@@ -76,6 +74,8 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
     private int mDecodeHeight;
 
     public ContactDrawable(final Resources res) {
+        mResources = res;
+
         mPaint = new Paint();
         mPaint.setFilterBitmap(true);
         mPaint.setDither(true);
@@ -95,10 +95,7 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
 
         mMatrix = new Matrix();
 
-        if (sColors == null) {
-            sColors = res.obtainTypedArray(R.array.letter_tile_colors);
-            sColorCount = sColors.length();
-            sDefaultColor = res.getColor(R.color.letter_tile_default_color);
+        if (sTileLetterFontSize == 0) {
             sTileLetterFontSize = res.getDimensionPixelSize(R.dimen.tile_letter_font_size);
             sTileFontColor = res.getColor(R.color.letter_tile_font_color);
             DEFAULT_AVATAR = BitmapFactory.decodeResource(res, R.drawable.ic_generic_man);
@@ -115,6 +112,26 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
 
     public void setContactResolver(final ContactResolver contactResolver) {
         mContactResolver = contactResolver;
+    }
+
+    /**
+     * Sets the {@link ColorPicker} for the background tile used in letter avatars.
+     * @param colorPicker
+     */
+    public static void setTileColorPicker(ColorPicker colorPicker) {
+        sTileColorPicker = colorPicker;
+    }
+
+    /**
+     * Returns the color picker for the background tile used in the letter avatars.
+     * If none was set, initializes a simple {@link ColorPicker.PaletteColorPicker} first.
+     * @return non-null color picker.
+     */
+    public ColorPicker getTileColorPicker() {
+        if (sTileColorPicker == null) {
+            sTileColorPicker = new ColorPicker.PaletteColorPicker(mResources);
+        }
+        return sTileColorPicker;
     }
 
     @Override
@@ -171,7 +188,8 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
 
         // Draw background color.
         final String email = mContactRequest.getEmail();
-        sPaint.setColor(pickColor(email));
+        // The email should already have been normalized by the ContactRequest.
+        sPaint.setColor(getTileColorPicker().pickColor(email));
         sPaint.setAlpha(mPaint.getAlpha());
         drawCircle(canvas, bounds, sPaint);
 
@@ -201,14 +219,6 @@ public class ContactDrawable extends Drawable implements ContactDrawableInterfac
      */
     private static void drawCircle(Canvas canvas, Rect bounds, Paint paint) {
         canvas.drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2, paint);
-    }
-
-    private static int pickColor(final String email) {
-        // String.hashCode() implementation is not supposed to change across java versions, so
-        // this should guarantee the same email address always maps to the same color.
-        // The email should already have been normalized by the ContactRequest.
-        final int color = Math.abs(email.hashCode()) % sColorCount;
-        return sColors.getColor(color, sDefaultColor);
     }
 
     private static boolean isEnglishLetterOrDigit(final char c) {
