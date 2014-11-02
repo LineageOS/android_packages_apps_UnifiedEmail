@@ -789,6 +789,7 @@ public class Utils {
             return;
         }
         item.setVisible(shouldShow);
+        item.setEnabled(shouldShow);
     }
 
     /**
