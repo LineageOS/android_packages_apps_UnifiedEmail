@@ -69,14 +69,20 @@ public abstract class ConversationTipView extends LinearLayout
         mShrinkAnimationDuration = resources.getInteger(
                 R.integer.shrink_animation_duration);
 
-        final AbsListView.LayoutParams params = new AbsListView.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        setLayoutParams(params);
-
         // Inflate the actual content and add it to this view
         mContent = LayoutInflater.from(mContext).inflate(getChildLayout(), this, false);
         addView(mContent);
         setupViews();
+    }
+
+    @Override
+    public ViewGroup.LayoutParams getLayoutParams() {
+        ViewGroup.LayoutParams params = super.getLayoutParams();
+        if (params != null) {
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        }
+        return params;
     }
 
     protected @LayoutRes int getChildLayout() {
