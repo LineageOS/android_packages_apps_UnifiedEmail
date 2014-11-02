@@ -22,12 +22,16 @@ import java.util.List;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
@@ -103,6 +107,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private View mFoldersView;
     private View mListView;
 
+    private final Drawable mShadowDrawable;
+    private final int mShadowMinWidth;
+
     private final List<Runnable> mTransitionCompleteJobs = Lists.newArrayList();
 
     private final PaneAnimationListener mPaneAnimationListener = new PaneAnimationListener();
@@ -118,6 +125,26 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
          */
         void onConversationListLayout(int xEnd, boolean drawerOpen);
     }
+
+    // Responsible for invalidating the shadow region only to minimize drawing overhead (and jank)
+    // Coordinated with ListView animation to ensure shadow and list slide together.
+    private final ValueAnimator.AnimatorUpdateListener mListViewAnimationListener =
+            new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    if (ViewUtils.isViewRtl(TwoPaneLayout.this)) {
+                        // Get the right edge of list and use as left edge coord for shadow
+                        final int leftEdgeCoord = (int) mListView.getX() + mListView.getWidth();
+                        invalidate(leftEdgeCoord, 0, leftEdgeCoord + mShadowMinWidth,
+                                getBottom());
+                    } else {
+                        // Get the left edge of list and use as right edge coord for shadow
+                        final int rightEdgeCoord = (int) mListView.getX();
+                        invalidate(rightEdgeCoord - mShadowMinWidth, 0, rightEdgeCoord,
+                                getBottom());
+                    }
+                }
+            };
 
     public TwoPaneLayout(Context context) {
         this(context, null);
@@ -143,6 +170,29 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         final int convViewWeight = res.getInteger(R.integer.conversation_view_weight);
         mConversationListWeight = (double) convListWeight
                 / (convListWeight + convViewWeight);
+
+        mShadowDrawable = getResources().getDrawable(R.drawable.ic_vertical_shadow_start_6dp);
+        mShadowMinWidth = mShadowDrawable.getMinimumWidth();
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        // Draw children/update the canvas first.
+        super.dispatchDraw(canvas);
+
+        if (ViewUtils.isViewRtl(this)) {
+            // Get the right edge of list and use as left edge coord for shadow
+            final int leftEdgeCoord = (int) mListView.getX() + mListView.getWidth();
+            mShadowDrawable.setBounds(leftEdgeCoord, 0, leftEdgeCoord + mShadowMinWidth,
+                    mListView.getBottom());
+        } else {
+            // Get the left edge of list and use as right edge coord for shadow
+            final int rightEdgeCoord = (int) mListView.getX();
+            mShadowDrawable.setBounds(rightEdgeCoord - mShadowMinWidth, 0, rightEdgeCoord,
+                    mListView.getBottom());
+        }
+
+        mShadowDrawable.draw(canvas);
     }
 
     @Override
@@ -209,13 +259,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     }
 
     /**
-     * Positions the three sliding panes at the correct X offset (using {@link View#setX(float)}).
+     * Positions the three sliding panes at the correct X offset (using {@link android.view.View#setX(float)}).
      * When switching from list->conversation mode or vice versa, animate the change in X.
      *
      * @param width
      */
     private void positionPanes(int width) {
-        final boolean isRtl = ViewUtils.isViewRtl(this);
         final boolean isDrawerOpen = isDrawerOpen();
 
         final int convX, listX, foldersX;
@@ -223,7 +272,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         final int foldersW = isDrawerOpen ? mDrawerWidthOpen : mDrawerWidthMini;
         final int listW = getPaneWidth(mListView);
 
+        final boolean isRtl = ViewUtils.isViewRtl(this);
         boolean cvOnScreen = true;
+
         if (!mListCollapsible) {
             if (isRtl) {
                 foldersX = width - mDrawerWidthOpen;
@@ -306,7 +357,16 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         }
 
         mFoldersView.animate().x(foldersX);
-        mListView.animate().x(listX).setListener(mPaneAnimationListener);
+
+        final ViewPropertyAnimator listAnimation =  mListView.animate()
+                .x(listX)
+                .setListener(mPaneAnimationListener);
+
+        // If we're running K+, we can use the update listener to transition the list's left shadow
+        // and set different update listeners based on rtl to avoid doing a check on every frame
+        if (Utils.isRunningKitkatOrLater()) {
+            listAnimation.setUpdateListener(mListViewAnimationListener);
+        }
 
         configureAnimations(mConversationView, mFoldersView, mListView, mMiscellaneousView);
     }
@@ -518,6 +578,19 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         @Override
         public void run() {
             onTransitionComplete();
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+            // If we're running pre-K, we don't have ViewPropertyAnimator's setUpdateListener.
+            // This is a hack to get around it and uses a dummy ValueAnimator to allow us
+            // to create an animation for the shadow along with the list view.
+            if (!Utils.isRunningKitkatOrLater()) {
+                final ValueAnimator shadowAnimator = ValueAnimator.ofFloat(0, 1);
+                shadowAnimator.setDuration(SLIDE_DURATION_MS)
+                        .addUpdateListener(mListViewAnimationListener);
+                shadowAnimator.start();
+            }
         }
 
         @Override

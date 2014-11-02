@@ -84,11 +84,11 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     public SwipeableListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setOnScrollListener(this);
         float densityScale = getResources().getDisplayMetrics().density;
         float pagingTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
         mSwipeHelper = new SwipeHelper(context, SwipeHelper.X, this, densityScale,
                 pagingTouchSlop);
+        mScrolling = false;
     }
 
     @Override
