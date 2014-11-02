@@ -139,8 +139,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    public void showConversationList(ConversationListContext listContext) {
-        super.showConversationList(listContext);
+    protected void showConversationList(ConversationListContext listContext) {
         initializeConversationListFragment();
     }
 
@@ -445,7 +444,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    public void showWaitForInitialization() {
+    protected void showWaitForInitialization() {
         super.showWaitForInitialization();
 
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
@@ -541,16 +540,6 @@ public final class TwoPaneController extends AbstractActivityController implemen
                 // There is nothing else to pop off the stack.
                 mActivity.finish();
             }
-        }
-    }
-
-    @Override
-    public void exitSearchMode() {
-        final int mode = mViewMode.getMode();
-        if (mode == ViewMode.SEARCH_RESULTS_LIST
-                || (mode == ViewMode.SEARCH_RESULTS_CONVERSATION
-                        && Utils.showTwoPaneSearchResults(mActivity.getApplicationContext()))) {
-            mActivity.finish();
         }
     }
 

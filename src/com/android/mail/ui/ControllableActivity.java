@@ -48,12 +48,6 @@ public interface ControllableActivity extends RestrictedActivity,
     ConversationListCallbacks getListHandler();
 
     /**
-     * Return the folder change listener for this activity
-     * @return
-     */
-    FolderChangeListener getFolderChangeListener();
-
-    /**
      * Get the set of currently selected conversations. This method returns a non-null value.
      * In case no conversation is currently selected, it returns an empty selection set.
      * @return
@@ -131,6 +125,4 @@ public interface ControllableActivity extends RestrictedActivity,
      * Shows help to user, could be in browser or another activity.
      */
     void showHelp(Account account, int viewMode);
-
-    SearchRecentSuggestionsProvider getSuggestionsProvider();
 }
