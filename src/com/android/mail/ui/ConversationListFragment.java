@@ -34,6 +34,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
@@ -80,7 +81,8 @@ import static android.view.View.OnKeyListener;
  */
 public final class ConversationListFragment extends Fragment implements
         OnItemLongClickListener, ModeChangeListener, ListItemSwipedListener, OnRefreshListener,
-        SwipeListener, OnKeyListener, AdapterView.OnItemClickListener, View.OnClickListener {
+        SwipeListener, OnKeyListener, AdapterView.OnItemClickListener, View.OnClickListener,
+        AbsListView.OnScrollListener {
     /** Key used to pass data to {@link ConversationListFragment}. */
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     /** Key used to keep track of the scroll state of the list. */
@@ -166,6 +168,9 @@ public final class ConversationListFragment extends Fragment implements
     // Tracks if a onKey event was initiated from the listview (received ACTION_DOWN before
     // ACTION_UP). If not, the listview only receives ACTION_UP.
     private boolean mKeyInitiatedFromList;
+
+    // Default color id for what background should be while idle
+    private int mDefaultListBackgroundColor;
 
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
@@ -372,6 +377,13 @@ public final class ConversationListFragment extends Fragment implements
         mUpdater = mActivity.getConversationUpdater();
         mUpdater.registerConversationListObserver(mConversationCursorObserver);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext().getResources());
+
+        // Shadow mods to TL require background changes and scroll listening to avoid overdraw
+        mDefaultListBackgroundColor =
+                getResources().getColor(R.color.conversation_list_background_color);
+        getView().setBackgroundColor(mDefaultListBackgroundColor);
+        mListView.setOnScrollListener(this);
+
         // The onViewModeChanged callback doesn't get called when the mode
         // object is created, so
         // force setting the mode manually this time around.
@@ -479,7 +491,7 @@ public final class ConversationListFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = (ConversationListEmptyView) rootView.findViewById(R.id.empty_view);
         mSecurityHoldView = rootView.findViewById(R.id.security_hold_view);
-        mSecurityHoldText = (TextView)rootView.findViewById(R.id.security_hold_text);
+        mSecurityHoldText = (TextView) rootView.findViewById(R.id.security_hold_text);
         mSecurityHoldButton = rootView.findViewById(R.id.security_hold_button);
         mSecurityHoldButton.setOnClickListener(this);
         mLoadingView = rootView.findViewById(R.id.background_view);
@@ -753,9 +765,6 @@ public final class ConversationListFragment extends Fragment implements
                 // There are no checked conversations when in conversation list mode.
                 clearChoicesAndActivated();
             }
-        }
-        if (mFooterView != null) {
-            mFooterView.onViewModeChanged(newMode);
         }
     }
 
@@ -1266,6 +1275,33 @@ public final class ConversationListFragment extends Fragment implements
             final String accountSecurityUri = mAccount.accountSecurityUri;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(accountSecurityUri));
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public final void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+            int totalItemCount) {
+        mListView.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+    }
+
+    /**
+     * Used with SwipeableListView to change conv_list backgrounds to work around shadow elevation
+     * issues causing and overdraw problems due to static backgrounds.
+     *
+     * @param view
+     * @param scrollState
+     */
+    @Override
+    public void onScrollStateChanged(final AbsListView view, final int scrollState) {
+        mListView.onScrollStateChanged(view, scrollState);
+
+        // If not scrolling, assign default background - white for tablet, transparent for phone
+        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            getView().setBackgroundColor(mDefaultListBackgroundColor);
+
+        // Otherwise, list is scrolling, so remove background (corresponds to 0 input)
+        } else {
+            getView().setBackgroundResource(0);
         }
     }
 }
