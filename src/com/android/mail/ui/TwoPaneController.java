@@ -569,7 +569,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         mToShow = new ToShow(conversation, fromKeyboard);
 
         final int mode = mViewMode.getMode();
-        LogUtils.i(LOG_TAG, "IN TPC.showConv, oldMode=%s conv=%s", mode, mToShow.conversation);
+        LogUtils.i(LOG_TAG, "IN TPC.showConv, oldMode=%s conv=%s", mViewMode, mToShow.conversation);
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsConversationMode();
         } else {
@@ -781,7 +781,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     @Override
     protected void perhapsShowFirstConversation() {
         super.perhapsShowFirstConversation();
-        if (mCurrentConversation == null && isTwoPaneLandscape()
+        if (!mViewMode.isAdMode() && mCurrentConversation == null && isTwoPaneLandscape()
                 && mConversationListCursor.getCount() > 0) {
             final Conversation conv;
 
