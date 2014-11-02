@@ -116,7 +116,7 @@
     <dimen name="account_item_folder_color_width">36dip</dimen>
     <dimen name="drawer_footer_item_padding">16dp</dimen>
     <dimen name="drawer_footer_item_minimum_height">48dp</dimen>
-    <dimen name="drawer_item_font_size">16sp</dimen>
+    <dimen name="drawer_item_font_size">14sp</dimen>
     <dimen name="widget_subject_font_size">13sp</dimen>
     <dimen name="widget_date_font_size">12sp</dimen>
     <dimen name="widget_margin_top">0dip</dimen>
