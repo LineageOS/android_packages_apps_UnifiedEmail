@@ -31,12 +31,6 @@
         android:title="@string/empty_spam"
         app:showAsAction="always|withText" />
 
-    <!-- Available only for accounts with SERVER_SEARCH and in a folder
-      that supports FOLDER_SERVER_SEARCH -->
-    <item android:id="@+id/search" android:title="@string/menu_search"
-        app:showAsAction="ifRoom|collapseActionView"
-        android:icon="@drawable/ic_menu_search" />
-
     <!-- These invisible menu item are used to enable keyboard shortcuts -->
     <item
         android:id="@+id/compose"
