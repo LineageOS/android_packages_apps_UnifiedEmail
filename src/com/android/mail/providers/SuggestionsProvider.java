@@ -64,7 +64,7 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
 
     @Override
     public Cursor query(String query) {
-        MergeCursor mergeCursor = null;
+        Cursor mergeCursor = null;
 
         synchronized (mTermsLock) {
             mFullQueryTerms = null;
@@ -101,7 +101,10 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
             if (query.length() >= MIN_QUERY_LENGTH_FOR_CONTACTS) {
                 cursors.add(new ContactsCursor().query(query));
             }
-            mergeCursor = new MergeCursor(cursors.toArray(new Cursor[cursors.size()]));
+
+            if (cursors.size() > 0) {
+                mergeCursor = new MergeCursor(cursors.toArray(new Cursor[cursors.size()]));
+            }
         }
         return mergeCursor;
     }
