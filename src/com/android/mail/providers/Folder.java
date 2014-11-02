@@ -359,10 +359,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
         this.iconResId = iconResId;
         this.bgColor = bgColor;
         this.fgColor = fgColor;
-        if (bgColor != null) {
+        if (!TextUtils.isEmpty(bgColor)) {
             this.bgColorInt = Integer.parseInt(bgColor);
         }
-        if (fgColor != null) {
+        if (!TextUtils.isEmpty(fgColor)) {
             this.fgColorInt = Integer.parseInt(fgColor);
         }
         this.loadMoreUri = loadMoreUri;
@@ -398,10 +398,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
         iconResId = cursor.getInt(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
         bgColor = cursor.getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
         fgColor = cursor.getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
-        if (bgColor != null) {
+        if (!TextUtils.isEmpty(bgColor)) {
             bgColorInt = Integer.parseInt(bgColor);
         }
-        if (fgColor != null) {
+        if (!TextUtils.isEmpty(fgColor)) {
             fgColorInt = Integer.parseInt(fgColor);
         }
         String loadMore = cursor.getString(UIProvider.FOLDER_LOAD_MORE_URI_COLUMN);
@@ -456,10 +456,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
         iconResId = in.readInt();
         bgColor = in.readString();
         fgColor = in.readString();
-        if (bgColor != null) {
+        if (!TextUtils.isEmpty(bgColor)) {
             bgColorInt = Integer.parseInt(bgColor);
         }
-        if (fgColor != null) {
+        if (!TextUtils.isEmpty(fgColor)) {
             fgColorInt = Integer.parseInt(fgColor);
         }
         loadMoreUri = in.readParcelable(loader);
@@ -663,11 +663,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     public int getBackgroundColor(int defaultColor) {
-        return bgColor != null ? bgColorInt : defaultColor;
+        return !TextUtils.isEmpty(bgColor) ? bgColorInt : defaultColor;
     }
 
     public int getForegroundColor(int defaultColor) {
-        return fgColor != null ? fgColorInt : defaultColor;
+        return !TextUtils.isEmpty(fgColor) ? fgColorInt : defaultColor;
     }
 
     /**
@@ -885,10 +885,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
         f.iconResId = Integer.parseInt(split[index++]);
         f.bgColor = split[index++];
         f.fgColor = split[index++];
-        if (f.bgColor != null) {
+        if (!TextUtils.isEmpty(f.bgColor)) {
             f.bgColorInt = Integer.parseInt(f.bgColor);
         }
-        if (f.fgColor != null) {
+        if (!TextUtils.isEmpty(f.fgColor)) {
             f.fgColorInt = Integer.parseInt(f.fgColor);
         }
         f.loadMoreUri = getValidUri(split[index++]);
