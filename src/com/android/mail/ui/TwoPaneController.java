@@ -129,7 +129,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         final ConversationListFragment conversationListFragment =
                 ConversationListFragment.newInstance(mConvListContext);
-        fragmentTransaction.replace(R.id.conversation_list_pane, conversationListFragment,
+        fragmentTransaction.replace(R.id.conversation_list_place_holder, conversationListFragment,
                 TAG_CONVERSATION_LIST);
         fragmentTransaction.commitAllowingStateLoss();
         // Set default navigation here once the ConversationListFragment is created.
@@ -483,7 +483,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.replace(R.id.conversation_list_pane, getWaitFragment(), TAG_WAIT);
+        fragmentTransaction.replace(R.id.conversation_list_place_holder, getWaitFragment(), TAG_WAIT);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
