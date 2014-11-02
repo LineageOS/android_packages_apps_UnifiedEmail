@@ -18,6 +18,8 @@
 <resources>
     <style name="WaitFragmentTitleBase" parent="android:Widget.Material.TextView" />
 
+    <style name="ActionBarOverflowButtonStyle" parent="@android:style/Widget.Material.ActionButton.Overflow" />
+
     <style name="ActionBarShadow">
         <item name="android:visibility">gone</item>
     </style>

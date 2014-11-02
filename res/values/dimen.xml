@@ -53,13 +53,14 @@
     <dimen name="conversation_view_snack_bar_margin">0dp</dimen>
     <dimen name="conversation_header_font_size">20sp</dimen>
     <dimen name="conversation_header_padding_side">16dp</dimen>
-    <dimen name="conversation_header_star_size">52dp</dimen>
+    <dimen name="conversation_header_star_size">48dp</dimen>
     <dimen name="conversation_border_margin_side">0dp</dimen>
     <dimen name="message_details_header_padding_start_expanded">72dip</dimen>
     <dimen name="message_details_header_padding_end">16dp</dimen>
     <dimen name="message_details_header_vertical_padding">7dp</dimen>
     <dimen name="message_show_pics_header_padding_end">14dip</dimen>
     <dimen name="message_header_icon_additional_margin_start">16dp</dimen>
+    <dimen name="message_header_overflow_button_width">36dp</dimen>
     <dimen name="message_header_action_button_width">48dp</dimen>
     <dimen name="message_header_action_button_height">48dp</dimen>
     <dimen name="message_header_action_button_margin_top">0dp</dimen>
