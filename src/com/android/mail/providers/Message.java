@@ -655,7 +655,7 @@ public class Message implements Parcelable, HtmlMessage {
     public int getAttachmentCount(boolean includeInline) {
         // If include inline, just return the full list count.
         if (includeInline) {
-            return mAttachments.size();
+            return getAttachments().size();
         }
 
         // Otherwise, iterate through the attachment list,
