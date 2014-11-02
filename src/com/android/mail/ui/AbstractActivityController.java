@@ -2524,10 +2524,20 @@ public abstract class AbstractActivityController implements ActivityController,
      * onLoadFinished(Loader, Cursor) on any callback.
      */
     protected void showConversation(Conversation conversation) {
-        showConversation(conversation, false /* peek */);
+        showConversation(conversation, false /* shouldAnimate */);
     }
 
-    protected void showConversation(Conversation conversation, boolean peek) {
+    /**
+     * Helper method to allow for conversation view animation control. Implementing classes should
+     * directly override this to handle the animation.
+     * @param conversation
+     * @param shouldAnimate true if we want to animate the conversation in, false otherwise
+     */
+    protected void showConversation(Conversation conversation, boolean shouldAnimate) {
+        showConversationWithPeek(conversation, false /* peek */);
+    }
+
+    protected void showConversationWithPeek(Conversation conversation, boolean peek) {
         if (conversation != null) {
             Utils.sConvLoadTimer.start();
         }
@@ -2610,7 +2620,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // Only animate destructive actions if we are going to be showing the
         // conversation list when we show the next conversation.
         commitDestructiveActions(mIsTablet);
-        showConversation(conversation);
+        showConversation(conversation, true /* shouldAnimate */);
     }
 
     @Override
