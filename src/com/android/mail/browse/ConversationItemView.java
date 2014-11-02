@@ -456,14 +456,14 @@ public class ConversationItemView extends View
 
         mSubjectTextView = new TextView(mContext);
         mSubjectTextView.setEllipsize(TextUtils.TruncateAt.END);
-        mSubjectTextView.setSingleLine(); // allow partial words to be elided
+        mSubjectTextView.setMaxLines(1);
         mSubjectTextView.setIncludeFontPadding(false);
         ViewCompat.setLayoutDirection(mSubjectTextView, layoutDir);
         ViewUtils.setTextAlignment(mSubjectTextView, View.TEXT_ALIGNMENT_VIEW_START);
 
         mSnippetTextView = new TextView(mContext);
         mSnippetTextView.setEllipsize(TextUtils.TruncateAt.END);
-        mSnippetTextView.setSingleLine(); // allow partial words to be elided
+        mSnippetTextView.setMaxLines(1);
         mSnippetTextView.setIncludeFontPadding(false);
         mSnippetTextView.setTypeface(SANS_SERIF_LIGHT);
         mSnippetTextView.setTextColor(getResources().getColor(R.color.snippet_text_color));
