@@ -380,7 +380,7 @@ public class ConversationItemView extends View
             // Initialize space and cell size based on the current mode.
             final int foldersCount = measurements.length;
             final int width = sumWidth(measurements);
-            int xLeft = (isRtl) ?  right - coordinates.folderLayoutWidth : right - width;
+            int xStart = (isRtl) ? coordinates.snippetX + width : right - width;
 
             int index = 0;
             for (Folder f : mFoldersSortedSet) {
@@ -395,33 +395,112 @@ public class ConversationItemView extends View
                 // Draw the box.
                 sFoldersPaint.setColor(bgColor);
                 sFoldersPaint.setStyle(Paint.Style.FILL);
+                final int folderLeft = (isRtl) ? xStart - measurements[index] : xStart;
+                final int folderRight = (isRtl) ? xStart : xStart + measurements[index];
                 final RectF rect =
-                        new RectF(xLeft, y, xLeft + measurements[index], y + height);
+                        new RectF(folderLeft, y, folderRight, y + height);
                 canvas.drawRoundRect(rect, sFolderRoundedCornerRadius, sFolderRoundedCornerRadius,
                         sFoldersPaint);
 
-                // Draw the text based on the language locale.
+                // Draw the text based on the language locale and layout direction.
                 final boolean isTextRtl = mFormatter.isRtl(folderString);
                 sFoldersPaint.setColor(fgColor);
                 sFoldersPaint.setStyle(Paint.Style.FILL);
+
+                // Compute the text/gradient indices
+                final int textLength = (int) sFoldersPaint.measureText(folderString);
+                final int gradientX0;
+                final int gradientX1;
+                final int textX;
+
+/***************************************************************************************************
+ * measurements[index] - the actual folder chip rectangle.                                         *
+ * textLength          - the length of the folder's full name (can be longer than                  *
+ *                         the actual chip, which is what overflow gradient is for).               *
+ * innerPadding        - the padding between the text and the chip edge.                           *
+ * overflowPadding     - the padding between start of overflow and the chip edge.                  *
+ *                                                                                                 *
+ *                                                                                                 *
+ * RTL layout and text.                                                                            *
+ *                                                                                                 *
+ *                                                                                     xStart      *
+ *                      |<--------------------- measurements[index] --------------------->|        *
+ *        |<-------------------------textLength----------------------->|                  |        *
+ *        |             |<----- overflowPadding ----->|                                   |        *
+ *        |             |<- innerPadding ->|<-------->|<-------------->|<- innerPadding ->|        *
+ *       textX                            gX1        gX0                                           *
+ *                                                                                                 *
+ *                                                                                                 *
+ * Layout is RTL and the text is in a LTR language.                                                *
+ *                                                                                                 *
+ *                                                                       xStart                    *
+ *        |<--------------------- measurements[index] --------------------->|                      *
+ *        |                  |<-------------------------textLength------------------------->|      *
+ *        |                                   |<----- overflowPadding ----->|                      *
+ *        |<- innerPadding ->|<-------------->|<-------->|<- innerPadding ->|                      *
+ *                         textX             gX0        gX1                                        *
+ *                                                                                                 *
+ *                                                                                                 *
+ * Layout is LTR but the text is in a RTL language.                                                *
+ *                                                                                                 *
+ *                    xStart                                                                       *
+ *                      |<--------------------- measurements[index] --------------------->|        *
+ *        |<-------------------------textLength----------------------->|                  |        *
+ *        |             |<----- overflowPadding ----->|                                   |        *
+ *        |             |<- innerPadding ->|<-------->|<-------------->|<- innerPadding ->|        *
+ *       textX                            gX1        gX0                                           *
+ *                                                                                                 *
+ *                                                                                                 *
+ * LTR layout and text.                                                                            *
+ *                                                                                                 *
+ *      xStart                                                                                     *
+ *        |<--------------------- measurements[index] --------------------->|                      *
+ *        |                  |<-------------------------textLength------------------------->|      *
+ *        |                                   |<----- overflowPadding ----->|                      *
+ *        |<- innerPadding ->|<-------------->|<-------->|<- innerPadding ->|                      *
+ *                         textX             gX0        gX1                                        *
+ *                                                                                                 *
+ **************************************************************************************************/
+                if (isRtl) {
+                    if (isTextRtl) {
+                        // LAYOUT AND TEXT RTL
+                        gradientX0 = xStart - measurements[index] + sFoldersOverflowGradientPadding;
+                        gradientX1 = xStart - measurements[index] + sFoldersInnerPadding;
+                        textX = xStart - sFoldersInnerPadding - textLength;
+                    } else {
+                        // LAYOUT RTL, TEXT LTR
+                        gradientX0 = xStart - sFoldersOverflowGradientPadding;
+                        gradientX1 = xStart - sFoldersInnerPadding;
+                        textX = xStart - measurements[index] + sFoldersInnerPadding;
+                    }
+                } else {
+                    if (isTextRtl) {
+                        // LAYOUT LTR, TEXT RTL
+                        gradientX0 = xStart + sFoldersOverflowGradientPadding;
+                        gradientX1 = xStart + sFoldersInnerPadding;
+                        textX = xStart + measurements[index] - sFoldersInnerPadding - textLength;
+                    } else {
+                        // LAYOUT AND TEXT LTR
+                        gradientX0 = xStart + measurements[index] - sFoldersOverflowGradientPadding;
+                        gradientX1 = xStart + measurements[index] - sFoldersInnerPadding;
+                        textX = xStart + sFoldersInnerPadding;
+                    }
+                }
+
+                // Draw the text and the possible overflow gradient
                 if (overflow[index]) {
-                    final int rightBorder = xLeft + measurements[index];
-                    final int x0 = (isTextRtl) ? xLeft + sFoldersOverflowGradientPadding :
-                            rightBorder - sFoldersOverflowGradientPadding;
-                    final int x1 = (isTextRtl) ?  xLeft + sFoldersInnerPadding :
-                            rightBorder - sFoldersInnerPadding;
-                    final Shader shader = new LinearGradient(x0, y, x1, y, fgColor,
+                    final Shader shader = new LinearGradient(gradientX0, y, gradientX1, y, fgColor,
                             Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
                     sFoldersPaint.setShader(shader);
                 }
-                final int textX = (isTextRtl) ? xLeft + measurements[index] - sFoldersInnerPadding :
-                        xLeft + sFoldersInnerPadding;
                 canvas.drawText(folderString, textX, y + height - textBottomPadding, sFoldersPaint);
                 if (overflow[index]) {
                     sFoldersPaint.setShader(null);
                 }
 
-                xLeft += measurements[index++] + sFoldersStartPadding;
+                // Increment the starting position accordingly for the next item
+                final int usedWidth = measurements[index++] + sFoldersStartPadding;
+                xStart += (isRtl) ? -usedWidth : usedWidth;
             }
         }
 
