@@ -126,8 +126,8 @@ public class MailIntentService extends IntentService {
 
     /**
      * Derived classes should override this method if they wish to provide their own contact loading
-     * behavior separate from the ContactProvider-based default, primarily contact photo and contact
-     * lookup uri fetching. The default behavior of this method returns null.
+     * behavior separate from the ContactProvider-based default. The default behavior of this method
+     * returns null.
      */
     public ContactFetcher getContactFetcher() {
         return null;

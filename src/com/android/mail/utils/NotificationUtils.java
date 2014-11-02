@@ -26,6 +26,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.MailTo;
 import android.net.Uri;
 import android.os.Looper;
 import android.provider.ContactsContract;
@@ -1007,7 +1008,7 @@ public class NotificationUtils {
                 // Group by account and folder
                 final String notificationGroupKey = createGroupKey(account, folder);
                 // Track all senders to later tag them along with the digest notification
-                final HashSet<String> sendersList = new HashSet<String>();
+                final HashSet<String> senderAddressesSet = new HashSet<String>();
                 notificationBuilder.setGroup(notificationGroupKey).setGroupSummary(true);
 
                 ConfigResult firstResult = null;
@@ -1038,14 +1039,14 @@ public class NotificationUtils {
                                     fromAddress = "";
                                 }
                                 from = getDisplayableSender(fromAddress);
-                                sendersList.add(getSenderAddress(fromAddress));
+                                addEmailAddressToSet(fromAddress, senderAddressesSet);
                             }
                             while (messageCursor.moveToPosition(messageCursor.getPosition() - 1)) {
                                 final Message message = messageCursor.getMessage();
                                 if (!message.read &&
                                         !fromAddress.contentEquals(message.getFrom())) {
                                     multipleUnreadThread = true;
-                                    sendersList.add(getSenderAddress(message.getFrom()));
+                                    addEmailAddressToSet(message.getFrom(), senderAddressesSet);
                                 }
                             }
                             final SpannableStringBuilder sendersBuilder;
@@ -1126,8 +1127,7 @@ public class NotificationUtils {
                 } while (numDigestItems <= maxNumDigestItems && conversationCursor.moveToNext());
 
                 // Tag main digest notification with the senders
-                tagNotificationsWithPeople(context, notificationBuilder, sendersList,
-                        account.getAccountManagerAccount().name, contactFetcher);
+                tagNotificationsWithPeople(notificationBuilder, senderAddressesSet);
 
                 if (firstResult != null && firstResult.contactIconInfo != null) {
                     wearableExtender.setBackground(firstResult.contactIconInfo.wearableBg);
@@ -1197,7 +1197,7 @@ public class NotificationUtils {
         final Conversation conversation = new Conversation(conversationCursor);
 
         // Set of all unique senders for unseen messages
-        final HashSet<String> sendersList = new HashSet<String>();
+        final HashSet<String> senderAddressesSet = new HashSet<String>();
         Cursor cursor = null;
         MessageCursor messageCursor = null;
         boolean multipleUnseenThread = false;
@@ -1224,7 +1224,7 @@ public class NotificationUtils {
                 result.contactIconInfo = getContactIcon(
                         context, account.getAccountManagerAccount().name, from,
                         getSenderAddress(fromAddress), folder, contactFetcher);
-                sendersList.add(getSenderAddress(fromAddress));
+                addEmailAddressToSet(fromAddress, senderAddressesSet);
                 notificationBuilder.setLargeIcon(result.contactIconInfo.icon);
             }
 
@@ -1235,7 +1235,7 @@ public class NotificationUtils {
                 final boolean unseen = !message.seen;
                 if (unseen) {
                     firstUnseenMessagePos = messageCursor.getPosition();
-                    sendersList.add(getSenderAddress(message.getFrom()));
+                    addEmailAddressToSet(message.getFrom(), senderAddressesSet);
                     if (!multipleUnseenThread
                             && !fromAddress.contentEquals(message.getFrom())) {
                         multipleUnseenThread = true;
@@ -1315,8 +1315,7 @@ public class NotificationUtils {
                 result.notificationTicker = from;
             }
 
-            tagNotificationsWithPeople(context, notificationBuilder, sendersList,
-                    account.getAccountManagerAccount().name, contactFetcher);
+            tagNotificationsWithPeople(notificationBuilder, senderAddressesSet);
         } finally {
             if (messageCursor != null) {
                 messageCursor.close();
@@ -1329,87 +1328,19 @@ public class NotificationUtils {
     }
 
     /**
-     * Iterates through all senders, retrieves contact lookup Uris for each sender, and tags the
-     * given notification with these Uris
-     * @param context
+     * Iterates through all senders and adds their respective Uris to the notifications. Each Uri
+     * string consists of the prefix "mailto:" followed by the sender address.
      * @param notificationBuilder
-     * @param sendersList List of unique senders to be tagged with the conversation
-     * @param accountName
-     * @param contactFetcher Implementation of ContactLookupUriFetcher (null by default)
+     * @param senderAddressesSet List of unique senders to be tagged with the conversation
      */
-    private static void tagNotificationsWithPeople(Context context,
-            NotificationCompat.Builder notificationBuilder, HashSet<String> sendersList,
-            String accountName, ContactFetcher contactFetcher) {
-        // If there is a ContactLookupUriFetcher, go through all unique senders
-        // in the combined notification and add each one as a person.
-        if (contactFetcher != null) {
-            for (final String sender : sendersList) {
-                if (TextUtils.isEmpty(sender)) {
-                    continue;
-                }
-                final Uri contactLookupUri =
-                        contactFetcher.getContactLookupUri(context,
-                                accountName, sender);
-
-                if (contactLookupUri != null) {
-                    notificationBuilder.addPerson(contactLookupUri.toString());
-                }
+    private static void tagNotificationsWithPeople(NotificationCompat.Builder notificationBuilder,
+            HashSet<String> senderAddressesSet) {
+        for (final String sender : senderAddressesSet) {
+            if (TextUtils.isEmpty(sender)) {
+                continue;
             }
-
-        // If implementation for the fetcher is not provided, rely on the ContentResolver
-        // to query for contacts and tag the notification
-        } else {
-            findAndTagContacts(context, sendersList, notificationBuilder);
-        }
-    }
-
-    /**
-     * Queries for contact id and lookup key to tag the notification with Person objects
-     * based on the addresses given.
-     * @param context
-     * @param addresses set of addresses to tag the single notification with
-     * @param notificationBuilder
-     */
-    private static void findAndTagContacts(Context context,
-            HashSet<String> addresses, NotificationCompat.Builder notificationBuilder) {
-        final ArrayList<String> whereArgs = new ArrayList<String>(addresses);
-        final StringBuilder whereBuilder = new StringBuilder();
-        final String[] questionMarks = new String[addresses.size()];
-
-        Arrays.fill(questionMarks, "?");
-        whereBuilder.append(Email.DATA1 + " IN (").
-                append(TextUtils.join(",", questionMarks)).
-                append(")");
-
-        final ContentResolver resolver = context.getContentResolver();
-        final Cursor c = resolver.query(Email.CONTENT_URI,
-                new String[] {Email.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY},
-                whereBuilder.toString(),
-                whereArgs.toArray(new String[0]), null);
-
-        if (c == null) {
-            // No query results - no contacts to tag
-            return;
-        }
-
-        final int contactIdCol = c.getColumnIndex(Email.CONTACT_ID);
-        final int lookupKeyCol = c.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY);
-
-        try {
-            while (c.moveToNext()) {
-                c.getString(lookupKeyCol);
-
-                // Get lookup uri based on id and lookup key
-                final Uri contactLookupUri = ContactsContract.Contacts.getLookupUri(
-                        c.getLong(contactIdCol), c.getString(lookupKeyCol));
-
-                // Add Person if uri is found
-                if (contactLookupUri != null) {
-                    notificationBuilder.addPerson(contactLookupUri.toString());
-                }
-            }
-        } finally {
-            c.close();
+            // Tag a notification with a person using "mailto:<sender address>"
+            notificationBuilder.addPerson(MailTo.MAILTO_SCHEME.concat(sender));
         }
     }
 
@@ -1937,6 +1868,28 @@ public class NotificationUtils {
             tokenizedAddress = sender;
         }
         return tokenizedAddress;
+    }
+
+    /**
+     * Given a sender, retrieve the email address. If an email address is extracted, add it to the
+     * input set, otherwise ignore it.
+     * @param sender
+     * @param senderAddressesSet
+     */
+    private static void addEmailAddressToSet(String sender, HashSet<String> senderAddressesSet) {
+        // Only continue if we have a non-empty, non-null sender
+        if (!TextUtils.isEmpty(sender)) {
+            final EmailAddress address = EmailAddress.getEmailAddress(sender);
+            final String senderEmailAddress = address.getAddress();
+
+            // Add to set only if we have a non-empty email address
+            if (!TextUtils.isEmpty(senderEmailAddress)) {
+                senderAddressesSet.add(senderEmailAddress);
+            } else {
+                LogUtils.i(LOG_TAG, "Unable to grab email from \"%s\" for notification tagging",
+                        LogUtils.sanitizeName(LOG_TAG, sender));
+            }
+        }
     }
 
     public static int getNotificationId(final android.accounts.Account account,
