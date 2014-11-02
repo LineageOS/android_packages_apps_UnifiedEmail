@@ -1148,8 +1148,12 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
         if (domMessageId == null) {
             return null;
         }
+        final MessageCursor messageCursor = getMessageCursor();
+        if (messageCursor == null) {
+            return null;
+        }
         final String messageId = mTemplates.getMessageIdForDomId(domMessageId);
-        return getMessageCursor().getMessageForId(Long.parseLong(messageId));
+        return messageCursor.getMessageForId(Long.parseLong(messageId));
     }
 
     /**
