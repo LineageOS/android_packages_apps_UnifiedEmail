@@ -24,7 +24,7 @@ public class ConversationPhotoTeaserView extends ConversationTipView {
 
     @Override
     protected ImageAttrSet getStartIconAttr() {
-        return new ImageAttrSet(R.drawable.ic_check_red_24dp,
+        return new ImageAttrSet(R.drawable.ic_check_24dp,
                 R.drawable.conversation_photo_teaser_checkmark_bg, null);
     }
 

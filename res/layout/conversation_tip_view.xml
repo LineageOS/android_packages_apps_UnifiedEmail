@@ -39,7 +39,7 @@
         android:layout_weight="1"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:textColor="@color/tip_teaser_red_text"
+        android:textColor="@color/tip_teaser_text"
         android:textSize="16sp"
         style="@style/TeaserStartMargin" />
 
@@ -51,6 +51,6 @@
         android:contentDescription="@string/dismiss_tip_hover_text"
         android:background="?android:attr/selectableItemBackground"
         android:scaleType="center"
-        android:src="@drawable/ic_cancel_red_24dp" />
+        android:src="@drawable/ic_cancel_24dp" />
 
 </LinearLayout>
