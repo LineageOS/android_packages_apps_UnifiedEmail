@@ -76,7 +76,6 @@
             android:layout_width="44dip"
             android:layout_height="44dip"
             android:layout_gravity="center_vertical|end|right"
-            android:contentDescription="@string/remove_attachment_desc"
             android:gravity="center"
             android:focusable="true"
             android:background="?android:attr/selectableItemBackground" />
