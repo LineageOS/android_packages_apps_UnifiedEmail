@@ -44,6 +44,7 @@
 
             <include layout="@layout/search_suggestion_list" />
 
+            <include layout="@layout/pre_l_actionbar_shadow" />
         </FrameLayout>
 
     </LinearLayout>

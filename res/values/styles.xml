@@ -446,6 +446,10 @@
         <item name="android:src">@drawable/ic_menu_moreoverflow_mtrl_alpha</item>
     </style>
 
+    <style name="ActionBarShadow">
+        <item name="android:visibility">visible</item>
+    </style>
+
     <style name="ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/actionbar_color</item>
     </style>

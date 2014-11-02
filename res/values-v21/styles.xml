@@ -23,6 +23,10 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="ActionBarShadow">
+        <item name="android:visibility">gone</item>
+    </style>
+
     <style name="ConversationListFadeBase" parent="android:Widget.Material.Light.ListView" />
 
     <style name="MinTimeProgressViewStyle" parent="android:Widget.Material.Light.ProgressBar" />
