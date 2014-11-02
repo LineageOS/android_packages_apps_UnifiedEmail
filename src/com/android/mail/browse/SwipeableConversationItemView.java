@@ -56,9 +56,10 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
             final ConversationCheckedSet set, final Folder folder,
             final int checkboxOrSenderImage, boolean swipeEnabled,
             final boolean importanceMarkersEnabled, final boolean showChevronsEnabled,
-            final AnimatedAdapter animatedAdapter) {
+            final AnimatedAdapter animatedAdapter, final int position) {
         mConversationItemView.bind(conversation, activity, set, folder, checkboxOrSenderImage,
-                swipeEnabled, importanceMarkersEnabled, showChevronsEnabled, animatedAdapter);
+                swipeEnabled, importanceMarkersEnabled, showChevronsEnabled, animatedAdapter,
+                position);
     }
 
     public void startUndoAnimation(AnimatorListener listener, boolean swipe) {
