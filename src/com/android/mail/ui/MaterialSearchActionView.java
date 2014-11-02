@@ -78,7 +78,7 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
 
         final Resources res = getResources();
         mLightBgDrawable = new ColorDrawable(res.getColor(android.R.color.white));
-        mDarkBgDrawable = new ColorDrawable(res.getColor(R.color.actionbar_color));
+        mDarkBgDrawable = new ColorDrawable(res.getColor(R.color.primary_color));
         mLightBgBackDrawable = R.drawable.ic_arrow_back_24dp_with_rtl;
         mDarkBgBackDrawable = R.drawable.ic_arrow_back_wht_24dp_with_rtl;
         mLightBgClearTextDrawable = R.drawable.ic_close_24dp;
