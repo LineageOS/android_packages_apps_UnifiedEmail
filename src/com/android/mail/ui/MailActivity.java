@@ -39,6 +39,7 @@ import android.view.accessibility.AccessibilityManager;
 import com.android.bitmap.BitmapCache;
 import com.android.bitmap.UnrefedBitmapCache;
 import com.android.mail.R;
+import com.android.mail.analytics.Analytics;
 import com.android.mail.analytics.AnalyticsTimer;
 import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.compose.ComposeActivity;
@@ -197,6 +198,16 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         final NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter != null) {
             nfcAdapter.setNdefPushMessageCallback(mNdefHandler, this);
+        }
+
+        // Detect presence of hardware keyboard and log it on Analytics
+        final int hardKeyboardHidden = getResources().getConfiguration().hardKeyboardHidden;
+        if (hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+            Analytics.getInstance().sendEvent("configuration", "keyboard", "use_hardware_keyboard",
+                    0);
+        } else {
+            Analytics.getInstance().sendEvent("configuration", "keyboard",
+                    "do_not_use_hardware_keyboard", 0);
         }
     }
 
