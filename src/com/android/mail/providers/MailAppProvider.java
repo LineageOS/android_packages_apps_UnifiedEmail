@@ -101,13 +101,6 @@ public abstract class MailAppProvider extends ContentProvider
     protected abstract String getAuthority();
 
     /**
-     * Authority for the suggestions provider. Email and Gmail must specify different authorities,
-     * much like the implementation of {@link #getAuthority()}.
-     * @return the suggestion authority associated with this provider.
-     */
-    public abstract String getSuggestionAuthority();
-
-    /**
      * Allows the implementing provider to specify an intent that should be used in a call to
      * {@link Context#startActivityForResult(android.content.Intent)} when the account provider
      * doesn't return any accounts.

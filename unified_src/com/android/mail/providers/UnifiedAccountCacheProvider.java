@@ -31,12 +31,6 @@ public class UnifiedAccountCacheProvider extends MailAppProvider {
     }
 
     @Override
-    public String getSuggestionAuthority() {
-        // UnifiedEmail does not use the default search.
-        return null;
-    }
-
-    @Override
     protected Intent getNoAccountsIntent(Context context) {
         return null;
     }
