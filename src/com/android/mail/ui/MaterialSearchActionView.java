@@ -84,7 +84,7 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
         mLightBgClearTextDrawable = R.drawable.ic_close_24dp;
         mDarkBgClearTextDrawable = R.drawable.ic_close_wht_24dp;
         mLightBgVoiceDrawable = R.drawable.ic_mic_24dp;
-        mDarkBgVoiceDrawable = R.drawable.ic_mic_white_24dp;
+        mDarkBgVoiceDrawable = R.drawable.ic_mic_wht_24dp;
         mLightBgTextColor = res.getColor(R.color.search_query_text);
         mDarkBgTextColor = res.getColor(android.R.color.white);
     }
