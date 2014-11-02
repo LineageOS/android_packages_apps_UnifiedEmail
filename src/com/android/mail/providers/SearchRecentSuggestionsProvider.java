@@ -24,6 +24,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.Nullable;
 
 import com.android.mail.R;
 
@@ -66,6 +67,9 @@ public class SearchRecentSuggestionsProvider {
     protected final Context mContext;
     private ArrayList<String> mFullQueryTerms;
 
+    private final Object mDbLock = new Object();
+    private boolean mClosed;
+
     public SearchRecentSuggestionsProvider(Context context) {
         mContext = context;
         mOpenHelper = new DatabaseHelper(mContext, DATABASE_VERSION);
@@ -76,7 +80,10 @@ public class SearchRecentSuggestionsProvider {
     }
 
     public void cleanup() {
-        mOpenHelper.close();
+        synchronized (mDbLock) {
+            mOpenHelper.close();
+            mClosed = true;
+        }
     }
 
     /**
@@ -125,19 +132,35 @@ public class SearchRecentSuggestionsProvider {
         mFullQueryTerms = terms;
     }
 
-    public Cursor query(String query) {
-        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-
-        final StringBuilder builder = new StringBuilder();
-        if (mFullQueryTerms != null) {
-            for (String token : mFullQueryTerms) {
-                builder.append(token).append(QUERY_TOKEN_SEPARATOR);
+    private @Nullable SQLiteDatabase getDatabase(boolean readOnly) {
+        synchronized (mDbLock) {
+            if (!mClosed) {
+                return readOnly ? mOpenHelper.getReadableDatabase() :
+                        mOpenHelper.getWritableDatabase();
             }
         }
+        return null;
+    }
 
-        final String[] args = new String[] {builder.toString(), mHistoricalIcon, "%" + query + "%"};
+    public Cursor query(String query) {
+        final SQLiteDatabase db = getDatabase(true /* readOnly */);
+        if (db != null) {
+            final StringBuilder builder = new StringBuilder();
+            if (mFullQueryTerms != null) {
+                for (String token : mFullQueryTerms) {
+                    builder.append(token).append(QUERY_TOKEN_SEPARATOR);
+                }
+            }
 
-        return db.rawQuery(QUERY, args);
+            final String[] args = new String[] {
+                    builder.toString(), mHistoricalIcon, "%" + query + "%" };
+
+            try {
+                // db could have been closed due to cleanup, simply don't do anything.
+                return db.rawQuery(QUERY, args);
+            } catch (IllegalStateException e) {}
+        }
+        return null;
     }
 
     /**
@@ -145,17 +168,27 @@ public class SearchRecentSuggestionsProvider {
      * Note that this writes to disk. DO NOT CALL FROM MAIN THREAD.
      */
     public void saveRecentQuery(String query) {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        ContentValues values = new ContentValues(3);
-        values.put("display1", query);
-        values.put("query", query);
-        values.put("date", System.currentTimeMillis());
-        // Note:  This table has on-conflict-replace semantics, so insert() may actually replace()
-        db.insert(SUGGESTIONS_TABLE, null, values);
+        final SQLiteDatabase db = getDatabase(false /* readOnly */);
+        if (db != null) {
+            ContentValues values = new ContentValues(3);
+            values.put("display1", query);
+            values.put("query", query);
+            values.put("date", System.currentTimeMillis());
+            // Note:  This table has on-conflict-replace semantics, so insert may actually replace
+            try {
+                // db could have been closed due to cleanup, simply don't do anything.
+                db.insert(SUGGESTIONS_TABLE, null, values);
+            } catch (IllegalStateException e) {}
+        }
     }
 
     public void clearHistory() {
-        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        db.delete(SUGGESTIONS_TABLE, null, null);
+        final SQLiteDatabase db = getDatabase(false /* readOnly */);
+        if (db != null) {
+            try {
+                // db could have been closed due to cleanup, simply don't do anything.
+                db.delete(SUGGESTIONS_TABLE, null, null);
+            } catch (IllegalStateException e) {}
+        }
     }
 }
