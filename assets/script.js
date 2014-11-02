@@ -562,7 +562,7 @@ function handleAllImageOnLoads() {
 function blockImage(imageElement) {
     var src = imageElement.src;
     if (src.indexOf("http://") == 0 || src.indexOf("https://") == 0 ||
-            src.indexOf("content://") == 0) {
+            src.indexOf("content://") == 0 || src.indexOf("cid:") == 0) {
         imageElement.setAttribute(BLOCKED_SRC_ATTR, src);
         imageElement.src = "data:";
     }
