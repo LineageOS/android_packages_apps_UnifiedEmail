@@ -181,6 +181,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
             customViewToolbar.setController(this, mController, mViewMode);
             mController.addConversationListLayoutListener(customViewToolbar);
         }
+
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(mController.getNavigationViewClickListener());
 
@@ -513,7 +514,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
             final Window window = getWindow();
             if (window != null) {
                 window.setStatusBarColor(
-                        getResources().getColor(R.color.statusbar_color));
+                        getResources().getColor(R.color.mail_activity_status_bar_color));
             }
         }
     }
