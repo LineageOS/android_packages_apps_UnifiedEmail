@@ -536,12 +536,10 @@ public abstract class AbstractActivityController implements ActivityController,
         mConversationListLoadFinishedIgnored = false;
     }
 
-    @Override
     public Account getCurrentAccount() {
         return mAccount;
     }
 
-    @Override
     public ConversationListContext getCurrentListContext() {
         return mConvListContext;
     }
@@ -868,8 +866,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, mFolderCallbacks);
     }
 
-    @Override
-    public void onFolderChanged(Folder folder, final boolean force) {
+    protected void onFolderChanged(Folder folder, final boolean force) {
         if (isDrawerEnabled()) {
             /** If the folder doesn't exist, or its parent URI is empty,
              * this is not a child folder */
@@ -963,8 +960,10 @@ public abstract class AbstractActivityController implements ActivityController,
         return mRecentFolderList;
     }
 
-    @Override
-    public void loadAccountInbox() {
+    /**
+     * Load the default inbox associated with the current account.
+     */
+    protected void loadAccountInbox() {
         boolean handled = false;
         if (mFolderWatcher != null) {
             final Folder inbox = mFolderWatcher.getDefaultInbox(mAccount);
@@ -1072,8 +1071,10 @@ public abstract class AbstractActivityController implements ActivityController,
         return mFolderListFolder;
     }
 
-    @Override
-    public void setHierarchyFolder(Folder folder) {
+    /**
+     * Set the folder currently selected in the folder selection hierarchy fragments.
+     */
+    protected void setHierarchyFolder(Folder folder) {
         mFolderListFolder = folder;
     }
 
@@ -1383,7 +1384,7 @@ public abstract class AbstractActivityController implements ActivityController,
             ComposeActivity.compose(mActivity.getActivityContext(), getAccount());
         } else if (viewId == android.R.id.home) {
             // TODO: b/16627877
-            onUpPressed();
+            handleUpPress();
         }
     }
 
@@ -1570,7 +1571,7 @@ public abstract class AbstractActivityController implements ActivityController,
             delete(R.id.report_phishing, target,
                     getDeferredAction(R.id.report_phishing, target, isBatch, undoCallback), isBatch);
         } else if (id == android.R.id.home) {
-            onUpPressed();
+            handleUpPress();
         } else if (id == R.id.compose) {
             ComposeActivity.compose(mActivity.getActivityContext(), mAccount);
         } else if (id == R.id.refresh) {
@@ -1668,11 +1669,6 @@ public abstract class AbstractActivityController implements ActivityController,
         } else {
             mDrawerContainer.openDrawer(mDrawerPullout);
         }
-    }
-
-    @Override
-    public final boolean onUpPressed() {
-        return handleUpPress();
     }
 
     @Override
@@ -2492,11 +2488,10 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
+     * Show the wait for account initialization mode.
      * Children can override this method, but they must call super.showWaitForInitialization().
-     * {@inheritDoc}
      */
-    @Override
-    public void showWaitForInitialization() {
+    protected void showWaitForInitialization() {
         mViewMode.enterWaitingForInitializationMode();
         mWaitFragment = WaitFragment.newInstance(mAccount, true /* expectingMessages */);
     }
@@ -2549,12 +2544,12 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Children can override this method, but they must call super.showConversationList().
-     * {@inheritDoc}
+     * Show the conversation List with the list context provided here. On certain layouts, this
+     * might show more than just the conversation list. For instance, on tablets this might show
+     * the conversations along with the conversation list.
+     * @param listContext context providing information on what conversation list to display.
      */
-    @Override
-    public void showConversationList(ConversationListContext listContext) {
-    }
+    protected abstract void showConversationList(ConversationListContext listContext);
 
     @Override
     public void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
@@ -3260,13 +3255,6 @@ public abstract class AbstractActivityController implements ActivityController,
         } else {
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
                     .getString(R.string.search_unsupported), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void exitSearchMode() {
-        if (mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST) {
-            mActivity.finish();
         }
     }
 
@@ -4583,7 +4571,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private class HomeButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            onUpPressed();
+            handleUpPress();
         }
     }
 }

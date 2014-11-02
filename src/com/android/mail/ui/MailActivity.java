@@ -340,11 +340,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public FolderChangeListener getFolderChangeListener() {
-        return mController;
-    }
-
-    @Override
     public FolderSelector getFolderSelector() {
         return mController;
     }
@@ -499,7 +494,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         Utils.showHelp(this, account, getString(helpContext));
     }
 
-    @Override
     public SearchRecentSuggestionsProvider getSuggestionsProvider() {
         return new SuggestionsProvider(this);
     }
