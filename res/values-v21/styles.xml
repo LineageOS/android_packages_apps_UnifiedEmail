@@ -39,9 +39,6 @@
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="AbstractVacationResponderDateSpinnerBase"
-           parent="android:Widget.Material.Light.Spinner" />
-
     <style name="RecipientEditTextViewStyle" parent="@style/RecipientEditTextViewStyleBase">
         <item name="android:popupElevation">0dp</item>
     </style>
