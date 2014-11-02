@@ -131,7 +131,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         fragmentTransaction.commitAllowingStateLoss();
         // Set default navigation here once the ConversationListFragment is created.
         conversationListFragment.setNextFocusStartId(
-                getClfNextFocusLeftId(getFolderListFragment().isMinimized()));
+                getClfNextFocusStartId(getFolderListFragment().isMinimized()));
     }
 
     @Override
@@ -269,7 +269,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
         final ConversationListFragment clf = getConversationListFragment();
         if (clf != null) {
-            clf.setNextFocusStartId(getClfNextFocusLeftId(flf.isMinimized()));
+            clf.setNextFocusStartId(getClfNextFocusStartId(flf.isMinimized()));
 
             final SwipeableListView list = clf.getListView();
             if (list != null) {
@@ -313,7 +313,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
         }
     }
 
-    private @IdRes int getClfNextFocusLeftId(boolean drawerMinimized) {
+    private @IdRes int getClfNextFocusStartId(boolean drawerMinimized) {
         return (drawerMinimized) ? R.id.current_account_avatar : android.R.id.list;
     }
 
