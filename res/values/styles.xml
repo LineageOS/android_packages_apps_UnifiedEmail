@@ -28,6 +28,7 @@
     <!-- Compose Styles -->
     <style name="RecipientEditTextViewStyleBase" parent="@style/RecipientEditTextView">
         <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:dropDownVerticalOffset">0dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:maxLines">@integer/chips_max_lines</item>
         <item name="android:minHeight">@dimen/compose_header_min_height</item>
@@ -59,6 +60,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:background">@null</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
     </style>
 
     <style name="ComposeSubjectView" parent="@style/ComposeEditTextView">
