@@ -46,21 +46,24 @@ import com.android.mail.utils.ViewUtils;
  */
 public class MaterialSearchActionView extends LinearLayout implements TextWatcher,
         View.OnClickListener, TextView.OnEditorActionListener, View.OnKeyListener {
-    private Drawable mNormalBackgroundDrawable;
-    private Drawable mTwoPaneLandConvModeBackgroundDrawable;
-    private @DrawableRes int mNormalBackButtonDrawable;
-    private @DrawableRes int mTwoPaneLandConvModeBackButtonDrawable;
-    private @DrawableRes int mNormalClearTextButtonDrawable;
-    private @DrawableRes int mTwoPaneLandConvModeClearTextButtonDrawable;
-    private @DrawableRes int mNormalVoiceButtonDrawable;
-    private @DrawableRes int mTwoPaneLandConvModeVoiceButtonDrawable;
-    private int mNormalTextColor;
-    private int mTwoPaneLandConvModeTextColor;
+    // Dark drawables are used for when the search bar is visible (thus dark icon on light bg).
+    // Light drawables are used when we are showing the default action bar.
+    private Drawable mLightBgDrawable;
+    private Drawable mDarkBgDrawable;
+    private @DrawableRes int mLightBgBackDrawable;
+    private @DrawableRes int mDarkBgBackDrawable;
+    private @DrawableRes int mLightBgClearTextDrawable;
+    private @DrawableRes int mDarkBgClearTextDrawable;
+    private @DrawableRes int mLightBgVoiceDrawable;
+    private @DrawableRes int mDarkBgVoiceDrawable;
+    private int mLightBgTextColor;
+    private int mDarkBgTextColor;
 
     private MaterialSearchViewController mController;
     private InputMethodManager mImm;
-    private boolean mShowingClose;
     private boolean mSupportVoice;
+    private boolean mShowingClearButton;
+    private boolean mAlignWithTl;
 
     private ImageView mBackButton;
     private EditText mQueryText;
@@ -74,17 +77,16 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
         super(context, attrs);
 
         final Resources res = getResources();
-        mNormalBackgroundDrawable = new ColorDrawable(res.getColor(android.R.color.white));
-        mTwoPaneLandConvModeBackgroundDrawable =
-                new ColorDrawable(res.getColor(R.color.actionbar_color));
-        mNormalBackButtonDrawable = R.drawable.ic_arrow_back_24dp_with_rtl;
-        mTwoPaneLandConvModeBackButtonDrawable = R.drawable.ic_arrow_back_wht_24dp;
-        mNormalClearTextButtonDrawable = R.drawable.ic_close_24dp;
-        mTwoPaneLandConvModeClearTextButtonDrawable = R.drawable.ic_close_wht_24dp;
-        mNormalVoiceButtonDrawable = R.drawable.ic_mic_24dp;
-        mTwoPaneLandConvModeVoiceButtonDrawable = R.drawable.ic_mic_white_24dp;
-        mNormalTextColor = res.getColor(R.color.search_query_text);
-        mTwoPaneLandConvModeTextColor = res.getColor(android.R.color.white);
+        mLightBgDrawable = new ColorDrawable(res.getColor(android.R.color.white));
+        mDarkBgDrawable = new ColorDrawable(res.getColor(R.color.actionbar_color));
+        mLightBgBackDrawable = R.drawable.ic_arrow_back_24dp_with_rtl;
+        mDarkBgBackDrawable = R.drawable.ic_arrow_back_wht_24dp_with_rtl;
+        mLightBgClearTextDrawable = R.drawable.ic_close_24dp;
+        mDarkBgClearTextDrawable = R.drawable.ic_close_wht_24dp;
+        mLightBgVoiceDrawable = R.drawable.ic_mic_24dp;
+        mDarkBgVoiceDrawable = R.drawable.ic_mic_white_24dp;
+        mLightBgTextColor = res.getColor(R.color.search_query_text);
+        mDarkBgTextColor = res.getColor(android.R.color.white);
     }
 
     // PUBLIC API
@@ -108,17 +110,13 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
         }
     }
 
-    public void adjustViewForTwoPaneLandscape(boolean alignWithTL, int xEnd) {
+    public void adjustViewForTwoPaneLandscape(boolean alignWithTl, int xEnd) {
+        mAlignWithTl = alignWithTl;
         final ViewGroup.LayoutParams params = getLayoutParams();
-        if (alignWithTL) {
-            setBackgroundDrawable(mTwoPaneLandConvModeBackgroundDrawable);
-            mBackButton.setImageResource(mTwoPaneLandConvModeBackButtonDrawable);
-            if (mShowingClose) {
-                mEndingButton.setImageResource(mTwoPaneLandConvModeClearTextButtonDrawable);
-            } else {
-                mEndingButton.setImageResource(mTwoPaneLandConvModeVoiceButtonDrawable);
-            }
-            mQueryText.setTextColor(mTwoPaneLandConvModeTextColor);
+        if (alignWithTl) {
+            setBackgroundDrawable(mDarkBgDrawable);
+            mBackButton.setImageResource(mDarkBgBackDrawable);
+            mQueryText.setTextColor(mDarkBgTextColor);
 
             if (ViewUtils.isViewRtl(this)) {
                 int[] coords = new int[2];
@@ -128,16 +126,12 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
                 params.width = xEnd;
             }
         } else {
-            setBackgroundDrawable(mNormalBackgroundDrawable);
-            mBackButton.setImageResource(mNormalBackButtonDrawable);
-            if (mShowingClose) {
-                mEndingButton.setImageResource(mNormalClearTextButtonDrawable);
-            } else {
-                mEndingButton.setImageResource(mNormalVoiceButtonDrawable);
-            }
-            mQueryText.setTextColor(mNormalTextColor);
+            setBackgroundDrawable(mLightBgDrawable);
+            mBackButton.setImageResource(mLightBgBackDrawable);
+            mQueryText.setTextColor(mLightBgTextColor);
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         }
+        setupEndingButton(mQueryText.getText());
         setLayoutParams(params);
     }
 
@@ -182,13 +176,21 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
     private void setupEndingButton(CharSequence currentText) {
         final Resources res = getResources();
         if (!mSupportVoice || currentText.length() > 0) {
-            mShowingClose = true;
-            mEndingButton.setImageResource(R.drawable.ic_close_24dp);
+            if (mAlignWithTl) {
+                mEndingButton.setImageResource(mDarkBgClearTextDrawable);
+            } else {
+                mEndingButton.setImageResource(mLightBgClearTextDrawable);
+            }
             mEndingButton.setContentDescription(res.getString(R.string.search_clear_desc));
+            mShowingClearButton = true;
         } else {
-            mShowingClose = false;
-            mEndingButton.setImageResource(R.drawable.ic_mic_24dp);
+            if (mAlignWithTl) {
+                mEndingButton.setImageResource(mDarkBgVoiceDrawable);
+            } else {
+                mEndingButton.setImageResource(mLightBgVoiceDrawable);
+            }
             mEndingButton.setContentDescription(res.getString(R.string.search_voice_desc));
+            mShowingClearButton = false;
         }
     }
 
@@ -212,9 +214,8 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
     public void onClick(View view) {
         if (view == mBackButton) {
             mController.onSearchCanceled();
-            mQueryText.setText("");
         } else if (view == mEndingButton) {
-            if (mShowingClose) {
+            if (mShowingClearButton) {
                 mQueryText.setText("");
                 mController.showSearchActionBar(
                         MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE);
