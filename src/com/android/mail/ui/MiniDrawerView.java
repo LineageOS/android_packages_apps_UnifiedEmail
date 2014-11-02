@@ -181,6 +181,19 @@ public class MiniDrawerView extends LinearLayout {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // We want to make sure that all children get measured. These will be re-hidden in onLayout
+        // according to space constraints.
+        // This means we can't set views to Gone elsewhere, which is kind of unfortunate.
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = getChildAt(i);
+            child.setVisibility(View.VISIBLE);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (getChildCount() == 0) {
             return;
@@ -220,8 +233,9 @@ public class MiniDrawerView extends LinearLayout {
 
         // Sanity check
         if (getChildAt(getChildCount() - 1).equals(mSpacer)) {
-            LogUtils.wtf(LogUtils.TAG, "The ellipsis was the last item in the minidrawer and " +
+            LogUtils.v(LogUtils.TAG, "The ellipsis was the last item in the minidrawer and " +
                     "hiding it didn't help fit all the views");
+            return;
         }
 
         final View childToHide = getChildAt(indexOfChild(mSpacer) + 1);
@@ -239,9 +253,8 @@ public class MiniDrawerView extends LinearLayout {
             return;
         }
 
-        LogUtils.wtf(LogUtils.TAG,
-                "Hid two children in the minidrawer and still couldn't fit " +
-                        "all the views");
+        LogUtils.v(LogUtils.TAG, "Hid two children in the minidrawer and still couldn't fit " +
+                "all the views");
     }
 
     private void measureSpacer(int height) {
