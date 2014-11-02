@@ -46,7 +46,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
-import android.provider.SearchRecentSuggestions;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -87,7 +87,6 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
-import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
@@ -196,6 +195,7 @@ public abstract class AbstractActivityController implements ActivityController,
     protected final RecentFolderList mRecentFolderList;
     protected ConversationListContext mConvListContext;
     protected Conversation mCurrentConversation;
+    protected MaterialSearchViewController mSearchViewController;
     /**
      * The hash of {@link #mCurrentConversation} in detached mode. 0 if we are not in detached mode.
      */
@@ -610,12 +610,9 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
 
-        final boolean isSearch = mActivity.getIntent() != null
-                && Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction());
-        mActionBarController = isSearch ?
-                new SearchActionBarController(mContext) :
-                new ActionBarController(mContext);
+        mActionBarController = new ActionBarController(mContext);
         mActionBarController.initialize(mActivity, this, actionBar);
+        actionBar.setShowHideAnimationEnabled(false);
 
         // init the action bar to allow the 'up' affordance.
         // any configurations that disallow 'up' should do that later.
@@ -1117,7 +1114,10 @@ public abstract class AbstractActivityController implements ActivityController,
                 }
                 break;
             case CHANGE_NAVIGATION_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK && data != null) {
+                if (ViewMode.isSearchMode(mViewMode.getMode())) {
+                    mActivity.setResult(resultCode, data);
+                    mActivity.finish();
+                } else if (resultCode == Activity.RESULT_OK && data != null) {
                     // We have have received a result that indicates we need to navigate to a
                     // different folder or account. This happens if someone navigates using the
                     // drawer on the search results activity.
@@ -1129,6 +1129,17 @@ public abstract class AbstractActivityController implements ActivityController,
                     } else if (account != null) {
                         switchToDefaultInboxOrChangeAccount(account);
                         mViewMode.enterConversationListMode();
+                    }
+                }
+                break;
+            case MaterialSearchViewController.VOICE_SEARCH_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    final ArrayList<String> matches = data.getStringArrayListExtra(
+                            RecognizerIntent.EXTRA_RESULTS);
+                    if (!matches.isEmpty()) {
+                        // not sure how dependable the API is, but it's all we have.
+                        // take the top choice.
+                        mSearchViewController.onSearchPerformed(matches.get(0));
                     }
                 }
                 break;
@@ -1305,6 +1316,9 @@ public abstract class AbstractActivityController implements ActivityController,
         mDrawIdler.setRootView(mActivity.getWindow().getDecorView());
 
         final Intent intent = mActivity.getIntent();
+
+        mSearchViewController = new MaterialSearchViewController(mActivity, this, intent,
+                savedState);
 
         // Immediately handle a clean launch with intent, and any state restoration
         // that does not rely on restored fragments or loader data
@@ -1596,6 +1610,9 @@ public abstract class AbstractActivityController implements ActivityController,
             showEmptyDialog();
         } else if (id == R.id.empty_spam) {
             showEmptyDialog();
+        } else if (id == R.id.search) {
+            mSearchViewController.showSearchActionBar(
+                    MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE);
         } else {
             handled = false;
         }
@@ -1664,6 +1681,8 @@ public abstract class AbstractActivityController implements ActivityController,
     public final boolean onBackPressed() {
         if (isDrawerEnabled() && mDrawerContainer.isDrawerVisible(mDrawerPullout)) {
             mDrawerContainer.closeDrawers();
+            return true;
+        } else if (mSearchViewController.handleBackPress()) {
             return true;
         }
 
@@ -2124,6 +2143,8 @@ public abstract class AbstractActivityController implements ActivityController,
 
         outState.putBundle(SAVED_CONVERSATION_LIST_SCROLL_POSITIONS,
                 mConversationListScrollPositions);
+
+        mSearchViewController.saveState(outState);
     }
 
     /**
@@ -2141,7 +2162,8 @@ public abstract class AbstractActivityController implements ActivityController,
         intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, query);
         intent.putExtra(Utils.EXTRA_ACCOUNT, mAccount);
         intent.setComponent(mActivity.getComponentName());
-        mActionBarController.collapseSearch();
+        mSearchViewController.showSearchActionBar(
+                MaterialSearchViewController.SEARCH_VIEW_STATE_GONE);
         // Call startActivityForResult here so we can tell if we have navigated to a different folder
         // or account from search results.
         mActivity.startActivityForResult(intent, CHANGE_NAVIGATION_REQUEST_CODE);
@@ -2167,6 +2189,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mDestroyed = true;
         mHandler.removeCallbacks(mLogServiceChecker);
         mLogServiceChecker = null;
+        mSearchViewController.onDestroy();
     }
 
     /**
@@ -2403,12 +2426,9 @@ public abstract class AbstractActivityController implements ActivityController,
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                 mHaveSearchResults = false;
-                // Save this search query for future suggestions.
+                // Save this search query for future suggestions
                 final String query = intent.getStringExtra(SearchManager.QUERY);
-                final String authority = mContext.getString(R.string.suggestions_authority);
-                final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-                        mContext, authority, SuggestionsProvider.MODE);
-                suggestions.saveRecentQuery(query, null);
+                mSearchViewController.saveRecentQuery(query);
                 setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                 fetchSearchFolder(intent);
                 if (shouldEnterSearchConvMode()) {
@@ -3239,7 +3259,8 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
         if (mAccount.supportsSearch()) {
-            mActionBarController.expandSearch();
+            mSearchViewController.showSearchActionBar(
+                    MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE);
         } else {
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
                     .getString(R.string.search_unsupported), Toast.LENGTH_SHORT).show();
@@ -4559,7 +4580,6 @@ public abstract class AbstractActivityController implements ActivityController,
 
     // TODO: Fold this into the outer class when b/16627877 is fixed
     private class HomeButtonListener implements View.OnClickListener {
-
         @Override
         public void onClick(View v) {
             onUpPressed();

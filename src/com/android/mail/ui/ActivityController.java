@@ -337,4 +337,6 @@ public interface ActivityController extends LayoutListener,
     @LayoutRes int getContentViewResource();
 
     View.OnClickListener getNavigationViewClickListener();
+
+    boolean isSearchBarShowing();
 }
