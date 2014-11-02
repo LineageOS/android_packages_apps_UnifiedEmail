@@ -225,6 +225,8 @@
     <string name="download_again">Download again</string>
     <!-- A supplemental option on attachments for apps to override. This string intentionally blank here. [CHAR LIMIT=20] -->
     <string name="attachment_extra_option1" translatable="false"></string>
+    <!-- Remove this attachment [CHAR LIMIT=50] -->
+    <string name="remove_attachment_desc">Remove attachment <xliff:g id="attachmentName">%s</xliff:g></string>
     <!-- Dialog box title [CHAR LIMIT=30] -->
     <string name="more_info_attachment">Info</string>
     <!-- Dialog box message, displayed when we could not view an attachment. [CHAR LIMIT=200]-->
