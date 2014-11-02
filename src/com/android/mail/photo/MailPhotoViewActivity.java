@@ -23,6 +23,7 @@ import android.content.Intent;
 import com.android.ex.photo.Intents;
 import com.android.ex.photo.PhotoViewActivity;
 import com.android.ex.photo.PhotoViewController;
+import com.android.mail.R;
 import com.android.mail.browse.ConversationMessage;
 import com.android.mail.providers.UIProvider;
 
@@ -47,7 +48,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity implements
             final ConversationMessage msg, final int photoIndex) {
         final Intents.PhotoViewIntentBuilder builder =
                 Intents.newPhotoViewIntentBuilder(context,
-                        "com.android.mail.photo.MailPhotoViewActivity");
+                        context.getString(R.string.photo_view_activity));
         builder
                 .setPhotosUri(msg.attachmentListUri.toString())
                 .setProjection(UIProvider.ATTACHMENT_PROJECTION)
@@ -71,7 +72,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity implements
             final Context context, final String account, final ConversationMessage msg,
             final String initialPhotoUri) {
         final Intents.PhotoViewIntentBuilder builder = Intents.newPhotoViewIntentBuilder(
-                context, "com.android.mail.photo.MailPhotoViewActivity");
+                context, context.getString(R.string.photo_view_activity));
 
         builder.setPhotosUri(msg.attachmentListUri.toString())
                 .setProjection(UIProvider.ATTACHMENT_PROJECTION)
