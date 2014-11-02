@@ -122,7 +122,6 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
         if (PreferenceKeys.REMOVAL_ACTION.equals(key)) {
             final String removalAction = newValue.toString();
             mMailPrefs.setRemovalAction(removalAction);
-            updateListSwipeTitle(removalAction);
         } else if (AUTO_ADVANCE_WIDGET.equals(key)) {
             final int prefsAutoAdvanceMode =
                     AUTO_ADVANCE_VALUES[mAutoAdvance.findIndexOfValue((String) newValue)];
@@ -204,9 +203,6 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
                 mMailPrefs.getAutoAdvanceMode(), AutoAdvance.DEFAULT);
         mAutoAdvance.setValueIndex(autoAdvanceModeIndex);
 
-        final String removalAction = mMailPrefs.getRemovalAction(supportsArchive());
-        updateListSwipeTitle(removalAction);
-
         listenForPreferenceChange(
                 PreferenceKeys.REMOVAL_ACTION,
                 PreferenceKeys.CONVERSATION_LIST_SWIPE,
@@ -257,12 +253,5 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
                 p.setOnPreferenceChangeListener(this);
             }
         }
-    }
-
-    private void updateListSwipeTitle(final String removalAction) {
-        final CheckBoxPreference listSwipePreference = (CheckBoxPreference)
-                findPreference(MailPrefs.PreferenceKeys.CONVERSATION_LIST_SWIPE);
-        listSwipePreference.setTitle(MailPrefs.RemovalActions.DELETE.equals(removalAction) ?
-                R.string.preference_swipe_title_delete : R.string.preference_swipe_title_archive);
     }
 }
