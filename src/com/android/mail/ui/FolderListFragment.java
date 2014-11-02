@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -220,36 +221,13 @@ public class FolderListFragment extends ListFragment implements
     // TODO: but Material account switcher doesn't recycle...
     private int mMiniDrawerAvatarDecodeSize;
 
-    private AnimatorListenerAdapter mMiniDrawerFadeOutListener = new AnimatorListenerAdapter() {
-        private boolean mCanceled;
+    private AnimatorListenerAdapter mMiniDrawerFadeOutListener;
+    private AnimatorListenerAdapter mListViewFadeOutListener;
+    private AnimatorListenerAdapter mMiniDrawerFadeInListener;
+    private AnimatorListenerAdapter mListViewFadeInListener;
 
-        @Override
-        public void onAnimationCancel(Animator animation) {
-            mCanceled = true;
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            if (!mCanceled) {
-                mMiniDrawerView.setVisibility(View.INVISIBLE);
-            }
-        }
-    };
-    private AnimatorListenerAdapter mListViewFadeOutListener = new AnimatorListenerAdapter() {
-        private boolean mCanceled;
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-            mCanceled = true;
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            if (!mCanceled) {
-                mListView.setVisibility(View.INVISIBLE);
-            }
-        }
-    };
+    private ObjectAnimator mCurrentMiniDrawerAnimator;
+    private ObjectAnimator mCurrentListViewAnimator;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -515,6 +493,12 @@ public class FolderListFragment extends ListFragment implements
         }
 
         mMiniDrawerView = (MiniDrawerView) rootView.findViewById(R.id.mini_drawer);
+
+        // Create default animator listeners
+        mMiniDrawerFadeOutListener = new FadeAnimatorListener(mMiniDrawerView, true /* fadeOut */);
+        mListViewFadeOutListener = new FadeAnimatorListener(mListView, true /* fadeOut */);
+        mMiniDrawerFadeInListener = new FadeAnimatorListener(mMiniDrawerView, false /* fadeOut */);
+        mListViewFadeInListener = new FadeAnimatorListener(mListView, false /* fadeOut */);
 
         return rootView;
     }
@@ -809,34 +793,53 @@ public class FolderListFragment extends ListFragment implements
 
         mIsMinimized = minimized;
 
+        // Cancel any current running animation if exists
+        if (mCurrentMiniDrawerAnimator != null) {
+            mCurrentMiniDrawerAnimator.cancel();
+        }
+        if (mCurrentListViewAnimator != null) {
+            mCurrentListViewAnimator.cancel();
+        }
+
+        Utils.enableHardwareLayer(mMiniDrawerView);
+        Utils.enableHardwareLayer(mListView);
         if (mIsMinimized) {
             // From the current state (either maximized or partially dragged) to minimized.
             final float startAlpha = mListView.getAlpha();
             final long duration = (long) (startAlpha * DRAWER_FADE_VELOCITY_MS_PER_ALPHA);
             mMiniDrawerView.setVisibility(View.VISIBLE);
-            mMiniDrawerView.animate()
-                    .alpha(1f)
-                    .setDuration(duration)
-                    .setListener(null);
-            mListView.animate()
-                    .alpha(0f)
-                    .setDuration(duration)
-                    .setListener(mListViewFadeOutListener);
+
+            // Animate the mini-drawer to fade in.
+            mCurrentMiniDrawerAnimator = createFadeAnimation(mMiniDrawerView, 1f, duration,
+                    mMiniDrawerFadeInListener);
+            // Animate the list view to fade out.
+            mCurrentListViewAnimator = createFadeAnimation(mListView, 0f, duration,
+                    mListViewFadeOutListener);
         } else {
             // From the current state (either minimized or partially dragged) to maximized.
             final float startAlpha = mMiniDrawerView.getAlpha();
             final long duration = (long) (startAlpha * DRAWER_FADE_VELOCITY_MS_PER_ALPHA);
-            mMiniDrawerView.animate()
-                    .alpha(0f)
-                    .setDuration(duration)
-                    .setListener(mMiniDrawerFadeOutListener);
             mListView.setVisibility(View.VISIBLE);
-            mListView.animate()
-                    .alpha(1f)
-                    .setDuration(duration)
-                    .setListener(null);
             mListView.requestFocus();
+
+            // Animate the mini-drawer to fade out.
+            mCurrentMiniDrawerAnimator = createFadeAnimation(mMiniDrawerView, 0f, duration,
+                    mMiniDrawerFadeOutListener);
+            // Animate the list view to fade in.
+            mCurrentListViewAnimator = createFadeAnimation(mListView, 1f, duration,
+                    mListViewFadeInListener);
         }
+
+        mCurrentMiniDrawerAnimator.start();
+        mCurrentListViewAnimator.start();
+    }
+
+    private ObjectAnimator createFadeAnimation(View v, float alpha, long duration,
+            AnimatorListenerAdapter listener) {
+        final ObjectAnimator anim = ObjectAnimator.ofFloat(v, "alpha", alpha);
+        anim.setDuration(duration);
+        anim.addListener(listener);
+        return anim;
     }
 
     public void onDrawerDrag(float percent) {
@@ -1719,6 +1722,43 @@ public class FolderListFragment extends ListFragment implements
 
     protected ListAdapter getMiniDrawerAccountsAdapter() {
         return mMiniDrawerAccountsAdapter;
+    }
+
+    private static class FadeAnimatorListener extends AnimatorListenerAdapter {
+        private boolean mCanceled;
+        private final View mView;
+        private final boolean mFadeOut;
+
+        FadeAnimatorListener(View v, boolean fadeOut) {
+            mView = v;
+            mFadeOut = fadeOut;
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+            if (!mFadeOut) {
+                mView.setVisibility(View.VISIBLE);
+            }
+            mCanceled = false;
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            mCanceled = true;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (!mCanceled) {
+                // Only need to set visibility to INVISIBLE for fade-out and not fade-in.
+                if (mFadeOut) {
+                    mView.setVisibility(View.INVISIBLE);
+                }
+                // If the animation is canceled, then the next animation onAnimationEnd will disable
+                // the hardware layer.
+                mView.setLayerType(View.LAYER_TYPE_NONE, null);
+            }
+        }
     }
 
 }
