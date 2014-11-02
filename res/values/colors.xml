@@ -53,6 +53,8 @@
     <color name="account_item_selected_text_color">@color/mail_app_blue</color>
     <color name="folder_list_heading_text_color">@color/light_gray</color>
     <color name="list_background_color">@android:color/white</color>
+    <!-- overridden in sw600dp -->
+    <color name="folder_list_divider_color">@color/divider_color</color>
 
     <!-- Compose colors -->
     <color name="compose_label_text">@color/text_color_grey</color>
