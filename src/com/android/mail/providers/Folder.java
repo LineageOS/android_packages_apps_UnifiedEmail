@@ -22,10 +22,12 @@ import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.StateSet;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -637,6 +639,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         }
     }
 
+    private static final int[] ACTIVATED_STATE_LIST = new int[] {android.R.attr.state_activated};
+
     public static void setIcon(Folder folder, ImageView iconView) {
         if (iconView == null) {
             return;
@@ -649,14 +653,31 @@ public class Folder implements Parcelable, Comparable<Folder> {
         }
 
         if (icon > 0) {
-            final Drawable iconDrawable = iconView.getResources().getDrawable(icon);
-            if (iconDrawable != null &&
-                    folder.supportsCapability(UIProvider.FolderCapabilities.TINT_ICON)) {
-                // Default multiply by white
-                iconDrawable.mutate().setColorFilter(folder.getBackgroundColor(0xFFFFFF),
-                        PorterDuff.Mode.MULTIPLY);
+            final Drawable defaultIconDrawable = iconView.getResources().getDrawable(icon);
+            if (defaultIconDrawable != null) {
+                final Drawable iconDrawable;
+                if (folder.supportsCapability(UIProvider.FolderCapabilities.TINT_ICON)) {
+                    // Default multiply by white
+                    defaultIconDrawable.mutate().setColorFilter(folder.getBackgroundColor(0xFFFFFF),
+                            PorterDuff.Mode.MULTIPLY);
+                    iconDrawable = defaultIconDrawable;
+                } else {
+                    final StateListDrawable listDrawable = new StateListDrawable();
+
+                    final Drawable activatedIconDrawable =
+                            iconView.getResources().getDrawable(icon);
+                    activatedIconDrawable.mutate().setColorFilter(0xff000000,
+                            PorterDuff.Mode.MULTIPLY);
+
+                    listDrawable.addState(ACTIVATED_STATE_LIST, activatedIconDrawable);
+                    listDrawable.addState(StateSet.WILD_CARD, defaultIconDrawable);
+
+                    iconDrawable = listDrawable;
+                }
+                iconView.setImageDrawable(iconDrawable);
+            } else {
+                iconView.setImageDrawable(null);
             }
-            iconView.setImageDrawable(iconDrawable);
         } else {
             LogUtils.e(LogUtils.TAG, "No icon returned for folder %s", folder);
         }
