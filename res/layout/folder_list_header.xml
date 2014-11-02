@@ -37,7 +37,6 @@
         android:gravity="bottom"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textAllCaps="true"
         android:textColor="@color/folder_list_heading_text_color"
         android:paddingLeft="@dimen/folder_list_heading_padding_side"
         android:paddingRight="@dimen/folder_list_heading_padding_side"
