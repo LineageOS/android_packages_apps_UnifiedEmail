@@ -173,6 +173,9 @@
     <color name="snack_bar_background_color">#323232</color>
     <color name="snack_bar_action_text_color">#f4b400</color>
 
-    <color name="conversation_item_blue_background">#ccf2f7</color>
     <color name="conversation_list_background_color">@android:color/transparent</color>
+    <color name="conversation_item_blue_background_color">#e3edfe</color>
+    <color name="conversation_item_grey_background_color">#ececec</color>
+    <color name="conversation_item_grey_pressed_color">#d9d9d9</color>
+    <color name="conversation_item_grey_ripple_color">#20444444</color>
 </resources>
