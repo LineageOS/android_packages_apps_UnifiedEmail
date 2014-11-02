@@ -119,6 +119,16 @@ public final class MailPrefs extends VersionedPrefs {
 
         public static final String REQUIRED_SANITIZER_VERSION_NUMBER = "required-sanitizer-version-number";
 
+        public static final String MIGRATION_STATE = "migration-state";
+
+        // State indicating that no migration has yet occurred.
+        public static final int MIGRATION_STATE_NONE = 0;
+        // State indicating that we have migrated imap and pop accounts, but not
+        // Exchange accounts.
+        public static final int MIGRATION_STATE_IMAP_POP = 1;
+        // State indicating that we have migrated all accounts.
+        public static final int MIGRATION_STATE_ALL = 2;
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
@@ -520,6 +530,15 @@ public final class MailPrefs extends VersionedPrefs {
 
     public int getSnapHeaderDefault() {
         return mSnapHeaderDefault;
+    }
+
+    public int getMigrationState() {
+        return getSharedPreferences()
+                .getInt(PreferenceKeys.MIGRATION_STATE, PreferenceKeys.MIGRATION_STATE_NONE);
+    }
+
+    public void setMigrationState(final int state) {
+        getEditor().putInt(PreferenceKeys.MIGRATION_STATE, state).apply();
     }
 
     public Set<String> getRecentAccounts() {
