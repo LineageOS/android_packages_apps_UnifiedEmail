@@ -167,7 +167,8 @@
     <color name="statusbar_orange">#d06d0c</color>
 
     <color name="actionbar_color">@color/mail_orange</color>
-    <color name="statusbar_color">@color/statusbar_orange</color>
+    <color name="primary_dark_color">@color/statusbar_orange</color>
+    <color name="mail_activity_status_bar_color">#00000000</color>
     <color name="action_mode_background">@color/text_color_grey</color>
     <color name="action_mode_statusbar_color">#616161</color>
 
