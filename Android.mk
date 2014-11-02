@@ -53,6 +53,9 @@ LOCAL_AAPT_FLAGS := --auto-add-overlay
 LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo:android.support.v7.appcompat:android.support.v7.gridlayout:com.android.bitmap:com.android.datetimepicker
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+ifeq (eng,$(TARGET_BUILD_VARIANT))
+  LOCAL_PROGUARD_FLAG_FILES += proguard-test.flags
+endif
 
 LOCAL_EMMA_COVERAGE_FILTER := +com.android.mail.*, +com.android.emailcommon.*, +com.google.android.mail.*
 
