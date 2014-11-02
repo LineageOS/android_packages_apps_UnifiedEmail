@@ -230,20 +230,16 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
      * conditions are properly set to the correct visibility
      */
     public void validateVolatileMenuOptionVisibility() {
-        if (mEmptyTrashItem != null) {
-            mEmptyTrashItem.setVisible(mAccount != null && mFolder != null
-                    && mAccount.supportsCapability(AccountCapabilities.EMPTY_TRASH)
-                    && mFolder.isTrash() && mFolder.totalCount > 0
-                    && (mController.getConversationListCursor() == null
-                    || mController.getConversationListCursor().getCount() > 0));
-        }
-        if (mEmptySpamItem != null) {
-            mEmptySpamItem.setVisible(mAccount != null && mFolder != null
-                    && mAccount.supportsCapability(AccountCapabilities.EMPTY_SPAM)
-                    && mFolder.isType(FolderType.SPAM) && mFolder.totalCount > 0
-                    && (mController.getConversationListCursor() == null
-                    || mController.getConversationListCursor().getCount() > 0));
-        }
+        Utils.setMenuItemPresent(mEmptyTrashItem, mAccount != null && mFolder != null
+                && mAccount.supportsCapability(AccountCapabilities.EMPTY_TRASH)
+                && mFolder.isTrash() && mFolder.totalCount > 0
+                && (mController.getConversationListCursor() == null
+                || mController.getConversationListCursor().getCount() > 0));
+        Utils.setMenuItemPresent(mEmptySpamItem, mAccount != null && mFolder != null
+                && mAccount.supportsCapability(AccountCapabilities.EMPTY_SPAM)
+                && mFolder.isType(FolderType.SPAM) && mFolder.totalCount > 0
+                && (mController.getConversationListCursor() == null
+                || mController.getConversationListCursor().getCount() > 0));
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -276,7 +272,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
             case ViewMode.CONVERSATION_LIST:
             case ViewMode.SEARCH_RESULTS_LIST:
                 // The search menu item should only be visible for non-tablet devices
-                Utils.setMenuItemVisibility(menu, R.id.search,
+                Utils.setMenuItemPresent(menu, R.id.search,
                         mAccount.supportsSearch() && !mIsOnTablet);
         }
 
@@ -395,36 +391,36 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
             return;
         }
         final boolean showMarkImportant = !mCurrentConversation.isImportant();
-        Utils.setMenuItemVisibility(menu, R.id.mark_important, showMarkImportant
+        Utils.setMenuItemPresent(menu, R.id.mark_important, showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        Utils.setMenuItemVisibility(menu, R.id.mark_not_important, !showMarkImportant
+        Utils.setMenuItemPresent(menu, R.id.mark_not_important, !showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
         final boolean isOutbox = mFolder.isType(FolderType.OUTBOX);
         final boolean showDiscardOutbox = mFolder != null && isOutbox &&
                 mCurrentConversation.sendingState == UIProvider.ConversationSendingState.SEND_ERROR;
-        Utils.setMenuItemVisibility(menu, R.id.discard_outbox, showDiscardOutbox);
+        Utils.setMenuItemPresent(menu, R.id.discard_outbox, showDiscardOutbox);
         final boolean showDelete = !isOutbox && mFolder != null &&
                 mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
-        Utils.setMenuItemVisibility(menu, R.id.delete, showDelete);
+        Utils.setMenuItemPresent(menu, R.id.delete, showDelete);
         // We only want to show the discard drafts menu item if we are not showing the delete menu
         // item, and the current folder is a draft folder and the account supports discarding
         // drafts for a conversation
         final boolean showDiscardDrafts = !showDelete && mFolder != null && mFolder.isDraft() &&
                 mAccount.supportsCapability(AccountCapabilities.DISCARD_CONVERSATION_DRAFTS);
-        Utils.setMenuItemVisibility(menu, R.id.discard_drafts, showDiscardDrafts);
+        Utils.setMenuItemPresent(menu, R.id.discard_drafts, showDiscardDrafts);
         final boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
                 && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
                 && !mFolder.isTrash();
-        Utils.setMenuItemVisibility(menu, R.id.archive, archiveVisible);
-        Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
+        Utils.setMenuItemPresent(menu, R.id.archive, archiveVisible);
+        Utils.setMenuItemPresent(menu, R.id.remove_folder, !archiveVisible && mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
                 && !mFolder.isProviderFolder()
                 && mAccount.supportsCapability(AccountCapabilities.ARCHIVE));
-        Utils.setMenuItemVisibility(menu, R.id.move_to, mFolder != null
+        Utils.setMenuItemPresent(menu, R.id.move_to, mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_REMOVE_CONVERSATION));
-        Utils.setMenuItemVisibility(menu, R.id.move_to_inbox, mFolder != null
+        Utils.setMenuItemPresent(menu, R.id.move_to_inbox, mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.ALLOWS_MOVE_TO_INBOX));
-        Utils.setMenuItemVisibility(menu, R.id.change_folders, mAccount.supportsCapability(
+        Utils.setMenuItemPresent(menu, R.id.change_folders, mAccount.supportsCapability(
                 UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV));
 
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
@@ -432,20 +428,20 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
             removeFolder.setTitle(mActivity.getApplicationContext().getString(
                     R.string.remove_folder, mFolder.name));
         }
-        Utils.setMenuItemVisibility(menu, R.id.report_spam,
+        Utils.setMenuItemPresent(menu, R.id.report_spam,
                 mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM)
                         && !mCurrentConversation.spam);
-        Utils.setMenuItemVisibility(menu, R.id.mark_not_spam,
+        Utils.setMenuItemPresent(menu, R.id.mark_not_spam,
                 mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.MARK_NOT_SPAM)
                         && mCurrentConversation.spam);
-        Utils.setMenuItemVisibility(menu, R.id.report_phishing,
+        Utils.setMenuItemPresent(menu, R.id.report_phishing,
                 mAccount.supportsCapability(AccountCapabilities.REPORT_PHISHING) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.REPORT_PHISHING)
                         && !mCurrentConversation.phishing);
-        Utils.setMenuItemVisibility(menu, R.id.mute,
-                        mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
+        Utils.setMenuItemPresent(menu, R.id.mute,
+                mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)
                         && !mCurrentConversation.muted);
     }
