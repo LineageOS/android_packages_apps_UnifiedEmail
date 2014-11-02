@@ -265,7 +265,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mMiscellaneousView.setVisibility(cvOnScreen ? VISIBLE : INVISIBLE);
 
         if (mConversationListLayoutListener != null) {
-            mConversationListLayoutListener.onConversationListLayout(isRtl ? listX : convX);
+            mConversationListLayoutListener.onConversationListLayout(
+                    isRtl ? listX : convX, isDrawerOpen());
         }
 
         mPositionedMode = mCurrentMode;
@@ -478,6 +479,6 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     }
 
     public interface ConversationListLayoutListener {
-        void onConversationListLayout(int xEnd);
+        void onConversationListLayout(int xEnd, boolean drawerOpen);
     }
 }
