@@ -312,6 +312,16 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     }
 
     /**
+     * Returns the number of content items this adapter contains. Headers are not included in the
+     * content count because their availability is not affected by the underlying cursor.
+     *
+     * <b>Note that this count still includes the teasers since they are separate from headers.</b>
+     */
+    public int getContentCount() {
+        return getCount() - mHeaders.size();
+    }
+
+    /**
      * Add a conversation to the undo set, but only if its deletion is still cached. If the
      * deletion has already been written through and the cursor doesn't have it anymore, we can't
      * handle it here, and should instead rely on the cursor refresh to restore the item.
