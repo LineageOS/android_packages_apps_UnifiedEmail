@@ -57,9 +57,6 @@
 
     <dimen name="action_bar_content_inset_start">60dp</dimen>
 
-    <dimen name="vacation_responder_width_tablet">800dp</dimen>
-    <dimen name="vacation_responder_padding_horizontal">80dp</dimen>
-
     <dimen name="snack_bar_min_width">288dp</dimen>
     <dimen name="snack_bar_max_width">320dp</dimen>
 </resources>
