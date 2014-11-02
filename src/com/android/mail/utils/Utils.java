@@ -141,9 +141,7 @@ public class Utils {
     }
 
     public static boolean isRunningLOrLater() {
-        //TODO: Update this to the L SDK once defined. Right now it is fine to use the watch
-        // build version number, as this app woll not be running on watch devices
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     /**
