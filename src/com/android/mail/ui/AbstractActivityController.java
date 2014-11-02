@@ -1673,6 +1673,10 @@ public abstract class AbstractActivityController implements ActivityController,
             return true;
         } else if (mSearchViewController.handleBackPress()) {
             return true;
+        // If we're in CAB mode, let the activity handle onBackPressed.
+        // It will handle closing CAB mode for us.
+        } else if (mCabActionMenu != null && mCabActionMenu.isActivated()) {
+            return false;
         }
 
         return handleBackPress();
