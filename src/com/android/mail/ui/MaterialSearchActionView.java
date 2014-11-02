@@ -91,14 +91,6 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
     }
 
     @Override
-    public void setVisibility(int visibility) {
-        if (visibility != VISIBLE) {
-            mQueryText.setText("");
-        }
-        super.setVisibility(visibility);
-    }
-
-    @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
         // Only care about onTextChanged
     }
