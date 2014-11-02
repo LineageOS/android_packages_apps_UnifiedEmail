@@ -31,7 +31,9 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:foregroundGravity="fill_horizontal|top"
+            android:foreground="?android:attr/windowContentOverlay" >
 
             <FrameLayout
                 android:id="@+id/content_pane"
@@ -44,7 +46,6 @@
 
             <include layout="@layout/search_suggestion_list" />
 
-            <include layout="@layout/pre_l_actionbar_shadow" />
         </FrameLayout>
 
     </LinearLayout>
