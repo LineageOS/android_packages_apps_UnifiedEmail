@@ -192,8 +192,8 @@ public class SendersView {
                     statusText = sSendingString;
                     span = sSendingStyleSpan;
                 } else if (sendingStatus == UIProvider.ConversationSendingState.RETRYING) {
-                    statusText = sRetryingString;
-                    span = sRetryingStyleSpan;
+                    statusText = sSendingString;
+                    span = sSendingStyleSpan;
                 } else {
                     statusText = sFailedString;
                     span = sFailedStyleSpan;
