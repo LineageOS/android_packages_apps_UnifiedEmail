@@ -654,10 +654,12 @@ public final class ConversationListFragment extends Fragment implements
                     keyCode == KeyEvent.KEYCODE_DPAD_DOWN) &&
                     keyEvent.getAction() == KeyEvent.ACTION_UP) {
                 final int position = list.getSelectedItemPosition();
-                final Object item = getAnimatedAdapter().getItem(position);
-                if (item != null && item instanceof ConversationCursor) {
-                    final Conversation conv = ((ConversationCursor) item).getConversation();
-                    mCallbacks.onConversationFocused(conv);
+                if (position >= 0) {
+                    final Object item = getAnimatedAdapter().getItem(position);
+                    if (item != null && item instanceof ConversationCursor) {
+                        final Conversation conv = ((ConversationCursor) item).getConversation();
+                        mCallbacks.onConversationFocused(conv);
+                    }
                 }
             }
         }
