@@ -100,7 +100,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
     @Override
     public void onViewModeChanged(int newMode) {
-        if (mController.isSearchBarShowing()) {
+        if (mController.shouldShowSearchBarByDefault()) {
             showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
         } else if (mViewMode == 0) {
             showSearchActionBar(mViewState);
@@ -111,10 +111,11 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     public boolean handleBackPress() {
-        if (mController.isSearchBarShowing() && mSearchSuggestionList.isShown()) {
+        final boolean shouldShowSearchBar = mController.shouldShowSearchBarByDefault();
+        if (shouldShowSearchBar && mSearchSuggestionList.isShown()) {
             showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
             return true;
-        } else if (mSearchActionView.isShown()) {
+        } else if (!shouldShowSearchBar && mSearchActionView.isShown()) {
             showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_GONE);
             return true;
         }
@@ -127,7 +128,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
         switch (state) {
             case MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR:
                 // Only actionbar is only applicable in search mode
-                if (mController.isSearchBarShowing()) {
+                if (mController.shouldShowSearchBarByDefault()) {
                     mSearchActionView.setVisibility(View.VISIBLE);
                     mSearchActionViewShadow.setVisibility(View.VISIBLE);
                     mSearchSuggestionList.setVisibility(View.GONE);
@@ -136,10 +137,10 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
                 }
                 // Fallthrough to setting everything invisible
             case MaterialSearchViewController.SEARCH_VIEW_STATE_GONE:
+                mSearchActionView.focusSearchBar(false);
                 mSearchActionView.setVisibility(View.GONE);
                 mSearchActionViewShadow.setVisibility(View.GONE);
                 mSearchSuggestionList.setVisibility(View.GONE);
-                mSearchActionView.focusSearchBar(false);
                 break;
             case MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE:
                 mSearchActionView.setVisibility(View.VISIBLE);
