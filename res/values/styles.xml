@@ -973,10 +973,13 @@
     </style>
 
     <style name="SearchViewLeadingButton">
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">32dp</item>
+        <item name="android:paddingLeft">@dimen/search_leading_button_padding_start</item>
+        <item name="android:paddingRight">@dimen/search_leading_button_padding_end</item>
         <item name="android:scaleType">center</item>
+    </style>
+
+    <style name="SearchSuggestionTextStyle">
+        <item name="android:paddingRight">@dimen/search_suggestion_padding</item>
     </style>
 
     <style name="AccountItemNameStyle">
