@@ -304,7 +304,7 @@
     </style>
 
     <style name="AbstractMessageHeaderSubtitleStyle">
-        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
         <item name="android:textSize">@dimen/message_header_subtitle_text_size</item>
         <item name="android:textColor">@color/conversation_view_text_color_light</item>
         <item name="android:textColorLink">@color/conversation_view_text_color_link_blue</item>
