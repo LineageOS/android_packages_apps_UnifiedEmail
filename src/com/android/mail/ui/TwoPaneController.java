@@ -281,9 +281,6 @@ public final class TwoPaneController extends AbstractActivityController implemen
         mSavedMiscellaneousView = false;
 
         super.onViewModeChanged(newMode);
-        if (!isConversationOnlyMode()) {
-            mFloatingComposeButton.setVisibility(View.VISIBLE);
-        }
         if (newMode != ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
             // Clear the wait fragment
             hideWaitForInitialization();
@@ -333,6 +330,12 @@ public final class TwoPaneController extends AbstractActivityController implemen
             ab.setHomeActionContentDescription(
                     isDrawerOpen() ? R.string.drawer_close : R.string.drawer_open);
         }
+    }
+
+    @Override
+    protected boolean isComposeVisible(int mode) {
+        return super.isComposeVisible(mode) ||
+                (mIsTabletLandscape && mode == ViewMode.CONVERSATION);
     }
 
     /**
