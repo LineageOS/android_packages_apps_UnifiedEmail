@@ -84,10 +84,13 @@ public class MailIntentService extends IntentService {
                     null, 0);
         } else if (ACTION_RESEND_NOTIFICATIONS.equals(action)) {
             final Uri accountUri = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT_URI);
-            final Uri folderUri = intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
 
-            NotificationUtils.resendNotifications(this, false, accountUri,
-                    new FolderUri(folderUri), getContactFetcher());
+            final Uri extraFolderUri = intent.getParcelableExtra(Utils.EXTRA_FOLDER_URI);
+            final FolderUri folderUri =
+                    extraFolderUri == null ? null : new FolderUri(extraFolderUri);
+
+            NotificationUtils.resendNotifications(
+                    this, false, accountUri, folderUri, getContactFetcher());
         } else if (ACTION_RESEND_NOTIFICATIONS_WEAR.equals(action)) {
             final Account account = intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
             final Folder folder = intent.getParcelableExtra(Utils.EXTRA_FOLDER);
