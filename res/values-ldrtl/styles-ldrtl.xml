@@ -131,9 +131,8 @@
         <item name="android:layout_marginEnd">@dimen/compose_button_margin_side</item>
     </style>
 
-    <style name="SnackBarActionTextStyle">
-        <item name="android:layout_gravity">end</item>
-        <item name="android:paddingEnd">@dimen/snack_bar_margin_horizontal</item>
+    <style name="SnackBarDescriptionTextStyle">
+        <item name="android:layout_marginStart">@dimen/snack_bar_margin_horizontal</item>
     </style>
 
     <style name="MiniDrawerFolderStyle" parent="@style/MiniDrawerFolderStyleBase">

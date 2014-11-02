@@ -235,8 +235,14 @@
     </style>
 
     <style name="SnackBarActionTextStyle">
-        <item name="android:layout_gravity">right</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:paddingLeft">@dimen/snack_bar_margin_horizontal</item>
         <item name="android:paddingRight">@dimen/snack_bar_margin_horizontal</item>
+    </style>
+
+    <style name="SnackBarDescriptionTextStyle">
+        <item name="android:layout_marginLeft">@dimen/snack_bar_margin_horizontal</item>
     </style>
 
     <!-- Undo bar styles -->
