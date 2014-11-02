@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -39,6 +41,8 @@ import java.util.Locale;
  */
 public class MaterialSearchViewController implements ViewMode.ModeChangeListener,
         TwoPaneLayout.ConversationListLayoutListener {
+    private static final long FADE_IN_OUT_DURATION_MS = 150;
+
     // The controller is not in search mode. Both search action bar and the suggestion list
     // are not visible to the user.
     public static final int SEARCH_VIEW_STATE_GONE = 0;
@@ -112,13 +116,15 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
     @Override
     public void onViewModeChanged(int newMode) {
+        final int oldMode = mViewMode;
         mViewMode = newMode;
-        if (mController.shouldShowSearchBarByDefault()) {
-            showSearchActionBar(SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
-        } else if (mViewMode == 0) {
-            showSearchActionBar(mControllerState);
+        // Never animate visibility changes that are caused by view state changes.
+        if (mController.shouldShowSearchBarByDefault(mViewMode)) {
+            showSearchActionBar(SEARCH_VIEW_STATE_ONLY_ACTIONBAR, false /* animate */);
+        } else if (oldMode == ViewMode.UNKNOWN) {
+            showSearchActionBar(mControllerState, false /* animate */);
         } else {
-            showSearchActionBar(SEARCH_VIEW_STATE_GONE);
+            showSearchActionBar(SEARCH_VIEW_STATE_GONE, false /* animate */);
         }
     }
 
@@ -129,16 +135,17 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
             // This is called when we get into tablet landscape mode
             mEndXCoordForTabletLandscape = xEnd;
             if (ViewMode.isSearchMode(mViewMode)) {
-                final int defaultVisibility = mController.shouldShowSearchBarByDefault() ?
+                final int defaultVisibility = mController.shouldShowSearchBarByDefault(mViewMode) ?
                         View.VISIBLE : View.GONE;
-                mSearchActionView.setVisibility(drawerOpen ? View.INVISIBLE : defaultVisibility);
+                setViewVisibilityAndAlpha(mSearchActionView,
+                        drawerOpen ? View.INVISIBLE : defaultVisibility);
             }
             adjustViewForTwoPaneLandscape();
         }
     }
 
     public boolean handleBackPress() {
-        final boolean shouldShowSearchBar = mController.shouldShowSearchBarByDefault();
+        final boolean shouldShowSearchBar = mController.shouldShowSearchBarByDefault(mViewMode);
         if (shouldShowSearchBar && mSearchSuggestionList.isShown()) {
             showSearchActionBar(SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
             return true;
@@ -149,38 +156,94 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
         return false;
     }
 
-    // Should use the view states specified in MaterialSearchViewController
+    /**
+     * Set the new visibility state of the search controller.
+     * @param state the new view state, must be one of the following options:
+     *   {@link MaterialSearchViewController#SEARCH_VIEW_STATE_ONLY_ACTIONBAR},
+     *   {@link MaterialSearchViewController#SEARCH_VIEW_STATE_VISIBLE},
+     *   {@link MaterialSearchViewController#SEARCH_VIEW_STATE_GONE},
+     */
     public void showSearchActionBar(int state) {
-        if (mControllerState != state) {
-            mControllerState = state;
+        // By default animate the visibility changes
+        showSearchActionBar(state, true /* animate */);
+    }
 
-            // ACTIONBAR is only applicable in search mode
-            final boolean onlyActionBar = state == SEARCH_VIEW_STATE_ONLY_ACTIONBAR &&
-                    mController.shouldShowSearchBarByDefault();
-            final boolean isStateVisible = state == SEARCH_VIEW_STATE_VISIBLE;
+    /**
+     * @param animate if true, the search bar and suggestion list will fade in/out of view.
+     */
+    public void showSearchActionBar(int state, boolean animate) {
+        mControllerState = state;
 
-            final boolean isSearchBarVisible = isStateVisible || onlyActionBar;
-            mSearchActionView.setVisibility(isSearchBarVisible ? View.VISIBLE : View.GONE);
-            mSearchSuggestionList.setVisibility(isStateVisible ? View.VISIBLE : View.GONE);
-            mSearchActionView.focusSearchBar(isStateVisible);
+        // ACTIONBAR is only applicable in search mode
+        final boolean onlyActionBar = state == SEARCH_VIEW_STATE_ONLY_ACTIONBAR &&
+                mController.shouldShowSearchBarByDefault(mViewMode);
+        final boolean isStateVisible = state == SEARCH_VIEW_STATE_VISIBLE;
 
-            final boolean useDefaultColor = !isSearchBarVisible || shouldAlignWithTl();
-            final int statusBarColor = useDefaultColor ? R.color.mail_activity_status_bar_color :
-                    R.color.search_status_bar_color;
-            ViewUtils.setStatusBarColor(mActivity, statusBarColor);
+        final boolean isSearchBarVisible = isStateVisible || onlyActionBar;
 
-            // Specific actions for each view state
-            if (onlyActionBar) {
-                adjustViewForTwoPaneLandscape();
-            } else if (isStateVisible) {
-                // Set to default layout/assets
-                mSearchActionView.adjustViewForTwoPaneLandscape(false /* do not align */, 0);
-            } else {
-                // For non-search view mode, clear the query term for search
-                if (!ViewMode.isSearchMode(mViewMode)) {
-                    mSearchActionView.clearSearchQuery();
-                }
+        final int searchBarVisibility = isSearchBarVisible ? View.VISIBLE : View.GONE;
+        final int suggestionListVisibility = isStateVisible ? View.VISIBLE : View.GONE;
+        if (animate) {
+            fadeInOutView(mSearchActionView, searchBarVisibility);
+            fadeInOutView(mSearchSuggestionList, suggestionListVisibility);
+        } else {
+            setViewVisibilityAndAlpha(mSearchActionView, searchBarVisibility);
+            setViewVisibilityAndAlpha(mSearchSuggestionList, suggestionListVisibility);
+        }
+        mSearchActionView.focusSearchBar(isStateVisible);
+
+        final boolean useDefaultColor = !isSearchBarVisible || shouldAlignWithTl();
+        final int statusBarColor = useDefaultColor ? R.color.mail_activity_status_bar_color :
+                R.color.search_status_bar_color;
+        ViewUtils.setStatusBarColor(mActivity, statusBarColor);
+
+        // Specific actions for each view state
+        if (onlyActionBar) {
+            adjustViewForTwoPaneLandscape();
+        } else if (isStateVisible) {
+            // Set to default layout/assets
+            mSearchActionView.adjustViewForTwoPaneLandscape(false /* do not align */, 0);
+        } else {
+            // For non-search view mode, clear the query term for search
+            if (!ViewMode.isSearchMode(mViewMode)) {
+                mSearchActionView.clearSearchQuery();
             }
+        }
+    }
+
+    /**
+     * Helper function to fade in/out the provided view by animating alpha.
+     */
+    private void fadeInOutView(final View v, final int visibility) {
+        if (visibility == View.VISIBLE) {
+            v.setVisibility(View.VISIBLE);
+            v.animate()
+                    .alpha(1f)
+                    .setDuration(FADE_IN_OUT_DURATION_MS)
+                    .setListener(null);
+        } else {
+            v.animate()
+                    .alpha(0f)
+                    .setDuration(FADE_IN_OUT_DURATION_MS)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            v.setVisibility(visibility);
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Sets the view's visibility and alpha so that we are guaranteed that alpha = 1 when the view
+     * is visible, and alpha = 0 otherwise.
+     */
+    private void setViewVisibilityAndAlpha(View v, int visibility) {
+        v.setVisibility(visibility);
+        if (visibility == View.VISIBLE) {
+            v.setAlpha(1f);
+        } else {
+            v.setAlpha(0f);
         }
     }
 

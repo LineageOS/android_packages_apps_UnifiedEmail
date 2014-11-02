@@ -274,8 +274,10 @@ public interface ActivityController extends LayoutListener,
 
     /**
      * If the search bar should always be visible on top of the screen (e.g. search result list).
+     * @param viewMode the new view mode. This is passed as a parameter because we don't know
+     *   which onViewModeChanged callback gets called first, so the view modes might differ.
      */
-    boolean shouldShowSearchBarByDefault();
+    boolean shouldShowSearchBarByDefault(int viewMode);
 
     /**
      * If we should show the search menu item.
