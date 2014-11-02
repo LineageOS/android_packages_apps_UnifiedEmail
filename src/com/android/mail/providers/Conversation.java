@@ -757,6 +757,19 @@ public class Conversation implements Parcelable {
     }
 
     /**
+     * Returns {@code true} if the conversation is in the trash folder.
+     */
+    public boolean isInTrash() {
+        for (Folder folder : getRawFolders()) {
+            if (folder.isTrash()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Create a human-readable string of all the conversations
      * @param collection Any collection of conversations
      * @return string with a human readable representation of the conversations.

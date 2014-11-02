@@ -47,6 +47,7 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     private SuperCollapsedBlockItem mSuperCollapsedItem;
     private OnClickListener mClick;
     private TextView mSuperCollapsedText;
+    private View mSuperCollapsedProgress;
 
     private int mCount;
 
@@ -68,10 +69,13 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     protected void onFinishInflate() {
         super.onFinishInflate();
         mSuperCollapsedText = (TextView) findViewById(R.id.super_collapsed_text);
+        mSuperCollapsedProgress = findViewById(R.id.super_collapsed_progress);
     }
 
     public void bind(SuperCollapsedBlockItem item) {
         mSuperCollapsedItem = item;
+        mSuperCollapsedText.setVisibility(VISIBLE);
+        mSuperCollapsedProgress.setVisibility(GONE);
         setCount(item.getEnd() - item.getStart() + 1);
     }
 
@@ -90,7 +94,7 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     @Override
     public void onClick(final View v) {
         mSuperCollapsedText.setVisibility(GONE);
-        findViewById(R.id.super_collapsed_progress).setVisibility(VISIBLE);
+        mSuperCollapsedProgress.setVisibility(VISIBLE);
         final String contentDescription =
                 getResources().getQuantityString(R.plurals.show_messages_read, mCount, mCount);
         setContentDescription(contentDescription);
