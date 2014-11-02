@@ -316,9 +316,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         // by the underlying cursor.
         //
         // !! This count still includes the teasers since they are separate from headers. !!
-        final int contentCount = super.getCount() + specialViewCount + 1 /* footer */;
-        // Only add header count if the content count is not 0.
-        return (contentCount == 0) ? contentCount : contentCount + mHeaders.size();
+        int contentCount = super.getCount() + specialViewCount;
+        // If we have no content, the only possible thing to show is custom footer (e.g. loading)
+        if (contentCount == 0) {
+            contentCount += mShowCustomFooter ? 1 : 0;
+        } else {
+            // Only add header & footer is always visible when there are content
+            contentCount += 1 /* footer */ + mHeaders.size();
+        }
+        return contentCount;
     }
 
     /**
