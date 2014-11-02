@@ -779,13 +779,7 @@ public class ConversationItemView extends View
             SendersView.format(context, mHeader.conversation.conversationInfo,
                     mHeader.messageInfoString.toString(), maxChars, mHeader.styledNames,
                     mHeader.displayableNames, mHeader.mSenderAvatarModel,
-                    mAccount.getEmailAddress(), mDisplayedFolder.shouldShowRecipients(), true);
-
-            if (mHeader.mSenderAvatarModel.isNotPopulated() && mHeader.hasDraftMessage) {
-                mHeader.mSenderAvatarModel.populate(mAccount.getDisplayName(),
-                        mAccount.getEmailAddress());
-                mHeader.displayableNames.add(mAccount.getDisplayName());
-            }
+                    mAccount, mDisplayedFolder.shouldShowRecipients(), true);
 
             // If we have displayable senders, load their thumbnails
             loadImages();

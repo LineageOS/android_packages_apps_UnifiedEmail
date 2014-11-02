@@ -32,6 +32,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
 
 import com.android.mail.R;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.ParticipantInfo;
@@ -226,7 +227,7 @@ public class SendersView {
             String messageInfo, int maxChars, ArrayList<SpannableString> styledSenders,
             ArrayList<String> displayableSenderNames,
             ConversationItemViewModel.SenderAvatarModel senderAvatarModel,
-            String account, final boolean showToHeader, final boolean resourceCachingRequired) {
+            Account account, final boolean showToHeader, final boolean resourceCachingRequired) {
         try {
             getSenderResources(context, resourceCachingRequired);
             format(context, conversationInfo, messageInfo, maxChars, styledSenders,
@@ -243,7 +244,7 @@ public class SendersView {
             String messageInfo, int maxChars, ArrayList<SpannableString> styledSenders,
             ArrayList<String> displayableSenderNames,
             ConversationItemViewModel.SenderAvatarModel senderAvatarModel,
-            String account, final TextAppearanceSpan notificationUnreadStyleSpan,
+            Account account, final TextAppearanceSpan notificationUnreadStyleSpan,
             final CharacterStyle notificationReadStyleSpan, final boolean showToHeader,
             final boolean resourceCachingRequired) {
         try {
@@ -262,7 +263,7 @@ public class SendersView {
             ConversationInfo conversationInfo, ArrayList<SpannableString> styledSenders,
             ArrayList<String> displayableSenderNames,
             ConversationItemViewModel.SenderAvatarModel senderAvatarModel,
-            String account, final TextAppearanceSpan unreadStyleSpan,
+            Account account, final TextAppearanceSpan unreadStyleSpan,
             final CharacterStyle readStyleSpan, final boolean showToHeader) {
         final boolean shouldSelectSenders = displayableSenderNames != null;
         final boolean shouldSelectAvatar = senderAvatarModel != null;
@@ -363,7 +364,7 @@ public class SendersView {
                 }
             }
 
-            final String senderEmail = TextUtils.isEmpty(currentName) ? account :
+            final String senderEmail = TextUtils.isEmpty(currentName) ? account.getEmailAddress() :
                     TextUtils.isEmpty(currentEmail) ? currentName : currentEmail;
 
             if (shouldSelectSenders) {
@@ -406,9 +407,7 @@ public class SendersView {
         }
 
         // if all messages in the thread were read, we must search for an appropriate avatar
-        if (shouldSelectAvatar && senderAvatarModel.isNotPopulated() &&
-                !conversationInfo.participantInfos.isEmpty()) {
-
+        if (shouldSelectAvatar && senderAvatarModel.isNotPopulated()) {
             // search for the last sender that is not the current account
             for (int i = conversationInfo.participantInfos.size() - 1; i >= 0; i--) {
                 final ParticipantInfo participant = conversationInfo.participantInfos.get(i);
@@ -418,11 +417,9 @@ public class SendersView {
                 }
             }
 
-            // if we still don't have an avatar, the account is emailing itself; use the last sender
+            // if we still don't have an avatar, the account is emailing itself
             if (senderAvatarModel.isNotPopulated()) {
-                final int lastIndex = conversationInfo.participantInfos.size() - 1;
-                final ParticipantInfo lastSender = conversationInfo.participantInfos.get(lastIndex);
-                senderAvatarModel.populate(lastSender.name, lastSender.email);
+                senderAvatarModel.populate(account.getDisplayName(), account.getEmailAddress());
             }
         }
     }
