@@ -24,15 +24,13 @@ import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.SearchRecentSuggestionsProvider;
 
 /**
  * A controllable activity is an Activity that has a Controller attached. This activity must be
  * able to attach the various view fragments and delegate the method calls between them.
  */
 public interface ControllableActivity extends RestrictedActivity,
-        FolderItemView.DropHandler, UndoListener,
-        AnimatedAdapter.Listener, ConversationListFooterView.FooterViewClickListener {
+        UndoListener, AnimatedAdapter.Listener, ConversationListFooterView.FooterViewClickListener {
     /**
      * Returns the ViewMode the activity is updating.
      * @see com.android.mail.ui.ViewMode
@@ -97,10 +95,6 @@ public interface ControllableActivity extends RestrictedActivity,
     DrawerController getDrawerController();
 
     KeyboardNavigationController getKeyboardNavigationController();
-
-    void startDragMode();
-
-    void stopDragMode();
 
     boolean isAccessibilityEnabled();
 

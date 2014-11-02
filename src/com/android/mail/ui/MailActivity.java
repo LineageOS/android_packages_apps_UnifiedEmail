@@ -29,7 +29,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -352,16 +351,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public boolean supportsDrag(DragEvent event, Folder folder) {
-        return mController.supportsDrag(event, folder);
-    }
-
-    @Override
-    public void handleDrop(DragEvent event, Folder folder) {
-        mController.handleDrop(event, folder);
-    }
-
-    @Override
     public void onUndoAvailable(ToastBarOperation undoOp) {
         mController.onUndoAvailable(undoOp);
     }
@@ -424,16 +413,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public void onFooterViewLoadMoreClick(Folder folder) {
         mController.onFooterViewLoadMoreClick(folder);
-    }
-
-    @Override
-    public void startDragMode() {
-        mController.startDragMode();
-    }
-
-    @Override
-    public void stopDragMode() {
-        mController.stopDragMode();
     }
 
     @Override
