@@ -473,6 +473,12 @@
     <plurals name="show_messages_read">
         <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
     </plurals>
+    <!-- This string is used for accessibility purposes only. It is used when the user
+         taps on the collapsed block in collapsed mode when a conversation
+         has more than one read message. [CHAR LIMIT=UNLIMITED] -->
+    <plurals name="super_collapsed_loading_content_description">
+        <item quantity="other">Loading <xliff:g id="count" example="4">%1$d</xliff:g> older messages</item>
+    </plurals>
     <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
     <string name="from_heading">From:</string>
     <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
