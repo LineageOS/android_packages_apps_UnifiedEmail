@@ -111,8 +111,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private final int mShadowMinWidth;
 
     private final List<Runnable> mTransitionCompleteJobs = Lists.newArrayList();
-
     private final PaneAnimationListener mPaneAnimationListener = new PaneAnimationListener();
+    private View mComposeButton;
 
     public static final int MISCELLANEOUS_VIEW_ID = R.id.miscellaneous_pane;
 
@@ -203,6 +203,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView = findViewById(R.id.conversation_list_pane);
         mConversationView = findViewById(R.id.conversation_pane);
         mMiscellaneousView = findViewById(MISCELLANEOUS_VIEW_ID);
+        mComposeButton = findViewById(R.id.compose_button);
 
         // all panes start GONE in initial UNKNOWN mode to avoid drawing misplaced panes
         mCurrentMode = ViewMode.UNKNOWN;
@@ -361,6 +362,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         final ViewPropertyAnimator listAnimation =  mListView.animate()
                 .x(listX)
                 .setListener(mPaneAnimationListener);
+        mComposeButton.animate().alpha(isDrawerOpen() ? 0f : 1f);
 
         // If we're running K+, we can use the update listener to transition the list's left shadow
         // and set different update listeners based on rtl to avoid doing a check on every frame
@@ -368,7 +370,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
             listAnimation.setUpdateListener(mListViewAnimationListener);
         }
 
-        configureAnimations(mConversationView, mFoldersView, mListView, mMiscellaneousView);
+        configureAnimations(mConversationView, mFoldersView, mListView, mMiscellaneousView,
+                mComposeButton);
     }
 
     private void configureAnimations(View... views) {
