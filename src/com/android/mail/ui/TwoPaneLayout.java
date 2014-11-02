@@ -475,7 +475,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
 
     @Override
     public void onDragStarted() {
-        // Do nothing
+        mController.onDragStarted();
     }
 
     @Override

@@ -842,6 +842,13 @@ public class FolderListFragment extends ListFragment implements
         return anim;
     }
 
+    public void onDrawerDragStarted() {
+        Utils.enableHardwareLayer(mMiniDrawerView);
+        Utils.enableHardwareLayer(mListView);
+        // The drawer drag will always end with animating the drawers to their final states, so
+        // the animation will remove the hardware layer upon completion.
+    }
+
     public void onDrawerDrag(float percent) {
         mMiniDrawerView.setAlpha(1f - percent);
         mListView.setAlpha(percent);
