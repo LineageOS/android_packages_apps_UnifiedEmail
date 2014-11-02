@@ -79,9 +79,6 @@
     <color name="conversation_view_text_color_link_blue">@color/text_color_blue</color>
     <color name="conversation_view_footer_text_color">#999999</color>
 
-    <!-- Folder colors -->
-    <color name="folder_disabled_drop_target_text_color">#999999</color>
-
     <!-- Widget colors -->
     <color name="widget_header_bg_color">#da4336</color>
     <color name="widget_conversation_list_divider_color">#e5e5e5</color>

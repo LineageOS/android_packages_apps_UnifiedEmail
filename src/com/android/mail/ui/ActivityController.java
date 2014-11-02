@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -236,16 +235,6 @@ public interface ActivityController extends LayoutListener,
     void startSearch();
 
     /**
-     * Supports dragging conversations to a folder.
-     */
-    boolean supportsDrag(DragEvent event, Folder folder);
-
-    /**
-     * Handles dropping conversations to a folder.
-     */
-    void handleDrop(DragEvent event, Folder folder);
-
-    /**
      * Return the folder currently being viewed by the activity.
      */
     public Folder getHierarchyFolder();
@@ -254,16 +243,6 @@ public interface ActivityController extends LayoutListener,
      * Handles the animation end of the animated adapter.
      */
     void onAnimationEnd(AnimatedAdapter animatedAdapter);
-
-    /**
-     * Called when the user has started a drag/ drop gesture.
-     */
-    void startDragMode();
-
-    /**
-     * Called when the user has ended drag/drop.
-     */
-    void stopDragMode();
 
     /**
      * Called when Accessibility is enabled or disabled.

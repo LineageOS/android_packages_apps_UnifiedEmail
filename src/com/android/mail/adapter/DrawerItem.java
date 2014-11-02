@@ -424,7 +424,7 @@ public class DrawerItem {
             folderItemView =
                     (FolderItemView) mInflater.inflate(R.layout.folder_item, parent, false);
         }
-        folderItemView.bind(mFolder, mActivity);
+        folderItemView.bind(mFolder);
         folderItemView.setIcon(mFolder);
         return folderItemView;
     }

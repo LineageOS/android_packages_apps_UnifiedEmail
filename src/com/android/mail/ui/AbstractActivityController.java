@@ -50,7 +50,6 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -457,7 +456,6 @@ public abstract class AbstractActivityController implements ActivityController,
     private DestructiveAction mPendingDestruction;
     protected AsyncRefreshTask mFolderSyncTask;
     private Folder mFolderListFolder;
-    private boolean mIsDragHappening;
     private final int mShowUndoBarDelay;
     private boolean mRecentsDataUpdated;
     /** A wait fragment we added, if any. */
@@ -3031,7 +3029,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public final void onRefreshRequired() {
-        if (isAnimating() || isDragging()) {
+        if (isAnimating()) {
             final ConversationListFragment f = getConversationListFragment();
             LogUtils.w(ConversationCursor.LOG_TAG,
                     "onRefreshRequired: delay until animating done. cursor=%s adapter=%s",
@@ -3042,29 +3040,6 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mConversationListCursor.isRefreshRequired()) {
             mConversationListCursor.refresh();
         }
-    }
-
-    @Override
-    public void startDragMode() {
-        mIsDragHappening = true;
-    }
-
-    @Override
-    public void stopDragMode() {
-        mIsDragHappening = false;
-        if (mConversationListCursor.isRefreshReady()) {
-            LogUtils.i(ConversationCursor.LOG_TAG, "Stopped dragging: try sync");
-            onRefreshReady();
-        }
-
-        if (mConversationListCursor.isRefreshRequired()) {
-            LogUtils.i(ConversationCursor.LOG_TAG, "Stopped dragging: refresh");
-            mConversationListCursor.refresh();
-        }
-    }
-
-    private boolean isDragging() {
-        return mIsDragHappening;
     }
 
     @Override
@@ -3260,158 +3235,6 @@ public abstract class AbstractActivityController implements ActivityController,
         } else {
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
                     .getString(R.string.search_unsupported), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Supports dragging conversations to a folder.
-     */
-    @Override
-    public boolean supportsDrag(DragEvent event, Folder folder) {
-        return (folder != null
-                && event != null
-                && event.getClipDescription() != null
-                && folder.supportsCapability
-                    (UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
-                && !mFolder.equals(folder));
-    }
-
-    /**
-     * Handles dropping conversations to a folder.
-     */
-    @Override
-    public void handleDrop(DragEvent event, final Folder folder) {
-        if (!supportsDrag(event, folder)) {
-            return;
-        }
-        if (folder.isType(UIProvider.FolderType.STARRED)) {
-            // Moving a conversation to the starred folder adds the star and
-            // removes the current label
-            handleDropInStarred(folder);
-            return;
-        }
-        if (mFolder.isType(UIProvider.FolderType.STARRED)) {
-            handleDragFromStarred(folder);
-            return;
-        }
-        final ArrayList<FolderOperation> dragDropOperations = new ArrayList<FolderOperation>();
-        final Collection<Conversation> conversations = mSelectedSet.values();
-        // Add the drop target folder.
-        dragDropOperations.add(new FolderOperation(folder, true));
-        // Remove the current folder unless the user is viewing "all".
-        // That operation should just add the new folder.
-        boolean isDestructive = !mFolder.isViewAll()
-                && mFolder.supportsCapability
-                    (UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES);
-        if (isDestructive) {
-            dragDropOperations.add(new FolderOperation(mFolder, false));
-        }
-        // Drag and drop is destructive: we remove conversations from the
-        // current folder.
-        final DestructiveAction action =
-                getFolderChange(conversations, dragDropOperations, isDestructive,
-                        true /* isBatch */, true /* showUndo */, true /* isMoveTo */, folder,
-                        null /* undoCallback */);
-        if (isDestructive) {
-            delete(0, conversations, action, true);
-        } else {
-            action.performAction();
-        }
-    }
-
-    private void handleDragFromStarred(Folder folder) {
-        final Collection<Conversation> conversations = mSelectedSet.values();
-        // The conversation list deletes and performs the action if it exists.
-        final ConversationListFragment convListFragment = getConversationListFragment();
-        // There should always be a convlistfragment, or the user could not have
-        // dragged/ dropped conversations.
-        if (convListFragment != null) {
-            LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
-            ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
-            ArrayList<Uri> folderUris;
-            ArrayList<Boolean> adds;
-            for (Conversation target : conversations) {
-                folderUris = new ArrayList<Uri>();
-                adds = new ArrayList<Boolean>();
-                folderUris.add(folder.folderUri.fullUri);
-                adds.add(Boolean.TRUE);
-                final HashMap<Uri, Folder> targetFolders =
-                        Folder.hashMapForFolders(target.getRawFolders());
-                targetFolders.put(folder.folderUri.fullUri, folder);
-                ops.add(mConversationListCursor.getConversationFolderOperation(target,
-                        folderUris, adds, targetFolders.values()));
-            }
-            if (mConversationListCursor != null) {
-                mConversationListCursor.updateBulkValues(ops);
-            }
-            refreshConversationList();
-            mSelectedSet.clear();
-        }
-    }
-
-    private void handleDropInStarred(Folder folder) {
-        final Collection<Conversation> conversations = mSelectedSet.values();
-        // The conversation list deletes and performs the action if it exists.
-        final ConversationListFragment convListFragment = getConversationListFragment();
-        // There should always be a convlistfragment, or the user could not have
-        // dragged/ dropped conversations.
-        if (convListFragment != null) {
-            LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
-            convListFragment.requestDelete(R.id.change_folders, conversations,
-                    new DroppedInStarredAction(conversations, mFolder, folder));
-        }
-    }
-
-    // When dragging conversations to the starred folder, remove from the
-    // original folder and add a star
-    private class DroppedInStarredAction implements DestructiveAction {
-        private final Collection<Conversation> mConversations;
-        private final Folder mInitialFolder;
-        private final Folder mStarred;
-
-        public DroppedInStarredAction(Collection<Conversation> conversations, Folder initialFolder,
-                Folder starredFolder) {
-            mConversations = conversations;
-            mInitialFolder = initialFolder;
-            mStarred = starredFolder;
-        }
-
-        @Override
-        public void setUndoCallback(UndoCallback undoCallback) {
-            return;     // currently not applicable
-        }
-
-        @Override
-        public void performAction() {
-            ToastBarOperation undoOp = new ToastBarOperation(mConversations.size(),
-                    R.id.change_folders, ToastBarOperation.UNDO, true /* batch */, mInitialFolder);
-            onUndoAvailable(undoOp);
-            ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
-            ContentValues values = new ContentValues();
-            ArrayList<Uri> folderUris;
-            ArrayList<Boolean> adds;
-            ConversationOperation operation;
-            for (Conversation target : mConversations) {
-                folderUris = new ArrayList<Uri>();
-                adds = new ArrayList<Boolean>();
-                folderUris.add(mStarred.folderUri.fullUri);
-                adds.add(Boolean.TRUE);
-                folderUris.add(mInitialFolder.folderUri.fullUri);
-                adds.add(Boolean.FALSE);
-                final HashMap<Uri, Folder> targetFolders =
-                        Folder.hashMapForFolders(target.getRawFolders());
-                targetFolders.put(mStarred.folderUri.fullUri, mStarred);
-                targetFolders.remove(mInitialFolder.folderUri.fullUri);
-                values.put(ConversationColumns.STARRED, true);
-                operation = mConversationListCursor.getConversationFolderOperation(target,
-                        folderUris, adds, targetFolders.values(), values);
-                ops.add(operation);
-            }
-            if (mConversationListCursor != null) {
-                mConversationListCursor.updateBulkValues(ops);
-            }
-            refreshConversationList();
-            mSelectedSet.clear();
         }
     }
 
