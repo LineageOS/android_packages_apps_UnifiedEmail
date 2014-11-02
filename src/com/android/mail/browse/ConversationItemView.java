@@ -867,11 +867,11 @@ public class ConversationItemView extends View
     private void createSubject(final boolean isUnread) {
         final String badgeText = mHeader.badgeText == null ? "" : mHeader.badgeText;
         String subject = filterTag(getContext(), mHeader.conversation.subject);
+        subject = mAdapter.getBidiFormatter().unicodeWrap(subject);
         subject = Conversation.getSubjectForDisplay(mContext, badgeText, subject);
         final Spannable displayedStringBuilder = new SpannableString(subject);
 
-        // since spans affect text metrics, add spans to the string before measure/layout or fancy
-        // ellipsizing
+        // since spans affect text metrics, add spans to the string before measure/layout or eliding
 
         final int badgeTextLength = formatBadgeText(displayedStringBuilder, badgeText);
 
