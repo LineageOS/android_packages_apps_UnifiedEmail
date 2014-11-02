@@ -188,6 +188,7 @@
     <dimen name="conv_list_spacious_padding_end">16dip</dimen>
     <dimen name="conv_list_spacious_contact_image_padding_end">16dip</dimen>
     <dimen name="conv_list_spacious_star_padding_end">-8dip</dimen>
+    <dimen name="conv_list_footer_load_more_padding">72dp</dimen>
 
     <dimen name="badge_padding_extra_width">6dip</dimen>
     <dimen name="badge_rounded_corner_radius">2dip</dimen>

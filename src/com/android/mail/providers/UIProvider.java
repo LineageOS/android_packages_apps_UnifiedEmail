@@ -27,6 +27,7 @@ import android.provider.BaseColumns;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -117,6 +118,35 @@ public class UIProvider {
                 default: throw new IllegalArgumentException("Invalid LastSyncResult: " + result);
             }
         }
+    }
+
+    /**
+     * Combines the reason for the sync request (user vs. background sync) with the status of the
+     * request (success vs failure reason) into a single integer value.
+     *
+     * @param syncStatus {@link SyncStatus} value describing the reason for the sync
+     * @param lastSyncResult {@link LastSyncResult} value describing the result of the sync
+     * @return a single integer packed with the status and result values
+     */
+    @VisibleForTesting
+    public static int createSyncValue(int syncStatus, int lastSyncResult) {
+        return lastSyncResult | (syncStatus << 4);
+    }
+
+    /**
+     * @param lastSyncValue value containing the {@link SyncStatus} and {@link LastSyncResult}
+     * @return the {@link LastSyncResult} within the <code>lastSyncValue</code>
+     */
+    public static int getResultFromLastSyncResult(int lastSyncValue) {
+        return lastSyncValue & 0x0f;
+    }
+
+    /**
+     * @param lastSyncValue value containing the {@link SyncStatus} and {@link LastSyncResult}
+     * @return the {@link SyncStatus} within the <code>lastSyncValue</code>
+     */
+    public static int getStatusFromLastSyncResult(int lastSyncValue) {
+        return lastSyncValue >> 4;
     }
 
     // The actual content provider should define its own authority
