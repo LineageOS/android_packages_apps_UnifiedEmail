@@ -109,10 +109,14 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
     // the drag.
     private Float mXThreshold;
 
-    private View mMiscellaneousView;
-    private View mConversationView;
     private View mFoldersView;
     private View mListView;
+    // content view encompasses both conversation and ad view.
+    private View mConversationFrame;
+
+    // These two views get switched in/out depending on the view mode.
+    private View mConversationView;
+    private View mMiscellaneousView;
 
     private boolean mIsRtl;
 
@@ -236,8 +240,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
 
         mFoldersView = findViewById(R.id.drawer);
         mListView = findViewById(R.id.conversation_list_pane);
-        mConversationView = findViewById(R.id.conversation_pane);
-        mMiscellaneousView = findViewById(MISCELLANEOUS_VIEW_ID);
+        mConversationFrame = findViewById(R.id.conversation_frame);
+
+        mConversationView = mConversationFrame.findViewById(R.id.conversation_pane);
+        mMiscellaneousView = mConversationFrame.findViewById(MISCELLANEOUS_VIEW_ID);
 
         // all panes start GONE in initial UNKNOWN mode to avoid drawing misplaced panes
         mCurrentMode = ViewMode.UNKNOWN;
@@ -252,8 +258,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         mController = controller;
         mListener = controller;
 
-        ((ConversationViewFrame) mConversationView).setDownEventListener(mController);
-        ((ConversationViewFrame) mMiscellaneousView).setDownEventListener(mController);
+        ((ConversationViewFrame) mConversationFrame).setDownEventListener(mController);
     }
 
     @Override
@@ -292,8 +297,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         final int bottom = getMeasuredHeight();
         mFoldersView.layout(mFoldersLeft, 0, mFoldersRight, bottom);
         mListView.layout(mListLeft, 0, mListRight, bottom);
-        mMiscellaneousView.layout(mConvLeft, 0, mConvRight, bottom);
-        mConversationView.layout(mConvLeft, 0, mConvRight, bottom);
+        mConversationFrame.layout(mConvLeft, 0, mConvRight, bottom);
     }
 
     /**
@@ -306,8 +310,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         // only adjust the pane widths when my width changes
         if (parentWidth != getMeasuredWidth()) {
             final int convWidth = computeConversationWidth(parentWidth);
-            setPaneWidth(mMiscellaneousView, convWidth);
-            setPaneWidth(mConversationView, convWidth);
+            setPaneWidth(mConversationFrame, convWidth);
             setPaneWidth(mListView, computeConversationListWidth(parentWidth));
         }
     }
@@ -321,7 +324,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         // Always compute the base value as closed drawer
         final int foldersW = mDrawerWidthMini;
         final int listW = getPaneWidth(mListView);
-        final int convW = getPaneWidth(mConversationView);
+        final int convW = getPaneWidth(mConversationFrame);
 
         // Compute default pane positions
         if (mIsRtl) {
@@ -362,8 +365,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         } else {
             mFoldersView.setTranslationX(drawerDeltaX);
             mListView.setTranslationX(deltaX);
-            mConversationView.setTranslationX(deltaX);
-            mMiscellaneousView.setTranslationX(deltaX);
+            mConversationFrame.setTranslationX(deltaX);
         }
     }
 
@@ -372,11 +374,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
      * {@link TwoPaneLayout#translatePanes(float, float, boolean)} for explanation on deltas.
      */
     private void animatePanes(float deltaX, float drawerDeltaX) {
-        if (ViewMode.isAdMode(mCurrentMode)) {
-            mMiscellaneousView.animate().translationX(deltaX);
-        } else {
-            mConversationView.animate().translationX(deltaX);
-        }
+        mConversationFrame.animate().translationX(deltaX);
 
         final ViewPropertyAnimator listAnimation =  mListView.animate()
                 .translationX(deltaX)
@@ -390,7 +388,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
             listAnimation.setUpdateListener(mListViewAnimationListener);
         }
 
-        configureAnimations(mFoldersView, mListView, mConversationView, mMiscellaneousView);
+        configureAnimations(mFoldersView, mListView, mConversationFrame);
     }
 
     private void configureAnimations(View... views) {
@@ -570,13 +568,9 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
                     final float right;
                     if (mShouldShowPreviewPanel) {
                         final boolean isAdMode = ViewMode.isAdMode(mCurrentMode);
-                        left = mIsRtl ?
-                                (isAdMode ? mMiscellaneousView.getX() : mConversationView.getX()) :
-                                mListView.getX();
+                        left = mIsRtl ? mConversationFrame.getX() : mListView.getX();
                         right = mIsRtl ? mListView.getX() + mListView.getWidth() :
-                                isAdMode ?
-                                mMiscellaneousView.getX() + mMiscellaneousView.getWidth() :
-                                mConversationView.getX() + mConversationView.getWidth();
+                                mConversationFrame.getX() + mConversationFrame.getWidth();
                     } else {
                         left = mListView.getX();
                         right = left + mListView.getWidth();
@@ -766,6 +760,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
                 s = "conv-view";
             } else if (pane == mMiscellaneousView) {
                 s = "misc-view";
+            } else if (pane == mConversationFrame) {
+                s = "conv-misc-wrapper";
             } else {
                 s = "???:" + pane;
             }
