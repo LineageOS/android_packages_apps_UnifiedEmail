@@ -20,7 +20,6 @@
     <dimen name="conversation_view_margin_side">24dp</dimen>
     <dimen name="conversation_view_snack_bar_margin">16dp</dimen>
     <dimen name="conversation_header_padding_side">36dp</dimen>
-    <dimen name="conversation_header_star_size">55dp</dimen>
     <dimen name="conversation_border_margin_side">24dp</dimen>
 
     <dimen name="message_header_icon_margin">24dp</dimen>
