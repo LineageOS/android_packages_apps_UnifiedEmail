@@ -39,12 +39,6 @@
 
         <include layout="@layout/mini_drawer_recent_account_item" />
 
-        <ImageView
-            android:id="@+id/dotdotdot"
-            android:src="@drawable/ic_ellipsis_24dp"
-            android:contentDescription="@string/drawer_open"
-            style="@style/MiniDrawerFolderStyle" />
-
         <Space
             android:id="@+id/spacer"
             android:layout_width="match_parent"
