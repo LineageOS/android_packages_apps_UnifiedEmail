@@ -210,6 +210,10 @@ public final class OnePaneController extends AbstractActivityController {
             mPagerController.hide(true /* changeVisibility */);
         }
 
+        if (ViewMode.isAdMode(newMode)) {
+            onConversationListVisibilityChanged(false);
+        }
+
         // When we step away from the conversation mode, we don't have a current conversation
         // anymore. Let's blank it out so clients calling getCurrentConversation are not misled.
         if (!ViewMode.isConversationMode(newMode)) {
