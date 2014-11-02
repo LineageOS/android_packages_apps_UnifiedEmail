@@ -677,13 +677,16 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    public boolean onInterceptCVDownEvent() {
-        // handle a down event on CV by closing the drawer if open
+    public boolean shouldBlockTouchEvents() {
+        return isDrawerOpen();
+    }
+
+    @Override
+    public void onConversationViewFrameTapped() {
+        // handle a tap on CV by closing the drawer if open
         if (isDrawerOpen()) {
             toggleDrawerState();
-            return true;
         }
-        return false;
     }
 
     @Override
