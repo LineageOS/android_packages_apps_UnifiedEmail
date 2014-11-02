@@ -53,7 +53,7 @@ import java.util.ArrayList;
  * This activity displays the list of available folders for the current account.
  */
 public class FolderSelectionActivity extends ActionBarActivity implements OnClickListener,
-        DialogInterface.OnClickListener, FolderChangeListener, ControllableActivity,
+        DialogInterface.OnClickListener, ControllableActivity,
         FolderSelector {
     public static final String EXTRA_ACCOUNT_SHORTCUT = "account-shortcut";
 
@@ -258,8 +258,7 @@ public class FolderSelectionActivity extends ActionBarActivity implements OnClic
         }
     }
 
-    @Override
-    public void onFolderChanged(Folder folder, final boolean force) {
+    private void onFolderChanged(Folder folder, final boolean force) {
         if (!folder.equals(mSelectedFolder)) {
             mSelectedFolder = folder;
             Intent resultIntent = new Intent();
@@ -320,11 +319,6 @@ public class FolderSelectionActivity extends ActionBarActivity implements OnClic
     @Override
     public ConversationListCallbacks getListHandler() {
         return null;
-    }
-
-    @Override
-    public FolderChangeListener getFolderChangeListener() {
-        return this;
     }
 
     @Override
@@ -487,11 +481,5 @@ public class FolderSelectionActivity extends ActionBarActivity implements OnClic
     @Override
     public void showHelp(Account account, int viewMode) {
         // Unsupported
-    }
-
-    @Override
-    public SearchRecentSuggestionsProvider getSuggestionsProvider() {
-        // Unsupported;
-        return null;
     }
 }

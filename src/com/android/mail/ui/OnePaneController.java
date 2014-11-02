@@ -192,8 +192,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void showConversationList(ConversationListContext listContext) {
-        super.showConversationList(listContext);
+    protected void showConversationList(ConversationListContext listContext) {
         enableCabMode();
         mConversationListVisible = true;
         if (ConversationListContext.isSearchResult(listContext)) {
@@ -273,7 +272,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void showWaitForInitialization() {
+    protected void showWaitForInitialization() {
         super.showWaitForInitialization();
         replaceFragment(getWaitFragment(), FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT,
                 R.id.content_pane);
