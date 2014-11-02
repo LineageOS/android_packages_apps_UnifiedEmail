@@ -1072,11 +1072,13 @@ public class Utils {
             String entireString, String subString, int appearance) {
         final int index = entireString.indexOf(subString);
         final SpannableString descriptionText = new SpannableString(entireString);
-        descriptionText.setSpan(
-                new TextAppearanceSpan(context, appearance),
-                index,
-                index + subString.length(),
-                0);
+        if (index >= 0) {
+            descriptionText.setSpan(
+                    new TextAppearanceSpan(context, appearance),
+                    index,
+                    index + subString.length(),
+                    0);
+        }
         return descriptionText;
     }
 
