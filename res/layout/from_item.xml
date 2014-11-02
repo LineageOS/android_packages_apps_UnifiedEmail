@@ -17,7 +17,8 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/spinner_account_name"
@@ -35,6 +36,7 @@
         style="@style/ComposeFromTextViewStyle" />
 
     <ImageView
+        android:background="@null"
         android:src="@drawable/ic_expand_more_24dp"
         style="@style/ComposeFieldButton" />
 
