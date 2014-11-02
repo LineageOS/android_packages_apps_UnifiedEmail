@@ -870,9 +870,13 @@ public class NotificationActionUtils {
                 LogUtils.sanitizeName(LOG_TAG, folder.name));
 
         final Intent intent = new Intent(MailIntentService.ACTION_RESEND_NOTIFICATIONS);
-        intent.setPackage(context.getPackageName()); // Make sure we only deliver this to ourself
-        intent.putExtra(Utils.EXTRA_ACCOUNT_URI, account.uri);
-        intent.putExtra(Utils.EXTRA_FOLDER_URI, folder.folderUri.fullUri);
+        intent.setPackage(context.getPackageName()); // Make sure we only deliver this to ourselves
+        if (account != null) {
+            intent.putExtra(Utils.EXTRA_ACCOUNT_URI, account.uri);
+        }
+        if (folder != null) {
+            intent.putExtra(Utils.EXTRA_FOLDER_URI, folder.folderUri.fullUri);
+        }
         context.startService(intent);
     }
 
