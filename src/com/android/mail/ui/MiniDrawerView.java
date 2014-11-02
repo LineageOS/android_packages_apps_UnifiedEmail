@@ -17,7 +17,6 @@
 package com.android.mail.ui;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,9 +28,6 @@ import com.android.mail.bitmap.AccountAvatarDrawable;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
-import com.google.common.collect.Lists;
-
-import java.util.List;
 
 /**
  * A smaller version of the account- and folder-switching drawer view for tablet UIs.
@@ -39,7 +35,6 @@ import java.util.List;
 public class MiniDrawerView extends LinearLayout {
 
     private FolderListFragment mController;
-    private final int mDrawWidth;
     // use the same dimen as AccountItemView to participate in recycling
     // TODO: but Material account switcher doesn't recycle...
     private final int mAvatarDecodeSize;
@@ -48,7 +43,6 @@ public class MiniDrawerView extends LinearLayout {
     private View mSpacer;
 
     private AccountItem mCurrentAccount;
-    private final List<AccountItem> mRecentAccounts = Lists.newArrayList();
 
     private final LayoutInflater mInflater;
 
@@ -61,7 +55,6 @@ public class MiniDrawerView extends LinearLayout {
     public MiniDrawerView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mDrawWidth = getResources().getDimensionPixelSize(R.dimen.two_pane_drawer_width_mini);
         mAvatarDecodeSize = getResources().getDimensionPixelSize(R.dimen.account_avatar_dimension);
 
         mInflater = LayoutInflater.from(context);
@@ -116,7 +109,7 @@ public class MiniDrawerView extends LinearLayout {
             if (count >= NUM_RECENT_ACCOUNTS) {
                 break;
             }
-            if (currentAccount.uri.equals(a.uri)) {
+            if (currentAccount != null && currentAccount.uri.equals(a.uri)) {
                 continue;
             }
             final ImageView iv = (ImageView) mInflater.inflate(
