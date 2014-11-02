@@ -63,7 +63,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     public static final String LOG_TAG = LogTag.getLogTag();
 
-    private ConversationSelectionSet mConvSelectionSet;
+    private ConversationCheckedSet mConvCheckedSet;
     private int mSwipeAction;
     private Account mAccount;
     private Folder mFolder;
@@ -144,8 +144,8 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         return mSwipeAction;
     }
 
-    public void setSelectionSet(ConversationSelectionSet set) {
-        mConvSelectionSet = set;
+    public void setCheckedSet(ConversationCheckedSet set) {
+        mConvCheckedSet = set;
     }
 
     public void setCurrentAccount(Account account) {
@@ -157,8 +157,8 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     @Override
-    public ConversationSelectionSet getSelectionSet() {
-        return mConvSelectionSet;
+    public ConversationCheckedSet getCheckedSet() {
+        return mConvCheckedSet;
     }
 
     @Override
@@ -269,12 +269,12 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
             mSwipedListener.onListItemSwiped(convList);
         }
         adapter.notifyDataSetChanged();
-        if (mConvSelectionSet != null && !mConvSelectionSet.isEmpty()
-                && mConvSelectionSet.contains(conv)) {
-            mConvSelectionSet.toggle(conv);
+        if (mConvCheckedSet != null && !mConvCheckedSet.isEmpty()
+                && mConvCheckedSet.contains(conv)) {
+            mConvCheckedSet.toggle(conv);
             // Don't commit destructive actions if the item we just removed from
             // the selection set is the item we just destroyed!
-            if (!conv.isMostlyDead() && mConvSelectionSet.isEmpty()) {
+            if (!conv.isMostlyDead() && mConvCheckedSet.isEmpty()) {
                 commitDestructiveActions(true);
             }
         }
@@ -361,14 +361,14 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     @Override
     public boolean performItemClick(View view, int pos, long id) {
         final int previousPosition = getCheckedItemPosition();
-        final boolean selectionSetEmpty = mConvSelectionSet.isEmpty();
+        final boolean checkedSetEmpty = mConvCheckedSet.isEmpty();
 
         // Superclass method modifies the selection set
         final boolean handled = super.performItemClick(view, pos, id);
 
         // If we are in CAB mode then a click shouldn't
         // activate the new item, it should only add it to the selection set
-        if (!selectionSetEmpty && previousPosition != -1) {
+        if (!checkedSetEmpty && previousPosition != -1) {
             setItemChecked(previousPosition, true);
         }
         // Commit any existing destructive actions when the user selects a

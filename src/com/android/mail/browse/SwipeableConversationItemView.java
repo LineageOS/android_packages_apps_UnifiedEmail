@@ -28,7 +28,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
-import com.android.mail.ui.ConversationSelectionSet;
+import com.android.mail.ui.ConversationCheckedSet;
 
 public class SwipeableConversationItemView extends FrameLayout implements ToggleableItem {
 
@@ -53,7 +53,7 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
     }
 
     public void bind(final Conversation conversation, final ControllableActivity activity,
-            final ConversationSelectionSet set, final Folder folder,
+            final ConversationCheckedSet set, final Folder folder,
             final int checkboxOrSenderImage, boolean swipeEnabled,
             final boolean importanceMarkersEnabled, final boolean showChevronsEnabled,
             final AnimatedAdapter animatedAdapter) {
@@ -84,12 +84,12 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
     }
 
     @Override
-    public boolean toggleSelectedState(String sourceForAnalytics) {
-        return mConversationItemView.toggleSelectedState(sourceForAnalytics);
+    public boolean toggleCheckedState(String sourceForAnalytics) {
+        return mConversationItemView.toggleCheckedState(sourceForAnalytics);
     }
 
     @Override
-    public boolean toggleSelectedState() {
-        return mConversationItemView.toggleSelectedState();
+    public boolean toggleCheckedState() {
+        return mConversationItemView.toggleCheckedState();
     }
 }

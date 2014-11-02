@@ -529,4 +529,9 @@ public final class OnePaneController extends AbstractActivityController {
             TwoPaneLayout.ConversationListLayoutListener listener) {
         // Do nothing
     }
+
+    @Override
+    public boolean isCurrentConversationJustPeeking() {
+        return false;
+    }
 }
