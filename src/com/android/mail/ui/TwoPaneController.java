@@ -37,6 +37,9 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.Lists;
+
+import java.util.List;
 
 /**
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
@@ -50,6 +53,8 @@ public final class TwoPaneController extends AbstractActivityController implemen
             "saved-miscellaneous-view-transaction-id";
 
     private TwoPaneLayout mLayout;
+    private List<TwoPaneLayout.ConversationListLayoutListener> mConversationListLayoutListeners =
+            Lists.newArrayList();
     @Deprecated
     private Conversation mConversationToShow;
 
@@ -83,8 +88,6 @@ public final class TwoPaneController extends AbstractActivityController implemen
     private boolean mSavedMiscellaneousView = false;
 
     private boolean mIsTabletLandscape;
-
-    private TwoPaneLayout.ConversationListLayoutListener mConversationListLayoutListener;
 
     public TwoPaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
@@ -169,7 +172,6 @@ public final class TwoPaneController extends AbstractActivityController implemen
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
             return false;
         }
-        mLayout.setConversationListLayoutListener(mConversationListLayoutListener);
         mLayout.setController(this);
         mActivity.getWindow().setBackgroundDrawable(null);
         mIsTabletLandscape = mActivity.getResources().getBoolean(R.bool.is_tablet_landscape);
@@ -685,11 +687,12 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    public void setConversationListLayoutListener(
+    public void addConversationListLayoutListener(
             TwoPaneLayout.ConversationListLayoutListener listener) {
-        mConversationListLayoutListener = listener;
-        if (mLayout != null) {
-            mLayout.setConversationListLayoutListener(listener);
-        }
+        mConversationListLayoutListeners.add(listener);
+    }
+
+    public List<TwoPaneLayout.ConversationListLayoutListener> getConversationListLayoutListeners() {
+        return mConversationListLayoutListeners;
     }
 }

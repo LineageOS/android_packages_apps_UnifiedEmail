@@ -19,6 +19,9 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -27,6 +30,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -35,27 +39,52 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.utils.ViewUtils;
 
 /**
  * Custom view for the action bar when search is displayed.
  */
 public class MaterialSearchActionView extends LinearLayout implements TextWatcher,
         View.OnClickListener, TextView.OnEditorActionListener, View.OnKeyListener {
+    private Drawable mNormalBackgroundDrawable;
+    private Drawable mTwoPaneLandConvModeBackgroundDrawable;
+    private @DrawableRes int mNormalBackButtonDrawable;
+    private @DrawableRes int mTwoPaneLandConvModeBackButtonDrawable;
+    private @DrawableRes int mNormalClearTextButtonDrawable;
+    private @DrawableRes int mTwoPaneLandConvModeClearTextButtonDrawable;
+    private @DrawableRes int mNormalVoiceButtonDrawable;
+    private @DrawableRes int mTwoPaneLandConvModeVoiceButtonDrawable;
+    private int mNormalTextColor;
+    private int mTwoPaneLandConvModeTextColor;
+
     private MaterialSearchViewController mController;
     private InputMethodManager mImm;
     private boolean mShowingClose;
     private boolean mSupportVoice;
 
-    private View mBackButton;
+    private ImageView mBackButton;
     private EditText mQueryText;
     private ImageView mEndingButton;
 
     public MaterialSearchActionView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public MaterialSearchActionView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        final Resources res = getResources();
+        mNormalBackgroundDrawable = new ColorDrawable(res.getColor(android.R.color.white));
+        mTwoPaneLandConvModeBackgroundDrawable =
+                new ColorDrawable(res.getColor(R.color.actionbar_color));
+        mNormalBackButtonDrawable = R.drawable.ic_arrow_back_24dp_with_rtl;
+        mTwoPaneLandConvModeBackButtonDrawable = R.drawable.ic_arrow_back_wht_24dp;
+        mNormalClearTextButtonDrawable = R.drawable.ic_close_24dp;
+        mTwoPaneLandConvModeClearTextButtonDrawable = R.drawable.ic_close_wht_24dp;
+        mNormalVoiceButtonDrawable = R.drawable.ic_mic_24dp;
+        mTwoPaneLandConvModeVoiceButtonDrawable = R.drawable.ic_mic_white_24dp;
+        mNormalTextColor = res.getColor(R.color.search_query_text);
+        mTwoPaneLandConvModeTextColor = res.getColor(android.R.color.white);
     }
 
     // PUBLIC API
@@ -79,12 +108,45 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
         }
     }
 
+    public void adjustViewForTwoPaneLandscape(boolean alignWithTL, int xEnd) {
+        final ViewGroup.LayoutParams params = getLayoutParams();
+        if (alignWithTL) {
+            setBackgroundDrawable(mTwoPaneLandConvModeBackgroundDrawable);
+            mBackButton.setImageResource(mTwoPaneLandConvModeBackButtonDrawable);
+            if (mShowingClose) {
+                mEndingButton.setImageResource(mTwoPaneLandConvModeClearTextButtonDrawable);
+            } else {
+                mEndingButton.setImageResource(mTwoPaneLandConvModeVoiceButtonDrawable);
+            }
+            mQueryText.setTextColor(mTwoPaneLandConvModeTextColor);
+
+            if (ViewUtils.isViewRtl(this)) {
+                int[] coords = new int[2];
+                getLocationInWindow(coords);
+                params.width = coords[0] + getWidth() - xEnd;
+            } else {
+                params.width = xEnd;
+            }
+        } else {
+            setBackgroundDrawable(mNormalBackgroundDrawable);
+            mBackButton.setImageResource(mNormalBackButtonDrawable);
+            if (mShowingClose) {
+                mEndingButton.setImageResource(mNormalClearTextButtonDrawable);
+            } else {
+                mEndingButton.setImageResource(mNormalVoiceButtonDrawable);
+            }
+            mQueryText.setTextColor(mNormalTextColor);
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+        setLayoutParams(params);
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
         mImm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        mBackButton = findViewById(R.id.search_actionbar_back_button);
+        mBackButton = (ImageView) findViewById(R.id.search_actionbar_back_button);
         mBackButton.setOnClickListener(this);
         mQueryText = (EditText) findViewById(R.id.search_actionbar_query_text);
         mQueryText.addTextChangedListener(this);
