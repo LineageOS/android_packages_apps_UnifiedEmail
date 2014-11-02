@@ -1062,7 +1062,10 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
     @Override
     public void showUntransformedConversation() {
         super.showUntransformedConversation();
-        renderConversation(getMessageCursor());
+        final MessageCursor cursor = getMessageCursor();
+        if  (cursor != null) {
+            renderConversation(cursor);
+        }
     }
 
     @Override
