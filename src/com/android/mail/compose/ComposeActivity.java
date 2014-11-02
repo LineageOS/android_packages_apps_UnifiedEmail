@@ -1208,7 +1208,7 @@ public class ComposeActivity extends ActionBarActivity
         }
         if (mReplyFromAccount == null) {
             if (mDraft != null) {
-                mReplyFromAccount = getReplyFromAccountFromDraft(mAccount, mDraft);
+                mReplyFromAccount = getReplyFromAccountFromDraft(mDraft);
             } else if (mRefMessage != null) {
                 mReplyFromAccount = getReplyFromAccountForReply(mAccount, mRefMessage);
             }
@@ -1315,20 +1315,15 @@ public class ComposeActivity extends ActionBarActivity
                 account.getSenderName(), account.getEmailAddress(), true, false);
     }
 
-    private ReplyFromAccount getReplyFromAccountFromDraft(final Account account,
-            final Message msg) {
+    private ReplyFromAccount getReplyFromAccountFromDraft(final Message msg) {
         final Address[] draftFroms = Address.parse(msg.getFrom());
         final String sender = draftFroms.length > 0 ? draftFroms[0].getAddress() : "";
         ReplyFromAccount replyFromAccount = null;
-        List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
-        if (TextUtils.equals(account.getEmailAddress(), sender)) {
-            replyFromAccount = getDefaultReplyFromAccount(account);
-        } else {
-            for (ReplyFromAccount fromAccount : replyFromAccounts) {
-                if (TextUtils.equals(fromAccount.address, sender)) {
-                    replyFromAccount = fromAccount;
-                    break;
-                }
+        // Do not try to check against the "default" account because the default might be an alias.
+        for (ReplyFromAccount fromAccount : mFromSpinner.getReplyFromAccounts()) {
+            if (TextUtils.equals(fromAccount.address, sender)) {
+                replyFromAccount = fromAccount;
+                break;
             }
         }
         return replyFromAccount;
