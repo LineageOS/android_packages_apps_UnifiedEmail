@@ -177,6 +177,7 @@ public final class ConversationListFragment extends Fragment implements
 
     // Let's ensure that we are only showing one out of the three views at once
     private void showListView() {
+        setupEmptyIcon(false);
         mListView.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
         mLoadingView.setVisibility(View.INVISIBLE);
@@ -184,6 +185,7 @@ public final class ConversationListFragment extends Fragment implements
     }
 
     private void showSecurityHoldView() {
+        setupEmptyIcon(false);
         mListView.setVisibility(View.INVISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
         mLoadingView.setVisibility(View.INVISIBLE);
@@ -192,8 +194,10 @@ public final class ConversationListFragment extends Fragment implements
     }
 
     private void showEmptyView() {
-        mEmptyView.setupEmptyView(
-                mFolder, mViewContext.searchQuery, mListAdapter.getBidiFormatter());
+        // If the callbacks didn't set up the empty icon, then we should show it in the empty view.
+        final boolean shouldShowIcon = !setupEmptyIcon(true);
+        mEmptyView.setupEmptyText(mFolder, mViewContext.searchQuery,
+                mListAdapter.getBidiFormatter(), shouldShowIcon);
         mListView.setVisibility(View.INVISIBLE);
         mEmptyView.setVisibility(View.VISIBLE);
         mLoadingView.setVisibility(View.INVISIBLE);
@@ -201,10 +205,15 @@ public final class ConversationListFragment extends Fragment implements
     }
 
     private void showLoadingView() {
+        setupEmptyIcon(false);
         mListView.setVisibility(View.INVISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
         mLoadingView.setVisibility(View.VISIBLE);
         mSecurityHoldView.setVisibility(View.INVISIBLE);
+    }
+
+    private boolean setupEmptyIcon(boolean isEmpty) {
+        return mCallbacks != null && mCallbacks.setupEmptyIconView(mFolder, isEmpty);
     }
 
     private void setupSecurityHoldView() {
@@ -494,9 +503,7 @@ public final class ConversationListFragment extends Fragment implements
         mSecurityHoldText = (TextView) rootView.findViewById(R.id.security_hold_text);
         mSecurityHoldButton = rootView.findViewById(R.id.security_hold_button);
         mSecurityHoldButton.setOnClickListener(this);
-        mLoadingView = rootView.findViewById(R.id.background_view);
-        mLoadingView.setVisibility(View.GONE);
-        mLoadingView.findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
+        mLoadingView = rootView.findViewById(R.id.conversation_list_loading_view);
         mListView = (SwipeableListView) rootView.findViewById(R.id.conversation_list_view);
         mListView.setHeaderDividersEnabled(false);
         mListView.setOnItemLongClickListener(this);

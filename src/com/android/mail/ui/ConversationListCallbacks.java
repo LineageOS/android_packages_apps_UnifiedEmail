@@ -24,6 +24,7 @@ import android.os.Parcelable;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 
 /**
  * A controller interface that is to receive user initiated events and handle them.
@@ -129,4 +130,12 @@ public interface ConversationListCallbacks {
      * Is the user peeking the current conversation or actually viewing it.
      */
     boolean isCurrentConversationJustPeeking();
+
+    /**
+     * Set up the empty icon depending on the current empty folder.
+     * @param isEmpty if false, then instead of showing the default empty icon, shows the no
+     *   selected message icon.
+     * @return true if the icon is setup, false otherwise.
+     */
+    boolean setupEmptyIconView(Folder folder, boolean isEmpty);
 }
