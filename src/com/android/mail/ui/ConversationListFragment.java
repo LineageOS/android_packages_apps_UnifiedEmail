@@ -1307,13 +1307,19 @@ public final class ConversationListFragment extends Fragment implements
     public void onScrollStateChanged(final AbsListView view, final int scrollState) {
         mListView.onScrollStateChanged(view, scrollState);
 
-        // If not scrolling, assign default background - white for tablet, transparent for phone
-        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-            getView().setBackgroundColor(mDefaultListBackgroundColor);
+        final View rootView = getView();
 
-        // Otherwise, list is scrolling, so remove background (corresponds to 0 input)
-        } else {
-            getView().setBackgroundResource(0);
+        // It seems that the list view is reading the scroll state, but the onCreateView has not
+        // yet finished and the root view is null, so check that
+        if (rootView != null) {
+            // If not scrolling, assign default background - white for tablet, transparent for phone
+            if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                rootView.setBackgroundColor(mDefaultListBackgroundColor);
+
+                // Otherwise, list is scrolling, so remove background (corresponds to 0 input)
+            } else {
+                rootView.setBackgroundResource(0);
+            }
         }
     }
 }
