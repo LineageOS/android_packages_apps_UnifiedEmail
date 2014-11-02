@@ -125,6 +125,12 @@ public final class MailPrefs extends VersionedPrefs {
 
         public static final String MIGRATION_STATE = "migration-state";
 
+        /**
+         * The time in epoch ms when the number of accounts in the app was reported to analytics.
+         */
+        public static final String ANALYTICS_NB_ACCOUNT_LATEST_REPORT =
+                "analytics-send-nb_accounts-epoch";
+
         // State indicating that no migration has yet occurred.
         public static final int MIGRATION_STATE_NONE = 0;
         // State indicating that we have migrated imap and pop accounts, but not
@@ -581,5 +587,21 @@ public final class MailPrefs extends VersionedPrefs {
      */
     public void setRequiredSanitizerVersionNumber(int versionNumber) {
         getEditor().putInt(PreferenceKeys.REQUIRED_SANITIZER_VERSION_NUMBER, versionNumber).apply();
+    }
+
+    /**
+     * Returns the latest time the number of accounts in the application was sent to Analyitcs.
+     * @return the datetime in epoch milliseconds.
+     */
+    public long getNbAccountsLatestReport() {
+        return getSharedPreferences().getLong(PreferenceKeys.ANALYTICS_NB_ACCOUNT_LATEST_REPORT, 0);
+    }
+
+    /**
+     * Set the latest time the number of accounts in the application was sent to Analytics.
+     */
+    public void setNbAccountsLatestReport(long timeMs) {
+        getEditor().putLong(
+                PreferenceKeys.ANALYTICS_NB_ACCOUNT_LATEST_REPORT, timeMs);
     }
 }
