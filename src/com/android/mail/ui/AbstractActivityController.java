@@ -718,7 +718,7 @@ public abstract class AbstractActivityController implements ActivityController,
         if (accountChanged) {
             commitDestructiveActions(false);
         }
-        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_TYPE,
+        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_EMAIL_PROVIDER,
                 AnalyticsUtils.getAccountTypeForAccount(emailAddress));
         // Change the account here
         setAccount(account);
@@ -2362,7 +2362,8 @@ public abstract class AbstractActivityController implements ActivityController,
             final boolean isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
 
             if (intent.getBooleanExtra(Utils.EXTRA_FROM_NOTIFICATION, false)) {
-                Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_TYPE,
+                Analytics.getInstance().setCustomDimension(
+                        Analytics.CD_INDEX_ACCOUNT_EMAIL_PROVIDER,
                         AnalyticsUtils.getAccountTypeForAccount(mAccount.getEmailAddress()));
                 Analytics.getInstance().sendEvent("notification_click",
                         isConversationMode ? "conversation" : "conversation_list", null, 0);
@@ -3812,6 +3813,11 @@ public abstract class AbstractActivityController implements ActivityController,
                                     Bundle.EMPTY, welcomeLoaderCallbacks);
                         }
                     }
+                } else {
+                    // User has already run this version of the app.
+                    Analytics.getInstance().setCustomDimension(
+                            Analytics.CD_INDEX_USER_RETENTION_TYPE,
+                            Analytics.CD_VALUE_USER_RETENTION_TYPE_RETURNING);
                 }
             }
         }.execute();
