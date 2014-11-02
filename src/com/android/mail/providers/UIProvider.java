@@ -199,6 +199,8 @@ public class UIProvider {
             .put(AccountColumns.SettingsColumns.MOVE_TO_INBOX, String.class)
             .put(AccountColumns.SettingsColumns.SHOW_IMAGES, Integer.class)
             .put(AccountColumns.SettingsColumns.WELCOME_TOUR_SHOWN_VERSION, Integer.class)
+            .put(AccountColumns.SECURITY_HOLD, Integer.class)
+            .put(AccountColumns.ACCOUNT_SECURITY_URI, String.class)
             .build();
 
     public static final Map<String, Class<?>> ACCOUNTS_COLUMNS =
@@ -527,6 +529,14 @@ public class UIProvider {
          * Fragment class name for account settings
          */
         public static final String SETTINGS_FRAGMENT_CLASS = "settingsFragmentClass";
+        /**
+         * Whether this account is on a security hold
+         */
+        public static final String SECURITY_HOLD = "securityHold";
+        /**
+         * Uri to access the account security activity.
+         */
+        public static final String ACCOUNT_SECURITY_URI = "accountSecurityUri";
 
         public static final class SettingsColumns {
             /**

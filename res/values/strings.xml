@@ -1131,4 +1131,10 @@
     <string name="overflow_description">More options</string>
 
     <string name="user_agent_format" translatable="false">%1$s AndroidUnifiedEmail/%2$s</string>
+
+    <!-- Text when there is a security hold on an account that needs to be accepted. The email address param takes the for "abc@xyz.com" -->
+    <string name="security_hold_required_text">Security update required for <xliff:g id="email_address">%1$s</xliff:g></string>
+
+    <!-- Text to go to the dialog to accept the security hold -->
+    <string name="update_security_text">update now</string>
 </resources>
