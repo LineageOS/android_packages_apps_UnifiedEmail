@@ -337,14 +337,19 @@ public class ConversationItemViewModel {
          * Removes the name and email address of the participant of this avatar.
          */
         public void clear() {
-            populate(null, null);
+            mName = null;
+            mEmailAddress = null;
         }
 
         /**
          * @param name the name of the participant of this avatar
-         * @param emailAddress the email address of the participant of this avatar
+         * @param emailAddress the email address of the participant of this avatar; may not be null
          */
         public void populate(String name, String emailAddress) {
+            if (TextUtils.isEmpty(emailAddress)) {
+                throw new IllegalArgumentException("email address may not be null or empty");
+            }
+
             mName = name;
             mEmailAddress = emailAddress;
         }
@@ -354,7 +359,7 @@ public class ConversationItemViewModel {
          *      avatar image; <tt>false</tt> otherwise
          */
         public boolean isNotPopulated() {
-            return mEmailAddress == null;
+            return TextUtils.isEmpty(mEmailAddress);
         }
     }
 }
