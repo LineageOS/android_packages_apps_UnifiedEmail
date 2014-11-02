@@ -148,6 +148,9 @@
     <string name="menu_change_folders">Change folders</string>
     <!-- Menu item: moves to folders for selected conversation(s). [CHAR LIMIT = 30] -->
     <string name="menu_move_to">Move to</string>
+    <!-- Menu item move_to state for displaying as an action or in overflow -->
+    <!-- 0 corresponds to SHOW_AS_ACTION_NEVER -->
+    <string name="menu_move_to_state" translatable="false">0</string>
     <!-- Menu item: moves current or selected conversation(s) to Inbox. [CHAR LIMIT = 30] -->
     <string name="menu_move_to_inbox">Move to Inbox</string>
     <!-- Menu item: manages the folders for this account. [CHAR LIMIT = 30] -->
