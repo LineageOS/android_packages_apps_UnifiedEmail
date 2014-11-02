@@ -131,6 +131,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ComposeActivity extends ActionBarActivity
         implements OnClickListener, ActionBar.OnNavigationListener,
@@ -265,6 +266,9 @@ public class ComposeActivity extends ActionBarActivity
 
     // A single thread for running tasks in the background.
     private static final Handler SEND_SAVE_TASK_HANDLER;
+    @VisibleForTesting
+    public static final AtomicInteger PENDING_SEND_OR_SAVE_TASKS_NUM = new AtomicInteger(0);
+
     // String representing the uri of the data directory (used for attachment uri checking).
     private static final String DATA_DIRECTORY_ROOT;
     private static final String ALTERNATE_DATA_DIRECTORY_ROOT;
@@ -326,11 +330,6 @@ public class ComposeActivity extends ActionBarActivity
     protected Bundle mInnerSavedState;
     private ContentValues mExtraValues = null;
 
-    // Array of the outstanding send or save tasks.  Access is synchronized
-    // with the object itself
-    /* package for testing */
-    @VisibleForTesting
-    public final ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
     // FIXME: this variable is never read. related to sRequestMessageIdMap.
     private int mRequestId;
     private String mSignature;
@@ -2442,198 +2441,179 @@ public class ComposeActivity extends ActionBarActivity
 
     @VisibleForTesting
     public interface SendOrSaveCallback {
-        void initializeSendOrSave(SendOrSaveTask sendOrSaveTask);
+        void initializeSendOrSave();
         void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage, Message message);
         Message getMessage();
-        void sendOrSaveFinished(SendOrSaveTask sendOrSaveTask, boolean success);
-        void incrementRecipientsTimesContacted(List<String> recipients);
+        void sendOrSaveFinished(SendOrSaveMessage message, boolean success);
     }
 
-    @VisibleForTesting
-    public static class SendOrSaveTask implements Runnable {
-        private final Context mContext;
-        @VisibleForTesting
-        public final SendOrSaveCallback mSendOrSaveCallback;
-        @VisibleForTesting
-        public final SendOrSaveMessage mSendOrSaveMessage;
-        private ReplyFromAccount mExistingDraftAccount;
+    private void runSendOrSaveProviderCalls(SendOrSaveMessage sendOrSaveMessage,
+            SendOrSaveCallback callback, ReplyFromAccount draftAccount) {
+        callback.initializeSendOrSave();
 
-        public SendOrSaveTask(Context context, SendOrSaveMessage message,
-                SendOrSaveCallback callback, ReplyFromAccount draftAccount) {
-            mContext = context;
-            mSendOrSaveCallback = callback;
-            mSendOrSaveMessage = message;
-            mExistingDraftAccount = draftAccount;
-        }
-
-        @Override
-        public void run() {
-            final SendOrSaveMessage sendOrSaveMessage = mSendOrSaveMessage;
-
-            final ReplyFromAccount selectedAccount = sendOrSaveMessage.mAccount;
-            Message message = mSendOrSaveCallback.getMessage();
-            long messageId = message != null ? message.id : UIProvider.INVALID_MESSAGE_ID;
-            // If a previous draft has been saved, in an account that is different
-            // than what the user wants to send from, remove the old draft, and treat this
-            // as a new message
-            if (mExistingDraftAccount != null
-                    && !selectedAccount.account.uri.equals(mExistingDraftAccount.account.uri)) {
-                if (messageId != UIProvider.INVALID_MESSAGE_ID) {
-                    ContentResolver resolver = mContext.getContentResolver();
-                    ContentValues values = new ContentValues();
-                    values.put(BaseColumns._ID, messageId);
-                    if (mExistingDraftAccount.account.expungeMessageUri != null) {
-                        new ContentProviderTask.UpdateTask()
-                                .run(resolver, mExistingDraftAccount.account.expungeMessageUri,
-                                        values, null, null);
-                    } else {
-                        // TODO(mindyp) delete the conversation.
-                    }
-                    // reset messageId to 0, so a new message will be created
-                    messageId = UIProvider.INVALID_MESSAGE_ID;
-                }
-            }
-
-            final long messageIdToSave = messageId;
-            sendOrSaveMessage(messageIdToSave, sendOrSaveMessage, selectedAccount);
-
-            if (!sendOrSaveMessage.mSave) {
-                incrementRecipientsTimesContacted(
-                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.TO),
-                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.CC),
-                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.BCC));
-            }
-            mSendOrSaveCallback.sendOrSaveFinished(SendOrSaveTask.this, true);
-        }
-
-        private void incrementRecipientsTimesContacted(
-                final String toAddresses, final String ccAddresses, final String bccAddresses) {
-            final List<String> recipients = Lists.newArrayList();
-            addAddressesToRecipientList(recipients, toAddresses);
-            addAddressesToRecipientList(recipients, ccAddresses);
-            addAddressesToRecipientList(recipients, bccAddresses);
-            mSendOrSaveCallback.incrementRecipientsTimesContacted(recipients);
-        }
-
-        private void addAddressesToRecipientList(
-                final List<String> recipients, final String addressString) {
-            if (recipients == null) {
-                throw new IllegalArgumentException("recipientList cannot be null");
-            }
-            if (TextUtils.isEmpty(addressString)) {
-                return;
-            }
-            final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addressString);
-            for (final Rfc822Token token : tokens) {
-                recipients.add(token.getAddress());
-            }
-        }
-
-        /**
-         * Send or Save a message.
-         */
-        private void sendOrSaveMessage(final long messageIdToSave,
-                final SendOrSaveMessage sendOrSaveMessage, final ReplyFromAccount selectedAccount) {
-            final ContentResolver resolver = mContext.getContentResolver();
-            final boolean updateExistingMessage = messageIdToSave != UIProvider.INVALID_MESSAGE_ID;
-
-            final String accountMethod = sendOrSaveMessage.mSave ?
-                    UIProvider.AccountCallMethods.SAVE_MESSAGE :
-                    UIProvider.AccountCallMethods.SEND_MESSAGE;
-
-            try {
-                if (updateExistingMessage) {
-                    sendOrSaveMessage.mValues.put(BaseColumns._ID, messageIdToSave);
-
-                    callAccountSendSaveMethod(resolver,
-                            selectedAccount.account, accountMethod, sendOrSaveMessage);
+        final ReplyFromAccount selectedAccount = sendOrSaveMessage.mAccount;
+        Message message = callback.getMessage();
+        long messageId = message != null ? message.id : UIProvider.INVALID_MESSAGE_ID;
+        // If a previous draft has been saved, in an account that is different
+        // than what the user wants to send from, remove the old draft, and treat this
+        // as a new message
+        if (draftAccount != null
+                && !selectedAccount.account.uri.equals(draftAccount.account.uri)) {
+            if (messageId != UIProvider.INVALID_MESSAGE_ID) {
+                ContentResolver resolver = getContentResolver();
+                ContentValues values = new ContentValues();
+                values.put(BaseColumns._ID, messageId);
+                if (draftAccount.account.expungeMessageUri != null) {
+                    new ContentProviderTask.UpdateTask()
+                            .run(resolver, draftAccount.account.expungeMessageUri,
+                                    values, null, null);
                 } else {
-                    Uri messageUri = null;
-                    final Bundle result = callAccountSendSaveMethod(resolver,
-                            selectedAccount.account, accountMethod, sendOrSaveMessage);
-                    if (result != null) {
-                        // If a non-null value was returned, then the provider handled the call
-                        // method
-                        messageUri = result.getParcelable(UIProvider.MessageColumns.URI);
-                    }
-                    if (sendOrSaveMessage.mSave && messageUri != null) {
-                        final Cursor messageCursor = resolver.query(messageUri,
-                                UIProvider.MESSAGE_PROJECTION, null, null, null);
-                        if (messageCursor != null) {
-                            try {
-                                if (messageCursor.moveToFirst()) {
-                                    // Broadcast notification that a new message has
-                                    // been allocated
-                                    mSendOrSaveCallback.notifyMessageIdAllocated(sendOrSaveMessage,
-                                            new Message(messageCursor));
-                                }
-                            } finally {
-                                messageCursor.close();
-                            }
-                        }
-                    }
+                    // TODO(mindyp) delete the conversation.
                 }
-            } finally {
-                // Close any opened file descriptors
-                closeOpenedAttachmentFds(sendOrSaveMessage);
+                // reset messageId to 0, so a new message will be created
+                messageId = UIProvider.INVALID_MESSAGE_ID;
             }
         }
 
-        private static void closeOpenedAttachmentFds(final SendOrSaveMessage sendOrSaveMessage) {
-            final Bundle openedFds = sendOrSaveMessage.attachmentFds();
-            if (openedFds != null) {
-                final Set<String> keys = openedFds.keySet();
-                for (final String key : keys) {
-                    final ParcelFileDescriptor fd = openedFds.getParcelable(key);
-                    if (fd != null) {
+        final long messageIdToSave = messageId;
+        sendOrSaveMessage(callback, messageIdToSave, sendOrSaveMessage, selectedAccount);
+
+        if (!sendOrSaveMessage.mSave) {
+            incrementRecipientsTimesContacted(
+                    (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.TO),
+                    (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.CC),
+                    (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.BCC));
+        }
+        callback.sendOrSaveFinished(sendOrSaveMessage, true);
+    }
+
+    private void incrementRecipientsTimesContacted(
+            final String toAddresses, final String ccAddresses, final String bccAddresses) {
+        final List<String> recipients = Lists.newArrayList();
+        addAddressesToRecipientList(recipients, toAddresses);
+        addAddressesToRecipientList(recipients, ccAddresses);
+        addAddressesToRecipientList(recipients, bccAddresses);
+        incrementRecipientsTimesContacted(recipients);
+    }
+
+    private void addAddressesToRecipientList(
+            final List<String> recipients, final String addressString) {
+        if (recipients == null) {
+            throw new IllegalArgumentException("recipientList cannot be null");
+        }
+        if (TextUtils.isEmpty(addressString)) {
+            return;
+        }
+        final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addressString);
+        for (final Rfc822Token token : tokens) {
+            recipients.add(token.getAddress());
+        }
+    }
+
+    /**
+     * Send or Save a message.
+     */
+    private void sendOrSaveMessage(SendOrSaveCallback callback, final long messageIdToSave,
+            final SendOrSaveMessage sendOrSaveMessage, final ReplyFromAccount selectedAccount) {
+        final ContentResolver resolver = getContentResolver();
+        final boolean updateExistingMessage = messageIdToSave != UIProvider.INVALID_MESSAGE_ID;
+
+        final String accountMethod = sendOrSaveMessage.mSave ?
+                UIProvider.AccountCallMethods.SAVE_MESSAGE :
+                UIProvider.AccountCallMethods.SEND_MESSAGE;
+
+        try {
+            if (updateExistingMessage) {
+                sendOrSaveMessage.mValues.put(BaseColumns._ID, messageIdToSave);
+
+                callAccountSendSaveMethod(resolver,
+                        selectedAccount.account, accountMethod, sendOrSaveMessage);
+            } else {
+                Uri messageUri = null;
+                final Bundle result = callAccountSendSaveMethod(resolver,
+                        selectedAccount.account, accountMethod, sendOrSaveMessage);
+                if (result != null) {
+                    // If a non-null value was returned, then the provider handled the call
+                    // method
+                    messageUri = result.getParcelable(UIProvider.MessageColumns.URI);
+                }
+                if (sendOrSaveMessage.mSave && messageUri != null) {
+                    final Cursor messageCursor = resolver.query(messageUri,
+                            UIProvider.MESSAGE_PROJECTION, null, null, null);
+                    if (messageCursor != null) {
                         try {
-                            fd.close();
-                        } catch (IOException e) {
-                            // Do nothing
+                            if (messageCursor.moveToFirst()) {
+                                // Broadcast notification that a new message has
+                                // been allocated
+                                callback.notifyMessageIdAllocated(sendOrSaveMessage,
+                                        new Message(messageCursor));
+                            }
+                        } finally {
+                            messageCursor.close();
                         }
                     }
                 }
             }
+        } finally {
+            // Close any opened file descriptors
+            closeOpenedAttachmentFds(sendOrSaveMessage);
         }
+    }
 
-        /**
-         * Use the {@link ContentResolver#call} method to send or save the message.
-         *
-         * If this was successful, this method will return an non-null Bundle instance
-         */
-        private static Bundle callAccountSendSaveMethod(final ContentResolver resolver,
-                final Account account, final String method,
-                final SendOrSaveMessage sendOrSaveMessage) {
-            // Copy all of the values from the content values to the bundle
-            final Bundle methodExtras = new Bundle(sendOrSaveMessage.mValues.size());
-            final Set<Entry<String, Object>> valueSet = sendOrSaveMessage.mValues.valueSet();
-
-            for (Entry<String, Object> entry : valueSet) {
-                final Object entryValue = entry.getValue();
-                final String key = entry.getKey();
-                if (entryValue instanceof String) {
-                    methodExtras.putString(key, (String)entryValue);
-                } else if (entryValue instanceof Boolean) {
-                    methodExtras.putBoolean(key, (Boolean)entryValue);
-                } else if (entryValue instanceof Integer) {
-                    methodExtras.putInt(key, (Integer)entryValue);
-                } else if (entryValue instanceof Long) {
-                    methodExtras.putLong(key, (Long)entryValue);
-                } else {
-                    LogUtils.wtf(LOG_TAG, "Unexpected object type: %s",
-                            entryValue.getClass().getName());
+    private static void closeOpenedAttachmentFds(final SendOrSaveMessage sendOrSaveMessage) {
+        final Bundle openedFds = sendOrSaveMessage.attachmentFds();
+        if (openedFds != null) {
+            final Set<String> keys = openedFds.keySet();
+            for (final String key : keys) {
+                final ParcelFileDescriptor fd = openedFds.getParcelable(key);
+                if (fd != null) {
+                    try {
+                        fd.close();
+                    } catch (IOException e) {
+                        // Do nothing
+                    }
                 }
             }
-
-            // If the SendOrSaveMessage has some opened fds, add them to the bundle
-            final Bundle fdMap = sendOrSaveMessage.attachmentFds();
-            if (fdMap != null) {
-                methodExtras.putParcelable(
-                        UIProvider.SendOrSaveMethodParamKeys.OPENED_FD_MAP, fdMap);
-            }
-
-            return resolver.call(account.uri, method, account.uri.toString(), methodExtras);
         }
+    }
+
+    /**
+     * Use the {@link ContentResolver#call} method to send or save the message.
+     *
+     * If this was successful, this method will return an non-null Bundle instance
+     */
+    private static Bundle callAccountSendSaveMethod(final ContentResolver resolver,
+            final Account account, final String method,
+            final SendOrSaveMessage sendOrSaveMessage) {
+        // Copy all of the values from the content values to the bundle
+        final Bundle methodExtras = new Bundle(sendOrSaveMessage.mValues.size());
+        final Set<Entry<String, Object>> valueSet = sendOrSaveMessage.mValues.valueSet();
+
+        for (Entry<String, Object> entry : valueSet) {
+            final Object entryValue = entry.getValue();
+            final String key = entry.getKey();
+            if (entryValue instanceof String) {
+                methodExtras.putString(key, (String)entryValue);
+            } else if (entryValue instanceof Boolean) {
+                methodExtras.putBoolean(key, (Boolean)entryValue);
+            } else if (entryValue instanceof Integer) {
+                methodExtras.putInt(key, (Integer)entryValue);
+            } else if (entryValue instanceof Long) {
+                methodExtras.putLong(key, (Long)entryValue);
+            } else {
+                LogUtils.wtf(LOG_TAG, "Unexpected object type: %s",
+                        entryValue.getClass().getName());
+            }
+        }
+
+        // If the SendOrSaveMessage has some opened fds, add them to the bundle
+        final Bundle fdMap = sendOrSaveMessage.attachmentFds();
+        if (fdMap != null) {
+            methodExtras.putParcelable(
+                    UIProvider.SendOrSaveMethodParamKeys.OPENED_FD_MAP, fdMap);
+        }
+
+        return resolver.call(account.uri, method, account.uri.toString(), methodExtras);
     }
 
     /**
@@ -3110,7 +3090,7 @@ public class ComposeActivity extends ActionBarActivity
 
     private int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
             Message message, final Message refMessage, final CharSequence quotedText,
-            SendOrSaveCallback callback, Handler handler, boolean save, int composeMode,
+            SendOrSaveCallback callback, boolean save, int composeMode,
             ReplyFromAccount draftAccount, final ContentValues extraValues) {
         final ContentValues values = new ContentValues();
 
@@ -3185,15 +3165,11 @@ public class ComposeActivity extends ActionBarActivity
         if (extraValues != null) {
             values.putAll(extraValues);
         }
+
         SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(context, replyFromAccount,
                 values, refMessageId, message.getAttachments(), save);
-        SendOrSaveTask sendOrSaveTask = new SendOrSaveTask(context, sendOrSaveMessage, callback,
-                draftAccount);
+        runSendOrSaveProviderCalls(sendOrSaveMessage, callback, draftAccount);
 
-        callback.initializeSendOrSave(sendOrSaveTask);
-        // Do the send/save action on the specified handler to avoid possible
-        // ANRs
-        handler.post(sendOrSaveTask);
         LogUtils.i(LOG_TAG, "[compose] SendOrSaveMessage [%s] posted (isSave: %s) - " +
                         "body length: %d, attachment count: %d",
                 sendOrSaveMessage.requestId(), save, message.bodyText.length(),
@@ -3267,19 +3243,16 @@ public class ComposeActivity extends ActionBarActivity
             private int mRestoredRequestId;
 
             @Override
-            public void initializeSendOrSave(SendOrSaveTask sendOrSaveTask) {
-                synchronized (mActiveTasks) {
-                    int numTasks = mActiveTasks.size();
-                    if (numTasks == 0) {
+            public void initializeSendOrSave() {
+                synchronized (PENDING_SEND_OR_SAVE_TASKS_NUM) {
+                    if (PENDING_SEND_OR_SAVE_TASKS_NUM.getAndAdd(1) == 0) {
                         // Start service so we won't be killed if this app is
                         // put in the background.
                         startService(new Intent(ComposeActivity.this, EmptyService.class));
                     }
-
-                    mActiveTasks.add(sendOrSaveTask);
                 }
                 if (sTestSendOrSaveCallback != null) {
-                    sTestSendOrSaveCallback.initializeSendOrSave(sendOrSaveTask);
+                    sTestSendOrSaveCallback.initializeSendOrSave();
                 }
             }
 
@@ -3309,7 +3282,7 @@ public class ComposeActivity extends ActionBarActivity
             }
 
             @Override
-            public void sendOrSaveFinished(SendOrSaveTask task, boolean success) {
+            public void sendOrSaveFinished(SendOrSaveMessage message, boolean success) {
                 // Update the last sent from account.
                 if (mAccount != null) {
                     MailAppProvider.getInstance().setLastSentFromAccount(mAccount.uri.toString());
@@ -3325,25 +3298,15 @@ public class ComposeActivity extends ActionBarActivity
                             .show();
                 }
 
-                int numTasks;
-                synchronized (mActiveTasks) {
-                    // Remove the task from the list of active tasks
-                    mActiveTasks.remove(task);
-                    numTasks = mActiveTasks.size();
-                }
-
-                if (numTasks == 0) {
-                    // Stop service so we can be killed.
-                    stopService(new Intent(ComposeActivity.this, EmptyService.class));
+                synchronized (PENDING_SEND_OR_SAVE_TASKS_NUM) {
+                    if (PENDING_SEND_OR_SAVE_TASKS_NUM.addAndGet(-1) == 0) {
+                        // Stop service so we can be killed.
+                        stopService(new Intent(ComposeActivity.this, EmptyService.class));
+                    }
                 }
                 if (sTestSendOrSaveCallback != null) {
-                    sTestSendOrSaveCallback.sendOrSaveFinished(task, success);
+                    sTestSendOrSaveCallback.sendOrSaveFinished(message, success);
                 }
-            }
-
-            @Override
-            public void incrementRecipientsTimesContacted(final List<String> recipients) {
-                ComposeActivity.this.incrementRecipientsTimesContacted(recipients);
             }
         };
         setAccount(mReplyFromAccount.account);
@@ -3355,7 +3318,7 @@ public class ComposeActivity extends ActionBarActivity
                 final Message msg = createMessage(mReplyFromAccount, mRefMessage, getMode(), body);
                 mRequestId = sendOrSaveInternal(ComposeActivity.this, mReplyFromAccount, msg,
                         mRefMessage, mQuotedTextView.getQuotedTextIfIncluded(), callback,
-                        SEND_SAVE_TASK_HANDLER, save, mComposeMode, mDraftAccount, mExtraValues);
+                        save, mComposeMode, mDraftAccount, mExtraValues);
             }
         });
 
