@@ -48,6 +48,8 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     private OnClickListener mClick;
     private TextView mSuperCollapsedText;
 
+    private int mCount;
+
     public SuperCollapsedBlock(Context context) {
         this(context, null);
     }
@@ -74,20 +76,24 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     }
 
     public void setCount(int count) {
-        final String strCount = NumberFormat.getIntegerInstance().format(count);
+        mCount = count;
+        final String strCount = NumberFormat.getIntegerInstance().format(mCount);
         mSuperCollapsedText.setText(strCount);
         final Resources res = getResources();
         final int colorId = mSuperCollapsedItem.hasDraft() ?
                 R.color.text_color_draft_red : R.color.conversation_view_text_color_light;
         mSuperCollapsedText.setTextColor(res.getColor(colorId));
         setContentDescription(
-                res.getQuantityString(R.plurals.show_messages_read, count, count));
+                res.getQuantityString(R.plurals.show_messages_read, mCount, mCount));
     }
 
     @Override
     public void onClick(final View v) {
-        ((TextView) findViewById(R.id.super_collapsed_text)).setText(
-                R.string.loading_conversation);
+        mSuperCollapsedText.setVisibility(GONE);
+        findViewById(R.id.super_collapsed_progress).setVisibility(VISIBLE);
+        final String contentDescription =
+                getResources().getQuantityString(R.plurals.show_messages_read, mCount, mCount);
+        setContentDescription(contentDescription);
 
         if (mClick != null) {
             getHandler().post(new Runnable() {
