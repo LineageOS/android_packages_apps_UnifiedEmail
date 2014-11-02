@@ -16,39 +16,27 @@
      limitations under the License.
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.mail.ui.MaterialSearchSuggestionsList
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_overlay_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="gone">
 
-    <com.android.mail.ui.MaterialSearchSuggestionsList
-        android:id="@+id/search_overlay_view"
+    <ListView
+        android:id="@+id/search_overlay_suggestion_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:divider="@null" />
 
-        <ListView
-            android:id="@+id/search_overlay_suggestion_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:divider="@null" />
-
-        <!-- Scrim to fade the background -->
-        <View
-            android:id="@+id/search_overlay_scrim"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#33000000" />
-
-    </com.android.mail.ui.MaterialSearchSuggestionsList>
-
-    <!-- Search bar shadow -->
+    <!-- Scrim to fade the background -->
     <View
-        android:id="@+id/search_actionbar_shadow"
+        android:id="@+id/search_overlay_scrim"
         android:layout_width="match_parent"
-        android:layout_height="7dp"
-        android:background="@drawable/action_bar_shadow"
-        android:visibility="gone" />
-</FrameLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#33000000" />
+
+</com.android.mail.ui.MaterialSearchSuggestionsList>
