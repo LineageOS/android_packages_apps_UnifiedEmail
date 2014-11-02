@@ -49,7 +49,11 @@ public class SearchRecentSuggestionsProvider {
     //
     // 1      original implementation with queries, and 1 or 2 display columns
     // 1->2   added UNIQUE constraint to display1 column
+    // 2->3   <redacted> being dumb and accidentally upgraded, this should be ignored.
     private static final int DATABASE_VERSION = 3 * 256;
+
+    private static final int DATABASE_VERSION_2 = 2 * 256;
+    private static final int DATABASE_VERSION_3 = 3 * 256;
 
     /**
      * This mode bit configures the database to record recent queries.  <i>required</i>
@@ -97,6 +101,10 @@ public class SearchRecentSuggestionsProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            if (oldVersion == DATABASE_VERSION_2 && newVersion == DATABASE_VERSION_3) {
+                // Oops, didn't mean to upgrade this database. Ignore this upgrade.
+                return;
+            }
             db.execSQL("DROP TABLE IF EXISTS suggestions");
             onCreate(db);
         }
