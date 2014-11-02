@@ -547,14 +547,16 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     public void deactivate() {
         mListController.onCabModeExited();
-
+        mActivated = false;
         if (mActionMode != null) {
-            mActivated = false;
             mActionMode.finish();
         }
     }
 
     @VisibleForTesting
+    /**
+     * Returns true if CAB mode is active.
+     */
     public boolean isActivated() {
         return mActivated;
     }
