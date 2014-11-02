@@ -24,8 +24,6 @@
 
     <dimen name="message_header_icon_margin">24dp</dimen>
     <dimen name="message_header_icon_additional_margin_start">32dp</dimen>
-    <dimen name="message_header_action_button_width">56dp</dimen>
-    <dimen name="message_header_action_button_height">56dp</dimen>
     <dimen name="message_header_action_button_margin_top">8dp</dimen>
     <dimen name="message_header_text_margin_top">22dp</dimen>
     <dimen name="message_header_margin_bottom">24dp</dimen>
