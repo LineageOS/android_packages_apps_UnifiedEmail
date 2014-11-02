@@ -581,11 +581,6 @@ public final class TwoPaneController extends AbstractActivityController implemen
         // ViewMode.CONVERSATION and yet the conversation list goes in and out of visibility.
         enableOrDisableCab();
 
-        // close the drawer, if open
-        if (isDrawerOpen()) {
-            toggleDrawerState();
-        }
-
         // When a mode change is required, wait for onConversationVisibilityChanged(), the signal
         // that the mode change animation has finished, before rendering the conversation.
         mToShow = new ToShow(conversation, fromKeyboard);
@@ -619,6 +614,10 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
     @Override
     public void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
+        // close the drawer when the user opens CV from the list
+        if (isDrawerOpen()) {
+            toggleDrawerState();
+        }
         super.onConversationSelected(conversation, inLoaderCallbacks);
         if (!mCurrentConversationJustPeeking) {
             // Shift the focus to the conversation in landscape mode.
