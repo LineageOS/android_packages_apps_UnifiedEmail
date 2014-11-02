@@ -734,6 +734,7 @@ function replaceSuperCollapsedBlock(startIndex) {
         msg = block.firstChild;
     }
     parent.removeChild(block);
+    disablePostForms();
     measurePositions();
 }
 
@@ -756,6 +757,7 @@ function replaceMessageBodies(messageIds) {
         msgContentDiv.innerHTML = window.mail.getMessageBody(id);
         processNewMessageBody(msgContentDiv);
     }
+    disablePostForms();
     measurePositions();
 }
 
@@ -766,9 +768,29 @@ function appendMessageHtml() {
     var body = msg.children[0];  // toss the outer div, it was just to render innerHTML into
     document.body.insertBefore(body, document.getElementById("conversation-footer"));
     processNewMessageBody(body.querySelector(".mail-message-content"));
+    disablePostForms();
     measurePositions();
 }
 
+function disablePostForms() {
+    var forms = document.getElementsByTagName('FORM');
+    var i;
+    var j;
+    var elements;
+
+    for (i = 0; i < forms.length; ++i) {
+        if (forms[i].method.toUpperCase() === 'POST') {
+            forms[i].onsubmit = function() {
+                alert(MSG_FORMS_ARE_DISABLED);
+                return false;
+            }
+            elements = form[i].elements;
+            for (j = 0; j < elements.length; ++j) {
+                elements[j].readOnly = true;
+            }
+        }
+    }
+}
 // END Java->JavaScript handlers
 
 // Do this first to ensure that the readiness signal comes through,
@@ -783,5 +805,5 @@ normalizeAllMessageWidths();
 if (!RUNNING_KITKAT_OR_LATER) {
     restoreScrollPosition();
 }
+disablePostForms();
 measurePositions();
-
