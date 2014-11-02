@@ -282,7 +282,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
             return;
         }
 
-        flf.setMinimized(minimized);
+        flf.animateMinimized(minimized);
         mLayout.animateDrawer(minimized);
         resetActionBarIcon();
 
@@ -299,6 +299,16 @@ public final class TwoPaneController extends AbstractActivityController implemen
                 }
             }
         }
+    }
+
+    protected void onDrawerDrag(float percent) {
+        final FolderListFragment flf = getFolderListFragment();
+        if (flf == null) {
+            LogUtils.w(LOG_TAG, "no drawer to toggle open/closed");
+            return;
+        }
+
+        flf.onDrawerDrag(percent);
     }
 
     @Override
