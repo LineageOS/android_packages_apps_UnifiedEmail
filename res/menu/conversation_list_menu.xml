@@ -23,13 +23,13 @@
     <item
         android:id="@+id/empty_trash"
         android:title="@string/empty_trash"
-        app:showAsAction="always|withText" />
+        app:showAsAction="never" />
 
     <!-- Available only in the spam folder, when the account supports emptying it -->
     <item
         android:id="@+id/empty_spam"
         android:title="@string/empty_spam"
-        app:showAsAction="always|withText" />
+        app:showAsAction="never" />
 
     <!-- Available only for accounts with SERVER_SEARCH and in a folder
       that supports FOLDER_SERVER_SEARCH -->
