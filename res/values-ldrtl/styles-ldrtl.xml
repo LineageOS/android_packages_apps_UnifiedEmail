@@ -101,6 +101,10 @@
         <item name="android:layout_marginStart">@dimen/attachment_icon_padding</item>
     </style>
 
+    <style name="AttachmentThumbnail">
+        <item name="android:layout_marginStart">@dimen/attachment_item_padding_start</item>
+    </style>
+
     <style name="UnreadCountWithMarginEndStyle" parent="UnreadCountRelativeLayout">
         <item name="android:layout_marginEnd">@dimen/folder_list_item_end_margin</item>
         <item name="android:layout_alignParentEnd">true</item>
