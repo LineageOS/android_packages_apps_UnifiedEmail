@@ -95,6 +95,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
     private View mConversationView;
     private View mFoldersView;
     private View mListView;
+    private View mFloatingActions;
     private View mFloatingActionButton;
 
     private int mFloatingActionButtonEndMargin;
@@ -145,6 +146,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView = findViewById(R.id.conversation_list_pane);
         mConversationView = findViewById(R.id.conversation_pane);
         mMiscellaneousView = findViewById(MISCELLANEOUS_VIEW_ID);
+        mFloatingActions = findViewById(R.id.floating_actions);
         mFloatingActionButton = findViewById(R.id.compose_button);
 
         // all panes start GONE in initial UNKNOWN mode to avoid drawing misplaced panes
@@ -201,7 +203,10 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
      */
     private void positionPanes(int width) {
         // Always reset the FAB position to previous X (in case of rotation)
-        mFloatingActionButton.setX(computeFloatingActionButtonX(mPrevConvX));
+        if (mPrevConvX != 0) {
+            mFloatingActionButton.setX(computeFloatingActionButtonX(mPrevConvX));
+            mFloatingActions.setVisibility(VISIBLE);
+        }
 
         final int convX, listX, foldersX;
         final boolean isRtl = ViewUtils.isViewRtl(this);

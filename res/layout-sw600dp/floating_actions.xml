@@ -16,9 +16,11 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/floating_actions"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom">
+    android:layout_gravity="bottom"
+    android:visibility="invisible">
 
     <com.android.mail.ui.ActionableToastBar
         android:id="@+id/toast_bar"
