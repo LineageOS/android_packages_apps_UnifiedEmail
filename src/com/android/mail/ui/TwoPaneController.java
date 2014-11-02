@@ -407,11 +407,11 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    protected void showConversation(Conversation conversation, boolean peek) {
+    protected void showConversationWithPeek(Conversation conversation, boolean peek) {
         // Make sure that we set the peeking flag before calling super (since some functionality
         // in super depends on the flag.
         mCurrentConversationJustPeeking = peek;
-        super.showConversation(conversation, peek);
+        super.showConversationWithPeek(conversation, peek);
 
         // 2-pane can ignore inLoaderCallbacks because it doesn't use
         // FragmentManager.popBackStack().
@@ -465,7 +465,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     @Override
     public void onConversationFocused(Conversation conversation) {
         if (mIsTabletLandscape) {
-            showConversation(conversation, true /* peek */);
+            showConversationWithPeek(conversation, true /* peek */);
         }
     }
 

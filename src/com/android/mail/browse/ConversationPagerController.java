@@ -104,7 +104,8 @@ public class ConversationPagerController {
      * @param folder current folder
      * @param initialConversation conversation to display initially in pager
      * @param changeVisibility true if we need to make the pager appear
-     * @param pagerAnimationListener animation listener for pager fade-in animation
+     * @param pagerAnimationListener animation listener for pager fade-in, null indicates no
+     *                               animation should take place
      */
     public void show(Account account, Folder folder, Conversation initialConversation,
             boolean changeVisibility, AnimatorListenerAdapter pagerAnimationListener) {
@@ -128,17 +129,22 @@ public class ConversationPagerController {
         }
 
         if (changeVisibility) {
-            // Reset alpha to 0 before animating/making it visible
-            mPager.setAlpha(0f);
-            mPager.setVisibility(View.VISIBLE);
-
-            final ViewPropertyAnimator pagerAnimator = mPager.animate().alpha(1f)
-                    .setDuration(SHOW_ANIMATION_DURATION);
-
-            // If we have any thing that listens in on pager show (see OnePaneController's
-            // showConversation(..) for an example), tack it on
+            // If we have a pagerAnimationListener, go ahead and animate
             if (pagerAnimationListener != null) {
-                pagerAnimator.setListener(pagerAnimationListener);
+                // Reset alpha to 0 before animating/making it visible
+                mPager.setAlpha(0f);
+                mPager.setVisibility(View.VISIBLE);
+
+                // Fade in pager to full visibility - this can be cancelled mid-animation
+                mPager.animate().alpha(1f)
+                        .setDuration(SHOW_ANIMATION_DURATION).setListener(pagerAnimationListener);
+
+            // Otherwise, make the pager appear without animation
+            } else {
+                // In case pager animation was cancelled and alpha value was not reset,
+                // ensure that the pager is completely visible for a non-animated pager.show
+                mPager.setAlpha(1f);
+                mPager.setVisibility(View.VISIBLE);
             }
         }
 
