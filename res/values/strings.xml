@@ -1137,4 +1137,6 @@
 
     <!-- Text to go to the dialog to accept the security hold -->
     <string name="update_security_text">update now</string>
+    <!-- Shown when user submits a form. [CHAR LIMIT=40] -->
+    <string name="forms_are_disabled">Forms are disabled in Gmail</string>
 </resources>
