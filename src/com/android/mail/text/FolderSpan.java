@@ -18,17 +18,20 @@
 package com.android.mail.text;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.v4.text.BidiFormatter;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.ReplacementSpan;
 
 import com.android.mail.ui.FolderDisplayer;
 
 /**
  * A replacement span to use when displaying folders in conversation view. Prevents a folder name
  * from wrapping mid-name, and ellipsizes very long folder names that can't fit on a single line.
- * Also ensures that folder text is drawn vertically centered within the background color chip.
  */
-public class FolderSpan extends CenteredDrawableSpan {
+public class FolderSpan extends ReplacementSpan {
+    private final TextPaint mWorkPaint = new TextPaint();
     private final String mName;
     private final int mFgColor;
     private final int mBgColor;
@@ -49,28 +52,38 @@ public class FolderSpan extends CenteredDrawableSpan {
         mDim = dim;
     }
 
-    @Override
-    protected int getDrawableWidth() {
-        sWorkPaint.setTextSize(mRes.folderFontSize);
-        return Math.min((int) sWorkPaint.measureText(mName) + 2 * mRes.folderHorizontalPadding,
+    private int getWidth(Paint p) {
+        p.setTextSize(mRes.folderFontSize);
+        return Math.min((int) p.measureText(mName) + 2 * mRes.folderHorizontalPadding,
                 mDim.getMaxChipWidth());
     }
 
-    @Override
-    protected int getDrawableHeight() {
-        return mRes.folderFontSize + 2 * mRes.folderVerticalPadding;
+    private int getHeight(Paint p) {
+        p.setTextSize(mRes.folderFontSize);
+        final Paint.FontMetricsInt fm = p.getFontMetricsInt();
+        return fm.bottom - fm.top;
     }
 
     @Override
-    protected void drawOnCanvas(Canvas canvas, float x, float y) {
-        final int width = getDrawableWidth();
+    public int getSize(Paint p, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
+        mWorkPaint.set(p);
+        return getWidth(mWorkPaint);
+    }
+
+    @Override
+    public void draw(Canvas canvas, CharSequence charSequence, int start, int end, float x, int top,
+            int baseline, int bottom, Paint paint) {
+        mWorkPaint.set(paint);
+        mWorkPaint.setTextSize(mRes.folderFontSize);
+        final int width = getWidth(mWorkPaint);
+        final int height = getHeight(mWorkPaint);
         String name = mName;
         if (width == mDim.getMaxChipWidth()) {
-            name = TextUtils.ellipsize(mName, sWorkPaint, width - 2 * mRes.folderHorizontalPadding,
+            name = TextUtils.ellipsize(mName, mWorkPaint, width - 2 * mRes.folderHorizontalPadding,
                     TextUtils.TruncateAt.MIDDLE).toString();
         }
-        FolderDisplayer.drawFolder(canvas, x, y, width, getDrawableHeight(), name, mFgColor,
-                mBgColor, mRes, mFormatter, sWorkPaint);
+        FolderDisplayer.drawFolder(canvas, x, baseline - height, width, height, name, mFgColor,
+                mBgColor, mRes, mFormatter, mWorkPaint);
     }
 
     public static interface FolderSpanDimensions {
