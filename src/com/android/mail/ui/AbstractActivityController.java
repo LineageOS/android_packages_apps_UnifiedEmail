@@ -940,7 +940,9 @@ public abstract class AbstractActivityController implements ActivityController,
             setListContext(folder, query);
             showConversationList(mConvListContext);
             // Touch the current folder: it is different, and it has been accessed.
-            mRecentFolderList.touchFolder(mFolder, mAccount);
+            if (mFolder != null) {
+                mRecentFolderList.touchFolder(mFolder, mAccount);
+            }
         }
         resetActionBarIcon();
     }
