@@ -22,7 +22,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -42,7 +41,6 @@ public class MiniDrawerView extends LinearLayout {
 
     private FolderListFragment mController;
 
-    private View mDotdotdot;
     private View mSpacer;
 
     private final LayoutInflater mInflater;
@@ -64,13 +62,6 @@ public class MiniDrawerView extends LinearLayout {
         super.onFinishInflate();
 
         mSpacer = findViewById(R.id.spacer);
-        mDotdotdot = findViewById(R.id.dotdotdot);
-        mDotdotdot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mController.toggleDrawerState();
-            }
-        });
     }
 
     @Override
@@ -140,11 +131,10 @@ public class MiniDrawerView extends LinearLayout {
 
         View child;
         // reset the inbox views for this account
-        while ((child=getChildAt(1)) != mDotdotdot) {
+        while ((child=getChildAt(1)) != mSpacer) {
             removeView(child);
         }
-        // Reset ellipsis visibility
-        mDotdotdot.setVisibility(View.VISIBLE);
+
         final ObjectCursor<Folder> folderCursor = mController.getFoldersCursor();
         if (folderCursor != null && !folderCursor.isClosed()) {
             int pos = -1;
@@ -218,12 +208,6 @@ public class MiniDrawerView extends LinearLayout {
             super.onLayout(changed, l, t, r, b);
             return;
         }
-
-        mDotdotdot.setVisibility(View.GONE);
-
-        final LayoutParams dotDotDotParams = (LayoutParams) mDotdotdot.getLayoutParams();
-        childHeight -= dotDotDotParams.topMargin + dotDotDotParams.bottomMargin
-                + mDotdotdot.getMeasuredHeight();
 
         // Check again
         if (childHeight <= availableHeight) {
