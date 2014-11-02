@@ -4382,6 +4382,11 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
+    public boolean setupEmptyIconView(Folder folder, boolean isEmpty) {
+        return false;
+    }
+
+    @Override
     public View.OnClickListener getNavigationViewClickListener() {
         return mHomeButtonListener;
     }
