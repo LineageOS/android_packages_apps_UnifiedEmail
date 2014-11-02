@@ -850,6 +850,10 @@
         <item name="android:layout_marginRight">@dimen/conv_list_spacious_star_padding_end</item>
     </style>
 
+    <style name="ConversationListFooterLoadMoreStyle">
+        <item name="android:paddingLeft">@dimen/conv_list_footer_load_more_padding</item>
+    </style>
+
     <style name="ConversationListDividerStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/divider_height</item>
