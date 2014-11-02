@@ -199,6 +199,10 @@ public class SubjectAndFolderView extends TextView
         return mBidiFormatter;
     }
 
+    public String getSubject() {
+        return mSubject;
+    }
+
     private static class ConversationFolderDisplayer extends FolderDisplayer {
 
         private final FolderSpan.FolderSpanDimensions mDims;
