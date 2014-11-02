@@ -3916,19 +3916,19 @@ public abstract class AbstractActivityController implements ActivityController,
         final ActionClickedListener listener;
         final int actionTextResourceId;
         final int lastSyncResult = folder.lastSyncResult;
-        switch (lastSyncResult & 0x0f) {
+        switch (UIProvider.getResultFromLastSyncResult(lastSyncResult)) {
             case UIProvider.LastSyncResult.CONNECTION_ERROR:
-                // The sync request that caused this failure.
-                final int syncRequest = lastSyncResult >> 4;
+                // The sync status that caused this failure.
+                final int syncStatus = UIProvider.getStatusFromLastSyncResult(lastSyncResult);
                 // Show: User explicitly pressed the refresh button and there is no connection
                 // Show: The first time the user enters the app and there is no connection
                 //       TODO(viki): Implement this.
                 // Reference: http://b/7202801
-                final boolean showToast = (syncRequest & UIProvider.SyncStatus.USER_REFRESH) != 0;
+                final boolean showToast = (syncStatus & UIProvider.SyncStatus.USER_REFRESH) != 0;
                 // Don't show: Already in the app; user switches to a synced label
                 // Don't show: In a live label and a background sync fails
                 final boolean avoidToast = !showToast && (folder.syncWindow > 0
-                        || (syncRequest & UIProvider.SyncStatus.BACKGROUND_SYNC) != 0);
+                        || (syncStatus & UIProvider.SyncStatus.BACKGROUND_SYNC) != 0);
                 if (avoidToast) {
                     return;
                 }
@@ -4007,35 +4007,6 @@ public abstract class AbstractActivityController implements ActivityController,
                 Utils.sendFeedback(mActivity, mAccount, true /* reportingProblem */);
             }
         };
-    }
-
-    @Override
-    public void onFooterViewErrorActionClick(Folder folder, int errorStatus) {
-        Uri uri = null;
-        switch (errorStatus) {
-            case UIProvider.LastSyncResult.CONNECTION_ERROR:
-                if (folder != null && folder.refreshUri != null) {
-                    uri = folder.refreshUri;
-                }
-                break;
-            case UIProvider.LastSyncResult.AUTH_ERROR:
-                promptUserForAuthentication(mAccount);
-                return;
-            case UIProvider.LastSyncResult.SECURITY_ERROR:
-                return; // Currently we do nothing for security errors.
-            case UIProvider.LastSyncResult.STORAGE_ERROR:
-                showStorageErrorDialog();
-                return;
-            case UIProvider.LastSyncResult.INTERNAL_ERROR:
-                Utils.sendFeedback(mActivity, mAccount, true /* reportingProblem */);
-                return;
-            default:
-                return;
-        }
-
-        if (uri != null) {
-            startAsyncRefreshTask(uri);
-        }
     }
 
     @Override

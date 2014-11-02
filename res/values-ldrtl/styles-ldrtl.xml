@@ -288,6 +288,10 @@
     <style name="ConversationListSpaciousStarStyle">
         <item name="android:layout_marginEnd">@dimen/conv_list_spacious_star_padding_end</item>
     </style>
+
+    <style name="ConversationListFooterLoadMoreStyle">
+        <item name="android:paddingStart">@dimen/conv_list_footer_load_more_padding</item>
+    </style>
     <!-- END Conversation list styles -->
 
     <style name="SpinnerAccountNameStyle" parent="ComposeFromTextViewStyle">
