@@ -236,6 +236,9 @@ public class ContactResolver implements Runnable {
         }
 
         protected ImmutableMap<String, ContactInfo> loadContactPhotos(Set<String> emails) {
+            if (mResolver == null) {
+                return null;
+            }
             return SenderInfoLoader.loadContactPhotos(mResolver, emails, false /* decodeBitmaps */);
         }
 
@@ -249,7 +252,7 @@ public class ContactResolver implements Runnable {
             final ReusableBitmap bitmap = values[0].bitmap;
 
             // DecodeTask does not add null results to the cache.
-            if (bitmap == null) {
+            if (bitmap == null && mCache != null) {
                 // Cache null result.
                 mCache.put(request.contactRequest, null);
             }
