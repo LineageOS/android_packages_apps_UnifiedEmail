@@ -40,7 +40,7 @@
     <LinearLayout
         android:id="@+id/load_more"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?android:attr/listPreferredItemHeight"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:visibility="gone">
@@ -48,8 +48,8 @@
         <TextView
             style="@style/ConversationListFooterLoadMoreStyle"
             android:layout_width="wrap_content"
-            android:layout_height="?android:attr/listPreferredItemHeight"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="@string/load_more"
             android:textAllCaps="true"
             android:textColor="@color/conversation_view_footer_load_more_text_color"
