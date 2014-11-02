@@ -50,8 +50,8 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
     private static final String EXTRA_CONTROLLER_STATE = "extraSearchViewControllerViewState";
 
-    private final MailActivity mActivity;
-    private final ActivityController mController;
+    private MailActivity mActivity;
+    private ActivityController mController;
 
     private SearchRecentSuggestionsProvider mSuggestionsProvider;
 
@@ -89,11 +89,18 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
         mActivity.getViewMode().addListener(this);
     }
 
+    /**
+     * This controller should not be used after this is called.
+     */
     public void onDestroy() {
         if (!mWaitToDestroyProvider) {
             mSuggestionsProvider.cleanup();
         }
         mActivity.getViewMode().removeListener(this);
+        mActivity = null;
+        mController = null;
+        mSearchActionView = null;
+        mSearchSuggestionList = null;
     }
 
     public void saveState(Bundle outState) {
@@ -186,7 +193,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
     public void onSearchCanceled() {
         // Special case search mode
-        if (mActivity.getViewMode().isSearchMode()) {
+        if (ViewMode.isSearchMode(mViewMode)) {
             mActivity.setResult(Activity.RESULT_OK);
             mActivity.finish();
         } else {
