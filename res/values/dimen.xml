@@ -36,11 +36,18 @@
     <dimen name="sender_image_touch_slop">8dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
 
+    <!-- folder chips -->
+    <dimen name="folder_rounded_corner_radius">1dp</dimen>
+    <dimen name="folder_start_padding">6dp</dimen>
     <!-- TL folder chips -->
-    <dimen name="folders_text_bottom_padding">3dp</dimen>
-    <dimen name="folder_cell_content_padding">6dp</dimen>
-    <dimen name="folders_start_padding">6dp</dimen>
-    <dimen name="folders_gradient_padding">8dp</dimen>
+    <dimen name="folder_tl_cell_content_padding">6dp</dimen>
+    <dimen name="folder_tl_gradient_padding">8dp</dimen>
+    <dimen name="folder_tl_top_bottom_padding">2dp</dimen>
+    <dimen name="folder_tl_font_size">11sp</dimen>
+    <!-- CV folder chips -->
+    <dimen name="folder_cv_cell_content_padding">8dp</dimen>
+    <dimen name="folder_cv_top_bottom_padding">2dp</dimen>
+    <dimen name="folder_cv_font_size">12sp</dimen>
 
     <dimen name="conversation_page_gutter">16dp</dimen>
     <dimen name="conversation_message_content_margin_side">16dp</dimen>
@@ -50,12 +57,6 @@
     <dimen name="conversation_header_padding_side">16dp</dimen>
     <dimen name="conversation_header_star_size">52dp</dimen>
     <dimen name="conversation_border_margin_side">0dp</dimen>
-    <dimen name="conversation_folder_font_size">12sp</dimen>
-    <dimen name="conversation_folder_padding">1dp</dimen>
-    <dimen name="conversation_folder_padding_extra_width">8dp</dimen>
-    <dimen name="conversation_folder_padding_after">8dp</dimen>
-    <dimen name="folder_rounded_corner_radius">1dp</dimen>
-    <dimen name="conversation_folder_margin_top">6dp</dimen>
     <dimen name="message_details_header_padding_start_expanded">72dip</dimen>
     <dimen name="message_details_header_padding_end">16dp</dimen>
     <dimen name="message_details_header_vertical_padding">7dp</dimen>
