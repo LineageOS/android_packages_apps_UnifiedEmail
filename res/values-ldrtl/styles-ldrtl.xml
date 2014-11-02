@@ -72,8 +72,7 @@
     </style>
 
     <style name="FolderListItemEndStyle">
-        <item name="android:layout_marginEnd">@dimen/folder_list_item_end_margin</item>
-        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:paddingEnd">@dimen/folder_list_item_end_margin</item>
     </style>
 
     <style name="FolderListItemStyle">
@@ -208,10 +207,6 @@
     <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderSmallStyle">
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_marginStart">@dimen/attachment_icon_padding</item>
-    </style>
-
-    <style name="FolderParentIconStyle" parent="AutoMirroredImageView">
-        <item name="android:layout_alignParentEnd">true</item>
     </style>
 
     <style name="MessageAttachmentBarMarginEndStyle">
@@ -392,8 +387,4 @@
         <item name="android:paddingEnd">@dimen/account_item_name_end_padding</item>
     </style>
 
-
-    <style name="AutoMirroredImageView">
-        <item name="android:scaleX">-1</item>
-    </style>
 </resources>
