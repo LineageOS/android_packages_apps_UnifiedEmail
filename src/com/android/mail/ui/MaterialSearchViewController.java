@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.SearchRecentSuggestionsProvider;
+import com.android.mail.utils.ViewUtils;
 
 import java.util.Locale;
 
@@ -163,6 +164,11 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
             mSearchSuggestionList.setVisibility(isStateVisible ? View.VISIBLE : View.GONE);
             mSearchActionView.focusSearchBar(isStateVisible);
 
+            final boolean useDefaultColor = !isSearchBarVisible || shouldAlignWithTl();
+            final int statusBarColor = useDefaultColor ? R.color.mail_activity_status_bar_color :
+                    R.color.search_status_bar_color;
+            ViewUtils.setStatusBarColor(mActivity, statusBarColor);
+
             // Specific actions for each view state
             if (onlyActionBar) {
                 adjustViewForTwoPaneLandscape();
@@ -178,13 +184,16 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
         }
     }
 
+    private boolean shouldAlignWithTl() {
+        return mController.isTwoPaneLandscape() &&
+                mControllerState == SEARCH_VIEW_STATE_ONLY_ACTIONBAR &&
+                ViewMode.isSearchMode(mViewMode);
+    }
+
     private void adjustViewForTwoPaneLandscape() {
         // Try to adjust if the layout happened already
         if (mEndXCoordForTabletLandscape != 0) {
-            final boolean alignWithTL = mController.isTwoPaneLandscape() &&
-                    mControllerState == SEARCH_VIEW_STATE_ONLY_ACTIONBAR &&
-                    ViewMode.isSearchMode(mViewMode);
-            mSearchActionView.adjustViewForTwoPaneLandscape(alignWithTL,
+            mSearchActionView.adjustViewForTwoPaneLandscape(shouldAlignWithTl(),
                     mEndXCoordForTabletLandscape);
         }
     }
