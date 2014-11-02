@@ -36,7 +36,8 @@ import java.util.Locale;
 /**
  * Controller for interactions between ActivityController and our custom search views.
  */
-public class MaterialSearchViewController implements ViewMode.ModeChangeListener {
+public class MaterialSearchViewController implements ViewMode.ModeChangeListener,
+        TwoPaneLayout.ConversationListLayoutListener {
     // The controller is not in search mode. Both search action bar and the suggestion list
     // are not visible to the user.
     public static final int SEARCH_VIEW_STATE_GONE = 0;
@@ -59,6 +60,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
     private int mViewMode;
     private int mViewState;
+    private int mEndXCoordForTabletLandscape;
 
     private boolean mWaitToDestroyProvider;
 
@@ -110,6 +112,21 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
         mViewMode = newMode;
     }
 
+    @Override
+    public void onConversationListLayout(int xEnd, boolean drawerOpen) {
+        // Only care about the first layout
+        if (mEndXCoordForTabletLandscape != xEnd) {
+            // This is called when we get into tablet landscape mode
+            mEndXCoordForTabletLandscape = xEnd;
+            if (ViewMode.isSearchMode(mViewMode)) {
+                final int defaultVisibility = mController.shouldShowSearchBarByDefault() ?
+                        View.VISIBLE : View.GONE;
+                mSearchActionView.setVisibility(drawerOpen ? View.INVISIBLE : defaultVisibility);
+            }
+            adjustViewForTwoPaneLandscape();
+        }
+    }
+
     public boolean handleBackPress() {
         final boolean shouldShowSearchBar = mController.shouldShowSearchBarByDefault();
         if (shouldShowSearchBar && mSearchSuggestionList.isShown()) {
@@ -132,6 +149,7 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
                     mSearchActionView.setVisibility(View.VISIBLE);
                     mSearchSuggestionList.setVisibility(View.GONE);
                     mSearchActionView.focusSearchBar(false);
+                    adjustViewForTwoPaneLandscape();
                     break;
                 }
                 // Fallthrough to setting everything invisible
@@ -146,10 +164,19 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
                 break;
             case MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE:
                 mSearchActionView.setVisibility(View.VISIBLE);
+                // Set to default layout/assets
+                mSearchActionView.adjustViewForTwoPaneLandscape(false /* do not align */, 0);
                 mSearchSuggestionList.setVisibility(View.VISIBLE);
                 mSearchActionView.focusSearchBar(true);
                 break;
         }
+    }
+
+    private void adjustViewForTwoPaneLandscape() {
+        final boolean alignWithTL = mController.isTwoPaneLandscape() &&
+                mViewState == MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR &&
+                ViewMode.isSearchMode(mViewMode);
+        mSearchActionView.adjustViewForTwoPaneLandscape(alignWithTL, mEndXCoordForTabletLandscape);
     }
 
     public void onQueryTextChanged(String query) {

@@ -179,7 +179,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
             // Tablets use CustomViewToolbar to override the default search menu item positioning.
             final CustomViewToolbar customViewToolbar = (CustomViewToolbar) toolbar;
             customViewToolbar.setController(this, mController, mViewMode);
-            mController.setConversationListLayoutListener(customViewToolbar);
+            mController.addConversationListLayoutListener(customViewToolbar);
         }
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(mController.getNavigationViewClickListener());
