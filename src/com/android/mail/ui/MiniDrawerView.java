@@ -133,6 +133,7 @@ public class MiniDrawerView extends LinearLayout {
                     final ImageView iv = (ImageView) mInflater.inflate(
                             R.layout.mini_drawer_folder_item, this, false /* attachToRoot */);
                     iv.setTag(new FolderItem(f, iv));
+                    iv.setContentDescription(f.name);
                     addView(iv, 1 + numInboxes);
                     numInboxes++;
                 }
