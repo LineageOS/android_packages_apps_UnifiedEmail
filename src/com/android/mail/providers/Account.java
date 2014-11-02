@@ -30,6 +30,7 @@ import com.android.mail.R;
 import com.android.mail.content.CursorCreator;
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.lib.base.Preconditions;
+import com.android.mail.lib.base.Strings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.SyncStatus;
@@ -387,8 +388,7 @@ public class Account implements Parcelable {
         allFolderListUri = Utils.getValidUri(json
                 .optString(AccountColumns.ALL_FOLDER_LIST_URI));
         searchUri = Utils.getValidUri(json.optString(AccountColumns.SEARCH_URI));
-        accountFromAddresses = json.optString(AccountColumns.ACCOUNT_FROM_ADDRESSES,
-                "");
+        accountFromAddresses = json.optString(AccountColumns.ACCOUNT_FROM_ADDRESSES, "");
         expungeMessageUri = Utils.getValidUri(json
                 .optString(AccountColumns.EXPUNGE_MESSAGE_URI));
         undoUri = Utils.getValidUri(json.optString(AccountColumns.UNDO_URI));
@@ -438,8 +438,8 @@ public class Account implements Parcelable {
                 cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_MANAGER_NAME));
         accountId = cursor.getString(
                 cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_ID));
-        accountFromAddresses = cursor.getString(
-                cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES));
+        accountFromAddresses = Strings.nullToEmpty(cursor.getString(
+                cursor.getColumnIndex(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES)));
 
         final int capabilitiesColumnIndex =
                 cursor.getColumnIndex(UIProvider.AccountColumns.CAPABILITIES);
