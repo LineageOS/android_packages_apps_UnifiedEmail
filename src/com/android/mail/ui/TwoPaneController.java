@@ -153,7 +153,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     @Override
     public boolean onCreate(Bundle savedState) {
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
-            if (mLayout == null) {
+        if (mLayout == null) {
             // We need the layout for everything. Crash/Return early if it is null.
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
             return false;
@@ -631,5 +631,12 @@ public final class TwoPaneController extends AbstractActivityController implemen
     @Override
     public boolean isTwoPaneLandscape() {
         return mIsTabletLandscape;
+    }
+
+    @Override
+    public boolean isSearchBarShowing() {
+        final int mode = mViewMode.getMode();
+        return mode == ViewMode.SEARCH_RESULTS_LIST ||
+                (mIsTabletLandscape && mode == ViewMode.SEARCH_RESULTS_CONVERSATION);
     }
 }

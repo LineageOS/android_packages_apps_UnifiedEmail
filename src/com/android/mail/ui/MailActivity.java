@@ -45,6 +45,8 @@ import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.SearchRecentSuggestionsProvider;
+import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
 
@@ -495,6 +497,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
                 ? R.string.conversation_view_help_context
                 : R.string.conversation_list_help_context;
         Utils.showHelp(this, account, getString(helpContext));
+    }
+
+    @Override
+    public SearchRecentSuggestionsProvider getSuggestionsProvider() {
+        return new SuggestionsProvider(this);
     }
 
     /**
