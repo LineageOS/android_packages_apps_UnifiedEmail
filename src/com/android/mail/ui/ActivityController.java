@@ -338,5 +338,5 @@ public interface ActivityController extends LayoutListener,
 
     View.OnClickListener getNavigationViewClickListener();
 
-    boolean isSearchBarShowing();
+    boolean shouldShowSearchBarByDefault();
 }
