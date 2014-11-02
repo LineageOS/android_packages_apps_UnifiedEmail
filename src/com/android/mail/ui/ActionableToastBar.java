@@ -167,7 +167,8 @@ public class ActionableToastBar extends FrameLayout {
 
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             }
-        } else {
+        // if width constraints were given explicitly, honor them; otherwise use the natural width
+        } else if (mMinWidth >= 0 && mMaxWidth >= 0) {
             // otherwise, adjust the the single line view so wrapping occurs at the desired width
             // (the total width of the toast bar must always fall between the given min and max
             // width; if max width cannot accommodate all of the description text, it wraps)
