@@ -51,7 +51,7 @@
 
     <TextView
         android:id="@+id/unread"
-        style="@style/UnreadCount" />
+        style="@style/DrawerUnreadCount" />
 
     <TextView
         android:id="@+id/unseen"
