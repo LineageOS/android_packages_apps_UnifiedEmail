@@ -65,6 +65,17 @@ public final class TwoPaneController extends AbstractActivityController implemen
     // TODO: save in instance state
     private boolean mCurrentConversationJustPeeking;
 
+    // For peeking conversations, we'll put it in a separate runnable.
+    private static final int PEEK_CONVERSATION_DELAY_MS = 500;
+    private final Runnable mPeekConversationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!mActivity.isFinishing()) {
+                showCurrentConversationInPager();
+            }
+        }
+    };
+
     /**
      * Used to determine whether onViewModeChanged should skip a potential
      * fragment transaction that would remove a miscellaneous view.
@@ -178,6 +189,12 @@ public final class TwoPaneController extends AbstractActivityController implemen
         // (onConversationVisibilityChanged, onConversationListVisibilityChanged)
         mViewMode.addListener(mLayout);
         return super.onCreate(savedState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacks(mPeekConversationRunnable);
     }
 
     @Override
@@ -306,10 +323,19 @@ public final class TwoPaneController extends AbstractActivityController implemen
         if (!visible) {
             mPagerController.hide(false /* changeVisibility */);
         } else if (mConversationToShow != null) {
-            mPagerController.show(mAccount, mFolder, mConversationToShow,
-                    false /* changeVisibility */);
-            mConversationToShow = null;
+            if (mCurrentConversationJustPeeking) {
+                mHandler.removeCallbacks(mPeekConversationRunnable);
+                mHandler.postDelayed(mPeekConversationRunnable, PEEK_CONVERSATION_DELAY_MS);
+            } else {
+                showCurrentConversationInPager();
+            }
         }
+    }
+
+    private void showCurrentConversationInPager() {
+        mPagerController.show(mAccount, mFolder, mConversationToShow,
+                false /* changeVisibility */);
+        mConversationToShow = null;
     }
 
     @Override
@@ -372,11 +398,11 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    protected void showConversation(Conversation conversation, boolean markAsRead) {
+    protected void showConversation(Conversation conversation, boolean peek) {
         // Make sure that we set the peeking flag before calling super (since some functionality
         // in super depends on the flag.
-        mCurrentConversationJustPeeking = !markAsRead;
-        super.showConversation(conversation, markAsRead);
+        mCurrentConversationJustPeeking = peek;
+        super.showConversation(conversation, peek);
 
         // 2-pane can ignore inLoaderCallbacks because it doesn't use
         // FragmentManager.popBackStack().
@@ -430,7 +456,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     @Override
     public void onConversationFocused(Conversation conversation) {
         if (mIsTabletLandscape) {
-            showConversation(conversation, false /* markAsRead */);
+            showConversation(conversation, true /* peek */);
         }
     }
 

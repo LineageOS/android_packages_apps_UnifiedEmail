@@ -2484,10 +2484,10 @@ public abstract class AbstractActivityController implements ActivityController,
      * onLoadFinished(Loader, Cursor) on any callback.
      */
     protected void showConversation(Conversation conversation) {
-        showConversation(conversation, true /* markAsRead */);
+        showConversation(conversation, false /* peek */);
     }
 
-    protected void showConversation(Conversation conversation, boolean markAsRead) {
+    protected void showConversation(Conversation conversation, boolean peek) {
         if (conversation != null) {
             Utils.sConvLoadTimer.start();
         }
