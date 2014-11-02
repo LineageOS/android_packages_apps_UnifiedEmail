@@ -288,13 +288,6 @@
     <!-- Text indicating how many messages are selected in the top action bar
     [CHAR LIMIT=40] -->
     <string name="num_selected"><xliff:g id="number" example="7">%d</xliff:g></string>
-    <!--  Displayed when drag and drop conversations "Move ? conversations" [CHAR LIMIT=50] -->
-    <plurals name="move_conversation">
-        <!-- Move 1 conversation -->
-        <item quantity="one">Move conversation</item>
-        <!-- Move several conversations -->
-        <item quantity="other">Move <xliff:g>%1$d</xliff:g> conversations</item>
-    </plurals>
     <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMIT=250] -->
     <string name="content_description"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> about <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> on <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g></string>
     <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode and the message was received today. [CHAR LIMI=250] -->

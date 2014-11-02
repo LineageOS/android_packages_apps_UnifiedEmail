@@ -582,7 +582,7 @@ public final class ConversationListFragment extends Fragment implements
         if (!(view instanceof ConversationItemView)) {
             return false;
         }
-        return ((ConversationItemView) view).toggleSelectedStateOrBeginDrag();
+        return ((ConversationItemView) view).toggleSelectedState("long_press");
     }
 
     /**

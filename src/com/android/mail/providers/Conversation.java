@@ -261,8 +261,6 @@ public class Conversation implements Parcelable {
 
     };
 
-    public static final Uri MOVE_CONVERSATIONS_URI = Uri.parse("content://moveconversations");
-
     /**
      * The column that needs to be updated to change the folders for a conversation.
      */
