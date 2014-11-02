@@ -57,6 +57,7 @@ public abstract class FolderDisplayer {
         public int folderHorizontalPadding;
         public int folderInBetweenPadding;
         public int folderFontSize;
+        public int folderVerticalOffset;
     }
 
     public FolderDisplayer(Context context) {
@@ -191,7 +192,7 @@ public abstract class FolderDisplayer {
             String name, int fgColor, int bgColor, FolderDisplayer.FolderDrawableResources res,
             BidiFormatter formatter, Paint paint) {
         canvas.save();
-        canvas.translate(x, y);
+        canvas.translate(x, y + res.folderVerticalOffset);
 
         // Draw the box.
         paint.setColor(bgColor);
