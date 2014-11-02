@@ -65,20 +65,13 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
      */
     static private final int MIN_QUERY_LENGTH_FOR_CONTACTS = 2;
 
-    public SuggestionsProvider() {
-        super();
+    public SuggestionsProvider(Context context) {
+        super(context);
+        setupSuggestions(MODE);
     }
 
     @Override
-    public boolean onCreate() {
-        final String authority = getContext().getString(R.string.suggestions_authority);
-        setupSuggestions(authority, MODE);
-        super.onCreate();
-        return true;
-    }
-
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+    public Cursor query(String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
         String query = selectionArgs[0];
         MergeCursor mergeCursor = null;
@@ -110,7 +103,7 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
             ArrayList<Cursor> cursors = new ArrayList<Cursor>();
             // Pass query; at this point it is either the last term OR the
             // only term.
-            cursors.add(super.query(uri, projection, selection, new String[] { query }, sortOrder));
+            cursors.add(super.query(projection, selection, new String[] { query }, sortOrder));
 
             if (query.length() >= MIN_QUERY_LENGTH_FOR_CONTACTS) {
                 cursors.add(new ContactsCursor().query(query));
@@ -124,10 +117,8 @@ public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
      * Utility class to return a cursor over the contacts database
      */
     private final class ContactsCursor extends MatrixCursorWithCachedColumns {
-        private final Context mContext;
         public ContactsCursor() {
             super(CONTACTS_COLUMNS);
-            mContext = getContext();
         }
 
         /**

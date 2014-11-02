@@ -174,6 +174,7 @@ public final class OnePaneController extends AbstractActivityController {
         if (ViewMode.isListMode(newMode)) {
             mPagerController.hide(true /* changeVisibility */);
         }
+
         // When we step away from the conversation mode, we don't have a current conversation
         // anymore. Let's blank it out so clients calling getCurrentConversation are not misled.
         if (!ViewMode.isConversationMode(newMode)) {
@@ -512,5 +513,10 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public boolean isTwoPaneLandscape() {
         return false;
+    }
+
+    @Override
+    public boolean isSearchBarShowing() {
+        return mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST;
     }
 }

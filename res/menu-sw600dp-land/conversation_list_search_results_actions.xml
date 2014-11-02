@@ -21,8 +21,7 @@
     <item android:id="@+id/search"
         android:title="@string/menu_search"
         app:showAsAction="always|collapseActionView"
-        android:icon="@drawable/ic_menu_search"
-        app:actionLayout="@layout/mail_actionbar_searchview" />
+        android:icon="@drawable/ic_menu_search" />
 
     <item
         android:id="@+id/delete"

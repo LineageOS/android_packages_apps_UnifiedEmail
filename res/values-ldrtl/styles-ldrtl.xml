@@ -396,6 +396,13 @@
         <item name="android:paddingEnd">@dimen/undo_icon_padding_end</item>
     </style>
 
+    <style name="SearchViewLeadingButton">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">32dp</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
     <style name="AccountItemNameStyle">
         <item name="android:paddingStart">@dimen/account_item_name_start_padding</item>
         <item name="android:paddingEnd">@dimen/account_item_name_end_padding</item>

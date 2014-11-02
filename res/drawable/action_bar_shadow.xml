@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2012 Google Inc.
+     Copyright (C) 2014 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,9 @@
      limitations under the License.
 -->
 
-<!-- Override the searchSuggestAuthority in the inheriting applications to point to the
-  correct package name.-->
-<searchable xmlns:android="http://schemas.android.com/apk/res/android"
-    android:label="@string/search_title"
-    android:hint="@string/search_hint"
-    android:icon="@drawable/ic_menu_search"
-    android:searchSuggestIntentAction="android.intent.action.SEARCH"
-    android:searchSuggestAuthority="com.android.mail"
-    android:imeOptions="actionSearch"
-    android:voiceSearchMode="showVoiceSearchButton|launchRecognizer" />
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="270"
+        android:startColor="#3D000000"
+        android:endColor="#00000000" />
+</shape>

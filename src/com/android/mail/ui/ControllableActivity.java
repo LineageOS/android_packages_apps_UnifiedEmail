@@ -24,6 +24,7 @@ import com.android.mail.bitmap.ContactResolver;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.SearchRecentSuggestionsProvider;
 
 /**
  * A controllable activity is an Activity that has a Controller attached. This activity must be
@@ -130,4 +131,6 @@ public interface ControllableActivity extends RestrictedActivity,
      * Shows help to user, could be in browser or another activity.
      */
     void showHelp(Account account, int viewMode);
+
+    SearchRecentSuggestionsProvider getSuggestionsProvider();
 }
