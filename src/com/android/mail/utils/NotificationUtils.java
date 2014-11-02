@@ -1719,7 +1719,11 @@ public class NotificationUtils {
                 contactIconInfo.icon = new LetterTileProvider(context).getLetterTile(dimensions,
                         displayName, senderAddress);
             }
-            contactIconInfo.icon = cropSquareIconToCircle(contactIconInfo.icon);
+
+            // Only turn the square photo/letter tile into a circle for L and later
+            if (Utils.isRunningLOrLater()) {
+                contactIconInfo.icon = cropSquareIconToCircle(contactIconInfo.icon);
+            }
         }
 
         if (contactIconInfo.icon == null) {
