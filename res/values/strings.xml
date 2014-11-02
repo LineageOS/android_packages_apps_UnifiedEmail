@@ -467,6 +467,8 @@
     <string name="hide_details">Hide details</string>
     <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="to_message_header">to <xliff:g id="recipients">%1$s</xliff:g></string>
+    <!-- Shown to display the bcc recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="bcc_header_for_recipient_summary">bcc:\u0020</string>
     <!--  Icon name for showing sender contact information. [CHAR LIMIT=100] -->
     <string name="contact_info_string">Show contact information for <xliff:g id="name">%1$s</xliff:g></string>
     <!--  Icon name for showing sender contact information when we cannot get sender info. [CHAR LIMIT=100] -->
