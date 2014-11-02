@@ -34,6 +34,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.support.annotation.Nullable;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
@@ -334,6 +335,18 @@ public class ConversationItemView extends View
                         mFolderDrawableResources.folderInBetweenPadding;
                 xStart += (isRtl) ? -usedWidth : usedWidth;
             }
+        }
+
+        public @Nullable String getFoldersDesc() {
+            if (mFoldersSortedSet != null && !mFoldersSortedSet.isEmpty()) {
+                final StringBuilder builder = new StringBuilder();
+                final String comma = mContext.getString(R.string.enumeration_comma);
+                for (Folder f : mFoldersSortedSet) {
+                    builder.append(f.name).append(comma);
+                }
+                return builder.toString();
+            }
+            return null;
         }
     }
 
@@ -717,10 +730,15 @@ public class ConversationItemView extends View
     }
 
     private void setContentDescription() {
+        String foldersDesc = null;
+        if (mHeader != null && mHeader.folderDisplayer != null) {
+            foldersDesc = mHeader.folderDisplayer.getFoldersDesc();
+        }
+
         if (mActivity.isAccessibilityEnabled()) {
             mHeader.resetContentDescription();
-            setContentDescription(
-                    mHeader.getContentDescription(mContext, mDisplayedFolder.shouldShowRecipients()));
+            setContentDescription(mHeader.getContentDescription(
+                    mContext, mDisplayedFolder.shouldShowRecipients(), foldersDesc));
         }
     }
 
