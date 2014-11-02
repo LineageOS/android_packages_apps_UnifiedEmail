@@ -48,8 +48,17 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
     private final int mWidth;
     private final int mHeight;
 
-    public static void setupThumbnailPreview(final AttachmentBitmapHolder holder,
-            final Attachment attachment, final Attachment prevAttachment) {
+    public static void setupThumbnailPreview(AttachmentTile.AttachmentPreviewCache cache,
+            AttachmentBitmapHolder holder, Attachment attachment, Attachment prevAttachment) {
+        // Check cache first
+        if (cache != null) {
+            final Bitmap cached = cache.get(attachment);
+            if (cached != null) {
+                holder.setThumbnail(cached);
+                return;
+            }
+        }
+
         final int width = holder.getThumbnailWidth();
         final int height = holder.getThumbnailHeight();
         if (attachment == null || width == 0 || height == 0
