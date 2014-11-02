@@ -28,7 +28,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 
 import com.android.mail.R;
@@ -51,7 +50,16 @@ import java.util.HashMap;
 
 public class SwipeableListView extends ListView implements Callback, OnScrollListener {
     private final SwipeHelper mSwipeHelper;
+    /**
+     * Are swipes enabled on all items? (Each individual item can still prevent swiping.)<br>
+     * When swiping is disabled, the UI still reacts to the gesture to acknowledge it.
+     */
     private boolean mEnableSwipe = false;
+    /**
+     * When set, we prevent the SwipeHelper from kicking in at all. This
+     * short-circuits {@link #mEnableSwipe}.
+     */
+    private boolean mPreventSwipesEntirely = false;
 
     public static final String LOG_TAG = LogTag.getLogTag();
 
@@ -110,6 +118,20 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         mEnableSwipe = enable;
     }
 
+    /**
+     * Completely ignore any horizontal swiping gestures.
+     */
+    public void preventSwipesEntirely() {
+        mPreventSwipesEntirely = true;
+    }
+
+    /**
+     * Reverses a prior call to {@link #preventSwipesEntirely()}.
+     */
+    public void stopPreventingSwipes() {
+        mPreventSwipesEntirely = false;
+    }
+
     public void setSwipeAction(int action) {
         mSwipeAction = action;
     }
@@ -144,13 +166,14 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         if (mScrolling) {
             return super.onInterceptTouchEvent(ev);
         } else {
-            return mSwipeHelper.onInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev);
+            return (!mPreventSwipesEntirely && mSwipeHelper.onInterceptTouchEvent(ev))
+                    || super.onInterceptTouchEvent(ev);
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
+        return (!mPreventSwipesEntirely && mSwipeHelper.onTouchEvent(ev)) || super.onTouchEvent(ev);
     }
 
     @Override
