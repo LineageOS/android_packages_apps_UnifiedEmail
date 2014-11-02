@@ -697,10 +697,9 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     @Override
-    public boolean shouldShowSearchBarByDefault() {
-        final int mode = mViewMode.getMode();
-        return mode == ViewMode.SEARCH_RESULTS_LIST ||
-                (mIsTabletLandscape && mode == ViewMode.SEARCH_RESULTS_CONVERSATION);
+    public boolean shouldShowSearchBarByDefault(int viewMode) {
+        return viewMode == ViewMode.SEARCH_RESULTS_LIST ||
+                (mIsTabletLandscape && viewMode == ViewMode.SEARCH_RESULTS_CONVERSATION);
     }
 
     @Override
