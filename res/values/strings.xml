@@ -427,6 +427,8 @@
     <string name="search_results_header">Results</string>
     <!-- Toast shown when the user taps the search hard key when viewing an account that does not support search [CHAR LIMIT=100] -->
     <string name="search_unsupported">Search is not supported on this account.</string>
+    <!-- Accessibility description for the search suggestion item [CHAR LIMIT=100] -->
+    <string name="search_suggestion_desc">Suggestion: <xliff:g id="suggestion">%s</xliff:g></string>
 
     <!-- Conversation view -->
     <!--  Text anchor for control to add / change labels on a conversation when
