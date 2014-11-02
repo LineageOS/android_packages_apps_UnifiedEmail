@@ -47,9 +47,9 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.speech.RecognizerIntent;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -1288,8 +1288,8 @@ public abstract class AbstractActivityController implements ActivityController,
         mFloatingComposeButton.setOnClickListener(this);
 
         if (isDrawerEnabled()) {
-            mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerContainer, false,
-                    R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
+            mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerContainer,
+                    R.string.drawer_open, R.string.drawer_close);
             mDrawerContainer.setDrawerListener(mDrawerListener);
             mDrawerContainer.setDrawerShadow(
                     mContext.getResources().getDrawable(R.drawable.drawer_shadow), Gravity.START);
