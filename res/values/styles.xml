@@ -938,10 +938,6 @@
         <item name="android:layout_height">@dimen/divider_height</item>
         <item name="android:background">@color/divider_color</item>
     </style>
-
-    <style name="ConversationListDividerStyleIndented" parent="ConversationListDividerStyle">
-        <item name="android:layout_marginLeft">@dimen/folder_teaser_start_margin</item>
-    </style>
     <!-- END Conversation list styles -->
 
     <style name="BadgeTextStyle">
