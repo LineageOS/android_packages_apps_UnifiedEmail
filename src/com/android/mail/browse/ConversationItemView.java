@@ -109,6 +109,8 @@ public class ConversationItemView extends View
     private static final String PERF_TAG_CALCULATE_COORDINATES = "CCHV.coordinates";
     private static final String LOG_TAG = LogTag.getLogTag();
 
+    private static final Typeface SANS_SERIF_BOLD = Typeface.create("sans-serif", Typeface.BOLD);
+
     private static final Typeface SANS_SERIF_LIGHT = Typeface.create("sans-serif-light",
             Typeface.NORMAL);
 
@@ -133,7 +135,8 @@ public class ConversationItemView extends View
     private static String sElidedPaddingToken;
 
     // Static colors.
-    private static int sSendersTextColor;
+    private static int sSendersTextColorRead;
+    private static int sSendersTextColorUnread;
     private static int sDateTextColorRead;
     private static int sDateTextColorUnread;
     private static int sStarTouchSlop;
@@ -596,8 +599,9 @@ public class ConversationItemView extends View
 
             // Initialize colors.
             sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(
-                    res.getColor(R.color.senders_text_color)));
-            sSendersTextColor = res.getColor(R.color.senders_text_color);
+                    res.getColor(R.color.senders_text_color_read)));
+            sSendersTextColorRead = res.getColor(R.color.senders_text_color_read);
+            sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
             sSubjectTextUnreadSpan = new TextAppearanceSpan(context,
                     R.style.SubjectAppearanceUnreadStyle);
             sSubjectTextReadSpan = new TextAppearanceSpan(
@@ -1361,7 +1365,7 @@ public class ConversationItemView extends View
         if (mHeader.sendersDisplayLayout != null) {
             sPaint.setTextSize(mCoordinates.sendersFontSize);
             sPaint.setTypeface(SendersView.getTypeface(isUnread));
-            sPaint.setColor(sSendersTextColor);
+            sPaint.setColor(isUnread ? sSendersTextColorUnread : sSendersTextColorRead);
             canvas.translate(mSendersX, mCoordinates.sendersY
                     + mHeader.sendersDisplayLayout.getTopPadding());
             mHeader.sendersDisplayLayout.draw(canvas);
@@ -1424,7 +1428,7 @@ public class ConversationItemView extends View
 
         // Date.
         sPaint.setTextSize(mCoordinates.dateFontSize);
-        sPaint.setTypeface(isUnread ? Typeface.SANS_SERIF : SANS_SERIF_LIGHT);
+        sPaint.setTypeface(isUnread ? SANS_SERIF_BOLD : SANS_SERIF_LIGHT);
         sPaint.setColor(isUnread ? sDateTextColorUnread : sDateTextColorRead);
         drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateYBaseline, sPaint);
 
