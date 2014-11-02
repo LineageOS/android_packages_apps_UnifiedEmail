@@ -117,7 +117,7 @@ public class ConversationPagerController {
             mPager.setVisibility(View.VISIBLE);
         }
 
-        mPagerAdapter = new ConversationPagerAdapter(mPager.getResources(), mFragmentManager,
+        mPagerAdapter = new ConversationPagerAdapter(mPager.getContext(), mFragmentManager,
                 account, folder, initialConversation);
         mPagerAdapter.setSingletonMode(ENABLE_SINGLETON_INITIAL_LOAD);
         mPagerAdapter.setActivityController(mActivityController);
