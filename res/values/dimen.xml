@@ -178,7 +178,6 @@
     <dimen name="conv_list_wide_personal_indicator_padding_end">8dip</dimen>
     <dimen name="conv_list_wide_star_padding_start">32dip</dimen>
     <dimen name="conv_list_wide_color_block_padding_end">64dip</dimen>
-    <dimen name="conv_list_divider_inset">72dp</dimen>
 
     <dimen name="conv_list_spacious_padding_start">22dip</dimen>
     <dimen name="conv_list_spacious_padding_end">16dip</dimen>
