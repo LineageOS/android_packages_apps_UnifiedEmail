@@ -66,7 +66,6 @@ import com.android.mail.MailLogService;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.analytics.AnalyticsTimer;
-import com.android.mail.analytics.AnalyticsUtils;
 import com.android.mail.browse.ConfirmDialogFragment;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
@@ -715,8 +714,7 @@ public abstract class AbstractActivityController implements ActivityController,
         if (accountChanged) {
             commitDestructiveActions(false);
         }
-        Analytics.getInstance().setCustomDimension(Analytics.CD_INDEX_ACCOUNT_EMAIL_PROVIDER,
-                AnalyticsUtils.getEmailProviderForAddress(emailAddress));
+        Analytics.getInstance().setEmailAddress(emailAddress);
         // Change the account here
         setAccount(account);
         // And carry out associated actions.
@@ -2385,9 +2383,7 @@ public abstract class AbstractActivityController implements ActivityController,
             final boolean isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
 
             if (intent.getBooleanExtra(Utils.EXTRA_FROM_NOTIFICATION, false)) {
-                Analytics.getInstance().setCustomDimension(
-                        Analytics.CD_INDEX_ACCOUNT_EMAIL_PROVIDER,
-                        AnalyticsUtils.getEmailProviderForAddress(mAccount.getEmailAddress()));
+                Analytics.getInstance().setEmailAddress(mAccount.getEmailAddress());
                 Analytics.getInstance().sendEvent("notification_click",
                         isConversationMode ? "conversation" : "conversation_list", null, 0);
             }

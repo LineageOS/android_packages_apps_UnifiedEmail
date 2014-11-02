@@ -34,8 +34,7 @@ public final class Analytics {
     public static final String EVENT_CATEGORY_MENU_ITEM = "menu_item";
 
     /**
-     * The email provider for this account, as listed in
-     * {@link com.android.mail.analytics.AnalyticsUtils#DOMAIN_TO_EMAIL_PROVIDER}.
+     * The email provider for this account.
      */
     public static final int CD_INDEX_ACCOUNT_EMAIL_PROVIDER = 1;
 
@@ -128,6 +127,8 @@ public final class Analytics {
         @Override
         public void debugDispatchNow() {}
 
+        @Override
+        public void setEmailAddress(String emailAddress) {}
     }
 
 }
