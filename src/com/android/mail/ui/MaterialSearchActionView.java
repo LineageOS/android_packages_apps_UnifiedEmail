@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -89,6 +90,20 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
         mQueryText.setOnKeyListener(this);
         mEndingButton = (ImageView) findViewById(R.id.search_actionbar_ending_button);
         mEndingButton.setOnClickListener(this);
+        setupEndingButton(mQueryText.getText());
+    }
+
+    private void setupEndingButton(CharSequence currentText) {
+        final Resources res = getResources();
+        if (!mSupportVoice || currentText.length() > 0) {
+            mShowingClose = true;
+            mEndingButton.setImageResource(R.drawable.ic_close_24dp);
+            mEndingButton.setContentDescription(res.getString(R.string.search_clear_desc));
+        } else {
+            mShowingClose = false;
+            mEndingButton.setImageResource(R.drawable.ic_mic_24dp);
+            mEndingButton.setContentDescription(res.getString(R.string.search_voice_desc));
+        }
     }
 
     @Override
@@ -99,13 +114,7 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
         mController.onQueryTextChanged(charSequence.toString());
-        if (!mSupportVoice || charSequence.length() > 0) {
-            mShowingClose = true;
-            mEndingButton.setImageResource(R.drawable.ic_close_24dp);
-        } else {
-            mShowingClose = false;
-            mEndingButton.setImageResource(R.drawable.ic_mic_24dp);
-        }
+        setupEndingButton(charSequence);
     }
 
     @Override
