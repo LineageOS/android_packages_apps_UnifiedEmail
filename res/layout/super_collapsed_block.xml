@@ -54,4 +54,6 @@
         android:textSize="@dimen/super_collapsed_text_size"
         style="@style/MessageHeaderIconStyle" />
 
+    <include layout="@layout/super_collapsed_progress" />
+
 </com.android.mail.browse.SuperCollapsedBlock>
