@@ -52,6 +52,7 @@ public class SubjectAndFolderView extends TextView implements FolderSpan.FolderS
     private final int mNoFolderBgColor;
     private final int mNoFolderFgColor;
     private final Drawable mImportanceMarkerDrawable;
+    private final int mChipVerticalOffset;
 
     private int mMaxSpanWidth;
 
@@ -72,9 +73,6 @@ public class SubjectAndFolderView extends TextView implements FolderSpan.FolderS
     public SubjectAndFolderView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mVisibleFolders = false;
-        mFolderDisplayer = new ConversationFolderDisplayer(getContext());
-
         final Resources res = getResources();
         mNoFolderChipName = res.getString(R.string.add_label);
         mNoFolderBgColor = res.getColor(R.color.conv_header_add_label_background);
@@ -83,6 +81,10 @@ public class SubjectAndFolderView extends TextView implements FolderSpan.FolderS
                 R.drawable.ic_email_caret_none_important_unread);
         mImportanceMarkerDrawable.setBounds(0, 0, mImportanceMarkerDrawable.getIntrinsicWidth(),
                 mImportanceMarkerDrawable.getIntrinsicHeight());
+        mChipVerticalOffset = res.getDimensionPixelOffset(R.dimen.folder_cv_vertical_offset);
+
+        mVisibleFolders = false;
+        mFolderDisplayer = new ConversationFolderDisplayer(getContext());
     }
 
     @Override
@@ -123,7 +125,8 @@ public class SubjectAndFolderView extends TextView implements FolderSpan.FolderS
                 public void draw(Canvas canvas, CharSequence text, int start, int end, float x,
                         int top, int baseline, int bottom, Paint paint) {
                     canvas.save();
-                    final int transY = baseline - mImportanceMarkerDrawable.getIntrinsicHeight();
+                    final int transY = baseline + mChipVerticalOffset -
+                            mImportanceMarkerDrawable.getIntrinsicHeight();
                     canvas.translate(x, transY);
                     mImportanceMarkerDrawable.draw(canvas);
                     canvas.restore();
@@ -183,6 +186,7 @@ public class SubjectAndFolderView extends TextView implements FolderSpan.FolderS
                     res.getDimensionPixelOffset(R.dimen.folder_cv_cell_content_padding);
             mFolderDrawableResources.folderFontSize =
                     res.getDimensionPixelOffset(R.dimen.folder_cv_font_size);
+            mFolderDrawableResources.folderVerticalOffset = mChipVerticalOffset;
         }
 
         private void constructFolderChips(SpannableStringBuilder sb) {
