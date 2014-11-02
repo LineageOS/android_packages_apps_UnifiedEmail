@@ -23,11 +23,12 @@ import android.graphics.drawable.shapes.Shape;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.FolderUri;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -35,7 +36,7 @@ import com.android.mail.utils.Utils;
 /**
  * The view for each folder in the folder list.
  */
-public class FolderItemView extends RelativeLayout {
+public class FolderItemView extends LinearLayout {
     private final String LOG_TAG = LogTag.getLogTag();
 
     private static float[] sUnseenCornerRadii;
@@ -44,7 +45,6 @@ public class FolderItemView extends RelativeLayout {
     private TextView mFolderTextView;
     private TextView mUnreadCountTextView;
     private TextView mUnseenCountTextView;
-    private ImageView mFolderParentIcon;
 
     public FolderItemView(Context context) {
         super(context);
@@ -84,7 +84,6 @@ public class FolderItemView extends RelativeLayout {
         mFolderTextView = (TextView)findViewById(R.id.name);
         mUnreadCountTextView = (TextView)findViewById(R.id.unread);
         mUnseenCountTextView = (TextView)findViewById(R.id.unseen);
-        mFolderParentIcon = (ImageView) findViewById(R.id.folder_parent_icon);
     }
 
     /**
@@ -108,12 +107,19 @@ public class FolderItemView extends RelativeLayout {
                 && a.unreadCount == b.unreadCount));
     }
 
-    public void bind(final Folder folder) {
+    public void bind(final Folder folder, final FolderUri parentUri) {
         mFolder = folder;
 
         mFolderTextView.setText(folder.name);
 
-        mFolderParentIcon.setVisibility(mFolder.hasChildren ? View.VISIBLE : View.GONE);
+        if (parentUri != null) {
+            final boolean isParent = folder.folderUri.equals(parentUri);
+
+            // If child folder, make spacer view visible, otherwise hide it away
+            findViewById(R.id.nested_folder_space).setVisibility(
+                    isParent ? View.GONE : View.VISIBLE);
+        }
+
         if (mFolder.isInbox() && mFolder.unseenCount > 0) {
             mUnreadCountTextView.setVisibility(View.GONE);
             setUnseenCount(mFolder.getBackgroundColor(Color.BLACK), mFolder.unseenCount);
