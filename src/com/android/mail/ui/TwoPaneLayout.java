@@ -69,9 +69,9 @@ import com.google.common.collect.Lists;
 final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         GmailDragHelper.GmailDragHelperCallback {
     public static final int MISCELLANEOUS_VIEW_ID = R.id.miscellaneous_pane;
+    public static final long SLIDE_DURATION_MS = 300;
 
     private static final String LOG_TAG = "TwoPaneLayout";
-    private static final long SLIDE_DURATION_MS = 300;
 
     private final int mDrawerWidthMini;
     private final int mDrawerWidthOpen;
@@ -475,12 +475,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
 
     @Override
     public void onDragStarted() {
-        if (!isDrawerOpen()) {
-            final FolderListFragment flf = mController.getFolderListFragment();
-            if (flf != null) {
-                flf.setMinimized(!flf.isMinimized());
-            }
-        }
+        // Do nothing
     }
 
     @Override
@@ -492,6 +487,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener,
         final float translationX = percentDragged *
                 (mIsRtl ? -mDrawerWidthDelta : mDrawerWidthDelta);
         translatePanes(translationX, 0 /* drawerDeltaX */, false /* animate */);
+        mController.onDrawerDrag(percentDragged);
         // Invalidate the entire drawers region to ensure that we don't get the "ghosts" of the
         // fake shadow for pre-L.
         if (mIsRtl) {
