@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.ViewUtils;
 
 /**
  * A custom {@link View} that exposes an action to the user.
@@ -225,6 +226,7 @@ public class ActionableToastBar extends FrameLayout {
         });
 
         setDescriptionText(descriptionText);
+        ViewUtils.announceForAccessibility(this, descriptionText);
         setActionText(actionTextResourceId);
 
         // if this toast bar is not yet hidden, animate it in place; otherwise we just update the
