@@ -78,7 +78,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:maxLines="1"
-            android:includeFontPadding="false" />
+            android:includeFontPadding="false"
+            android:textAlignment="viewStart"/>
 
         <TextView
             android:id="@+id/widget_snippet"
@@ -87,6 +88,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:includeFontPadding="false"
+            android:textAlignment="viewStart"
             android:maxLines="1"/>
 
         <LinearLayout
