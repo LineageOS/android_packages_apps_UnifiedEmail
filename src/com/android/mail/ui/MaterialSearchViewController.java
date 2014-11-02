@@ -142,6 +142,10 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
                 mSearchActionView.setVisibility(View.GONE);
                 mSearchActionViewShadow.setVisibility(View.GONE);
                 mSearchSuggestionList.setVisibility(View.GONE);
+                // For non-search view mode, clear the query term for search
+                if (!ViewMode.isSearchMode(mViewMode)) {
+                    mSearchActionView.clearSearchQuery();
+                }
                 break;
             case MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE:
                 mSearchActionView.setVisibility(View.VISIBLE);
