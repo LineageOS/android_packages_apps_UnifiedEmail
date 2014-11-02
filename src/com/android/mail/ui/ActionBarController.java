@@ -242,7 +242,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
                 || mController.getConversationListCursor().getCount() > 0));
     }
 
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(Menu menu) {
         menu.setQwertyMode(true);
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
@@ -256,7 +256,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
                 final MenuItem item = menu.getItem(i);
                 item.setVisible(false);
             }
-            return false;
+            return;
         }
         validateVolatileMenuOptionVisibility();
 
@@ -276,7 +276,7 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
                         mAccount.supportsSearch() && !mIsOnTablet);
         }
 
-        return false;
+        return;
     }
 
     /**
