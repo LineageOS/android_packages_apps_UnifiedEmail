@@ -349,6 +349,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(R.menu.conversation_list_selection_actions_menu, menu);
         mActionMode = mode;
+        updateCount();
         return true;
     }
 
@@ -520,9 +521,19 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         if (set.isEmpty()) {
             return;
         }
+        updateCount();
 
         if (mFolder.isType(FolderType.OUTBOX) && mDiscardOutboxMenuItem != null) {
             mDiscardOutboxMenuItem.setEnabled(shouldEnableDiscardOutbox(set.values()));
+        }
+    }
+
+    /**
+     * Updates the visible count of how many conversations are selected.
+     */
+    private void updateCount() {
+        if (mActionMode != null) {
+            mActionMode.setTitle(Integer.toString(mCheckedSet.size()));
         }
     }
 
