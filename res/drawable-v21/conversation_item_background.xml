@@ -15,10 +15,16 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_activated="true"
-          android:drawable="@color/conversation_item_blue_background" />
-    <item android:state_checked="true"
-          android:drawable="@color/conversation_item_blue_background" />
-    <item android:drawable="@drawable/conversation_item_background_ripple" />
-</selector>
+
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/conversation_item_grey_ripple_color">
+    <item>
+        <selector>
+            <item android:state_checked="true"
+                  android:drawable="@color/conversation_item_grey_background_color" />
+            <item android:state_activated="true"
+                  android:drawable="@color/conversation_item_blue_background_color" />
+            <item android:drawable="@android:color/white" />
+        </selector>
+    </item>
+</ripple>
