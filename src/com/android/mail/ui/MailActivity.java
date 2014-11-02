@@ -51,6 +51,7 @@ import com.android.mail.providers.SearchRecentSuggestionsProvider;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.utils.StorageLowState;
 import com.android.mail.utils.Utils;
+import com.android.mail.utils.ViewUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -488,29 +489,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         return new SuggestionsProvider(this);
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onSupportActionModeStarted(ActionMode mode) {
         super.onSupportActionModeStarted(mode);
-        if (Utils.isRunningLOrLater()) {
-            final Window window = getWindow();
-            if (window != null) {
-                window.setStatusBarColor(
-                        getResources().getColor(R.color.action_mode_statusbar_color));
-            }
-        }
+        ViewUtils.setStatusBarColor(this, R.color.action_mode_statusbar_color);
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onSupportActionModeFinished(ActionMode mode) {
         super.onSupportActionModeFinished(mode);
-        if (Utils.isRunningLOrLater()) {
-            final Window window = getWindow();
-            if (window != null) {
-                window.setStatusBarColor(
-                        getResources().getColor(R.color.mail_activity_status_bar_color));
-            }
-        }
+        ViewUtils.setStatusBarColor(this, R.color.mail_activity_status_bar_color);
     }
 }

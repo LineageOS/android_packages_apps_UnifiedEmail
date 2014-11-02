@@ -105,6 +105,7 @@
     <color name="search_suggestion_item_text">@color/text_color_grey</color>
     <color name="search_banner_bg">#f6f6f6</color>
     <color name="search_banner_text">@color/text_color_grey</color>
+    <color name="search_status_bar_color">#bdbdbd</color>
 
     <array name="letter_tile_colors">
         <item>#90a4ae</item>
