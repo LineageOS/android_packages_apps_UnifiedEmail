@@ -369,8 +369,8 @@
         <item name="android:layout_marginStart">@dimen/quoted_text_checkbox_margin_offset</item>
     </style>
 
-    <style name="FolderTeaserMarginEndStyle">
-        <item name="android:layout_marginEnd">@dimen/folder_teaser_end_padding</item>
+    <style name="FolderTeaserPaddingEndStyle">
+        <item name="android:paddingEnd">@dimen/folder_teaser_end_padding</item>
     </style>
 
     <style name="ArrowStyle">
