@@ -881,13 +881,8 @@
     <!-- Tip for letting user know that their account level sync setting
         is turned off, in case they are wondering why they are not
         receiving any new mail. Then prompts the user to enable sync in Gmail's
-        account settings. Since "Account settings" will appear in blue link text,
-        it's a parameter here [CHAR LIMIT=250] -->
-    <string name="account_sync_off">Account sync is off. Turn on in <xliff:g id="account_settings">%1$s</xliff:g>.</string>
-
-    <!-- This is used as a parameter to another string and combined reads
-         "Turn on in Account settings." [CHAR LIMIT=250] -->
-    <string name="account_settings_param">Account\u00A0settings</string>
+        account settings. [CHAR LIMIT=250] -->
+    <string name="account_sync_off">Account sync is off. Turn on in &lt;a href=\'http://www.example.com\'>Account\u00A0settings.&lt;/a></string>
 
     <!-- Hint text that there are X number of unsent messages users
     Outbox. [CHAR LIMIT=250] -->
