@@ -33,13 +33,13 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/divider_height"
             android:background="@color/conversation_view_border_color"/>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="@dimen/divider_height"
+            android:layout_marginTop="4dp"
             android:background="@color/conversation_view_border_color"/>
 
     </LinearLayout>
