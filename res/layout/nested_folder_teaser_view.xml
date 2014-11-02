@@ -61,7 +61,7 @@
             android:id="@+id/show_more_folders_count_textView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            style="@style/FolderTeaserCountTextStyle" />
+            style="@style/FolderTeaserUnreadCountTextStyle" />
 
     </LinearLayout>
 
