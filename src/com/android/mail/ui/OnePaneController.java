@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -60,6 +62,39 @@ public final class OnePaneController extends AbstractActivityController {
     private int mLastConversationTransactionId = INVALID_ID;
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
+
+    /**
+     * Listener for pager animation to complete and then remove the TL fragment.
+     * This is a work-around for fragment remove animation not working as intended, so we
+     * still get feedback on conversation item tap in the transition from TL to CV.
+     */
+    private final AnimatorListenerAdapter mPagerAnimationListener =
+            new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // Make sure that while we were animating, the mode did not change back
+                    // If it's still in conversation view mode, remove the TL fragment from behind
+                    if (mViewMode.isConversationMode()) {
+                        // Once the pager is done animating in, we are ready to remove the
+                        // conversation list fragment. Since we track the fragment by either what's
+                        // in content_pane or by the tag, we grab it and remove without animations
+                        // since it's already covered by the conversation view and its white bg.
+                        final FragmentManager fm = mActivity.getFragmentManager();
+                        final FragmentTransaction ft = fm.beginTransaction();
+                        final Fragment f = fm.findFragmentById(R.id.content_pane);
+                        // FragmentManager#findFragmentById can return fragments that are not
+                        // added to the activity. We want to make sure that we don't attempt to
+                        // remove fragments that are not added to the activity, as when the
+                        // transaction is popped off, the FragmentManager will attempt to read
+                        // the same fragment twice.
+                        if (f != null && f.isAdded()) {
+                            ft.remove(f);
+                            ft.commitAllowingStateLoss();
+                            fm.executePendingTransactions();
+                        }
+                    }
+                }
+            };
 
     public OnePaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
@@ -232,6 +267,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     protected void showConversation(Conversation conversation) {
         super.showConversation(conversation);
+
         mConversationListVisible = false;
         if (conversation == null) {
             transitionBackToConversationListMode();
@@ -243,25 +279,9 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationMode();
         }
-        final FragmentManager fm = mActivity.getFragmentManager();
-        final FragmentTransaction ft = fm.beginTransaction();
-        // Switching to conversation view is an incongruous transition:
-        // we are not replacing a fragment with another fragment as
-        // usual. Instead, reveal the heretofore inert conversation
-        // ViewPager and just remove the previously visible fragment
-        // e.g. conversation list, or possibly label list?).
-        final Fragment f = fm.findFragmentById(R.id.content_pane);
-        // FragmentManager#findFragmentById can return fragments that are not added to the activity.
-        // We want to make sure that we don't attempt to remove fragments that are not added to the
-        // activity, as when the transaction is popped off, the FragmentManager will attempt to
-        // readd the same fragment twice
-        if (f != null && f.isAdded()) {
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.remove(f);
-            ft.commitAllowingStateLoss();
-            fm.executePendingTransactions();
-        }
-        mPagerController.show(mAccount, mFolder, conversation, true /* changeVisibility */);
+
+        mPagerController.show(mAccount, mFolder, conversation, true /* changeVisibility */,
+                mPagerAnimationListener);
         onConversationVisibilityChanged(true);
         onConversationListVisibilityChanged(false);
     }
