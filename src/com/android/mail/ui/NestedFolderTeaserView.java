@@ -115,14 +115,16 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
         private final View mItemView;
         private final TextView mSendersTextView;
         private final TextView mCountTextView;
+        private final ImageView mFolderIconImageView;
         private Folder mFolder;
         private List<String> mUnreadSenders = ImmutableList.of();
 
         public FolderHolder(final View itemView, final TextView sendersTextView,
-                final TextView countTextView) {
+                final TextView countTextView, final ImageView folderIconImageView) {
             mItemView = itemView;
             mSendersTextView = sendersTextView;
             mCountTextView = countTextView;
+            mFolderIconImageView = folderIconImageView;
         }
 
         public void setFolder(final Folder folder) {
@@ -140,6 +142,8 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
         public TextView getCountTextView() {
             return mCountTextView;
         }
+
+        public ImageView getFolderIconImageView() { return mFolderIconImageView; }
 
         public Folder getFolder() {
             return mFolder;
@@ -218,7 +222,10 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
         ((TextView) itemView.findViewById(R.id.folder_textView)).setText(folderName);
         final TextView sendersTextView = (TextView) itemView.findViewById(R.id.senders_textView);
         final TextView countTextView = (TextView) itemView.findViewById(R.id.unread_count_textView);
-        final FolderHolder holder = new FolderHolder(itemView, sendersTextView, countTextView);
+        final ImageView folderIconImageView =
+                (ImageView) itemView.findViewById(R.id.nested_folder_icon);
+        final FolderHolder holder = new FolderHolder(itemView, sendersTextView, countTextView,
+                folderIconImageView);
         countTextView.setVisibility(View.VISIBLE);
         attachOnClickListener(itemView, holder);
 
@@ -432,7 +439,7 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
                 if (data.moveToFirst()) {
                     do {
                         final Folder folder = data.getModel();
-                        final FolderHolder holder = mFolderHolders.get(folder.id);
+                        FolderHolder holder = mFolderHolders.get(folder.id);
 
                         if (holder != null) {
                             final Folder oldFolder = holder.getFolder();
@@ -448,19 +455,24 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
                             }
                         } else {
                             // Create the holder, and init a loader
-                            final FolderHolder newHolder = createFolderHolder(folder.name);
-                            newHolder.setFolder(folder);
-                            mFolderHolders.put(folder.id, newHolder);
+                            holder = createFolderHolder(folder.name);
+                            holder.setFolder(folder);
+                            mFolderHolders.put(folder.id, holder);
 
                             // We can not support displaying sender info with nested folders
                             // because it doesn't scale. Disabling it for now, until we can
                             // optimize it.
                             // initFolderLoader(getLoaderId(folder.id));
-                            populateUnreadSenders(newHolder, folder.unreadSenders);
+                            populateUnreadSenders(holder, folder.unreadSenders);
 
-                            updateViews(newHolder);
+                            updateViews(holder);
 
                             mListUpdated = true;
+                        }
+
+                        if (folder.hasChildren) {
+                            holder.getFolderIconImageView().setImageDrawable(
+                                    getResources().getDrawable(R.drawable.ic_folder_parent_24dp));
                         }
 
                         // Note: #remove(int) removes from that POSITION
