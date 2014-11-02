@@ -380,7 +380,8 @@ public final class TwoPaneController extends AbstractActivityController implemen
         }
     }
 
-    protected void onDragStarted() {
+    /** START TPL DRAWER DRAG CALLBACKS **/
+    protected void onDrawerDragStarted() {
         final FolderListFragment flf = getFolderListFragment();
         if (flf == null) {
             LogUtils.w(LOG_TAG, "no drawer to toggle open/closed");
@@ -399,6 +400,12 @@ public final class TwoPaneController extends AbstractActivityController implemen
 
         flf.onDrawerDrag(percent);
     }
+
+    protected void onDrawerDragEnded(boolean minimized) {
+        // On drag completion animate the drawer to the final state.
+        setDrawerState(minimized);
+    }
+    /** END TPL DRAWER DRAG CALLBACKS **/
 
     @Override
     public boolean shouldPreventListSwipesEntirely() {
