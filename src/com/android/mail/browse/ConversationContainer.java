@@ -1001,8 +1001,17 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             LogUtils.i(TAG, "footer scrolled off. container height=%s, measuredHeight=%s",
                     height, getMeasuredHeight());
         } else {
-            LogUtils.i(TAG, "footer not removed. container height=%s, measuredHeight=%s",
-                    getHeight(), getMeasuredHeight());
+            LogUtils.i(TAG, "footer not found with adapterIndex=%s", adapterIndex);
+            for (int i = 0, size = mOverlayViews.size(); i < size; i++) {
+                final int index = mOverlayViews.keyAt(i);
+                final OverlayView overlayView = mOverlayViews.valueAt(i);
+                LogUtils.i(TAG, "OverlayView: adapterIndex=%s, itemType=%s, view=%s",
+                        index, overlayView.itemType, overlayView.view);
+            }
+            for (int i = 0, size = mOverlayAdapter.getCount(); i < size; i++) {
+                final ConversationOverlayItem item = mOverlayAdapter.getItem(i);
+                LogUtils.i(TAG, "adapter item: index=%s, item=%s", i, item);
+            }
         }
         // restore the offset to its original value after the view has been moved off-screen.
         mOffsetY = offsetY;
