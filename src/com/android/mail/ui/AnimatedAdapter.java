@@ -371,7 +371,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     public View createConversationItemView(SwipeableConversationItemView view, Context context,
             Conversation conv) {
         if (view == null) {
-            view = new SwipeableConversationItemView(context, mAccount.getEmailAddress());
+            view = new SwipeableConversationItemView(context, mAccount);
         }
         view.bind(conv, mActivity, mBatchConversations, mFolder, getCheckboxSetting(),
                 mSwipeEnabled, mImportanceMarkersEnabled, mShowChevronsEnabled, this);
@@ -764,7 +764,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return new SwipeableConversationItemView(context, mAccount.getEmailAddress());
+        return new SwipeableConversationItemView(context, mAccount);
     }
 
     @Override

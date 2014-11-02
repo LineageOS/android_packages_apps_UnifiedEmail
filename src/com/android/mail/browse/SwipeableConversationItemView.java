@@ -23,6 +23,7 @@ import android.content.Context;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -34,7 +35,7 @@ public class SwipeableConversationItemView extends FrameLayout implements Toggle
 
     private final ConversationItemView mConversationItemView;
 
-    public SwipeableConversationItemView(Context context, String account) {
+    public SwipeableConversationItemView(Context context, Account account) {
         super(context);
         mConversationItemView = new ConversationItemView(context, account);
         addView(mConversationItemView);
