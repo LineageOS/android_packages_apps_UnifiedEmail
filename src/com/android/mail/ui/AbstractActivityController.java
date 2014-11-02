@@ -3941,6 +3941,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 Utils.getSyncStatusText(mActivity.getActivityContext(), lastSyncResult),
                 actionTextResourceId,
                 replaceVisibleToast,
+                true /* autohide */,
                 new ToastBarOperation(1, 0, ToastBarOperation.ERROR, false, folder));
     }
 
