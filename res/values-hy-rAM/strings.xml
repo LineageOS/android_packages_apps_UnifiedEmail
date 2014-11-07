@@ -60,7 +60,7 @@
     <string name="add_star" msgid="3275117671153616270">"Ավելացնել աստղանիշ"</string>
     <string name="remove_star" msgid="9126690774161840733">"Հեռացնել աստղանիշը"</string>
     <string name="remove_folder" msgid="2379905457788576297">"Հեռացված է <xliff:g id="FOLDERNAME">%1$s</xliff:g>-ից"</string>
-    <string name="archive" msgid="5978663590021719939">"Պահոց"</string>
+    <string name="archive" msgid="5978663590021719939">"Արխիվ"</string>
     <string name="report_spam" msgid="4106897677959987340">"Զեկուցել որպես լցոն"</string>
     <string name="mark_not_spam" msgid="8617774236231366651">"Հաղորդել` թափոն չէ"</string>
     <string name="report_phishing" msgid="8454666464488413739">"Զեկուցել որսման մասին"</string>
@@ -339,7 +339,7 @@
     <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"Սահմանված չէ"</string>
     <string name="notification_action_reply" msgid="8378725460102575919">"Պատասխանել"</string>
     <string name="notification_action_reply_all" msgid="5693469099941000037">"Պատասխանել բոլորին"</string>
-    <string name="notification_action_archive" msgid="2884874164831039047">"Պահոց"</string>
+    <string name="notification_action_archive" msgid="2884874164831039047">"Արխիվ"</string>
     <string name="notification_action_remove_label" msgid="3714785653186750981">"Հեռացնել պիտակը"</string>
     <string name="notification_action_delete" msgid="3201627482564624132">"Ջնջել"</string>
     <string name="notification_action_undo_archive" msgid="600186958134073582">"Արխիվացված"</string>
@@ -411,7 +411,7 @@
     <item quantity="one" msgid="5494465717267988888">"<xliff:g id="COUNT">%1$d</xliff:g> կցորդ"</item>
     <item quantity="other" msgid="5422167728480739361">"<xliff:g id="COUNT">%1$d</xliff:g> կցորդ"</item>
   </plurals>
-    <string name="no_subject" msgid="5622708348540036959">"(անվերնագիր)"</string>
+    <string name="no_subject" msgid="5622708348540036959">"(առանց թեմայի)"</string>
     <string name="vacation_responder" msgid="5570132559074523806">"Արձակուրդային պատասխանիչ"</string>
     <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"Արձակուրդային պատասխանիչ"</string>
     <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"Հաղորդագրություն"</string>
