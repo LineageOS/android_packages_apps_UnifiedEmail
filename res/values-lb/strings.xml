@@ -227,7 +227,7 @@
   <string name="bcc_heading">Bcc:\u0020</string>
   <string name="date_heading">Datum:\u0020</string>
   <string name="show_images">Biller uweisen</string>
-  <string name="always_show_images">Biller vun dësem Ofsender ëmmer weisen</string>
+  <string name="always_show_images">Biller vun dësem Ofsender ëmmer uweisen</string>
   <string name="always_show_images_toast">Biller vun dësem Ofsender ginn automatesch gewisen.</string>
   <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g></string>
   <string name="address_display_format_with_via_domain"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g> iwwer <xliff:g id="via_domain">%3$s</xliff:g></string>
