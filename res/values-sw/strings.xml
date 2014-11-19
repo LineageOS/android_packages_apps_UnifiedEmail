@@ -211,8 +211,8 @@
     <string name="search_suggestion_desc" msgid="4165491276003825492">"Pendekezo: <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
     <string name="add_label" msgid="3285338046038610902">"Ongeza folda"</string>
   <plurals name="new_incoming_messages">
-    <item quantity="one" msgid="1532079301006372605">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</item>
-    <item quantity="other" msgid="4085982174357328926">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</item>
+    <item quantity="one" msgid="1532079301006372605">"Barua pepe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</item>
+    <item quantity="other" msgid="4085982174357328926">"Barua pepe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</item>
   </plurals>
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Tazama maelezo&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"Ficha maelezo"</string>
@@ -351,8 +351,8 @@
     <string name="veiled_summary_unknown_person" msgid="2122359944161241551"></string>
     <string name="label_notification_ticker" msgid="323232821061341014">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
   <plurals name="new_messages">
-    <item quantity="one" msgid="3446656407520493241">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</item>
-    <item quantity="other" msgid="3531683811183204615">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</item>
+    <item quantity="one" msgid="3446656407520493241">"Barua pepe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</item>
+    <item quantity="other" msgid="3531683811183204615">"Barua pepe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</item>
   </plurals>
     <string name="single_new_message_notification_title" msgid="7954710563222504868">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="1570794756474381886">"Kimya"</string>
