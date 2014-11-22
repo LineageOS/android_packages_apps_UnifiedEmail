@@ -169,6 +169,11 @@
 
     <color name="actionbar_color">@color/mail_orange</color>
     <color name="statusbar_color">@color/statusbar_orange</color>
+
+    <color name="compose_button_background_color">@color/mail_orange</color>
+    <color name="compose_button_pressed_background_color">@color/statusbar_orange</color>
+    <color name="compose_button_tint">#20444444</color>
+
     <!-- TODO: get real color from UX -->
     <color name="action_mode_background">#9b9b9b</color>
 
