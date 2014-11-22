@@ -82,7 +82,7 @@
     <color name="folder_disabled_drop_target_text_color">#999999</color>
 
     <!-- Widget colors -->
-    <color name="widget_header_bg_color">#da4336</color>
+    <color name="widget_header_bg_color">@color/mail_orange</color>
 
     <!--  Color of the semi-transparent shadow box on attachment tiles -->
     <color name="attachment_tile_shadow_box_color">#7F000000</color>
