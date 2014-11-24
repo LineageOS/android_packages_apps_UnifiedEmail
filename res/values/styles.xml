@@ -228,6 +228,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">@dimen/floating_action_bar_margin</item>
         <item name="android:background">@drawable/compose_button</item>
+        <item name="android:elevation">@dimen/compose_button_elevation</item>
     </style>
 
     <style name="FloatingActionButtonStyle" parent="AbstractFloatingActionButtonStyle">
