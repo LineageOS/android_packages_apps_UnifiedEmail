@@ -56,7 +56,7 @@
     <string name="mark_read" msgid="579388143288052493">"Նշել որպես կարդացված"</string>
     <string name="mark_unread" msgid="6245060538061533191">"Նշել որպես չկարդացված"</string>
     <string name="toggle_read_unread" msgid="1006469736520919028">"Նշել որպես կարդացված/չկարդացված"</string>
-    <string name="mute" msgid="9164839998562321569">"Խլացնել"</string>
+    <string name="mute" msgid="9164839998562321569">"Թաքցնել"</string>
     <string name="add_star" msgid="3275117671153616270">"Ավելացնել աստղանիշ"</string>
     <string name="remove_star" msgid="9126690774161840733">"Հեռացնել աստղանիշը"</string>
     <string name="remove_folder" msgid="2379905457788576297">"Հեռացված է <xliff:g id="FOLDERNAME">%1$s</xliff:g>-ից"</string>
@@ -339,7 +339,7 @@
     <string name="preferences_signature_summary_not_set" msgid="3776614319388053784">"Սահմանված չէ"</string>
     <string name="notification_action_reply" msgid="8378725460102575919">"Պատասխանել"</string>
     <string name="notification_action_reply_all" msgid="5693469099941000037">"Պատասխանել բոլորին"</string>
-    <string name="notification_action_archive" msgid="2884874164831039047">"Արխիվ"</string>
+    <string name="notification_action_archive" msgid="2884874164831039047">"Արխիվացնել"</string>
     <string name="notification_action_remove_label" msgid="3714785653186750981">"Հեռացնել պիտակը"</string>
     <string name="notification_action_delete" msgid="3201627482564624132">"Ջնջել"</string>
     <string name="notification_action_undo_archive" msgid="600186958134073582">"Արխիվացված"</string>
@@ -358,11 +358,11 @@
     <string name="silent_ringtone" msgid="1570794756474381886">"Լուռ"</string>
     <string name="preference_removal_action_title" msgid="3128186577060329884">"Կանխադրված գործողություն"</string>
   <string-array name="prefEntries_removal_action">
-    <item msgid="7381624742404593351">"Արխիվ"</item>
+    <item msgid="7381624742404593351">"Արխիվացնել"</item>
     <item msgid="2567465476369142505">"Ջնջել"</item>
   </string-array>
   <string-array name="prefSummaries_removal_action_summary">
-    <item msgid="4080896545573973751">"Արխիվ"</item>
+    <item msgid="4080896545573973751">"Արխիվացնել"</item>
     <item msgid="6088164268501960435">"Ջնջել"</item>
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"Կանխադրված գործողություն"</string>
