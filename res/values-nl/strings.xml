@@ -479,6 +479,6 @@
     <string name="activity_preferences" msgid="8966077432517613292">"Instellingen"</string>
     <string name="overflow_description" msgid="7886090597023240426">"Meer opties"</string>
     <string name="security_hold_required_text" msgid="6619955920101834286">"Beveiligingsupdate vereist voor <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="update_security_text" msgid="3527335757205741077">"nu bijwerken"</string>
+    <string name="update_security_text" msgid="3527335757205741077">"nu updaten"</string>
     <string name="forms_are_disabled" msgid="2876312737118986789">"Formulieren zijn uitgeschakeld in Gmail"</string>
 </resources>
