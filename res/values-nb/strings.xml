@@ -62,7 +62,7 @@
     <string name="remove_folder" msgid="2379905457788576297">"Fjern fra <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="5978663590021719939">"Arkivér"</string>
     <string name="report_spam" msgid="4106897677959987340">"Meld fra om nettsøppel"</string>
-    <string name="mark_not_spam" msgid="8617774236231366651">"Rapportér som ikke nettsøppel"</string>
+    <string name="mark_not_spam" msgid="8617774236231366651">"Rapportér som ikke søppelpost"</string>
     <string name="report_phishing" msgid="8454666464488413739">"Rapportér nettfisking"</string>
     <string name="delete" msgid="6784262386780496958">"Slett"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"Forkast utkastene"</string>
