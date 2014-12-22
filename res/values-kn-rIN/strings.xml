@@ -385,7 +385,7 @@
     <string name="conversation_photo_welcome_text" msgid="836483155429003787">"ಆ ಸಂವಾದವನ್ನು ಆಯ್ಕೆ ಮಾಡಲು ಕಳುಹಿಸುವವರ ಚಿತ್ರವನ್ನು ಸ್ಪರ್ಶಿಸಿ."</string>
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"ಒಂದು ಸಂವಾದವನ್ನು ಆಯ್ಕೆ ಮಾಡಲು ಸ್ಪರ್ಶಿಸಿ &amp; ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳಿ, ನಂತರ ಹೆಚ್ಚು ಆಯ್ಕೆಗಾಗಿ ಸ್ಪರ್ಶಿಸಿ."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"ಫೋಲ್ಡರ್ ಐಕಾನ್"</string>
-    <string name="add_account" msgid="5905863370226612377">"ಖಾತೆಯನ್ನು ಸೇರಿಸಿ"</string>
+    <string name="add_account" msgid="5905863370226612377">"ಖಾತೆ ಸೇರಿಸು"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"ಸಲಹೆ ವಜಾಗೊಳಿಸು"</string>
     <string name="auto_sync_off" msgid="3691189864057581214">"ಸ್ವಯಂಚಾಲಿತ ಸಿಂಕ್ ಆಫ್ ಆಗಿದೆ. ಆನ್ ಮಾಡಲು ಸ್ಪರ್ಶಿಸಿ."</string>
     <string name="account_sync_off" msgid="5720018952998097061">"ಖಾತೆ ಸಿಂಕ್ ಆಫ್ ಆಗಿದೆ. &lt; href=\'http://www.example.com\'&gt;Account settings.&lt;/a&gt; ನಲ್ಲಿ ಆನ್ ಮಾಡಿ"</string>
