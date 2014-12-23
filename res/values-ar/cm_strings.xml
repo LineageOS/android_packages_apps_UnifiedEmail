@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="confirm_forward_message">Meddelandet har bifogade filer</string>
-  <string name="confirm_forward_normal">Ladda ner och skicka</string>
-  <string name="confirm_forward_drop_unloaded">Använd serverns kopia</string>
+  <string name="confirm_forward_message">مع الرسالة مُرفقات</string>
+  <string name="confirm_forward_normal">نزّلها وأرسل</string>
+  <string name="confirm_forward_drop_unloaded">انسخ في الخادم</string>
 </resources>
