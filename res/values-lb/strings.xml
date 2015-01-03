@@ -161,7 +161,7 @@
   </plurals>
   <string name="confirm_discard_text">Dëse Message verwerfen?</string>
   <string name="loading_conversations">Gëtt gelueden\u2026</string>
-  <string name="no_conversations">Keng Gespréicher.</string>
+  <string name="no_conversations">Keng Konversatiounen.</string>
   <string name="undo">Réckgängeg maachen</string>
   <plurals name="conversation_unstarred">
     <item quantity="one">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatioun ewechgeholl.</item>
@@ -369,8 +369,8 @@
     <item quantity="one"><xliff:g id="count">%1$d</xliff:g> Message gëtt permanent geläscht.</item>
     <item quantity="other"><xliff:g id="count">%1$d</xliff:g> Messagë gi permanent geläscht.</item>
   </plurals>
-  <string name="drawer_open">Navigatiounsleescht opmaachen</string>
-  <string name="drawer_close">Navigatiounsleescht zoumaachen</string>
+  <string name="drawer_open">Navigatiounsläischt opmaachen</string>
+  <string name="drawer_close">Navigatiounsläischt zoumaachen</string>
   <string name="conversation_photo_welcome_text">Dréck op d\'Bild vun engem Ofsender fir déi Konversatioun auszewielen.</string>
   <string name="long_press_to_select_tip">Gedréckt hale fir eng Konversatioun auszewielen, duerno drécke fir der méi auszewielen.</string>
   <string name="folder_icon_desc">Dossierssymbol</string>
