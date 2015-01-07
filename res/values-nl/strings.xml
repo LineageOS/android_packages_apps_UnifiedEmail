@@ -66,7 +66,7 @@
     <string name="report_phishing" msgid="8454666464488413739">"Phishing melden"</string>
     <string name="delete" msgid="6784262386780496958">"Verwijderen"</string>
     <string name="discard_drafts" msgid="5881484193628472105">"Concepten weggooien"</string>
-    <string name="discard_failed" msgid="7520780769812210279">"Annuleren mislukt"</string>
+    <string name="discard_failed" msgid="7520780769812210279">"Niet opslaan mislukt"</string>
     <string name="refresh" msgid="1533748989749277511">"Vernieuwen"</string>
     <string name="reply" msgid="8337757482824207118">"Beantwoorden"</string>
     <string name="reply_all" msgid="5366796103758360957">"Allen beantwoorden"</string>
@@ -423,7 +423,7 @@
     <string name="set_end_date_dialog_title" msgid="7543009262788808443">"Einddatum (optioneel)"</string>
     <string name="custom_date" msgid="5794846334232367838">"Aangepast"</string>
     <string name="date_none" msgid="1061426502665431412">"Geen"</string>
-    <string name="discard_changes" msgid="5699760550972324746">"Wijzigingen annuleren?"</string>
+    <string name="discard_changes" msgid="5699760550972324746">"Wijzigingen niet opslaan?"</string>
     <string name="vacation_responder_changes_saved" msgid="91448817268121249">"Wijzigingen in automatisch antwoord opgeslagen"</string>
     <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"Wijzigingen in automatisch antwoord geannuleerd"</string>
     <string name="vacation_responder_off" msgid="4429909341193366667">"Uit"</string>
