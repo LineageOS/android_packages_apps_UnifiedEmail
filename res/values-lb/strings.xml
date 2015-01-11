@@ -31,7 +31,7 @@
   <string-array name="compose_modes">
     <item>Äntweren</item>
     <item>Allen Äntwerten</item>
-    <item>Weider</item>
+    <item>Weiderleeden</item>
   </string-array>
   <string name="reply_attribution">Den <xliff:g id="date">%s</xliff:g> schreift den/d\' <xliff:g id="person">%s</xliff:g>:</string>
   <string name="forward_attribution">---------- Weidergeleete Message ----------&lt;br&gt;Vum: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Datum: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Sujet: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;Un: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
@@ -54,7 +54,7 @@
   <string name="send">Schécken</string>
   <string name="mark_read">Als gelies markéieren</string>
   <string name="mark_unread">Als ongelies markéieren</string>
-  <string name="mute">Stomm</string>
+  <string name="mute">Roueg</string>
   <string name="add_star">Stär dobäisetzen</string>
   <string name="remove_star">Stär ewechhuelen</string>
   <string name="remove_folder">Aus <xliff:g id="folderName">%1$s</xliff:g> läschen</string>
@@ -68,7 +68,7 @@
   <string name="reply">Äntweren</string>
   <string name="reply_all">Allen Äntwerten</string>
   <string name="resume_draft">Änneren</string>
-  <string name="forward">Weider</string>
+  <string name="forward">Weiderleeden</string>
   <string name="menu_compose">Schreiwen</string>
   <string name="menu_change_folders">Dossier wiesselen</string>
   <string name="menu_move_to">An den Dossier réckelen</string>
@@ -168,8 +168,8 @@
     <item quantity="other">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatiounen ewechgeholl.</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; stomm geschalt.</item>
-    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; stomm geschalt.</item>
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; roueg geschalt.</item>
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; roueg geschalt.</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Spam gemellt.</item>
@@ -271,7 +271,7 @@
   <string name="activity_mailbox_selection">Kont auswielen</string>
   <string name="activity_folder_selection">Dossier auswielen</string>
   <string name="folder_shortcut_widget_label">E-Mail-Dossier</string>
-  <string name="change_folders_selection_dialog_title">Dossier wiesselen</string>
+  <string name="change_folders_selection_dialog_title">Dossiere wiesselen</string>
   <string name="move_to_selection_dialog_title">An den Dossier réckelen</string>
   <string name="search_hint">E-Mail sichen</string>
   <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
@@ -287,7 +287,7 @@
   <string name="manual_sync">Elo synchroniséieren</string>
   <string name="change_sync_settings">Sync-Astellungen änneren</string>
   <string name="photo_load_failed">Konnt d\'Bild net lueden</string>
-  <string name="cant_move_or_change_labels">Kann net réckele well d\'Auswiel verschidde Konten enthält.</string>
+  <string name="cant_move_or_change_labels">Kann net réckele well d\'Auswiel verschidde Konten huet.</string>
   <string name="multiple_new_message_notification_item"><b><xliff:g id="sender">%1$s</xliff:g></b>\u0020\u0020\u0020<xliff:g id="subject">%2$s</xliff:g></string>
   <string name="single_new_message_notification_big_text"><xliff:g id="subject">%1$s</xliff:g>\n<xliff:g id="snippet">%2$s</xliff:g></string>
   <string name="ignore_spam_warning">Ignoréieren, ech vertrauen dësem Message.</string>
