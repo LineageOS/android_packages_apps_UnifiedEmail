@@ -155,7 +155,7 @@
   </plurals>
   <plurals name="confirm_discard_drafts_conversation">
     <item quantity="one" msgid="2030421499893210789">"Ungependa kutupa ujumbe huu?"</item>
-    <item quantity="other" msgid="782234447471532005">"Ungependa kufuta ujumbe huu <xliff:g id="COUNT">%1$d</xliff:g>?"</item>
+    <item quantity="other" msgid="782234447471532005">"Ungependa kufuta rasimu hizi <xliff:g id="COUNT">%1$d</xliff:g>?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="5172680524418848519">"Ujumbe huu utupwe?"</string>
     <string name="loading_conversations" msgid="7255732786298655246">"Inapakia…"</string>
@@ -377,8 +377,8 @@
     <string name="empty_trash_dialog_title" msgid="2104898489663621508">"Ungependa Kusafisha Tupio?"</string>
     <string name="empty_spam_dialog_title" msgid="1130319045917820569">"Ungependa Kuondoa Barua taka?"</string>
   <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="3315412388217832914">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> utafutwa kabisa."</item>
-    <item quantity="other" msgid="263840304486020101">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> utafutwa kabisa."</item>
+    <item quantity="one" msgid="3315412388217832914">"Mazungumzo <xliff:g id="COUNT">%1$d</xliff:g> yatafutwa kabisa."</item>
+    <item quantity="other" msgid="263840304486020101">"Mazungumzo <xliff:g id="COUNT">%1$d</xliff:g> yatafutwa kabisa."</item>
   </plurals>
     <string name="drawer_open" msgid="2285557278907103851">"Fungua menyu"</string>
     <string name="drawer_close" msgid="2065829742127544297">"Funga menyu"</string>
@@ -400,8 +400,8 @@
     <string name="print" msgid="7987949243936577207">"Chapisha"</string>
     <string name="print_all" msgid="4011022762279519941">"Chapisha zote"</string>
   <plurals name="num_messages">
-    <item quantity="one" msgid="8071234386915191851">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g>"</item>
-    <item quantity="other" msgid="962415099931188360">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+    <item quantity="one" msgid="8071234386915191851">"Mazungumzo <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+    <item quantity="other" msgid="962415099931188360">"Mazungumzo <xliff:g id="COUNT">%1$d</xliff:g>"</item>
   </plurals>
     <string name="date_message_received_print" msgid="4168417403884350040">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> saa <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="draft_to_heading" msgid="7370121943946205024">"Rasimu Kwa:"</string>
