@@ -91,7 +91,7 @@
     <string name="respond_inline" msgid="6609746292081928078">"Պատասխանել մեջտեղում"</string>
     <string name="bytes" msgid="651011686747499628">"<xliff:g id="COUNT">%s</xliff:g> Բ"</string>
     <string name="kilobytes" msgid="1523463964465770347">"<xliff:g id="COUNT">%s</xliff:g> Կբ"</string>
-    <string name="megabytes" msgid="4309397368708773323">"<xliff:g id="COUNT">%s</xliff:g> Մբ"</string>
+    <string name="megabytes" msgid="4309397368708773323">"<xliff:g id="COUNT">%s</xliff:g> ՄԲ"</string>
     <string name="attachment_image" msgid="6375306026208274564">"Պատկեր"</string>
     <string name="attachment_video" msgid="7119476472603939848">"Տեսանյութեր"</string>
     <string name="attachment_audio" msgid="7097658089301809284">"Ձայնանյութ"</string>
