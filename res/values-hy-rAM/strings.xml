@@ -61,7 +61,7 @@
     <string name="remove_star" msgid="9126690774161840733">"Հեռացնել աստղանիշը"</string>
     <string name="remove_folder" msgid="2379905457788576297">"Հեռացված է <xliff:g id="FOLDERNAME">%1$s</xliff:g>-ից"</string>
     <string name="archive" msgid="5978663590021719939">"Արխիվ"</string>
-    <string name="report_spam" msgid="4106897677959987340">"Զեկուցել որպես լցոն"</string>
+    <string name="report_spam" msgid="4106897677959987340">"Հաղորդել լցոնի մասին"</string>
     <string name="mark_not_spam" msgid="8617774236231366651">"Հաղորդել` թափոն չէ"</string>
     <string name="report_phishing" msgid="8454666464488413739">"Զեկուցել որսման մասին"</string>
     <string name="delete" msgid="6784262386780496958">"Ջնջել"</string>
@@ -171,8 +171,8 @@
     <item quantity="other" msgid="1154441830432477256">"Ապաստղանշվում է <xliff:g id="COUNT">%1$d</xliff:g> խոսակցություն"</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3622533556738049499">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; խլացված"</item>
-    <item quantity="other" msgid="4559007262578295280">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; խլացված"</item>
+    <item quantity="one" msgid="3622533556738049499">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; անտեսված"</item>
+    <item quantity="other" msgid="4559007262578295280">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; անտեսված"</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="1749550834135461470">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; հաղորդված՝ որպես սպամ"</item>
