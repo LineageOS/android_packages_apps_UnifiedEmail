@@ -224,7 +224,7 @@
     <item quantity="other" msgid="8094857552036574099">"باز کردن <xliff:g id="COUNT">%1$d</xliff:g> پیام قدیمی‌تر"</item>
   </plurals>
   <plurals name="super_collapsed_block_accessibility_announcement">
-    <item quantity="other" msgid="2016326586162784420">"<xliff:g id="COUNT">%1$d</xliff:g> پیام قدیمی‌تر بازشده"</item>
+    <item quantity="other" msgid="2016326586162784420">"<xliff:g id="COUNT">%1$d</xliff:g> پیام قدیمی‌تر باز شد"</item>
   </plurals>
     <string name="from_heading" msgid="48290556829713090">"از:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"پاسخ به:"</string>
@@ -312,7 +312,7 @@
     <string name="show" msgid="2874876876336599985">"نمایش پیام‌های جدید"</string>
     <string name="sync_error" msgid="1795794969006241678">"همگام‌سازی نشد."</string>
     <string name="sync_error_message" msgid="4182644657243736635">"دستگاه شما فضای ذخیره کافی برای همگام‌سازی ندارد."</string>
-    <string name="storage" msgid="4783683938444150638">"محل ذخیره"</string>
+    <string name="storage" msgid="4783683938444150638">"ذخیره‌سازی"</string>
     <string name="senders_split_token" msgid="6549228851819460081">"، "</string>
     <string name="draft_count_format" msgid="9122583199850209286">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="9023770187629170967">"همه پوشه‌ها"</string>
