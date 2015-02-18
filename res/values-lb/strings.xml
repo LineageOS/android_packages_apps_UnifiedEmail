@@ -168,7 +168,7 @@
   <string name="empty_spam_folder">Hurra, kee Spam do!</string>
   <string name="empty_trash_folder">Keen Offall hei. Merci fir d\'recycléieren!</string>
   <string name="empty_folder">Keng E-Mailen hei.</string>
-  <string name="getting_messages">Lueden d\'Messagen</string>
+  <string name="getting_messages">Messagë gi gelueden</string>
   <string name="undo">Réckgängeg maachen</string>
   <plurals name="conversation_unstarred">
     <item quantity="one">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatioun ewechgeholl.</item>
