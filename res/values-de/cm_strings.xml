@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="confirm_forward_message">Die Nachricht enthält Anlagen</string>
+  <string name="confirm_forward_message">Die Nachricht enthält Anhänge</string>
   <string name="confirm_forward_normal">Herunterladen und senden</string>
   <string name="confirm_forward_drop_unloaded">Serverkopie verwenden</string>
 </resources>
