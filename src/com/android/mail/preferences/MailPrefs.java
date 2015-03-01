@@ -116,6 +116,8 @@ public final class MailPrefs extends VersionedPrefs {
 
         public static final String RECENT_ACCOUNTS = "recent-accounts";
 
+        public static final String SUGGESTED_CONTACTS_MODE = "suggested-contacts-mode";
+
         public static final ImmutableSet<String> BACKUP_KEYS =
                 new ImmutableSet.Builder<String>()
                 .add(DEFAULT_REPLY_ALL)
@@ -131,6 +133,7 @@ public final class MailPrefs extends VersionedPrefs {
                 .add(CONFIRM_SEND)
                 .add(CONVERSATION_OVERVIEW_MODE)
                 .add(SNAP_HEADER_MODE)
+                .add(SUGGESTED_CONTACTS_MODE)
                 .build();
     }
 
@@ -138,6 +141,12 @@ public final class MailPrefs extends VersionedPrefs {
         public static final String ARCHIVE = "archive";
         public static final String DELETE = "delete";
         public static final String DISABLED = "disabled";
+    }
+
+    public static final class SuggestedContactsMode {
+        public static final String NONE = "none";
+        public static final String RECENTS = "recents";
+        public static final String ALL = "all";
     }
 
     @Retention(RetentionPolicy.SOURCE)
@@ -520,5 +529,14 @@ public final class MailPrefs extends VersionedPrefs {
 
     public void setRecentAccounts(Set<String> recentAccounts) {
         getEditor().putStringSet(PreferenceKeys.RECENT_ACCOUNTS, recentAccounts).apply();
+    }
+
+    public String getSuggestedContactMode() {
+        return getSharedPreferences().getString(
+                PreferenceKeys.SUGGESTED_CONTACTS_MODE, SuggestedContactsMode.NONE);
+    }
+
+    public void setSuggestedContactMode(String mode) {
+        getEditor().putString(PreferenceKeys.SUGGESTED_CONTACTS_MODE, mode).apply();
     }
 }
