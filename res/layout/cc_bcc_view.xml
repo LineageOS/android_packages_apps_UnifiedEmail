@@ -37,7 +37,7 @@
                 android:text="@string/cc"
                 style="@style/ComposeHeading" />
 
-                <com.android.ex.chips.RecipientEditTextView
+                <com.android.mail.ui.RecipientEditTextViewWithSuggestedContacts
                     android:id="@+id/cc"
                     android:contentDescription="@string/cc"
                     android:dropDownAnchor="@id/cc_content"
@@ -66,7 +66,7 @@
                 android:text="@string/bcc"
                 style="@style/ComposeHeading" />
 
-            <com.android.ex.chips.RecipientEditTextView
+            <com.android.mail.ui.RecipientEditTextViewWithSuggestedContacts
                 android:id="@+id/bcc"
                 android:contentDescription="@string/bcc"
                 android:dropDownAnchor="@id/bcc_content"
