@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,11 +29,13 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.provider.SearchRecentSuggestions;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.android.emailcommon.provider.SuggestedContact;
 import com.android.mail.preferences.MailPrefs;
 import com.android.mail.preferences.MailPrefs.PreferenceKeys;
 import com.android.mail.providers.SuggestionsProvider;
@@ -50,6 +53,7 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
 
     // Keys used to reference pref widgets which don't map directly to preference entries
     static final String AUTO_ADVANCE_WIDGET = "auto-advance-widget";
+    static final String SUGGESTED_CONTACTS_CLEAR_ALL = "suggested-contacts-clear-all";
 
     static final String CALLED_FROM_TEST = "called-from-test";
 
@@ -59,8 +63,11 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
     protected MailPrefs mMailPrefs;
 
     private AlertDialog mClearSearchHistoryDialog;
+    private AlertDialog mClearSuggestedContactsDialog;
 
     private ListPreference mAutoAdvance;
+    private Preference mClearAllSuggestedContacts;
+
     private static final int[] AUTO_ADVANCE_VALUES = {
             AutoAdvance.NEWER,
             AutoAdvance.OLDER,
@@ -84,6 +91,17 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
         addPreferencesFromResource(R.xml.general_preferences);
 
         mAutoAdvance = (ListPreference) findPreference(AUTO_ADVANCE_WIDGET);
+
+        mClearAllSuggestedContacts = findPreference(SUGGESTED_CONTACTS_CLEAR_ALL);
+        mClearAllSuggestedContacts.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                clearSuggestedContacts();
+                return true;
+            }
+        });
+        mClearAllSuggestedContacts.setEnabled(false);
+        computeSuggestedContacts();
     }
 
     @Override
@@ -164,6 +182,45 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
                 .show();
     }
 
+    private void clearSuggestedContacts() {
+        mClearSuggestedContactsDialog = new AlertDialog.Builder(getActivity())
+            .setMessage(R.string.clear_suggested_contacts_dialog_message)
+            .setTitle(R.string.clear_suggested_contacts_dialog_title)
+            .setIconAttribute(android.R.attr.alertDialogIcon)
+            .setPositiveButton(R.string.clear, this)
+            .setNegativeButton(R.string.cancel, this)
+            .show();
+    }
+
+    private void computeSuggestedContacts() {
+        final Context context = getActivity();
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                Cursor c = context.getContentResolver().query(
+                        SuggestedContact.CONTENT_URI,
+                        new String[] {"count(*) AS count"},
+                        null,
+                        null,
+                        null);
+                try {
+                    if (c != null && c.moveToFirst()) {
+                        return c.getInt(0);
+                    }
+                } finally {
+                    if (c != null) {
+                        c.close();
+                    }
+                }
+                return 0;
+            }
+            @Override
+            protected void onPostExecute(Integer result) {
+                mClearAllSuggestedContacts.setEnabled(result > 0);
+            }
+        }.execute();
+    }
+
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
@@ -185,6 +242,23 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
                 Toast.makeText(getActivity(), R.string.search_history_cleared, Toast.LENGTH_SHORT)
                         .show();
             }
+        } else if (dialog.equals(mClearSuggestedContactsDialog)) {
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+                final Context context = getActivity();
+                // Clear the suggested contacts in the background, as it causes a disk
+                // write.
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        context.getContentResolver().delete(
+                                SuggestedContact.CONTENT_URI, null, null);
+                        computeSuggestedContacts();
+                        return null;
+                    }
+                }.execute();
+                Toast.makeText(getActivity(), R.string.suggested_contacts_cleared,
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -193,6 +267,9 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
         super.onStop();
         if (mClearSearchHistoryDialog != null && mClearSearchHistoryDialog.isShowing()) {
             mClearSearchHistoryDialog.dismiss();
+        }
+        if (mClearSuggestedContactsDialog != null && mClearSuggestedContactsDialog.isShowing()) {
+            mClearSuggestedContactsDialog.dismiss();
         }
     }
 
