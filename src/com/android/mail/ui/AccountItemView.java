@@ -70,13 +70,13 @@ public class AccountItemView extends LinearLayout {
      */
     public void bind(final Context context, final Account account, final boolean isCurrentAccount,
             final BitmapCache imagesCache, final ContactResolver contactResolver) {
-        if (!TextUtils.isEmpty(account.getSenderName())) {
-            mAccountDisplayName.setText(account.getSenderName());
-            mAccountAddress.setText(account.getEmailAddress());
-            mAccountAddress.setVisibility(View.VISIBLE);
-        } else if (!TextUtils.isEmpty(account.getDisplayName()) &&
+        if (!TextUtils.isEmpty(account.getDisplayName()) &&
                 !TextUtils.equals(account.getDisplayName(), account.getEmailAddress())) {
             mAccountDisplayName.setText(account.getDisplayName());
+            mAccountAddress.setText(account.getEmailAddress());
+            mAccountAddress.setVisibility(View.VISIBLE);
+        } else if (!TextUtils.isEmpty(account.getSenderName())) {
+            mAccountDisplayName.setText(account.getSenderName());
             mAccountAddress.setText(account.getEmailAddress());
             mAccountAddress.setVisibility(View.VISIBLE);
         } else {
