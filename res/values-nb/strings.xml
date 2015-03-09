@@ -382,7 +382,7 @@
   </plurals>
     <string name="drawer_open" msgid="2285557278907103851">"Åpne uttrekksmenyen for navigasjon"</string>
     <string name="drawer_close" msgid="2065829742127544297">"Lukk uttrekksmenyen for navigasjon"</string>
-    <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Trykk på avsenderbildet for å velge den samtalen."</string>
+    <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Trykk på avsenderbildet for å velge samtalen du vil lese."</string>
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"Trykk og hold nede for å velge én samtale, og trykk deretter på andre samtaler du vil velge."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"Mappeikon"</string>
     <string name="add_account" msgid="5905863370226612377">"Legg til konto"</string>

@@ -90,7 +90,7 @@
     <string name="quoted_text_label" msgid="2296807722849923934">"Մեջբերել տեքստ"</string>
     <string name="respond_inline" msgid="6609746292081928078">"Պատասխանել մեջտեղում"</string>
     <string name="bytes" msgid="651011686747499628">"<xliff:g id="COUNT">%s</xliff:g> Բ"</string>
-    <string name="kilobytes" msgid="1523463964465770347">"<xliff:g id="COUNT">%s</xliff:g> Կբ"</string>
+    <string name="kilobytes" msgid="1523463964465770347">"<xliff:g id="COUNT">%s</xliff:g> ԿԲ"</string>
     <string name="megabytes" msgid="4309397368708773323">"<xliff:g id="COUNT">%s</xliff:g> ՄԲ"</string>
     <string name="attachment_image" msgid="6375306026208274564">"Պատկեր"</string>
     <string name="attachment_video" msgid="7119476472603939848">"Տեսանյութեր"</string>
@@ -117,7 +117,7 @@
     <string name="menu_photo_print" msgid="3084679038179342333">"Տպել"</string>
     <string name="saving" msgid="6274238733828387433">"Պահվում է..."</string>
     <string name="choosertitle_sharevia" msgid="3539537264873337959">"Տարածել"</string>
-    <string name="contextmenu_openlink" msgid="6952228183947135362">"Բացել Զննարկչում"</string>
+    <string name="contextmenu_openlink" msgid="6952228183947135362">"Բացել դիտարկչում"</string>
     <string name="contextmenu_copy" msgid="2584243784216385180">"Պատճենել"</string>
     <string name="contextmenu_copylink" msgid="8659897702269320063">"Պատճենել հղման հասցեն"</string>
     <string name="contextmenu_view_image" msgid="1031172763893491000">"Դիտել նկարը"</string>
@@ -369,7 +369,7 @@
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Պատասխանել բոլորին"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"Օգտագործել որպես լռելյայն բոլոր պատասխանների համար"</string>
     <string name="preference_swipe_title" msgid="2073613840893904205">"Սահահարվածել գործողություններին"</string>
-    <string name="preference_swipe_description" msgid="3036560323237015010">"Զրույցի ցանկում"</string>
+    <string name="preference_swipe_description" msgid="3036560323237015010">"Շղթաների ցանկում"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Ուղարկողի պատկերը"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"Ցուցադրել անվան կողքին խոսակցության ցանկում"</string>
     <string name="empty_trash" msgid="3385937024924728399">"Դատարկ աղբարկղ"</string>

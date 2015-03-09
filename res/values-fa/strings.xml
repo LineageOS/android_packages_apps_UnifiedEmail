@@ -367,7 +367,7 @@
   </string-array>
     <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"اقدام پیش‌فرض"</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"پاسخ به همه"</string>
-    <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"به‌ عنوان پیش‌فرض برای پاسخ‌ به پیام‌ها استفاده شود"</string>
+    <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"به‌ عنوان پیش‌فرض برای پاسخ‌ پیام استفاده شود"</string>
     <string name="preference_swipe_title" msgid="2073613840893904205">"اقداماتی با کشیدن سریع انگشت"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"در لیست مکالمه"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"تصویر فرستنده"</string>

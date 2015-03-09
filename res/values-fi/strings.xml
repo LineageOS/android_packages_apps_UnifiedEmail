@@ -393,7 +393,7 @@
     <string name="turn_auto_sync_on_dialog_title" msgid="543412762396502297">"Otetaanko automaattinen synkronointi käyttöön?"</string>
     <string name="turn_auto_sync_on_dialog_body" msgid="614939812938149398">"Gmailiin ja kaikkiin muihin sovelluksiin ja tileihin tekemäsi muutokset synkronoidaan seuraavissa kohteissa: verkko, muut laitteet ja <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>."</string>
     <string name="phone" msgid="4142617042507912053">"puhelin"</string>
-    <string name="tablet" msgid="4593581125469224791">"tablet-laite"</string>
+    <string name="tablet" msgid="4593581125469224791">"tabletti"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="7239160845196929866">"Ota käyttöön"</string>
     <string name="show_n_more_folders" msgid="1005879825500056552">"Näytä <xliff:g id="NUMBER">%1$s</xliff:g> kansiota"</string>
     <string name="hide_folders" msgid="7618891933409521283">"Piilota kansiot"</string>

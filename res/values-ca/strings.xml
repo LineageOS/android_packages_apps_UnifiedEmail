@@ -297,7 +297,7 @@
     <string name="shortcut_name_title" msgid="1562534040126088628">"Tecla de drecera per posar nom a la carpeta"</string>
     <string name="wait_for_sync_title" msgid="4577632826912823075">"S\'està esperant per sincronitzar"</string>
     <string name="not_synced_title" msgid="3600180500934086346">"El compte no s\'ha sincronitzat"</string>
-    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Aquest compte no està configurat per sincronitzar automàticament.\nToca "<b>"Sincronitza ara"</b>" per sincronitzar el correu una vegada o bé "<b>"Canvia la configuració de sincronització"</b>" per configurar aquest compte per sincronitzar el correu de manera automàtica."</string>
+    <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Aquest compte no està configurat per sincronitzar-se automàticament.\nToqueu "<b>"Sincronitza ara"</b>" per sincronitzar el correu una vegada o bé "<b>"Canvia config. sincronització"</b>" per configurar la sincronització automàtica del correu en aquest compte."</string>
     <string name="manual_sync" msgid="2271479734895537848">"Sincronitza ara"</string>
     <string name="change_sync_settings" msgid="3615852118397055361">"Canvia config. sincronització"</string>
     <string name="photo_load_failed" msgid="577471721679146999">"No s\'ha pogut carr. la imatge"</string>
