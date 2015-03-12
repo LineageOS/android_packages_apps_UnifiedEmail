@@ -5,6 +5,7 @@
 -dontwarn android.support.v4.**
 -dontwarn android.support.v13.**
 -dontwarn com.android.ex.photo.**
+-dontwarn com.android.emailcommon.**
 
 # keep names that are used by reflection, or from javascript
 
