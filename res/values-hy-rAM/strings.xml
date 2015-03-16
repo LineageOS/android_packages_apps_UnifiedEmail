@@ -73,7 +73,7 @@
     <string name="resume_draft" msgid="1272723181782570649">"Խմբագրել"</string>
     <string name="forward" msgid="4397585145490426320">"Փոխանցել"</string>
     <string name="menu_compose" msgid="4575025207594709432">"Գրել"</string>
-    <string name="menu_change_folders" msgid="2194946192901276625">"Փոխել թղթապանակները"</string>
+    <string name="menu_change_folders" msgid="2194946192901276625">"Փոխել պանակները"</string>
     <string name="menu_move_to" msgid="7948877550284452830">"Տեղափոխել՝"</string>
     <string name="menu_move_to_inbox" msgid="258554178236001444">"Տեղափոխել Մուտքի արկղ"</string>
     <string name="menu_manage_folders" msgid="8486398523679534519">"Թղթապանակի կարգավորումներ"</string>
@@ -202,14 +202,14 @@
     <string name="archived" msgid="6283673603512713022">"Արխիվացված"</string>
     <string name="folder_removed" msgid="5656281444688183676">"Հեռացվել է <xliff:g id="FOLDERNAME">%1$s</xliff:g>-ից"</string>
   <plurals name="conversation_folder_changed">
-    <item quantity="one" msgid="7787126147584620603">"Փոխված թղթապանակ"</item>
-    <item quantity="other" msgid="6307772984911017972">"Փոխված թղթապանակներ"</item>
+    <item quantity="one" msgid="7787126147584620603">"Փոխված պանակ"</item>
+    <item quantity="other" msgid="6307772984911017972">"Փոխված պանակներ"</item>
   </plurals>
     <string name="conversation_folder_moved" msgid="6475872337373081683">"Տեղափոխվել է <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="1529438451150580188">"Արդյունքներ"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"Որոնումը չի աջակցվում այս հաշվի համար:"</string>
     <string name="search_suggestion_desc" msgid="4165491276003825492">"Առաջարկ՝ <xliff:g id="SUGGESTION">%s</xliff:g>"</string>
-    <string name="add_label" msgid="3285338046038610902">"Ավելացնել թղթապանակ"</string>
+    <string name="add_label" msgid="3285338046038610902">"Ավելացնել պանակ"</string>
   <plurals name="new_incoming_messages">
     <item quantity="one" msgid="1532079301006372605">"<xliff:g id="COUNT">%1$d</xliff:g> նոր հաղորդագրություն"</item>
     <item quantity="other" msgid="4085982174357328926">"<xliff:g id="COUNT">%1$d</xliff:g> նոր հաղորդագրություն"</item>
@@ -267,8 +267,8 @@
     <item msgid="5442620760791553027">"Սերվերի սխալ"</item>
   </string-array>
     <string name="tap_to_configure" msgid="137172348280050643">"Հպեք՝ կարգավորելու համար"</string>
-    <string name="non_synced_folder_description" msgid="3044618511909304701">"Զրույցները դիտելու համար համաժամեցրել այս թղթապանակը:"</string>
-    <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"Համաժամեցնել թղթապանակը"</string>
+    <string name="non_synced_folder_description" msgid="3044618511909304701">"Զրույցները դիտելու համար համաժամեցրել այս պանակը:"</string>
+    <string name="tap_to_configure_folder_sync" msgid="3280434399275638071">"Համաժամեցնել պանակը"</string>
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ նոր"</string>
     <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> նոր"</string>
@@ -278,9 +278,9 @@
     <string name="view_more_conversations" msgid="8377920000247101901">"Տեսնել այլ զրույցներ"</string>
     <string name="loading_conversation" msgid="7931600025861500397">"Բեռնում..."</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"Ընտրեք հաշիվը"</string>
-    <string name="activity_folder_selection" msgid="8375243281001234750">"Ընտրեք թղթապանակը"</string>
-    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"Փոստային թղթապանակ"</string>
-    <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"Փոխել թղթապանակները"</string>
+    <string name="activity_folder_selection" msgid="8375243281001234750">"Ընտրեք պանակը"</string>
+    <string name="folder_shortcut_widget_label" msgid="6466292659577092915">"Փոստային պանակ"</string>
+    <string name="change_folders_selection_dialog_title" msgid="9174464298613273814">"Փոխել պանակները"</string>
     <string name="move_to_selection_dialog_title" msgid="4052506464467083621">"Տեղափոխել"</string>
     <string name="search_hint" msgid="7060626585689391003">"Որոնել"</string>
     <!-- no translation found for search_results_loaded (1784879343458807514) -->
@@ -294,7 +294,7 @@
     <string name="load_more" msgid="8702691358453560575">"Բեռնել ավելին"</string>
     <!-- no translation found for load_attachment (3894318473827290350) -->
     <skip />
-    <string name="shortcut_name_title" msgid="1562534040126088628">"Անվանեք դյուրանցման թղթապանակը"</string>
+    <string name="shortcut_name_title" msgid="1562534040126088628">"Անվանեք դյուրանցման պանակը"</string>
     <string name="wait_for_sync_title" msgid="4577632826912823075">"Սպասում է համաժամեցմանը"</string>
     <string name="not_synced_title" msgid="3600180500934086346">"Հաշիվը համաժամեցված չէ"</string>
     <string name="wait_for_manual_sync_body" msgid="2823149409451003378">"Այս հաշիվը չի կարգավորվել ավտոմատ համաժամեցման համար:\nՀպեք "<b>"Համաժամեցնել հիմա՝"</b>" էլփոստը միանվագ համաժամեցնելու համար կամ "<b>"Փոխել համաժամեցման կարգավորումները`"</b>" այս հաշվի էլփոստը ինքնաբերաբար համաժամեցնելով կարգավորելու համար:"</string>
@@ -315,8 +315,8 @@
     <string name="storage" msgid="4783683938444150638">"Պահոց"</string>
     <string name="senders_split_token" msgid="6549228851819460081">", "</string>
     <string name="draft_count_format" msgid="9122583199850209286">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
-    <string name="all_folders_heading" msgid="9023770187629170967">"Բոլոր թղթապանակները"</string>
-    <string name="recent_folders_heading" msgid="8943134955788867702">"Վերջին թղթապանակները"</string>
+    <string name="all_folders_heading" msgid="9023770187629170967">"Բոլոր պանակները"</string>
+    <string name="recent_folders_heading" msgid="8943134955788867702">"Վերջին պանակները"</string>
     <string name="message_details_title" msgid="60771875776494764">"Հաղորդագրության մանրամասները"</string>
     <string name="preference_advance_to_title" msgid="6385669491239514630">"Ինքնաընդլայնում"</string>
   <string-array name="prefEntries_autoAdvance">
@@ -395,8 +395,8 @@
     <string name="phone" msgid="4142617042507912053">"հեռախոսահամար"</string>
     <string name="tablet" msgid="4593581125469224791">"գրասալիկ"</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn" msgid="7239160845196929866">"Միացնել"</string>
-    <string name="show_n_more_folders" msgid="1005879825500056552">"Ցույց տալ <xliff:g id="NUMBER">%1$s</xliff:g> թղթապանակ"</string>
-    <string name="hide_folders" msgid="7618891933409521283">"Թաքցնել թղթապանակները"</string>
+    <string name="show_n_more_folders" msgid="1005879825500056552">"Ցույց տալ <xliff:g id="NUMBER">%1$s</xliff:g> պանակ"</string>
+    <string name="hide_folders" msgid="7618891933409521283">"Թաքցնել պանակները"</string>
     <string name="print" msgid="7987949243936577207">"Տպել"</string>
     <string name="print_all" msgid="4011022762279519941">"Տպել ամբողջը"</string>
   <plurals name="num_messages">

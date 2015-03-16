@@ -165,7 +165,7 @@
     <string name="empty_trash_folder" msgid="378119063015945020">"Niciun articol în coșul de gunoi. Vă mulțumim că reciclați."</string>
     <string name="empty_folder" msgid="3227552635613553855">"Nu există niciun e-mail în acest dosar."</string>
     <string name="getting_messages" msgid="8403333791332403244">"Mesaje în curs de încărcare"</string>
-    <string name="undo" msgid="8256285267701059609">"Anulaţi"</string>
+    <string name="undo" msgid="8256285267701059609">"Anulați"</string>
   <plurals name="conversation_unstarred">
     <item quantity="one" msgid="1701235480675303125">"Se anulează marcarea cu stea pentru <xliff:g id="COUNT">%1$d</xliff:g> conversație"</item>
     <item quantity="other" msgid="1154441830432477256">"Se anulează marcarea cu stea pentru <xliff:g id="COUNT">%1$d</xliff:g> (de) conversații"</item>
@@ -253,7 +253,7 @@
     <string name="send_anyway" msgid="2727576121007079643">"Trimiteți oricum"</string>
     <string name="ok" msgid="6178802457914802336">"OK"</string>
     <string name="done" msgid="344354738335270292">"Terminat"</string>
-    <string name="cancel" msgid="4831678293149626190">"Anulaţi"</string>
+    <string name="cancel" msgid="4831678293149626190">"Anulați"</string>
     <string name="clear" msgid="765949970989448022">"Ștergeți"</string>
     <string name="next" msgid="2662478712866255138">"Înainte"</string>
     <string name="previous" msgid="8985379053279804274">"Înapoi"</string>
