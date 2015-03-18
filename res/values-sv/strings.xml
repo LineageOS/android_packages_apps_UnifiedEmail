@@ -88,7 +88,7 @@
     <string name="add_bcc_label" msgid="963745641238037813">"Lägg t. hemlig kopia"</string>
     <string name="quoted_text" msgid="977782904293216533">"Inkludera citerad text"</string>
     <string name="quoted_text_label" msgid="2296807722849923934">"Citerad text"</string>
-    <string name="respond_inline" msgid="6609746292081928078">"Svara inbäddade"</string>
+    <string name="respond_inline" msgid="6609746292081928078">"Svara inbäddat"</string>
     <string name="bytes" msgid="651011686747499628">"<xliff:g id="COUNT">%s</xliff:g> B"</string>
     <string name="kilobytes" msgid="1523463964465770347">"<xliff:g id="COUNT">%s</xliff:g> kB"</string>
     <string name="megabytes" msgid="4309397368708773323">"<xliff:g id="COUNT">%s</xliff:g> MB"</string>
