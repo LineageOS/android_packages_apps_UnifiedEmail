@@ -6,8 +6,8 @@
         <item name="android:listViewWhiteStyle">@android:style/Widget.Material.Light.ListView</item>
         <!-- ActionBar color -->
         <item name="android:colorPrimary">@color/actionbar_color</item>
-        <!-- Used by the StatusBar and NavBar (currently broken?) -->
         <item name="android:colorPrimaryDark">@color/statusbar_color</item>
         <item name="android:colorAccent">@color/accent_blue</item>
+        <item name="android:statusBarColor">@color/statusbar_color</item>
     </style>
 </resources>
