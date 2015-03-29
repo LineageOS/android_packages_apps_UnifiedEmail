@@ -105,7 +105,7 @@ implements OnSharedPreferenceChangeListener {
             if (recentsMode) {
                 Calendar c = Calendar.getInstance(Locale.getDefault());
                 c.add(Calendar.DAY_OF_YEAR, MAX_DAYS_FOR_RECENTS_SUGGESTED_CONTACTS);
-                selection += SuggestedContact.LAST_SEEN + " >= ? ";
+                selection += " and " + SuggestedContact.LAST_SEEN + " >= ? ";
                 args[2] = String.valueOf(c.getTimeInMillis());
             }
 
