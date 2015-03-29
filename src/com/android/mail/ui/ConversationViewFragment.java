@@ -1255,10 +1255,7 @@ public class ConversationViewFragment extends AbstractConversationViewFragment i
 
             // Finally we handle the special keys
             if (keyCode == KeyEvent.KEYCODE_BACK && id != R.id.conversation_topmost_overlay) {
-                if (isActionUp) {
-                    mTopmostOverlay.requestFocus();
-                }
-                return true;
+                return mTopmostOverlay.requestFocus();
             } else if (keyCode == KeyEvent.KEYCODE_ENTER &&
                     id == R.id.conversation_topmost_overlay) {
                 if (isActionUp) {
