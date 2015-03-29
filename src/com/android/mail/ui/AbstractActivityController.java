@@ -4410,13 +4410,14 @@ public abstract class AbstractActivityController implements ActivityController,
             if (slideOffset > 0.15f) {
                 mDrawerToggle.setDrawerIndicatorEnabled(true /* enable */);
             } else {
-                if (mOldSlideOffset < slideOffset) {
+                if (mOldSlideOffset < slideOffset || (slideOffset == 0f && mOldSlideOffset > 0f)) {
                     final int mode = mViewMode.getMode();
                     final boolean isTopLevel = Folder.isRoot(mFolder);
                     mDrawerToggle.setDrawerIndicatorEnabled(
                             getShouldShowDrawerIndicator(mode, isTopLevel));
                 }
             }
+            mDrawerContainer.clearFocus();
 
             mOldSlideOffset = slideOffset;
 
