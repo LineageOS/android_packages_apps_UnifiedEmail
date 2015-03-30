@@ -117,7 +117,7 @@
     <string name="menu_photo_print" msgid="3084679038179342333">"Տպել"</string>
     <string name="saving" msgid="6274238733828387433">"Պահվում է..."</string>
     <string name="choosertitle_sharevia" msgid="3539537264873337959">"Տարածել"</string>
-    <string name="contextmenu_openlink" msgid="6952228183947135362">"Բացել դիտարկչում"</string>
+    <string name="contextmenu_openlink" msgid="6952228183947135362">"Բացել դիտարկիչում"</string>
     <string name="contextmenu_copy" msgid="2584243784216385180">"Պատճենել"</string>
     <string name="contextmenu_copylink" msgid="8659897702269320063">"Պատճենել հղման հասցեն"</string>
     <string name="contextmenu_view_image" msgid="1031172763893491000">"Դիտել նկարը"</string>
