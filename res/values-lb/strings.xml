@@ -468,7 +468,7 @@
   <string name="preference_confirm_before_archive_title">Virum Archivéiere bestätegen</string>
   <string name="preference_confirm_before_send_title">Virum Schécke bestätegen</string>
   <string name="preferences_conversation_mode_title">Messagen automatesch upassen</string>
-  <string name="preferences_conversation_mode_summary">Messagë verklengeren, fir datt se op de Schierm passen</string>
+  <string name="preferences_conversation_mode_summary">Messagë verklengeren, fir datt s\'op de Schierm passen</string>
   <string name="preferences_disable_snap_headers_title">Messagenaktiounen</string>
   <string-array name="prefSummaries_snapHeader">
     <item>Messagenaktiounen ëmmer uewen um Schierm uweisen</item>

@@ -4302,6 +4302,20 @@ public abstract class AbstractActivityController implements ActivityController,
                 }
             }
 
+            // If we're sliding, we always want to show the burger (but we need a bit of space
+            // before do it)
+            if (slideOffset > 0.15f) {
+                mDrawerToggle.setDrawerIndicatorEnabled(true /* enable */);
+            } else {
+                if (mOldSlideOffset < slideOffset || (slideOffset == 0f && mOldSlideOffset > 0f)) {
+                    final int mode = mViewMode.getMode();
+                    final boolean isTopLevel = Folder.isRoot(mFolder);
+                    mDrawerToggle.setDrawerIndicatorEnabled(
+                            getShouldShowDrawerIndicator(mode, isTopLevel));
+                }
+            }
+            mDrawerContainer.clearFocus();
+
             mOldSlideOffset = slideOffset;
 
             for (DrawerLayout.DrawerListener l : mObservers) {
