@@ -547,6 +547,26 @@ public class NotificationUtils {
             final Account account, boolean getAttention, boolean ignoreUnobtrusiveSetting,
             NotificationKey key, final ContactFetcher contactFetcher) {
 
+        // Check that the folder supports notifications, prior to create all the
+        // NotificationManager stuff
+        final boolean isInbox = folder.folderUri.equals(account.settings.defaultInbox);
+        final FolderPreferences folderPreferences =
+                new FolderPreferences(context, account.getAccountId(), folder, isInbox);
+
+        if (isInbox) {
+            final AccountPreferences accountPreferences =
+                    new AccountPreferences(context, account.getAccountId());
+            moveNotificationSetting(accountPreferences, folderPreferences);
+        }
+
+        if (!folderPreferences.areNotificationsEnabled()) {
+            LogUtils.i(LOG_TAG, "Notifications are disabled for this folder; not notifying");
+            // Don't notify
+            return;
+        }
+
+
+
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
 
         final NotificationMap notificationMap = getNotificationMap(context);
@@ -674,22 +694,6 @@ public class NotificationUtils {
             notification.setAutoCancel(true);
 
             boolean eventInfoConfigured = false;
-
-            final boolean isInbox = folder.folderUri.equals(account.settings.defaultInbox);
-            final FolderPreferences folderPreferences =
-                    new FolderPreferences(context, account.getAccountId(), folder, isInbox);
-
-            if (isInbox) {
-                final AccountPreferences accountPreferences =
-                        new AccountPreferences(context, account.getAccountId());
-                moveNotificationSetting(accountPreferences, folderPreferences);
-            }
-
-            if (!folderPreferences.areNotificationsEnabled()) {
-                LogUtils.i(LOG_TAG, "Notifications are disabled for this folder; not notifying");
-                // Don't notify
-                return;
-            }
 
             if (unreadCount > 0) {
                 // How can I order this properly?
