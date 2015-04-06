@@ -25,4 +25,8 @@
   <string name="prefDialogTitle_suggestedContactsMode_summary_all">Tutti i contatti suggeriti saranno selezionabili</string>
   <string name="preference_header_suggested_contacts">Contatti suggeriti</string>
   <string name="preference_suggested_contacts_mode">Modalità suggerimento contatti</string>
+  <string name="preference_suggested_contacts_clear_all">Pulisci contatti suggeriti</string>
+  <string name="suggested_contacts_cleared">Contatti suggeriti  cancellati.</string>
+  <string name="clear_suggested_contacts_dialog_title">Pulire i contatti suggeriti?</string>
+  <string name="clear_suggested_contacts_dialog_message">Verranno rimossi tutti i contatti suggeriti precedentemente memorizzati.</string>
 </resources>
