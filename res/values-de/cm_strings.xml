@@ -16,7 +16,17 @@
      limitations under the License.
 -->
 <resources>
+  <string name="prefDialogTitle_suggestedContactsMode">Modus</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Deaktiviert</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">Vorschlagen von Kontakten ist deaktiviert</string>
+  <string name="prefDialogTitle_suggestedContactsMode_recents">Kürzlich</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Nur kürzlich vorgeschlagene Kontakte sind wählbar</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Alle</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Alle vorgeschlagene Kontakte sind wählbar</string>
   <string name="preference_header_suggested_contacts">Vorgeschlagene Kontakte</string>
+  <string name="preference_suggested_contacts_mode">Vorgeschlagene Kontakte-Modus</string>
+  <string name="preference_suggested_contacts_clear_all">Vorgeschlagene Kontakte löschen</string>
+  <string name="suggested_contacts_cleared">Vorgeschlagene Kontakte gelöscht.</string>
+  <string name="clear_suggested_contacts_dialog_title">Vorgeschlagene Kontakte löschen?</string>
+  <string name="clear_suggested_contacts_dialog_message">Alle zuvor gespeicherte, vorgeschlagene Kontakte werden entfernt.</string>
 </resources>
