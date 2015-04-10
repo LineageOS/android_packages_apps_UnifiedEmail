@@ -170,14 +170,15 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         if (mScrolling) {
             return super.onInterceptTouchEvent(ev);
         } else {
-            return (!mPreventSwipesEntirely && mSwipeHelper.onInterceptTouchEvent(ev))
-                    || super.onInterceptTouchEvent(ev);
+            return (mEnableSwipe && !mPreventSwipesEntirely
+                    && mSwipeHelper.onInterceptTouchEvent(ev)) || super.onInterceptTouchEvent(ev);
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return (!mPreventSwipesEntirely && mSwipeHelper.onTouchEvent(ev)) || super.onTouchEvent(ev);
+        return (mEnableSwipe && !mPreventSwipesEntirely
+                && mSwipeHelper.onTouchEvent(ev)) || super.onTouchEvent(ev);
     }
 
     @Override
