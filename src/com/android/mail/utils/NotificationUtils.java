@@ -56,6 +56,7 @@ import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
 import com.android.mail.preferences.MailPrefs;
+import com.android.mail.preferences.FolderPreferences.NotificationLight;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -772,24 +773,27 @@ public class NotificationUtils {
              * oldWhen check.
              */
             if (getAttention && oldWhen == 0 && hasNewConversationNotification) {
-                final AccountPreferences accountPreferences =
-                        new AccountPreferences(context, account.getAccountId());
-                if (accountPreferences.areNotificationsEnabled()) {
-                    if (vibrate) {
-                        defaults |= Notification.DEFAULT_VIBRATE;
-                    }
-
-                    notification.setSound(TextUtils.isEmpty(ringtoneUri) ? null
-                            : Uri.parse(ringtoneUri));
-                    LogUtils.i(LOG_TAG, "New email in %s vibrateWhen: %s, playing notification: %s",
-                            LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()), vibrate,
-                            ringtoneUri);
+                if (vibrate) {
+                    defaults |= Notification.DEFAULT_VIBRATE;
                 }
+
+                notification.setSound(TextUtils.isEmpty(ringtoneUri) ? null
+                        : Uri.parse(ringtoneUri));
+                LogUtils.i(LOG_TAG, "New email in %s vibrateWhen: %s, playing notification: %s",
+                        LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()), vibrate,
+                        ringtoneUri);
             }
 
             // TODO(skennedy) Why do we do any of the above if we're just going to bail here?
             if (eventInfoConfigured) {
-                defaults |= Notification.DEFAULT_LIGHTS;
+                NotificationLight notificationLight = folderPreferences.getNotificationLight();
+                if (notificationLight.mOn) {
+                    notification.setLights(notificationLight.mColor,
+                            notificationLight.mTimeOn, notificationLight.mTimeOff);
+                    defaults |= Notification.FLAG_SHOW_LIGHTS;
+                } else {
+                    defaults |= Notification.DEFAULT_LIGHTS;
+                }
                 notification.setDefaults(defaults);
 
                 if (oldWhen != 0) {

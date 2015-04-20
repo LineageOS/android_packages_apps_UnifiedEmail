@@ -21,7 +21,9 @@ import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.Settings;
+import android.text.TextUtils;
 
+import com.android.mail.preferences.notifications.FolderNotificationLightPreference;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
@@ -48,6 +50,8 @@ public class FolderPreferences extends VersionedPrefs {
         public static final String NOTIFICATION_RINGTONE = "notification-ringtone";
         /** Boolean value indicating whether we should explicitly vibrate */
         public static final String NOTIFICATION_VIBRATE = "notification-vibrate";
+        /** Boolean value indicating whether the notification has a custom notificaition light */
+        public static final String NOTIFICATION_LIGHTS = "notification-lights";
         /**
          * Boolean value indicating whether we notify for every message (<code>true</code>), or just
          * once for the folder (<code>false</code>)
@@ -60,8 +64,41 @@ public class FolderPreferences extends VersionedPrefs {
                         .add(NOTIFICATIONS_ENABLED)
                         .add(NOTIFICATION_RINGTONE)
                         .add(NOTIFICATION_VIBRATE)
+                        .add(NOTIFICATION_LIGHTS)
                         .add(NOTIFICATION_NOTIFY_EVERY_MESSAGE)
                         .build();
+    }
+
+    public static final class NotificationLight {
+        public final boolean mOn;
+        public final int mColor;
+        public final int mTimeOn;
+        public final int mTimeOff;
+
+        private NotificationLight(boolean on, int color, int timeOn, int timeOff) {
+            mOn = on;
+            mColor = color;
+            mTimeOn = timeOn;
+            mTimeOff = timeOff;
+        }
+
+        public String toStringPref() {
+            if (!mOn) {
+                return "";
+            }
+            return TextUtils.join("|", new Integer[]{mColor, mTimeOn, mTimeOff});
+        }
+
+        public static NotificationLight fromStringPref(String pref) {
+            if (TextUtils.isEmpty(pref)) {
+                return new NotificationLight(false, FolderNotificationLightPreference.DEFAULT_COLOR,
+                        FolderNotificationLightPreference.DEFAULT_TIME,
+                        FolderNotificationLightPreference.DEFAULT_TIME);
+            }
+            String[] data = pref.split("\\|");
+            return new NotificationLight(true, Integer.parseInt(data[0]),
+                    Integer.parseInt(data[1]), Integer.parseInt(data[2]));
+        }
     }
 
     private final Folder mFolder;
@@ -233,6 +270,16 @@ public class FolderPreferences extends VersionedPrefs {
 
     public void setNotificationVibrateEnabled(final boolean enabled) {
         getEditor().putBoolean(PreferenceKeys.NOTIFICATION_VIBRATE, enabled).apply();
+        notifyBackupPreferenceChanged();
+    }
+
+    public NotificationLight getNotificationLight() {
+        String pref = getSharedPreferences().getString(PreferenceKeys.NOTIFICATION_LIGHTS, "");
+        return NotificationLight.fromStringPref(pref);
+    }
+
+    public void setNotificationLights(final NotificationLight lights) {
+        getEditor().putString(PreferenceKeys.NOTIFICATION_LIGHTS, lights.toStringPref()).apply();
         notifyBackupPreferenceChanged();
     }
 
