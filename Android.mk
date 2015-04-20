@@ -45,8 +45,6 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-opt-datetimepicker
 LOCAL_STATIC_JAVA_LIBRARIES += owasp-html-sanitizer
 LOCAL_STATIC_JAVA_LIBRARIES += com.android.emailcommon
 
-LOCAL_SDK_VERSION := current
-
 LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs)) \
         $(call all-logtags-files-under, $(src_dirs))
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
