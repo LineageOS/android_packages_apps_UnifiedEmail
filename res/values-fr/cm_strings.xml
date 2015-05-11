@@ -17,6 +17,16 @@
 -->
 <resources>
   <string name="prefDialogTitle_suggestedContactsMode">Mode</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">Désactivé</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">La suggestion des contacts est désactivée</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Récents</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Uniquement les contacts récemment suggérés seront sélectionnables</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Tous</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Tous les contacts suggérés seront sélectionnables</string>
+  <string name="preference_header_suggested_contacts">Contacts suggérés</string>
+  <string name="preference_suggested_contacts_mode">Mode contacts suggérés</string>
+  <string name="preference_suggested_contacts_clear_all">Effacer les contacts suggérés</string>
+  <string name="suggested_contacts_cleared">Contacts suggérés effacés.</string>
+  <string name="clear_suggested_contacts_dialog_title">Effacer les contacts suggérés ?</string>
+  <string name="clear_suggested_contacts_dialog_message">Tous les contacts suggérés précédemment stockés seront supprimés.</string>
 </resources>
