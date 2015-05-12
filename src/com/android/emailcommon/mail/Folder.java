@@ -21,6 +21,8 @@ import android.content.Context;
 import com.android.emailcommon.service.SearchParams;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.List;
+
 
 public abstract class Folder {
     public enum OpenMode {
@@ -53,6 +55,33 @@ public abstract class Folder {
     public interface MessageRetrievalListener {
         public void messageRetrieved(Message message);
         public void loadAttachmentProgress(int progress);
+    }
+
+    /**
+     * Callback for push services
+     */
+    public interface PushCallback {
+        /**
+         * Invoked when a connection enters in idled mode
+         */
+        public void onIdled();
+        /**
+         * Invoked when a new change is communicated by the server.
+         *
+         * @param changes contains the list of changes
+         */
+        public void onNewServerChange(List<Object> changes);
+        /**
+         * Connection to socket timeout. There isn't current push connection to
+         * the server when this happens.
+         */
+        public void onPingTimeout();
+        /**
+         * Something were wrong while wait for push data.
+         *
+         * @param ex the exception detected
+         */
+        public void onPingException(MessagingException ex);
     }
 
     /**
@@ -112,6 +141,32 @@ public abstract class Folder {
     public abstract int getUnreadMessageCount() throws MessagingException;
 
     public abstract Message getMessage(String uid) throws MessagingException;
+
+    /**
+     * Puts this folder into a listen for new messages state. No other call to server
+     * must done while folder is in this state. Folder can auto leave of this state
+     * if a message is received or connection is lost.
+     */
+    public void startPush(PushCallback callback) throws MessagingException {
+        // Since not all email implementations support push, just allow to ones that
+        // support it, to override this method to create its own implementation
+    }
+    /**
+     * Take off this folder from listen state.
+     */
+    public void endPush() throws MessagingException {
+        // Since not all email implementations support push, just allow to ones that
+        // support it, to override this method to create its own implementation
+    }
+    /**
+     * Returns if there is a current push active operation for this folder
+     */
+    public boolean isPushStarted() {
+        // Since not all email implementations support push, just allow to ones that
+        // support it, to override this method to create its own implementation
+        // Defaults one doesn't implement push, so just push never is started
+        return false;
+    }
 
     /**
      * Fetches the given list of messages. The specified listener is notified as
