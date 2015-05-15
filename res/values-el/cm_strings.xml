@@ -29,4 +29,22 @@
   <string name="suggested_contacts_cleared">Έγινε εκκαθάριση των προτεινόμενων επαφών.</string>
   <string name="clear_suggested_contacts_dialog_title">Εκκαθάριση των προτεινόμενων επαφών;</string>
   <string name="clear_suggested_contacts_dialog_message">Θα καταργηθούν όλες οι προτεινόμενες επαφές που έχουν αποθηκευτεί προηγουμένως.</string>
+  <string name="edit_light_settings">Ρυθμίσεις φωτισμού φακέλων</string>
+  <string name="pulse_speed_title">Ταχύτητα και μήκος παλμού</string>
+  <string name="default_time">Κανονικό</string>
+  <string name="custom_time">Προσαρμοσμένο</string>
+  <string name="dialog_delete_title">Διαγραφή</string>
+  <string name="dialog_delete_message">Αφαίρεση επιλεγμένου αντικειμένου;</string>
+  <string name="pref_lights_default">Προεπιλογή</string>
+  <string name="pulse_length_always_on">Πάντα ενεργό</string>
+  <string name="pulse_length_very_short">Πολύ σύντομο</string>
+  <string name="pulse_length_short">Σύντομο</string>
+  <string name="pulse_length_normal">Κανονικό</string>
+  <string name="pulse_length_long">Εκτενές</string>
+  <string name="pulse_length_very_long">Πολύ εκτενές</string>
+  <string name="pulse_speed_very_fast">Πολύ γρήγορο</string>
+  <string name="pulse_speed_fast">Γρήγορο</string>
+  <string name="pulse_speed_normal">Κανονικό</string>
+  <string name="pulse_speed_slow">Αργό</string>
+  <string name="pulse_speed_very_slow">Πολύ αργό</string>
 </resources>

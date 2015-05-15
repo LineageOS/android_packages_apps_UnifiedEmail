@@ -42,8 +42,6 @@
   <string name="too_large_to_attach_additional">پەڕگە نەلکێنرا. <xliff:g id="maxSize">%1$s</xliff:g> سنور بە دەست گەیشتووە.</string>
   <string name="generic_attachment_problem">ناتوانرا پەڕگە بلکێنرێت.</string>
   <string name="recipient_needed">لانیکەم یەک وەرگر زێدە بکە.</string>
-  <string name="recipient_error_dialog_title">وەرگر هەڵەیە</string>
-  <string name="confirm_send_title">نامە ئەنێری؟</string>
   <string name="confirm_send_message_with_no_subject">لە بابەتی نامەکەدا هیچ نووسراوەیەک نییە.</string>
   <string name="confirm_send_message_with_no_body">لە پەیکەری نامەکەدا هیچ نووسراوەیەک نییە.</string>
   <string name="confirm_send_message">ئەم نامەیە ئەنێری؟</string>
@@ -97,7 +95,6 @@
   <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> په‌ڕگه‌</string>
   <string name="preview_attachment">پێشبینین</string>
   <string name="save_attachment">پاشەکەوتکردن</string>
-  <string name="cancel_attachment">هەڵوەشاندنەوە</string>
   <string name="download_again">دووباره‌ داگرتن</string>
   <string name="more_info_attachment">زانیاری</string>
   <string name="no_application_found">به‌بێ هیچ به‌رنامه‌یه‌ک ئه‌توانرێ بکرێته‌وه‌.</string>
@@ -119,13 +116,6 @@
   <string name="contextmenu_send_mail">ناردنی پۆستی ئەلەکترۆنی</string>
   <string name="contextmenu_map">نەخشە</string>
   <string name="contextmenu_sharelink">هاوبەشکردنی بەستەر</string>
-  <string name="contextmenu_help">یارمەتی</string>
-  <string name="contextmenu_feedback">ناردنی ڕەخنە و پێشنیار</string>
-  <string name="num_selected"><xliff:g id="number" example="7">%d</xliff:g></string>
-  <plurals name="move_conversation">
-    <item quantity="one">گواستنەوەی گفتوگۆ</item>
-    <item quantity="other">گواستنەوەی<xliff:g>%1$d</xliff:g> گفتوگۆکان</item>
-  </plurals>
   <string name="read_string">وتووێژ خوێندرایه‌وه‌</string>
   <string name="unread_string">وتووێژ نه‌خوێنراوه‌ته‌وه‌</string>
   <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
@@ -138,17 +128,9 @@
   <string name="confirm_discard_text">وازهێنان له‌م نامه‌یه‌؟</string>
   <string name="loading_conversations">بارکردن\u2026</string>
   <string name="undo">پاشگەزبوونەوە</string>
-  <plurals name="conversation_not_spam">
-    <item quantity="one">وlt;bوgt;<xliff:g id="count">%1$d</xliff:g>وlt;/bوgt; وەک زبڵ پەرچدرایەوە.</item>
-    <item quantity="other">وlt;bوgt;<xliff:g id="count">%1$d</xliff:g>وlt;/bوgt; وەک زبڵ بەرپەرچنەدرایەوە.</item>
-  </plurals>
   <string name="deleted">سڕایەوە</string>
   <string name="archived">ئه‌رشیفکراو</string>
   <string name="folder_removed">لابرا له‌ <xliff:g id="folderName">%1$s</xliff:g></string>
-  <plurals name="conversation_folder_changed">
-    <item quantity="one">خونچە گۆڕڕا.</item>
-    <item quantity="other">خونچەکان گۆڕڕا.</item>
-  </plurals>
   <string name="conversation_folder_moved">جوڵێنرا بۆ <xliff:g id="folderName">%1$s</xliff:g></string>
   <string name="search_results_header">ئه‌نجامه‌کان</string>
   <string name="search_unsupported">گه‌ڕان نه‌گونجاوه‌ بۆ ئه‌م هه‌ژماره‌.</string>
@@ -178,10 +160,10 @@
   <string name="clear">پاککردن</string>
   <string-array name="sync_status">
     <item>سەرکەوتن</item>
-    <item>هيچ پەيوەندى.</item>
-    <item>نەیتوانی بچێتە ژوورەوە.</item>
-    <item>هەڵەی پاراستن.</item>
-    <item>نەیتوانی هاوکاتسازی بکات.</item>
+    <item>No connection</item>
+    <item>Couldn\'t sign in</item>
+    <item>Security error</item>
+    <item>Couldn\'t sync</item>
     <item>هەڵەی ناوەکی</item>
     <item>Server Error</item>
   </string-array>
@@ -189,7 +171,6 @@
   <string name="non_synced_folder_description">بۆ بینینی وتووێژ. ئه‌م بوخچه‌یه‌ ڕاگواستنی بۆ بکه‌.</string>
   <string name="tap_to_configure_folder_sync">ڕاگواستنی بوخچه‌</string>
   <string name="widget_large_unread_count">%d+</string>
-  <string name="actionbar_large_unread_count"><xliff:g id="count">%1$d</xliff:g>+ نه‌خوێنراوه‌</string>
   <string name="view_more_conversations">وتووێژی زیاتر نییە</string>
   <string name="loading_conversation">بارکردن\u2026</string>
   <string name="activity_mailbox_selection">هەژمار هەڵبژێرە</string>
@@ -197,7 +178,6 @@
   <string name="folder_shortcut_widget_label">بوخچه‌ی پۆستی ئه‌لیکترۆنی</string>
   <string name="change_folders_selection_dialog_title">گۆڕینی بۆخچەکان</string>
   <string name="move_to_selection_dialog_title">گواستنەوە بۆ</string>
-  <string name="search_hint">گەڕانی پۆستی ئه‌لیکترۆنی</string>
   <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
   <string name="network_error">بەستنەوە نییە</string>
   <string name="retry">هەوڵدانەوە</string>
@@ -255,21 +235,7 @@
   <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
   <string name="single_new_message_notification_title"><xliff:g id="sender">%1$s</xliff:g>: <xliff:g id="subject">%2$s</xliff:g></string>
   <string name="silent_ringtone">بێدەنگ</string>
-  <string name="preference_removal_action_title">ئه‌رشیف وamp; سڕینه‌وه‌ی کار</string>
-  <string-array name="prefEntries_removal_action">
-    <item>تەنها پیشاندانی ئەرشیف</item>
-    <item>تەنها سڕینەوە پیشانبدە</item>
-    <item>پیشاندانی ئەرشیف وamp; سڕینەوە</item>
-  </string-array>
-  <string-array name="prefSummaries_removal_action_summary">
-    <item>تەنها پیشاندانی ئەرشیف</item>
-    <item>تەنها سڕینەوە پیشانبدە</item>
-    <item>پیشاندانی ئەرشیف وamp; سڕینەوە</item>
-  </string-array>
-  <string name="prefDialogTitle_removal_action">ئه‌رشیف &amp; سڕینه‌وه‌ی چالاکییەکان</string>
   <string name="preferences_default_reply_all_title">وەڵامدانەوەی هەموو</string>
-  <string name="preference_swipe_title_archive">سوین بۆ ئەرشیف</string>
-  <string name="preference_swipe_title_delete">سوین بۆ سڕینەوە</string>
   <string name="preference_swipe_description">لە ڕیزبەدنی گفتوگۆ</string>
   <string name="preference_sender_image_title">وێنەی نێرەر</string>
   <string name="preference_sender_image_description">پیشاندانی لە پاڵ ناو لە ڕیزبەندی گفتوگۆ</string>
@@ -284,11 +250,6 @@
   <string name="folder_icon_desc">وێنۆچکەی خونچە</string>
   <string name="add_account">زیاکردنی هەژمار</string>
   <string name="dismiss_tip_hover_text">لەبیرکردنی نووک</string>
-  <string name="auto_sync_off">خۆکارانه‌ ڕاگواستن چالاک نییه‌.</string>
-  <string name="tap_to_enable_sync">تاپ بکه‌ بۆ چالاککردن.</string>
-  <string name="account_sync_off">ناردنی هەژمار داخرا.</string>
-  <string name="enable_sync_in_account_settings">چالاککردنی لەسەر <xliff:g id="account_settings">%1$s</xliff:g>.</string>
-  <string name="account_settings_param">ڕێکخستنەکانی هەژمار</string>
   <string name="unsent_messages_in_outbox"><xliff:g id="number">%1$s</xliff:g>
     دانه‌نراوه‌ له‌ <xliff:g id="outbox">%2$s</xliff:g></string>
   <string name="turn_auto_sync_on_dialog_title">چالاککردنی خۆکارانه‌ ڕاگواستن؟</string>
@@ -298,7 +259,6 @@
   <string name="phone">مۆبایل</string>
   <string name="tablet">تاتەبژمێر</string>
   <string name="turn_auto_sync_on_dialog_confirm_btn">هەڵکردن</string>
-  <string name="show_n_more_folders">پێشاندانی <xliff:g id="number">%1$s</xliff:g> پوخچەکانی زیاتر</string>
   <string name="hide_folders">شاردنەوەی بوخچە</string>
   <string name="help_and_info">یارمەتی</string>
   <string name="feedback">ناردنی تێبینی</string>

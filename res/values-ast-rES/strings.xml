@@ -43,8 +43,6 @@
   <string name="too_large_to_attach_additional">Nun s\'axuntó\'l ficheru. Perpasóse la llende de <xliff:g id="MAXSIZE">%1$s</xliff:g>.</string>
   <string name="generic_attachment_problem">Nun pudo axuntase\'l ficheru.</string>
   <string name="recipient_needed">Amiesta polo menos un destinatariu.</string>
-  <string name="recipient_error_dialog_title">Fallu de destinatariu</string>
-  <string name="confirm_send_title">¿Quies unviar el mensaxe?</string>
   <string name="confirm_send_message_with_no_subject">L\'asuntu del mensaxe ta baleru.</string>
   <string name="confirm_send_message_with_no_body">El cuerpu del mensaxe ta baleru.</string>
   <string name="confirm_send_message">¿Quies unviar esti mensaxe?</string>
@@ -100,9 +98,6 @@
   <string name="attachment_unknown">Ficheru <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g></string>
   <string name="preview_attachment">Vista previa</string>
   <string name="save_attachment">Guardar</string>
-  <string name="cancel_attachment">Encaboxar</string>
-  <string name="open_attachment">Abrir</string>
-  <string name="install_attachment">Instalar</string>
   <string name="download_again">Volver a descargar</string>
   <string name="more_info_attachment">Información</string>
   <string name="no_application_found">Nenguna aplicación pue abrir esti ficheru axuntu.</string>
@@ -126,13 +121,6 @@
   <string name="contextmenu_send_mail">Unviar corréu</string>
   <string name="contextmenu_map">Mapa</string>
   <string name="contextmenu_sharelink">Compartir enllaz</string>
-  <string name="contextmenu_help">Ayuda</string>
-  <string name="contextmenu_feedback">Danos la to opinión</string>
-  <string name="num_selected"><xliff:g id="number" example="7">%d</xliff:g></string>
-  <plurals name="move_conversation">
-    <item quantity="one">Mover una conversación</item>
-    <item quantity="other">Mover <xliff:g id="ID_1">%1$d</xliff:g> conversaciones</item>
-  </plurals>
   <string name="content_description"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> tocante a <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> on <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g></string>
   <string name="content_description_today"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> tocante a <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> at <xliff:g id="time">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g></string>
   <string name="read_string">conversación lleída</string>
@@ -170,63 +158,18 @@
   <string name="empty_folder">Nun hai correos equí.</string>
   <string name="getting_messages">Obteniendo mensaxes</string>
   <string name="undo">Desfacer</string>
-  <plurals name="conversation_unstarred">
-    <item quantity="one">Anulando <xliff:g id="COUNT">%1$d</xliff:g> conversación destacada</item>
-    <item quantity="other">Anulando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones destacaes</item>
-  </plurals>
-  <plurals name="conversation_muted">
-    <item quantity="one">Silencióse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación.</item>
-    <item quantity="other">Silenciáronse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones.</item>
-  </plurals>
-  <plurals name="conversation_spammed">
-    <item quantity="one">Marcóse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como spam.</item>
-    <item quantity="other">Marcáronse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como spam.</item>
-  </plurals>
-  <plurals name="conversation_not_spam">
-    <item quantity="one">Marcóse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como deseada.</item>
-    <item quantity="other">Marcáronse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como deseaes.</item>
-  </plurals>
-  <plurals name="conversation_not_important">
-    <item quantity="one">Marcóse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como non importante.</item>
-    <item quantity="other">Marcáronse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como non importantes.</item>
-  </plurals>
-  <plurals name="conversation_phished">
-    <item quantity="one">Marcóse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como suplantación d\'identidá.</item>
-    <item quantity="other">Marcáronse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como suplantación d\'identidá.</item>
-  </plurals>
-  <plurals name="conversation_archived">
-    <item quantity="one">Archivóse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación.</item>
-    <item quantity="other">Archiváronse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones.</item>
-  </plurals>
-  <plurals name="conversation_deleted">
-    <item quantity="one">Desanicióse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación.</item>
-    <item quantity="other">Desaniciáronse &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones.</item>
-  </plurals>
   <string name="deleted">Desaniciada</string>
   <string name="archived">Archivada</string>
   <string name="folder_removed">Desaniciada de <xliff:g id="FOLDERNAME">%1$s</xliff:g></string>
-  <plurals name="conversation_folder_changed">
-    <item quantity="one">Carpeta cambiada</item>
-    <item quantity="other">Carpetes cambiaes</item>
-  </plurals>
   <string name="conversation_folder_moved">Movida a <xliff:g id="FOLDERNAME">%1$s</xliff:g></string>
   <string name="search_results_header">Resultaos</string>
   <string name="search_unsupported">Esta cuenta nun almite la función de gueta.</string>
   <string name="add_label">Amestar carpeta</string>
-  <string name="new_incoming_messages_one">Amosar mensaxe nuevu de <xliff:g id="sender">%s</xliff:g>.</string>
-  <plurals name="new_incoming_messages_many">
-    <item quantity="one">Amosar <xliff:g id="count">%1$d</xliff:g> mensaxes nuevos.</item>
-    <item quantity="other">Amosar <xliff:g id="count">%1$d</xliff:g> mensaxes nuevos.</item>
-  </plurals>
   <string name="date_and_view_details"><xliff:g id="date">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Ver detalles&lt;/a&gt;</string>
   <string name="hide_details">Anubrir detalles</string>
   <string name="to_message_header">a <xliff:g id="recipients">%1$s</xliff:g></string>
   <string name="contact_info_string">Amosar información de contautu de <xliff:g id="NAME">%1$s</xliff:g></string>
   <string name="contact_info_string_default">Amosar información de contautu</string>
-  <plurals name="show_messages_read">
-    <item quantity="one"><xliff:g id="COUNT">%1$d</xliff:g> mensaxe antiguu</item>
-    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> mensaxes antiguos</item>
-  </plurals>
   <string name="from_heading">De:</string>
   <string name="replyto_heading">Responder a:</string>
   <string name="to_heading">Pa: </string>
@@ -260,10 +203,10 @@
   <string name="previous">Anterior</string>
   <string-array name="sync_status">
     <item>Ensin fallos</item>
-    <item>Ensin conexón</item>
-    <item>Fallu al aniciar sesión</item>
-    <item>Fallu de seguridá</item>
-    <item>Fallu al sincronizar</item>
+    <item>No connection</item>
+    <item>Couldn\'t sign in</item>
+    <item>Security error</item>
+    <item>Couldn\'t sync</item>
     <item>Fallu internu</item>
     <item>Fallu del sirvidor</item>
   </string-array>
@@ -277,7 +220,6 @@
     <item quantity="one"><xliff:g id="COUNT">%1$d</xliff:g> ensin lleer</item>
     <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> ensin lleer</item>
   </plurals>
-  <string name="actionbar_large_unread_count">Más de <xliff:g id="COUNT">%1$d</xliff:g> ensin lleer</string>
   <string name="view_more_conversations">Ver más conversaciones</string>
   <string name="loading_conversation">Cargando...</string>
   <string name="activity_mailbox_selection">Esbillar cuenta</string>
@@ -285,7 +227,6 @@
   <string name="folder_shortcut_widget_label">Carpeta de corréu</string>
   <string name="change_folders_selection_dialog_title">Cambiar carpetes</string>
   <string name="move_to_selection_dialog_title">Mover a</string>
-  <string name="search_hint">Guetar mensaxe</string>
   <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
   <string name="network_error">Ensin conexón</string>
   <string name="retry">Reintentar</string>
@@ -348,22 +289,8 @@
   </plurals>
   <string name="single_new_message_notification_title"><xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g></string>
   <string name="silent_ringtone">Silenciu</string>
-  <string name="preference_removal_action_title">Archivar y desaniciar</string>
-  <string-array name="prefEntries_removal_action">
-    <item>Amosar namái archivar</item>
-    <item>Amosar namái desaniciar</item>
-    <item>Amosar archivar y desaniciar</item>
-  </string-array>
-  <string-array name="prefSummaries_removal_action_summary">
-    <item>Amosar namái archivar</item>
-    <item>Amosar namái desaniciar</item>
-    <item>Amosar archivar y desaniciar</item>
-  </string-array>
-  <string name="prefDialogTitle_removal_action">Archivar y desaniciar</string>
   <string name="preferences_default_reply_all_title">Responder a toos</string>
   <string name="preferences_default_reply_all_summary_impl">Usar como opción predeterminada pa responder mensaxes</string>
-  <string name="preference_swipe_title_archive">Eslizar p\'archivar</string>
-  <string name="preference_swipe_title_delete">Eslizar pa desaniciar</string>
   <string name="preference_swipe_description">Na llista de conversaciones</string>
   <string name="preference_sender_image_title">Imaxe del remitente</string>
   <string name="preference_sender_image_description">Amosar xunto al nome na llista de conversaciones</string>
@@ -382,18 +309,12 @@
   <string name="folder_icon_desc">Iconu de carpeta</string>
   <string name="add_account">Amestar cuenta</string>
   <string name="dismiss_tip_hover_text">Inorar suxerencia</string>
-  <string name="auto_sync_off">La opción de sincronización automática ta desactivada.</string>
-  <string name="tap_to_enable_sync">Tocar p\'activar.</string>
-  <string name="account_sync_off">La opción de sincronización de cuenta ta desactivada.</string>
-  <string name="enable_sync_in_account_settings">Activar en <xliff:g id="ACCOUNT_SETTINGS">%1$s</xliff:g>.</string>
-  <string name="account_settings_param">Axustes de la cuenta</string>
   <string name="unsent_messages_in_outbox"><xliff:g id="NUMBER">%1$s</xliff:g> ensin unviar en <xliff:g id="OUTBOX">%2$s</xliff:g></string>
   <string name="turn_auto_sync_on_dialog_title">¿Quies activar la sincronización automática?</string>
   <string name="turn_auto_sync_on_dialog_body">Los cambeos que faigas en toles aplicaciones y cuentes, non solo en Gmail, van sincronizase na Web, otros de los tos preseos y el to <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g>.</string>
   <string name="phone">teléfonu</string>
   <string name="tablet">tableta</string>
   <string name="turn_auto_sync_on_dialog_confirm_btn">Activar</string>
-  <string name="show_n_more_folders">Amosar otres <xliff:g id="NUMBER">%1$s</xliff:g> carpetes</string>
   <string name="hide_folders">Anubrir carpetes</string>
   <string name="print">Imprentar</string>
   <string name="print_all">Impretar too</string>
