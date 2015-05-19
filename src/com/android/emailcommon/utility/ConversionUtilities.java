@@ -62,13 +62,21 @@ public class ConversionUtilities {
      * Parse body text (plain and/or HTML) from MimeMessage to {@link BodyFieldData}.
      */
     public static BodyFieldData parseBodyFields(ArrayList<Part> viewables)
+            throws MessagingException {
+        return  parseBodyFields(viewables, true);
+    }
+
+    /**
+     * Parse body text (plain and/or HTML) from MimeMessage to {@link BodyFieldData}.
+     */
+    public static BodyFieldData parseBodyFields(ArrayList<Part> viewables, boolean closeInputs)
     throws MessagingException {
         final BodyFieldData data = new BodyFieldData();
         StringBuffer sbHtml = null;
         StringBuffer sbText = null;
 
         for (Part viewable : viewables) {
-            String text = MimeUtility.getTextFromPart(viewable);
+            String text = MimeUtility.getTextFromPart(viewable, closeInputs);
             // Deploy text as marked by the various tags
             boolean isHtml = "text/html".equalsIgnoreCase(viewable.getMimeType());
 
