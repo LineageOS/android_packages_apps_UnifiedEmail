@@ -222,7 +222,7 @@ public class MimeUtility {
      * @return a String containing the converted text in the body, or null if there was no text
      * or an error during conversion.
      */
-    public static String getTextFromPart(Part part) {
+    public static String getTextFromPart(Part part, boolean closeInput) {
         try {
             if (part != null && part.getBody() != null) {
                 InputStream in = part.getBody().getInputStream();
@@ -234,7 +234,9 @@ public class MimeUtility {
                      */
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     IOUtils.copy(in, out);
-                    in.close();
+                    if (closeInput) {
+                        in.close();
+                    }
                     in = null;      // we want all of our memory back, and close might not release
 
                     /*
