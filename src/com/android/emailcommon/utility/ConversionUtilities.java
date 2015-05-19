@@ -68,7 +68,7 @@ public class ConversionUtilities {
         StringBuffer sbText = null;
 
         for (Part viewable : viewables) {
-            String text = MimeUtility.getTextFromPart(viewable);
+            String text = MimeUtility.getTextFromPart(viewable, false);
             // Deploy text as marked by the various tags
             boolean isHtml = "text/html".equalsIgnoreCase(viewable.getMimeType());
 
