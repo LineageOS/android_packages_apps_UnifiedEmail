@@ -29,4 +29,22 @@
   <string name="suggested_contacts_cleared">Önerilen kişiler temizlendi.</string>
   <string name="clear_suggested_contacts_dialog_title">Önerilen kişiler temizlensin mi?</string>
   <string name="clear_suggested_contacts_dialog_message">Önceden kayıtlı tüm önerilen kişiler silinecek.</string>
+  <string name="edit_light_settings">Klasör ışık ayarları</string>
+  <string name="pulse_speed_title">Işık süresi ve hızı</string>
+  <string name="default_time">Normal</string>
+  <string name="custom_time">Özel</string>
+  <string name="dialog_delete_title">Sil</string>
+  <string name="dialog_delete_message">Seçili öge silinsin mi?</string>
+  <string name="pref_lights_default">Varsayılan</string>
+  <string name="pulse_length_always_on">Her zaman açık</string>
+  <string name="pulse_length_very_short">Çok kısa</string>
+  <string name="pulse_length_short">Kısa</string>
+  <string name="pulse_length_normal">Normal</string>
+  <string name="pulse_length_long">Uzun</string>
+  <string name="pulse_length_very_long">Çok uzun</string>
+  <string name="pulse_speed_very_fast">Çok hızlı</string>
+  <string name="pulse_speed_fast">Hızlı</string>
+  <string name="pulse_speed_normal">Normal</string>
+  <string name="pulse_speed_slow">Yavaş</string>
+  <string name="pulse_speed_very_slow">Çok yavaş</string>
 </resources>
