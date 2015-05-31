@@ -29,6 +29,7 @@
   <string name="suggested_contacts_cleared">Vorgeschlagene Kontakte gelöscht.</string>
   <string name="clear_suggested_contacts_dialog_title">Vorgeschlagene Kontakte löschen?</string>
   <string name="clear_suggested_contacts_dialog_message">Alle zuvor gespeicherte, vorgeschlagene Kontakte werden entfernt.</string>
+  <string name="edit_light_settings">LED-Einstellungen für Ordner</string>
   <string name="pulse_speed_title">Pulsdauer und Geschwindigkeit</string>
   <string name="default_time">Normal</string>
   <string name="custom_time">Benutzerdefiniert</string>
