@@ -19,10 +19,10 @@
   <string name="prefDialogTitle_suggestedContactsMode">Modua</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Ezgaituta</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">Iradokitako kontaktuen ezaugarria ezgaituta dago</string>
-  <string name="prefDialogTitle_suggestedContactsMode_recents">Oraintsukoak</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Berriki proposatutako kontaktuak besterik ezin izango dira aukeratu</string>
+  <string name="prefDialogTitle_suggestedContactsMode_recents">Azkenak</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Berriki proposatutako kontaktuak besterik ezin izango dira hautatu</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Guztiak</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Iradokitako kontaktu guztiak aukeratu ahal izango dira</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Iradokitako kontaktu guztiak hautatu ahal izango dira</string>
   <string name="preference_header_suggested_contacts">Iradokitako kontaktuak</string>
   <string name="preference_suggested_contacts_mode">Iradokitako kontaktuen modua</string>
   <string name="preference_suggested_contacts_clear_all">Garbitu iradokitako kontaktuak</string>
