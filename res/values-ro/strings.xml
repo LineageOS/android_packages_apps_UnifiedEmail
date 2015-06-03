@@ -51,7 +51,7 @@
     <string name="confirm_send_message" msgid="6211518590166222735">"Trimiteţi acest mesaj?"</string>
     <string name="message_discarded" msgid="6792661321962262024">"Mesaj refuzat."</string>
     <string name="signature" msgid="3172144541947408374">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <string name="custom_from_account_label" msgid="5042317430007736322">"Trim. ca de la:"</string>
+    <string name="custom_from_account_label" msgid="5042317430007736322">"Trimiteți ca:"</string>
     <string name="send" msgid="4269810089682120826">"Trimiteţi"</string>
     <string name="mark_read" msgid="579388143288052493">"Marcaţi drept citită"</string>
     <string name="mark_unread" msgid="6245060538061533191">"Marcaţi drept necitită"</string>
