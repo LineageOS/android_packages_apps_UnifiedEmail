@@ -457,7 +457,7 @@
     <string name="preference_confirm_before_delete_title" msgid="7563587174619033835">"Bekreft før sletting"</string>
     <string name="preference_confirm_before_archive_title" msgid="7318645995655875718">"Bekreft før arkivering"</string>
     <string name="preference_confirm_before_send_title" msgid="4136585783513077039">"Bekreft før sending"</string>
-    <string name="preferences_conversation_mode_title" msgid="389352009651720838">"Automatisk tilpassing"</string>
+    <string name="preferences_conversation_mode_title" msgid="389352009651720838">"Tilpass meldinger automatisk"</string>
     <string name="preferences_conversation_mode_summary" msgid="5730999743867653106">"Krymp e-poster slik at de passer til skjermen"</string>
     <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"E-postalternativer"</string>
   <string-array name="prefSummaries_snapHeader">

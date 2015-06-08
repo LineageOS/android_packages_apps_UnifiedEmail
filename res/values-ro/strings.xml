@@ -368,7 +368,7 @@
     <string name="prefDialogTitle_removal_action" msgid="7914272565548361304">"Acțiune prestabilită"</string>
     <string name="preferences_default_reply_all_title" msgid="7255858488369635327">"Răspundeți tuturor"</string>
     <string name="preferences_default_reply_all_summary_impl" msgid="895581085692979709">"Utilizați ca setare prestabilită pentru răspunsurile la mesaje"</string>
-    <string name="preference_swipe_title" msgid="2073613840893904205">"Glisați acțiunile"</string>
+    <string name="preference_swipe_title" msgid="2073613840893904205">"Acțiunile de glisare"</string>
     <string name="preference_swipe_description" msgid="3036560323237015010">"În lista de conversații"</string>
     <string name="preference_sender_image_title" msgid="7890813537985591865">"Imaginea expeditorului"</string>
     <string name="preference_sender_image_description" msgid="3586817690132199889">"Afișați lângă nume în lista de conversații"</string>
@@ -457,7 +457,7 @@
     <string name="preference_confirm_before_delete_title" msgid="7563587174619033835">"Confirmaţi înainte de a şterge"</string>
     <string name="preference_confirm_before_archive_title" msgid="7318645995655875718">"Confirmaţi înainte de a arhiva"</string>
     <string name="preference_confirm_before_send_title" msgid="4136585783513077039">"Confirmaţi înainte de a trimite"</string>
-    <string name="preferences_conversation_mode_title" msgid="389352009651720838">"Ajustați mesajele automat"</string>
+    <string name="preferences_conversation_mode_title" msgid="389352009651720838">"Încadrează automat mesajele"</string>
     <string name="preferences_conversation_mode_summary" msgid="5730999743867653106">"Micșorați mesajele pentru a se încadra pe ecran"</string>
     <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"Acţiuni pentru mesaje"</string>
   <string-array name="prefSummaries_snapHeader">
