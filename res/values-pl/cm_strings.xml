@@ -29,6 +29,7 @@
   <string name="suggested_contacts_cleared">Sugerowane kontakty wyczyszczone.</string>
   <string name="clear_suggested_contacts_dialog_title">Wyczyścić sugerowane kontakty?</string>
   <string name="clear_suggested_contacts_dialog_message">Wszystkie sugerowane kontakty wcześniej zapisane zostaną usunięte.</string>
+  <string name="edit_light_settings">Ustawienia powiadomień diodą dla danego folderu</string>
   <string name="pulse_speed_title">Długość i szybkość migania</string>
   <string name="default_time">Normalna</string>
   <string name="custom_time">Własna</string>
