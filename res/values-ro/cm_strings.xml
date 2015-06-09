@@ -17,7 +17,20 @@
 -->
 <resources>
   <string name="prefDialogTitle_suggestedContactsMode">Mod</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">Dezactivat</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recente</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Toate</string>
   <string name="preference_header_suggested_contacts">Contacte sugerate</string>
+  <string name="default_time">Normal</string>
+  <string name="pref_lights_default">Implicit</string>
+  <string name="pulse_length_very_short">Foarte scurt</string>
+  <string name="pulse_length_short">Scurt</string>
+  <string name="pulse_length_normal">Normal</string>
+  <string name="pulse_length_long">Lung</string>
+  <string name="pulse_length_very_long">Foarte lung</string>
+  <string name="pulse_speed_very_fast">Foarte rapid</string>
+  <string name="pulse_speed_fast">Rapid</string>
+  <string name="pulse_speed_normal">Normal</string>
+  <string name="pulse_speed_slow">Încet</string>
+  <string name="pulse_speed_very_slow">Foarte încet</string>
 </resources>
