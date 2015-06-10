@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
-        <item name="android:actionBarWidgetTheme">@style/ActionBarWidgetTheme</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
-        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp_with_rtl</item>
-        <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
-    </style>
-
     <style name="ActionBarWidgetTheme" parent="@android:style/Theme.Holo">
         <item name="android:dropDownListViewStyle">@style/ActionBarDividerlessListViewStyle</item>
         <item name="android:popupMenuStyle">@android:style/Widget.Holo.Light.ListPopupWindow</item>
