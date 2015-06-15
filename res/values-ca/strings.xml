@@ -245,7 +245,7 @@
     <string name="hide_elided" msgid="5768235486834692733">"▼ Amaga el text citat"</string>
     <string name="message_invite_title" msgid="5985161025144867256">"Invitació del calendari"</string>
     <string name="message_invite_calendar_view" msgid="9181966650840809197">"Mostra-ho al calendari"</string>
-    <string name="message_invite_label_attending" msgid="4194264767870003397">"Hi aniràs?"</string>
+    <string name="message_invite_label_attending" msgid="4194264767870003397">"Hi assistireu?"</string>
     <string name="message_invite_accept" msgid="8002758842580134835">"Sí"</string>
     <string name="message_invite_tentative" msgid="3199418731566655887">"Potser"</string>
     <string name="message_invite_decline" msgid="6331040872447290777">"No"</string>
