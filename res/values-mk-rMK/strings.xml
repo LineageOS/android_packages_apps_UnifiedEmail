@@ -144,28 +144,16 @@
     <string name="unread_string" msgid="7342558841698083381">"разговорот не е прочитан"</string>
     <string name="filtered_tag" msgid="721666921386074505">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="badge_and_subject" msgid="3979372269373936750">"<xliff:g id="ID_1">%1$s</xliff:g> <xliff:g id="ID_2">%2$s</xliff:g>"</string>
-  <plurals name="draft">
-    <item quantity="one" msgid="6717535677167943402">"Нацрт"</item>
-    <item quantity="other" msgid="1335781147509740039">"Нацрти"</item>
-  </plurals>
+    <!-- no translation found for draft (2915238043901489851) -->
     <string name="sending" msgid="5600034886763930499">"Се испраќа..."</string>
     <string name="message_retrying" msgid="5335188121407261331">"Повторно се обидуваме"</string>
     <string name="message_failed" msgid="7887650587384601790">"Неуспешно"</string>
     <string name="send_failed" msgid="2186285547449865010">"Пораката не се испрати."</string>
     <string name="me_object_pronoun" msgid="4674452244417913816">"јас"</string>
     <string name="me_subject_pronoun" msgid="7479328865714008288">"јас"</string>
-  <plurals name="confirm_delete_conversation">
-    <item quantity="one" msgid="7605755011865575440">"Избришете го овој разговор?"</item>
-    <item quantity="other" msgid="1585660381208712562">"Избришете ги овие <xliff:g id="COUNT">%1$d</xliff:g> разговори?"</item>
-  </plurals>
-  <plurals name="confirm_archive_conversation">
-    <item quantity="one" msgid="9105551557653306945">"Архивирајте го овој разговор?"</item>
-    <item quantity="other" msgid="2001972798185641108">"Архивирајте ги овие <xliff:g id="COUNT">%1$d</xliff:g> разговори?"</item>
-  </plurals>
-  <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one" msgid="2030421499893210789">"Отфрли ја оваа порака?"</item>
-    <item quantity="other" msgid="782234447471532005">"Отфрлете ги овие <xliff:g id="COUNT">%1$d</xliff:g> пораки?"</item>
-  </plurals>
+    <!-- no translation found for confirm_delete_conversation (722036566531251559) -->
+    <!-- no translation found for confirm_archive_conversation (7760911183221317694) -->
+    <!-- no translation found for confirm_discard_drafts_conversation (4704744461929249410) -->
     <string name="confirm_discard_text" msgid="5172680524418848519">"Отфрли ја оваа порака?"</string>
     <string name="loading_conversations" msgid="7255732786298655246">"Се вчитува..."</string>
     <string name="empty_inbox" msgid="5901734942362315228">"Сè е завршено! Имајте убав ден."</string>
@@ -175,35 +163,25 @@
     <string name="empty_folder" msgid="3227552635613553855">"Нема е-пошта во папката."</string>
     <string name="getting_messages" msgid="8403333791332403244">"Се вчитуваат вашите пораки"</string>
     <string name="undo" msgid="8256285267701059609">"Врати"</string>
-    <!-- no translation found for conversation_unstarred:one (1701235480675303125) -->
-    <!-- no translation found for conversation_unstarred:other (1154441830432477256) -->
-    <!-- no translation found for conversation_muted:one (3622533556738049499) -->
-    <!-- no translation found for conversation_muted:other (4559007262578295280) -->
-    <!-- no translation found for conversation_spammed:one (1749550834135461470) -->
-    <!-- no translation found for conversation_spammed:other (664292592683692920) -->
-    <!-- no translation found for conversation_not_spam:one (3680479171846552641) -->
-    <!-- no translation found for conversation_not_spam:other (6351739502184556635) -->
-    <!-- no translation found for conversation_not_important:one (7432667428974709669) -->
-    <!-- no translation found for conversation_not_important:other (4823331037057239763) -->
-    <!-- no translation found for conversation_phished:one (3511804715065046338) -->
-    <!-- no translation found for conversation_phished:other (8400382886585779414) -->
-    <!-- no translation found for conversation_archived:one (4859172326053399351) -->
-    <!-- no translation found for conversation_archived:other (8520761617935818623) -->
-    <!-- no translation found for conversation_deleted:one (4819167474123685161) -->
-    <!-- no translation found for conversation_deleted:other (6287534453625638257) -->
+    <!-- no translation found for conversation_unstarred (5242113602090059215) -->
+    <!-- no translation found for conversation_muted (3280752122212714131) -->
+    <!-- no translation found for conversation_spammed (4264670191485300404) -->
+    <!-- no translation found for conversation_not_spam (341281429212783466) -->
+    <!-- no translation found for conversation_not_important (8090128248406661440) -->
+    <!-- no translation found for conversation_phished (5902127137916313501) -->
+    <!-- no translation found for conversation_archived (476119927226343340) -->
+    <!-- no translation found for conversation_deleted (146676597775224315) -->
     <string name="deleted" msgid="7378013910782008375">"Избришан"</string>
     <string name="archived" msgid="6283673603512713022">"Архивирано"</string>
     <string name="folder_removed" msgid="5656281444688183676">"Отстранет од <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
-    <!-- no translation found for conversation_folder_changed:one (7787126147584620603) -->
-    <!-- no translation found for conversation_folder_changed:other (6307772984911017972) -->
+    <!-- no translation found for conversation_folder_changed (6812277407422164007) -->
     <string name="conversation_folder_moved" msgid="6475872337373081683">"Преместен во <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="search_results_header" msgid="1529438451150580188">"Резултати"</string>
     <string name="search_unsupported" msgid="2873920566477359177">"Оваа сметка не поддржува пребарување."</string>
     <!-- no translation found for search_suggestion_desc (4165491276003825492) -->
     <skip />
     <string name="add_label" msgid="3285338046038610902">"Додај папка"</string>
-    <!-- no translation found for new_incoming_messages:one (1532079301006372605) -->
-    <!-- no translation found for new_incoming_messages:other (4085982174357328926) -->
+    <!-- no translation found for new_incoming_messages (95265907926727940) -->
     <string name="date_and_view_details" msgid="2952994746916149969">"<xliff:g id="DATE">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Прикажи детали&lt;/a&gt;"</string>
     <string name="hide_details" msgid="8018801050702453314">"Сокриј детали"</string>
     <string name="to_message_header" msgid="3954385178027011919">"до <xliff:g id="RECIPIENTS">%1$s</xliff:g>"</string>
@@ -211,8 +189,8 @@
     <skip />
     <string name="contact_info_string" msgid="6484930184867405276">"Прикажи информации за контакт за <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="6204228921864816351">"Прикажи информации за контакт"</string>
-    <!-- no translation found for show_messages_read:other (8094857552036574099) -->
-    <!-- no translation found for super_collapsed_block_accessibility_announcement:other (2016326586162784420) -->
+    <!-- no translation found for show_messages_read (2880246565585406705) -->
+    <!-- no translation found for super_collapsed_block_accessibility_announcement (2222271345704794428) -->
     <string name="from_heading" msgid="48290556829713090">"Од:"</string>
     <string name="replyto_heading" msgid="8275255318292059079">"Одговори на:"</string>
     <string name="to_heading" msgid="3495203282540398336">"До: "</string>
@@ -254,9 +232,7 @@
     <string name="widget_large_unread_count" msgid="8699435859096455837">"%d+"</string>
     <string name="large_unseen_count" msgid="3055042669246912518">"<xliff:g id="COUNT">%d</xliff:g>+ нови"</string>
     <string name="unseen_count" msgid="5509898665569695288">"<xliff:g id="COUNT">%d</xliff:g> нови"</string>
-  <plurals name="actionbar_unread_messages">
-    <item quantity="other" msgid="3863201473731766006">"<xliff:g id="COUNT">%1$d</xliff:g> непрочитани"</item>
-  </plurals>
+    <!-- no translation found for actionbar_unread_messages (7570899809760688947) -->
     <string name="view_more_conversations" msgid="8377920000247101901">"Прикажи повеќе разговори"</string>
     <string name="loading_conversation" msgid="7931600025861500397">"Се вчитува..."</string>
     <string name="activity_mailbox_selection" msgid="7489813868539767701">"Избери сметка"</string>
@@ -338,10 +314,7 @@
     <string name="veiled_alternate_text_unknown_person" msgid="6728323554307952217"></string>
     <string name="veiled_summary_unknown_person" msgid="2122359944161241551"></string>
     <string name="label_notification_ticker" msgid="323232821061341014">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-  <plurals name="new_messages">
-    <item quantity="one" msgid="3446656407520493241">"<xliff:g id="COUNT">%1$d</xliff:g> нова порака"</item>
-    <item quantity="other" msgid="3531683811183204615">"<xliff:g id="COUNT">%1$d</xliff:g> нови пораки"</item>
-  </plurals>
+    <!-- no translation found for new_messages (1136518322478480716) -->
     <string name="single_new_message_notification_title" msgid="7954710563222504868">"<xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="silent_ringtone" msgid="1570794756474381886">"Тивко"</string>
     <!-- no translation found for preference_removal_action_title (3128186577060329884) -->
@@ -363,10 +336,7 @@
     <string name="empty_spam" msgid="2911988289997281371">"Испразни „Спам“"</string>
     <string name="empty_trash_dialog_title" msgid="2104898489663621508">"Испразни ја Корпата?"</string>
     <string name="empty_spam_dialog_title" msgid="1130319045917820569">"Испразни „Спам“?"</string>
-  <plurals name="empty_folder_dialog_message">
-    <item quantity="one" msgid="3315412388217832914">"<xliff:g id="COUNT">%1$d</xliff:g> порака трајно ќе се избрише."</item>
-    <item quantity="other" msgid="263840304486020101">"<xliff:g id="COUNT">%1$d</xliff:g> пораки трајно ќе се избришат."</item>
-  </plurals>
+    <!-- no translation found for empty_folder_dialog_message (4783346716525541632) -->
     <string name="drawer_open" msgid="2285557278907103851">"Отвори фиока за навигација"</string>
     <string name="drawer_close" msgid="2065829742127544297">"Затвори фиока за навигација"</string>
     <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Допрете ја сликата на испраќачот за да го изберете тој разговор."</string>
@@ -389,18 +359,12 @@
     <string name="hide_folders" msgid="7618891933409521283">"Сокриј папки"</string>
     <string name="print" msgid="7987949243936577207">"Печати"</string>
     <string name="print_all" msgid="4011022762279519941">"Печати сѐ"</string>
-  <plurals name="num_messages">
-    <item quantity="one" msgid="8071234386915191851">"<xliff:g id="COUNT">%1$d</xliff:g> порака"</item>
-    <item quantity="other" msgid="962415099931188360">"<xliff:g id="COUNT">%1$d</xliff:g> пораки"</item>
-  </plurals>
+    <!-- no translation found for num_messages (5376675141101465755) -->
     <string name="date_message_received_print" msgid="4168417403884350040">"<xliff:g id="DAY_AND_DATE">%1$s</xliff:g> во <xliff:g id="TIME">%2$s</xliff:g>"</string>
     <string name="draft_to_heading" msgid="7370121943946205024">"Нацрт до:"</string>
     <string name="draft_heading" msgid="7032951343184552800">"Нацрт"</string>
     <string name="quoted_text_hidden_print" msgid="5256754205675159141">"Цитираниот текст е сокриен"</string>
-  <plurals name="num_attachments">
-    <item quantity="one" msgid="5494465717267988888">"<xliff:g id="COUNT">%1$d</xliff:g> прилог"</item>
-    <item quantity="other" msgid="5422167728480739361">"<xliff:g id="COUNT">%1$d</xliff:g> прилози"</item>
-  </plurals>
+    <!-- no translation found for num_attachments (3349677754516200488) -->
     <string name="no_subject" msgid="5622708348540036959">"(без предмет)"</string>
     <string name="vacation_responder" msgid="5570132559074523806">"Автоматски одговор"</string>
     <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"Автоматски одговор"</string>
