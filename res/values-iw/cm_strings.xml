@@ -29,6 +29,7 @@
   <string name="suggested_contacts_cleared">אנשי קשר מוצעים נוקו.</string>
   <string name="clear_suggested_contacts_dialog_title">לנקות אנשי קשר מוצעים?</string>
   <string name="clear_suggested_contacts_dialog_message">כל אנשי הקשר המוצעים שאוחסנו בעבר יימחקו.</string>
+  <string name="edit_light_settings">הגדרות תאורת התראה של תיקייה</string>
   <string name="pulse_speed_title">אורך ומהירות הבהוב</string>
   <string name="default_time">רגיל</string>
   <string name="custom_time">מותאם אישית</string>
