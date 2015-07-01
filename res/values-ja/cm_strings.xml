@@ -29,4 +29,22 @@
   <string name="suggested_contacts_cleared">連絡先の候補を消去しました。</string>
   <string name="clear_suggested_contacts_dialog_title">連絡先の候補を消去しますか？</string>
   <string name="clear_suggested_contacts_dialog_message">過去に保存されたすべての連絡先の候補が削除されます。</string>
+  <string name="edit_light_settings">フォルダのライトの設定</string>
+  <string name="pulse_speed_title">点滅時間と点滅速度</string>
+  <string name="default_time">標準</string>
+  <string name="custom_time">カスタム</string>
+  <string name="dialog_delete_title">削除</string>
+  <string name="dialog_delete_message">選択したアイテムを削除しますか？</string>
+  <string name="pref_lights_default">デフォルト</string>
+  <string name="pulse_length_always_on">常にON</string>
+  <string name="pulse_length_very_short">非常に短い</string>
+  <string name="pulse_length_short">短い</string>
+  <string name="pulse_length_normal">標準</string>
+  <string name="pulse_length_long">長い</string>
+  <string name="pulse_length_very_long">非常に長い</string>
+  <string name="pulse_speed_very_fast">非常に速い</string>
+  <string name="pulse_speed_fast">速い</string>
+  <string name="pulse_speed_normal">標準</string>
+  <string name="pulse_speed_slow">遅い</string>
+  <string name="pulse_speed_very_slow">非常に遅い</string>
 </resources>
