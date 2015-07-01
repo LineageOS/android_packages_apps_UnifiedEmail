@@ -34,7 +34,7 @@
   <string name="default_time">רגיל</string>
   <string name="custom_time">מותאם אישית</string>
   <string name="dialog_delete_title">מחק</string>
-  <string name="dialog_delete_message">האם להסיר את הפריט הנבחר?</string>
+  <string name="dialog_delete_message">להסיר פריט נבחר?</string>
   <string name="pref_lights_default">ברירת מחדל</string>
   <string name="pulse_length_always_on">תמיד דלוק</string>
   <string name="pulse_length_very_short">קצר מאוד</string>
