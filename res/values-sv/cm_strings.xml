@@ -17,4 +17,14 @@
 -->
 <resources>
   <string name="prefDialogTitle_suggestedContactsMode_all">Alla</string>
+  <string name="preference_header_suggested_contacts">Föreslagna kontakter</string>
+  <string name="pulse_speed_title">Pulslängd och hastighet</string>
+  <string name="default_time">Normal</string>
+  <string name="pulse_length_very_short">Mycket kort</string>
+  <string name="pulse_length_short">Kort</string>
+  <string name="pulse_length_normal">Normal</string>
+  <string name="pulse_length_long">Lång</string>
+  <string name="pulse_speed_fast">Snabb</string>
+  <string name="pulse_speed_slow">Långsam</string>
+  <string name="pulse_speed_very_slow">Mycket långsam</string>
 </resources>
