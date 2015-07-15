@@ -462,7 +462,7 @@
     <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"عملکردهای پیام"</string>
   <string-array name="prefSummaries_snapHeader">
     <item msgid="43373293784193461">"عملکردهای پیام همیشه در بالای صفحه نشان داده شود"</item>
-    <item msgid="1765271305989996747">"عملکردهای پیام فقط وقتی در بالای صفحه نشان داده شود که به حالت پرتره چرخانده می‌شود"</item>
+    <item msgid="1765271305989996747">"عملکردهای پیام فقط وقتی در بالای صفحه نشان داده شود که به حالت عمودی چرخانده می‌شود"</item>
     <item msgid="6311113076575333488">"عملکردهای پیام خارج از سرصفحه پیام نشان داده نشود"</item>
   </string-array>
   <string-array name="prefEntries_snapHeader">
