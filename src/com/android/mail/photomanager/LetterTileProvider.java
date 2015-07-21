@@ -83,7 +83,7 @@ public class LetterTileProvider {
     public Bitmap getLetterTile(final Dimensions dimensions, final String displayName,
             final String address) {
         final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
-        final char firstChar = display.charAt(0);
+        final char firstChar = !TextUtils.isEmpty(display) ? display.charAt(0) : '\0';
 
         // get an empty bitmap
         final Bitmap bitmap = getBitmap(dimensions, false /* getDefault */);
