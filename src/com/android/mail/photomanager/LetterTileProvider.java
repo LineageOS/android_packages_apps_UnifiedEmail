@@ -83,7 +83,6 @@ public class LetterTileProvider {
     public Bitmap getLetterTile(final Dimensions dimensions, final String displayName,
             final String address) {
         final String display = !TextUtils.isEmpty(displayName) ? displayName : address;
-        final char firstChar = display.charAt(0);
 
         // get an empty bitmap
         final Bitmap bitmap = getBitmap(dimensions, false /* getDefault */);
@@ -97,17 +96,23 @@ public class LetterTileProvider {
         c.setBitmap(bitmap);
         c.drawColor(mTileColorPicker.pickColor(address));
 
-        // If its a valid English alphabet letter,
-        // draw the letter on top of the color
-        if (isEnglishLetterOrDigit(firstChar)) {
-            mFirstChar[0] = Character.toUpperCase(firstChar);
-            mPaint.setTextSize(
-                    dimensions.fontSize > 0 ? dimensions.fontSize : getFontSize(dimensions.scale));
-            mPaint.getTextBounds(mFirstChar, 0, 1, mBounds);
-            c.drawText(mFirstChar, 0, 1, 0 + dimensions.width / 2,
-                    0 + dimensions.height / 2 + (mBounds.bottom - mBounds.top) / 2, mPaint);
-        } else { // draw the generic icon on top
-            c.drawBitmap(getBitmap(dimensions, true /* getDefault */), 0, 0, null);
+        if (!TextUtils.isEmpty(display)) {
+            final char firstChar = display.charAt(0);
+            // If its a valid English alphabet letter,
+            // draw the letter on top of the color
+            if (isEnglishLetterOrDigit(firstChar)) {
+                mFirstChar[0] = Character.toUpperCase(firstChar);
+                mPaint.setTextSize(
+                        dimensions.fontSize > 0 ? dimensions.fontSize : getFontSize(dimensions.scale));
+                mPaint.getTextBounds(mFirstChar, 0, 1, mBounds);
+                c.drawText(mFirstChar, 0, 1, 0 + dimensions.width / 2,
+                        0 + dimensions.height / 2 + (mBounds.bottom - mBounds.top) / 2, mPaint);
+            } else { // draw the generic icon on top
+                c.drawBitmap(getBitmap(dimensions, true /* getDefault */), 0, 0, null);
+            }
+        } else {
+            // no displayName nor address, let's draw the generic icon
+            c.drawBitmap(getBitmap(dimensions, true), 0, 0, null);
         }
 
         return bitmap;
