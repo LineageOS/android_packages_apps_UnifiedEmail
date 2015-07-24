@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df140735_2ee1bbff",
+        "filename": "src/com/android/mail/photomanager/LetterTileProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 3134
+      },
+      "writtenOn": "2015-07-24T03:21:34Z",
+      "side": 1,
+      "message": "Just a thought. How could an \"email\" contact doesn\u0027t have an email address (it could a invalid display name, but not a invalid sender address).",
+      "range": {
+        "startLine": 99,
+        "startChar": 31,
+        "endLine": 99,
+        "endChar": 38
+      },
+      "revId": "6499c6f728070321fdc50269e774d7e4dfc6d782",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
