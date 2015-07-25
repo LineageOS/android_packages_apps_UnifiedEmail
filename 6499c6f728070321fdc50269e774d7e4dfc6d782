@@ -46,6 +46,24 @@
       "revId": "6499c6f728070321fdc50269e774d7e4dfc6d782",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df140735_254af926",
+        "filename": "src/com/android/mail/photomanager/LetterTileProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 6334
+      },
+      "writtenOn": "2015-07-25T07:30:39Z",
+      "side": 1,
+      "message": "Why not just modify the initialization of firstChar then?\n\nfinal char firstChar \u003d display !\u003d null || !TextUtils.isEmpty(display) ? display.charAt(0) : \u0027\\0\u0027;\n\nYou then can use the existing if conditional of if its a english letter or digit without creating another barrier.",
+      "parentUuid": "df140735_a28eff24",
+      "revId": "6499c6f728070321fdc50269e774d7e4dfc6d782",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
