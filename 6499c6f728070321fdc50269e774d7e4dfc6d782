@@ -22,6 +22,30 @@
       "revId": "6499c6f728070321fdc50269e774d7e4dfc6d782",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df140735_a28eff24",
+        "filename": "src/com/android/mail/photomanager/LetterTileProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 10984
+      },
+      "writtenOn": "2015-07-25T00:08:22Z",
+      "side": 1,
+      "message": "It shouldn\u0027t reach here, that\u0027s right. Yet, sometimes bad code happens, and there\u0027s no harm in protecting it here.\n\nFYI, the case I know that would lead us to blow up here is the one fixed with this patch:\nhttps://github.com/CyanogenMod/android_packages_apps_UnifiedEmail/commit/f47f70414d0c88213f7b8091f67cc335c1212fd6\n\nMy point in doing this extra validation is to avoid breakage if other parts of the code to the same mistake. More generally, one should never do a charAt() on a string without first validating if it isEmpty. You know what they say about assumptions...",
+      "parentUuid": "df140735_2ee1bbff",
+      "range": {
+        "startLine": 99,
+        "startChar": 31,
+        "endLine": 99,
+        "endChar": 38
+      },
+      "revId": "6499c6f728070321fdc50269e774d7e4dfc6d782",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
