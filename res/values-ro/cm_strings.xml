@@ -19,10 +19,12 @@
   <string name="prefDialogTitle_suggestedContactsMode">Mod</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Dezactivat</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recente</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Numai contactele recomandate recent vor fi selectabile</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Toate</string>
   <string name="preference_header_suggested_contacts">Contacte sugerate</string>
   <string name="default_time">Normal</string>
   <string name="custom_time">Personalizat</string>
+  <string name="dialog_delete_message">Ștergeți elementul selectat?</string>
   <string name="pref_lights_default">Implicit</string>
   <string name="pulse_length_very_short">Foarte scurt</string>
   <string name="pulse_length_short">Scurt</string>
