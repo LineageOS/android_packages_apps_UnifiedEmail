@@ -16,8 +16,35 @@
      limitations under the License.
 -->
 <resources>
+  <string name="prefDialogTitle_suggestedContactsMode">حالت</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">غیرفعال</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">ویژگی پیشنهاد مخاطبین غیرفعال شده است</string>
+  <string name="prefDialogTitle_suggestedContactsMode_recents">اخیر</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">فقط مخاطبین پیشنهاد شده اخیر انتخاب خواهند شد</string>
+  <string name="prefDialogTitle_suggestedContactsMode_all">همه</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">تمام مخاطبین پیشنهاد شده انتخاب خواهند شد</string>
+  <string name="preference_header_suggested_contacts">مخاطبین پیشنهاد شده</string>
+  <string name="preference_suggested_contacts_mode">حالت مخاطبین پیشنهاد شده</string>
+  <string name="preference_suggested_contacts_clear_all">پاک کردن مخاطبین پیشنهاد شده</string>
+  <string name="suggested_contacts_cleared">مخاطبین پیشنهاد شده پاک شدند.</string>
+  <string name="clear_suggested_contacts_dialog_title">مخاطبین پیشنهاد شده پاک شوند؟</string>
+  <string name="clear_suggested_contacts_dialog_message">تمام مخاطبین پیشنهاد شده که از قبل ذخیره شده‌اند حذف خواهند شد.</string>
+  <string name="edit_light_settings">تنظیمات نور پوشه</string>
+  <string name="pulse_speed_title">طول و سرعت چشمک‌زدن</string>
   <string name="default_time">عادی</string>
+  <string name="custom_time">سفارشی</string>
   <string name="dialog_delete_title">حذف</string>
+  <string name="dialog_delete_message">مورد انتخاب‌شده حذف شود؟</string>
+  <string name="pref_lights_default">پیش‌فرض</string>
+  <string name="pulse_length_always_on">همیشه روشن</string>
+  <string name="pulse_length_very_short">خیلی کوتاه</string>
+  <string name="pulse_length_short">کوتاه</string>
   <string name="pulse_length_normal">عادی</string>
+  <string name="pulse_length_long">طولانی</string>
+  <string name="pulse_length_very_long">خیلی طولانی</string>
+  <string name="pulse_speed_very_fast">خیلی سریع</string>
+  <string name="pulse_speed_fast">سریع</string>
   <string name="pulse_speed_normal">عادی</string>
+  <string name="pulse_speed_slow">آهسته</string>
+  <string name="pulse_speed_very_slow">خیلی آهسته</string>
 </resources>
