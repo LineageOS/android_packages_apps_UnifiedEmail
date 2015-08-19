@@ -16,5 +16,17 @@
      limitations under the License.
 -->
 <resources>
+  <string name="prefDialogTitle_suggestedContactsMode">Läge</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">Inaktiverat</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">Funktioner för föreslagna kontakter är inaktiverad</string>
+  <string name="prefDialogTitle_suggestedContactsMode_recents">Senaste</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Enbart nyligen föreslagna kontakter kommer att vara valbara</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Alla</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Alla föreslagna kontakter kommer vara valbara</string>
+  <string name="preference_header_suggested_contacts">Föreslagna kontakter</string>
+  <string name="preference_suggested_contacts_mode">Läge för föreslagna kontakter</string>
+  <string name="preference_suggested_contacts_clear_all">Töm föreslagna kontakter</string>
+  <string name="suggested_contacts_cleared">Föreslagna kontakter tömdes.</string>
+  <string name="clear_suggested_contacts_dialog_title">Töm föreslagna kontakter?</string>
+  <string name="clear_suggested_contacts_dialog_message">Alla de föreslagna kontakterna som lagrats tidigare kommer tas bort.</string>
 </resources>

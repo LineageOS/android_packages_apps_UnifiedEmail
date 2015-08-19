@@ -17,7 +17,16 @@
 -->
 <resources>
   <string name="prefDialogTitle_suggestedContactsMode">Mod</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">Dezactivat</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">Facilitatea contacte recomandate este dezactivată</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recente</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Numai contactele recomandate recent vor fi selectabile</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Toate</string>
-  <string name="preference_header_suggested_contacts">Contacte sugerate</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Toate contactele recomandate vor fi selectabile</string>
+  <string name="preference_header_suggested_contacts">Contacte recomandate</string>
+  <string name="preference_suggested_contacts_mode">Mod contacte recomandate</string>
+  <string name="preference_suggested_contacts_clear_all">Șterge contactele recomandate</string>
+  <string name="suggested_contacts_cleared">Contactele recomandate șterse.</string>
+  <string name="clear_suggested_contacts_dialog_title">Șterge contactele recomandate?</string>
+  <string name="clear_suggested_contacts_dialog_message">Toate contactele recomandate stocate anterior vor fi eliminate.</string>
 </resources>
