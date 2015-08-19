@@ -166,7 +166,7 @@
   <string name="empty_inbox">Alles fäerdeg! Genéiss däin Dag.</string>
   <string name="empty_search">Upps! Mir hunn näischt fonnt fir \"<xliff:g id="search_query">%1$s</xliff:g>\".</string>
   <string name="empty_spam_folder">Hurra, kee Spam do!</string>
-  <string name="empty_trash_folder">Keen Offall hei. Merci fir d\'recycléieren!</string>
+  <string name="empty_trash_folder">Keen Offall hei. Merci fir d\'Recycléieren!</string>
   <string name="empty_folder">Keng E-Mailen hei.</string>
   <string name="getting_messages">Messagë gi gelueden</string>
   <string name="undo">Réckgängeg maachen</string>
