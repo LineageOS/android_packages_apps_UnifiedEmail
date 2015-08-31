@@ -18,7 +18,7 @@
 <resources>
   <string name="prefDialogTitle_suggestedContactsMode">حالت</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">غیرفعال</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_none">ویژگی پیشنهاد مخاطبین غیرفعال شده است</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">ویژگی پیشنهاد مخاطبین غیرفعال است</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">اخیر</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">فقط مخاطبین پیشنهاد شده اخیر انتخاب خواهند شد</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">همه</string>
