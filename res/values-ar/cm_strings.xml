@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="prefDialogTitle_suggestedContactsMode">وضع</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">معطل</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">تم تعطيل ميزة جهات الاتصال المقترحة</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">الأحدث</string>

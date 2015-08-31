@@ -18,7 +18,7 @@
 <resources>
   <string name="prefDialogTitle_suggestedContactsMode">Način</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Onemogočeno</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_none">Funkcija predlaganih stikov je onemogočena</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">Značilnost predlaganih stikov je onemogočena</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Nedavni</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Izbrati bo mogoče samo nedavno predlagane stike</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Vse</string>
