@@ -29,4 +29,22 @@
   <string name="suggested_contacts_cleared">Contautos suxeríos llimpiaos.</string>
   <string name="clear_suggested_contacts_dialog_title">¿Llimpiar contautos suxeríos?</string>
   <string name="clear_suggested_contacts_dialog_message">Van desaniciase  tolos contautos suxeríos almacenaos previamente.</string>
+  <string name="edit_light_settings">Axustes de lluz de carpeta</string>
+  <string name="pulse_speed_title">Duración y velocidá</string>
+  <string name="default_time">Normal</string>
+  <string name="custom_time">Personalizáu</string>
+  <string name="dialog_delete_title">Desaniciar</string>
+  <string name="dialog_delete_message">¿Desaniciar l\'elementu esbilláu?</string>
+  <string name="pref_lights_default">Por defeutu</string>
+  <string name="pulse_length_always_on">Siempre encesa</string>
+  <string name="pulse_length_very_short">Mui curtia</string>
+  <string name="pulse_length_short">Curtia</string>
+  <string name="pulse_length_normal">Normal</string>
+  <string name="pulse_length_long">Llarga</string>
+  <string name="pulse_length_very_long">Mui llarga</string>
+  <string name="pulse_speed_very_fast">Mui rápida</string>
+  <string name="pulse_speed_fast">Rápida</string>
+  <string name="pulse_speed_normal">Normal</string>
+  <string name="pulse_speed_slow">Lenta</string>
+  <string name="pulse_speed_very_slow">Mui lenta</string>
 </resources>
