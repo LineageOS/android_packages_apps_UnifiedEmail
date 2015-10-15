@@ -26,6 +26,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toolbar;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
@@ -51,6 +55,9 @@ public class MailPreferenceActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setActionBar(toolbar);
+
         final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             // Hide the app icon.
@@ -59,6 +66,17 @@ public class MailPreferenceActivity extends PreferenceActivity {
         }
 
         getLoaderManager().initLoader(ACCOUNT_LOADER_ID, null, new AccountLoaderCallbacks());
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        final LayoutInflater inflater = getLayoutInflater();
+        View contentView = inflater.inflate(R.layout.preference_activity, null);
+
+        ViewGroup contentWrapper = (ViewGroup) contentView.findViewById(R.id.content_frame);
+        getLayoutInflater().inflate(layoutResID, contentWrapper);
+
+        getWindow().setContentView(contentView);
     }
 
     private class AccountLoaderCallbacks implements LoaderCallbacks<Cursor> {
@@ -137,5 +155,13 @@ public class MailPreferenceActivity extends PreferenceActivity {
      * @param target List of headers to mutate
      */
     public void onBuildExtraHeaders(List<Header> target) {
+    }
+
+    @Override
+    public void switchToHeader(String fragmentName, Bundle args) {
+        super.switchToHeader(fragmentName, args);
+        if (args != null && args.containsKey(MailAccountPrefsFragment.ARG_ACCOUNT_EMAIL)) {
+            showBreadCrumbs(args.getString(MailAccountPrefsFragment.ARG_ACCOUNT_EMAIL), null);
+        }
     }
 }
