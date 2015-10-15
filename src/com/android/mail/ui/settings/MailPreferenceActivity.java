@@ -17,14 +17,12 @@
 
 package com.android.mail.ui.settings;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.text.TextUtils;
 
 import com.android.mail.R;
@@ -37,7 +35,7 @@ import com.google.common.annotations.VisibleForTesting;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class MailPreferenceActivity extends PreferenceActivity {
+public class MailPreferenceActivity extends BasePreferenceActivity {
 
     public static final String PREFERENCE_FRAGMENT_ID = "preference_fragment_id";
 
@@ -50,13 +48,6 @@ public class MailPreferenceActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        final ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            // Hide the app icon.
-            actionBar.setIcon(android.R.color.transparent);
-            actionBar.setDisplayUseLogoEnabled(false);
-        }
 
         getLoaderManager().initLoader(ACCOUNT_LOADER_ID, null, new AccountLoaderCallbacks());
     }
@@ -137,5 +128,13 @@ public class MailPreferenceActivity extends PreferenceActivity {
      * @param target List of headers to mutate
      */
     public void onBuildExtraHeaders(List<Header> target) {
+    }
+
+    @Override
+    public void switchToHeader(String fragmentName, Bundle args) {
+        super.switchToHeader(fragmentName, args);
+        if (args != null && args.containsKey(MailAccountPrefsFragment.ARG_ACCOUNT_EMAIL)) {
+            showBreadCrumbs(args.getString(MailAccountPrefsFragment.ARG_ACCOUNT_EMAIL), null);
+        }
     }
 }

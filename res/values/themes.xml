@@ -31,6 +31,12 @@
         <item name="android:statusBarColor" tools:ignore="NewApi">@color/mail_activity_status_bar_color</item>
     </style>
 
+    <style name="HeaderTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:colorAccent">@color/primary_color</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:colorBackground">@color/primary_color</item>
+    </style>
+
     <style name="MailActivityTheme" parent="@style/UnifiedEmailTheme.Appcompat.Toolbar" />
 
     <style name="ComposeTheme" parent="@style/UnifiedEmailTheme.Appcompat">
