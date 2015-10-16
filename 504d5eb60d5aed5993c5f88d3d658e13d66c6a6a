@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7f287b81_c1baf0dc",
+        "filename": "res/layout/preference_activity.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 3134
+      },
+      "writtenOn": "2015-10-16T15:12:28Z",
+      "side": 1,
+      "message": "tab",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 2
+      },
+      "revId": "504d5eb60d5aed5993c5f88d3d658e13d66c6a6a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f287b81_61c9fc76",
+        "filename": "res/layout/preference_activity.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 3134
+      },
+      "writtenOn": "2015-10-16T15:12:28Z",
+      "side": 1,
+      "message": "Isn\u0027t this part of the appcompat theme?",
+      "range": {
+        "startLine": 26,
+        "startChar": 25,
+        "endLine": 26,
+        "endChar": 27
+      },
+      "revId": "504d5eb60d5aed5993c5f88d3d658e13d66c6a6a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f287b81_81cce889",
+        "filename": "res/layout/preference_activity.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 3134
+      },
+      "writtenOn": "2015-10-16T15:12:28Z",
+      "side": 1,
+      "message": "this is part of the theme, right? It shouldn\u0027t be needed here.",
+      "range": {
+        "startLine": 28,
+        "startChar": 29,
+        "endLine": 28,
+        "endChar": 34
+      },
+      "revId": "504d5eb60d5aed5993c5f88d3d658e13d66c6a6a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f287b81_a1cfe47d",
+        "filename": "res/layout/preference_activity.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 3134
+      },
+      "writtenOn": "2015-10-16T15:12:28Z",
+      "side": 1,
+      "message": "Shouldn\u0027t we use android.R.id.content instead? It\u0027s a common resorce for this and it doesn\u0027t create a new id resource",
+      "range": {
+        "startLine": 32,
+        "startChar": 25,
+        "endLine": 32,
+        "endChar": 38
+      },
+      "revId": "504d5eb60d5aed5993c5f88d3d658e13d66c6a6a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f287b81_41ede0ed",
+        "filename": "src/com/android/mail/ui/settings/MailPreferenceActivity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 3134
+      },
+      "writtenOn": "2015-10-16T15:12:28Z",
+      "side": 1,
+      "message": "this isn\u0027t needed, we have the toolbar ref, that we can use directly, though",
+      "range": {
+        "startLine": 61,
+        "startChar": 24,
+        "endLine": 61,
+        "endChar": 33
+      },
+      "revId": "504d5eb60d5aed5993c5f88d3d658e13d66c6a6a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f287b81_61f0dcca",
+        "filename": "src/com/android/mail/ui/settings/MailPreferenceActivity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 3134
+      },
+      "writtenOn": "2015-10-16T15:12:28Z",
+      "side": 1,
+      "message": "use the inflater ref",
+      "range": {
+        "startLine": 77,
+        "startChar": 8,
+        "endLine": 77,
+        "endChar": 25
+      },
+      "revId": "504d5eb60d5aed5993c5f88d3d658e13d66c6a6a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
