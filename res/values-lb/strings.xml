@@ -448,19 +448,6 @@
   <string name="reply_choice_later">OK, ech melle mech</string>
   <string name="reply_choice_smiling_face">:)</string>
   <string name="reply_choice_frowning_face">:(</string>
-  <array name="reply_choices">
-    <item>@string/reply_choice_yes</item>
-    <item>@string/reply_choice_no</item>
-    <item>@string/reply_choice_ok</item>
-    <item>@string/reply_choice_hehe</item>
-    <item>@string/reply_choice_thanks</item>
-    <item>@string/reply_choice_i_agree</item>
-    <item>@string/reply_choice_nice</item>
-    <item>@string/reply_on_my_way</item>
-    <item>@string/reply_choice_later</item>
-    <item>@string/reply_choice_smiling_face</item>
-    <item>@string/reply_choice_frowning_face</item>
-  </array>
   <string name="preference_header_action_confirmations">Aktiounsbestätegungen</string>
   <string name="preference_confirm_before_delete_title">Virum Läsche bestätegen</string>
   <string name="preference_confirm_before_archive_title">Virum Archivéiere bestätegen</string>
