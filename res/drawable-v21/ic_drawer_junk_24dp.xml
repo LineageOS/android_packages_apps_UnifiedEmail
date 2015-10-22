@@ -1,0 +1,37 @@
+<!--
+Copyright (C) 2015 The CyanogenMod Project
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:strokeColor="#8a000000"
+        android:strokeWidth="3.0329999924"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="square"
+        android:pathData="M 18.059100532,5.958148849 L 18.12528584,6.0243341568 6.0133740238,18.136245972
+5.947188716,18.070060664 Z m 2.823864097,6.089049038 c 0,2.417900391
+-0.990203638,4.606898359 -2.591146322,6.191421231 -1.600942682,1.58452287
+-3.81262441,2.564570644 -6.255580588,2.564570644 -2.4429561741,0
+-4.6546379016,-0.980047774 -6.2555805849,-2.564570644 -1.6009426828,-1.584522872
+-2.5911463216,-3.77352084 -2.5911463218,-6.191421231 3e-10,-2.4179003844
+0.9902036389,-4.6068983529 2.5911463219,-6.1914212239 1.600942683,-1.5845228708
+3.8126244109,-2.5645706444 6.2555805848,-2.5645706442 2.442956178,-4e-10
+4.654637906,0.980047773 6.255580588,2.564570644 1.600942684,1.584522871
+2.591146322,3.7735208397 2.591146322,6.1914212241 z" />
+</vector>
