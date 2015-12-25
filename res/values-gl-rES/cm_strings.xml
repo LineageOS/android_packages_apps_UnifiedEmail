@@ -16,5 +16,8 @@
      limitations under the License.
 -->
 <resources>
-  <string name="prefDialogTitle_suggestedContactsMode">โหมด</string>
+  <string name="prefDialogTitle_suggestedContactsMode">Modo</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">Desactivado</string>
+  <string name="prefDialogTitle_suggestedContactsMode_recents">Recentes</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Solamente se seleccionarán os contactos suxeridos recentes</string>
 </resources>

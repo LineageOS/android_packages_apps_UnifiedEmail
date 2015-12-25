@@ -127,28 +127,12 @@
   <string name="unread_string">conversación non lleída</string>
   <string name="filtered_tag">[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g></string>
   <string name="badge_and_subject"><xliff:g>%1$s</xliff:g> <xliff:g>%2$s</xliff:g></string>
-  <plurals name="draft">
-    <item quantity="one">Borrador</item>
-    <item quantity="other">Borradores</item>
-  </plurals>
   <string name="sending">Unviando...</string>
   <string name="message_retrying">Reintentando\u2026</string>
   <string name="message_failed">Falló</string>
   <string name="send_failed">Nun s\'unvió\'l mensaxe.</string>
   <string name="me_object_pronoun">min</string>
   <string name="me_subject_pronoun">min</string>
-  <plurals name="confirm_delete_conversation">
-    <item quantity="one">¿Desaniciar esta conversación?</item>
-    <item quantity="other">¿Desaniciar estes <xliff:g id="COUNT">%1$d</xliff:g> conversaciones?</item>
-  </plurals>
-  <plurals name="confirm_archive_conversation">
-    <item quantity="one">¿Archivar esta conversación?</item>
-    <item quantity="other">¿Archivar estes <xliff:g id="COUNT">%1$d</xliff:g> conversaciones?</item>
-  </plurals>
-  <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one">¿Quies descartar esti mensaxe?</item>
-    <item quantity="other">Descartar estos <xliff:g id="count">%1$d</xliff:g> mensaxes?</item>
-  </plurals>
   <string name="confirm_discard_text">¿Quies descartar esti mensaxe?</string>
   <string name="loading_conversations">Cargando…</string>
   <string name="empty_inbox">Too fecho! Qu\'esfrutes el día.</string>
@@ -216,10 +200,6 @@
   <string name="widget_large_unread_count">%d+</string>
   <string name="large_unseen_count"><xliff:g id="count" example="99">%d</xliff:g>+ new</string>
   <string name="unseen_count"><xliff:g id="count" example="4">%d</xliff:g> new</string>
-  <plurals name="actionbar_unread_messages">
-    <item quantity="one"><xliff:g id="COUNT">%1$d</xliff:g> ensin lleer</item>
-    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> ensin lleer</item>
-  </plurals>
   <string name="view_more_conversations">Ver más conversaciones</string>
   <string name="loading_conversation">Cargando...</string>
   <string name="activity_mailbox_selection">Esbillar cuenta</string>
@@ -283,10 +263,6 @@
   <string name="notification_action_undo_remove_label">Etiqueta desaniciada</string>
   <string name="notification_action_undo_delete">Desanicióse</string>
   <string name="label_notification_ticker">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
-  <plurals name="new_messages">
-    <item quantity="one"><xliff:g id="COUNT">%1$d</xliff:g> mensaxes nuevos</item>
-    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> mensaxes nuevos</item>
-  </plurals>
   <string name="single_new_message_notification_title"><xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g></string>
   <string name="silent_ringtone">Silenciu</string>
   <string name="preferences_default_reply_all_title">Responder a toos</string>
@@ -298,10 +274,6 @@
   <string name="empty_spam">Vaciar carpeta de spam</string>
   <string name="empty_trash_dialog_title">¿Vaciar papelera?</string>
   <string name="empty_spam_dialog_title">¿Vaciar carpeta de spam?</string>
-  <plurals name="empty_folder_dialog_message">
-    <item quantity="one">Va desaniciase dafechu <xliff:g id="COUNT">%1$d</xliff:g> mensaxe.</item>
-    <item quantity="other">Van desaniciase dafechu <xliff:g id="COUNT">%1$d</xliff:g> mensaxes.</item>
-  </plurals>
   <string name="drawer_open">Abrir control de navegación</string>
   <string name="drawer_close">Zarrar control de navegación</string>
   <string name="conversation_photo_welcome_text">Toca la imaxe d\'un remitente pa esbillar esa conversación.</string>
@@ -318,18 +290,10 @@
   <string name="hide_folders">Anubrir carpetes</string>
   <string name="print">Imprentar</string>
   <string name="print_all">Impretar too</string>
-  <plurals name="num_messages">
-    <item quantity="one"><xliff:g id="COUNT">%1$d</xliff:g> mensaxe</item>
-    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> mensaxes</item>
-  </plurals>
   <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> at <xliff:g id="time">%2$s</xliff:g></string>
   <string name="draft_to_heading">Borrador a:</string>
   <string name="draft_heading">Borrador</string>
   <string name="quoted_text_hidden_print">Testu citáu anubríu</string>
-  <plurals name="num_attachments">
-    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> axuntu</item>
-    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> axuntos</item>
-  </plurals>
   <string name="no_subject">(Ensin asuntu)</string>
   <string name="vacation_responder">Rempuesta automática</string>
   <string name="preferences_vacation_responder_title">Rempuesta automática</string>
@@ -371,19 +335,6 @@
   <string name="reply_choice_later">Val, yá te contesto</string>
   <string name="reply_choice_smiling_face">:)</string>
   <string name="reply_choice_frowning_face">:(</string>
-  <array name="reply_choices">
-    <item>@string/reply_choice_yes</item>
-    <item>@string/reply_choice_no</item>
-    <item>@string/reply_choice_ok</item>
-    <item>@string/reply_choice_hehe</item>
-    <item>@string/reply_choice_thanks</item>
-    <item>@string/reply_choice_i_agree</item>
-    <item>@string/reply_choice_nice</item>
-    <item>@string/reply_on_my_way</item>
-    <item>@string/reply_choice_later</item>
-    <item>@string/reply_choice_smiling_face</item>
-    <item>@string/reply_choice_frowning_face</item>
-  </array>
   <string name="preference_header_action_confirmations">Confirmaciones d\'aición</string>
   <string name="preference_confirm_before_delete_title">Confirmar pa desaniciar</string>
   <string name="preference_confirm_before_archive_title">Confirmar enantes d\'archivar</string>

@@ -119,17 +119,8 @@
   <string name="read_string">ئوقۇلغان سۆزلىشىش</string>
   <string name="unread_string">ئوقۇلمىغان سۆزلىشىش</string>
   <string name="filtered_tag">[<xliff:g id="TAG">%1$s</xliff:g>] <xliff:g id="SUBJECT">%2$s</xliff:g></string>
-  <plurals name="draft">
-    <item quantity="other">دەسلەپكى نۇسخا</item>
-  </plurals>
   <string name="sending">يوللاۋاتىدۇ…</string>
   <string name="send_failed">ئۇچۇر يوللانمىدى.</string>
-  <plurals name="confirm_delete_conversation">
-    <item quantity="other">بۇ سۆزلىشىشنى ئۆچۈرەمدۇ؟</item>
-  </plurals>
-  <plurals name="confirm_archive_conversation">
-    <item quantity="other">بۇ سۆزلىشىشنى ئارخىپلاشتۇرامدۇ؟</item>
-  </plurals>
   <string name="confirm_discard_text">بۇ ئۇچۇرنى تاشلىۋېتەمدۇ؟</string>
   <string name="loading_conversations">يۈكلەۋاتىدۇ…</string>
   <string name="undo">يېنىۋال</string>
@@ -176,9 +167,6 @@
   <string name="non_synced_folder_description">سۆزلىشىشنى كۆرۈش ئۈچۈن، بۇ قىسقۇچنى قەدەمداشلاڭ.</string>
   <string name="tap_to_configure_folder_sync">قىسقۇچنى قەدەمداشلا</string>
   <string name="widget_large_unread_count">%d+</string>
-  <plurals name="actionbar_unread_messages">
-    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> ئۇقۇلمىدى</item>
-  </plurals>
   <string name="view_more_conversations">تېخىمۇ كۆپ سۆزلىشىشلەرنى كۆرسەت</string>
   <string name="loading_conversation">يۈكلەۋاتىدۇ…</string>
   <string name="activity_mailbox_selection">ھېسابات تاللاڭ</string>
@@ -250,9 +238,6 @@
   <string name="empty_spam">ئەخلەت تورخەتنى تازىلا</string>
   <string name="empty_trash_dialog_title">ئەخلەتخانىنى تازىلامدۇ؟</string>
   <string name="empty_spam_dialog_title">ئەخلەت تورخەتنى تازىلامدۇ؟</string>
-  <plurals name="empty_folder_dialog_message">
-    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> ئۇچۇر مەڭگۈلۈك ئۆچۈرۈلىدۇ.</item>
-  </plurals>
   <string name="drawer_open">تارتما يولباشچىنى ئاچ</string>
   <string name="drawer_close">تارتما يولباشچىنى ياپ</string>
   <string name="conversation_photo_welcome_text">يوللىغۇچىنىڭ سۈرىتى چېكىلسە مۇناسىپ سۆزلىشىشلەر تاللىنىدۇ.</string>
@@ -269,17 +254,4 @@
   <string name="hide_folders">قىسقۇچلارنى يوشۇر</string>
   <string name="help_and_info">ياردەم</string>
   <string name="feedback">قايتۇرما ئىنكاس يوللا</string>
-  <array name="reply_choices">
-    <item>@string/reply_choice_yes</item>
-    <item>@string/reply_choice_no</item>
-    <item>@string/reply_choice_ok</item>
-    <item>@string/reply_choice_hehe</item>
-    <item>@string/reply_choice_thanks</item>
-    <item>@string/reply_choice_i_agree</item>
-    <item>@string/reply_choice_nice</item>
-    <item>@string/reply_on_my_way</item>
-    <item>@string/reply_choice_later</item>
-    <item>@string/reply_choice_smiling_face</item>
-    <item>@string/reply_choice_frowning_face</item>
-  </array>
 </resources>
