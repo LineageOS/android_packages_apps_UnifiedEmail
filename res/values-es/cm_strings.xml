@@ -17,7 +17,7 @@
 -->
 <resources>
   <string name="prefDialogTitle_suggestedContactsMode">Modo</string>
-  <string name="prefDialogTitle_suggestedContactsMode_none">Deshabilitado</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">Deshabilitada</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">La función de contactos sugeridos está deshabilitada</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recientes</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Solamente los contactos sugeridos recientes serán seleccionables</string>
@@ -25,12 +25,7 @@
   <string name="prefDialogTitle_suggestedContactsMode_summary_all">Todos los contactos sugeridos serán seleccionables</string>
   <string name="preference_header_suggested_contacts">Contactos sugeridos</string>
   <string name="preference_suggested_contacts_mode">Modo de contactos sugeridos</string>
-  <string name="preference_suggested_contacts_clear_all">Limpiar contactos sugeridos</string>
-  <string name="suggested_contacts_cleared">Contactos sugeridos limpiados.</string>
-  <string name="clear_suggested_contacts_dialog_title">¿Limpiar contactos sugeridos?</string>
-  <string name="clear_suggested_contacts_dialog_message">Todos los contactos sugeridos almacenados previamente serán quitados.</string>
   <string name="edit_light_settings">Ajustes de luz de carpeta</string>
-  <string name="pulse_speed_title">Duración y velocidad</string>
   <string name="default_time">Normal</string>
   <string name="custom_time">Personalizado</string>
   <string name="dialog_delete_title">Eliminar</string>
