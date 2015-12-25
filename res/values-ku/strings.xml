@@ -121,10 +121,6 @@
   <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
   <string name="sending">ناردن\u2026</string>
   <string name="send_failed">نامه‌ نه‌نێردرا.</string>
-  <plurals name="confirm_delete_conversation">
-    <item quantity="one">سڕینەوەی ئەم گفتوگۆیە?</item>
-    <item quantity="other">سڕینەوەی ئەم گفتوگۆیە?</item>
-  </plurals>
   <string name="confirm_discard_text">وازهێنان له‌م نامه‌یه‌؟</string>
   <string name="loading_conversations">بارکردن\u2026</string>
   <string name="undo">پاشگەزبوونەوە</string>
@@ -262,17 +258,4 @@
   <string name="hide_folders">شاردنەوەی بوخچە</string>
   <string name="help_and_info">یارمەتی</string>
   <string name="feedback">ناردنی تێبینی</string>
-  <array name="reply_choices">
-    <item>@string/reply_choice_yes</item>
-    <item>@string/reply_choice_no</item>
-    <item>@string/reply_choice_ok</item>
-    <item>@string/reply_choice_hehe</item>
-    <item>@string/reply_choice_thanks</item>
-    <item>@string/reply_choice_i_agree</item>
-    <item>@string/reply_choice_nice</item>
-    <item>@string/reply_on_my_way</item>
-    <item>@string/reply_choice_later</item>
-    <item>@string/reply_choice_smiling_face</item>
-    <item>@string/reply_choice_frowning_face</item>
-  </array>
 </resources>

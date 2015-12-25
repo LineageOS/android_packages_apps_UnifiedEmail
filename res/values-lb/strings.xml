@@ -134,28 +134,12 @@
   <string name="unread_string">Konversatioun ongelies</string>
   <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
   <string name="badge_and_subject"><xliff:g>%1$s</xliff:g> <xliff:g>%2$s</xliff:g></string>
-  <plurals name="draft">
-    <item quantity="one">Brouillon</item>
-    <item quantity="other">Brouillonen</item>
-  </plurals>
   <string name="sending">Gëtt geschéckt\u2026</string>
   <string name="message_retrying">Gëtt nees probéiert\u2026</string>
   <string name="message_failed">Feelgeschloen</string>
   <string name="send_failed">De Message gouf net geschéckt.</string>
   <string name="me_object_pronoun">mech</string>
   <string name="me_subject_pronoun">ech</string>
-  <plurals name="confirm_delete_conversation">
-    <item quantity="one">Dës Konversatioun läschen?</item>
-    <item quantity="other">Dës <xliff:g id="count">%1$d</xliff:g> Konversatioune läschen?</item>
-  </plurals>
-  <plurals name="confirm_archive_conversation">
-    <item quantity="one">Dës Konversatioun archivéieren?</item>
-    <item quantity="other">Dës <xliff:g id="count">%1$d</xliff:g> Konversatiounen archivéieren?</item>
-  </plurals>
-  <plurals name="confirm_discard_drafts_conversation">
-    <item quantity="one">Dëse Message verwerfen?</item>
-    <item quantity="other">Dës <xliff:g id="count">%1$d</xliff:g> Messagë verwerfen?</item>
-  </plurals>
   <string name="confirm_discard_text">Dëse Message verwerfen?</string>
   <string name="loading_conversations">Gëtt gelueden\u2026</string>
   <string name="empty_inbox">Alles fäerdeg! Genéiss däin Dag.</string>
@@ -165,68 +149,20 @@
   <string name="empty_folder">Keng E-Mailen hei.</string>
   <string name="getting_messages">Messagë gi gelueden</string>
   <string name="undo">Réckgängeg maachen</string>
-  <plurals name="conversation_unstarred">
-    <item quantity="one">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatioun ewechgeholl</item>
-    <item quantity="other">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatiounen ewechgeholl</item>
-  </plurals>
-  <plurals name="conversation_muted">
-    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; roueg geschalt</item>
-    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; roueg geschalt</item>
-  </plurals>
-  <plurals name="conversation_spammed">
-    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Spam gemellt</item>
-    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Spam gemellt</item>
-  </plurals>
-  <plurals name="conversation_not_spam">
-    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als net Spam gemellt</item>
-    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als net Spam gemellt</item>
-  </plurals>
-  <plurals name="conversation_not_important">
-    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als wichteg markéiert</item>
-    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als wichteg markéiert</item>
-  </plurals>
-  <plurals name="conversation_phished">
-    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Phishing gemellt</item>
-    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Phishing gemellt</item>
-  </plurals>
-  <plurals name="conversation_archived">
-    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; archivéiert</item>
-    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; archivéiert</item>
-  </plurals>
-  <plurals name="conversation_deleted">
-    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; geläscht</item>
-    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; geläscht</item>
-  </plurals>
   <string name="deleted">Geläscht</string>
   <string name="archived">Archivéiert</string>
   <string name="folder_removed">Aus <xliff:g id="folderName">%1$s</xliff:g> geläscht</string>
-  <plurals name="conversation_folder_changed">
-    <item quantity="one">Dossier gewiesselt</item>
-    <item quantity="other">Dossiere gewiesselt</item>
-  </plurals>
   <string name="conversation_folder_moved">Geréckelt an den Dossier <xliff:g id="folderName">%1$s</xliff:g></string>
   <string name="search_results_header">Resultater</string>
   <string name="search_unsupported">D\'Sich ass op dësem Kont net ënnerstëtzt.</string>
   <string name="search_suggestion_desc">Propos: <xliff:g id="suggestion">%s</xliff:g></string>
   <string name="add_label">Dossier dobäisetzen</string>
-  <plurals name="new_incoming_messages">
-    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> neie Message</item>
-    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> nei Messagen</item>
-  </plurals>
   <string name="date_and_view_details"><xliff:g id="date">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Detailer uweisen&lt;/a&gt;</string>
   <string name="hide_details">Detailer verstoppen</string>
   <string name="to_message_header">un: <xliff:g id="recipients">%1$s</xliff:g></string>
   <string name="bcc_header_for_recipient_summary">Bcc:\u0020</string>
   <string name="contact_info_string">Kontakt-Informatioun fir <xliff:g id="name">%1$s</xliff:g> uweisen</string>
   <string name="contact_info_string_default">Kontakt-Informatioun uweisen</string>
-  <plurals name="show_messages_read">
-    <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> méi ale Message ausklappen</item>
-    <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> méi al Messagen ausklappen</item>
-  </plurals>
-  <plurals name="super_collapsed_block_accessibility_announcement">
-    <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> méi ale Message ausgeklappt</item>
-    <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> méi al Messagen ausgeklappt</item>
-  </plurals>
   <string name="from_heading">Vun:</string>
   <string name="replyto_heading">Äntwert-un:</string>
   <string name="to_heading">Un:\u0020</string>
@@ -273,10 +209,6 @@
   <string name="widget_large_unread_count">%d+</string>
   <string name="large_unseen_count"><xliff:g id="count" example="99">%d</xliff:g>+ nei</string>
   <string name="unseen_count"><xliff:g id="count" example="4">%d</xliff:g> nei</string>
-  <plurals name="actionbar_unread_messages">
-    <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> ongelies</item>
-    <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> ongelies</item>
-  </plurals>
   <string name="view_more_conversations">Méi Konversatiounen uweisen</string>
   <string name="loading_conversation">Gëtt gelueden\u2026</string>
   <string name="activity_mailbox_selection">Kont auswielen</string>
@@ -346,10 +278,6 @@
   <string name="notification_action_undo_remove_label">Etikett geläscht</string>
   <string name="notification_action_undo_delete">Geläscht</string>
   <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
-  <plurals name="new_messages">
-    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> neie Message</item>
-    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> nei Messagen</item>
-  </plurals>
   <string name="single_new_message_notification_title"><xliff:g id="sender">%1$s</xliff:g>: <xliff:g id="subject">%2$s</xliff:g></string>
   <string name="silent_ringtone">Roueg</string>
   <string name="preference_removal_action_title">Standardaktioun</string>
@@ -372,10 +300,6 @@
   <string name="empty_spam">Spam eidel maachen</string>
   <string name="empty_trash_dialog_title">Poubelle eidel maachen?</string>
   <string name="empty_spam_dialog_title">Spam eidel maachen?</string>
-  <plurals name="empty_folder_dialog_message">
-    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> Message gëtt permanent geläscht.</item>
-    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> Messagë gi permanent geläscht.</item>
-  </plurals>
   <string name="drawer_open">Navigatiounsläischt opmaachen</string>
   <string name="drawer_close">Navigatiounsläischt zoumaachen</string>
   <string name="conversation_photo_welcome_text">Dréck op d\'Bild vun engem Ofsender fir déi Konversatioun auszewielen.</string>
@@ -395,18 +319,10 @@
   <string name="hide_folders">Dossiere verstoppen</string>
   <string name="print">Drécken</string>
   <string name="print_all">All drécken</string>
-  <plurals name="num_messages">
-    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> Message</item>
-    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> Messagen</item>
-  </plurals>
   <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> um <xliff:g id="time">%2$s</xliff:g></string>
   <string name="draft_to_heading">Brouillon Un:</string>
   <string name="draft_heading">Brouillon</string>
   <string name="quoted_text_hidden_print">Zitéierten Text verstoppt</string>
-  <plurals name="num_attachments">
-    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> Unhank</item>
-    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> Unhäng</item>
-  </plurals>
   <string name="no_subject">(kee Sujet)</string>
   <string name="vacation_responder">Absencenäntwerter</string>
   <string name="preferences_vacation_responder_title">Absencenäntwerter</string>
@@ -448,19 +364,6 @@
   <string name="reply_choice_later">OK, ech melle mech</string>
   <string name="reply_choice_smiling_face">:)</string>
   <string name="reply_choice_frowning_face">:(</string>
-  <array name="reply_choices">
-    <item>@string/reply_choice_yes</item>
-    <item>@string/reply_choice_no</item>
-    <item>@string/reply_choice_ok</item>
-    <item>@string/reply_choice_hehe</item>
-    <item>@string/reply_choice_thanks</item>
-    <item>@string/reply_choice_i_agree</item>
-    <item>@string/reply_choice_nice</item>
-    <item>@string/reply_on_my_way</item>
-    <item>@string/reply_choice_later</item>
-    <item>@string/reply_choice_smiling_face</item>
-    <item>@string/reply_choice_frowning_face</item>
-  </array>
   <string name="preference_header_action_confirmations">Aktiounsbestätegungen</string>
   <string name="preference_confirm_before_delete_title">Virum Läsche bestätegen</string>
   <string name="preference_confirm_before_archive_title">Virum Archivéiere bestätegen</string>
