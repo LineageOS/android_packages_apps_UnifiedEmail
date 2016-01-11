@@ -18,7 +18,7 @@
 <resources>
   <string name="prefDialogTitle_suggestedContactsMode">Modo</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Desativado</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_none">O recurso dos contactos sugeridos está desativado</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">A funcionalidade dos contactos sugeridos está desativada</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recentes</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Só contactos sugeridos recentemente serão selecionáveis</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Todos</string>
