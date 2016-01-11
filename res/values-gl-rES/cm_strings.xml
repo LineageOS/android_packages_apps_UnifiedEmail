@@ -20,4 +20,12 @@
   <string name="prefDialogTitle_suggestedContactsMode_none">Desactivado</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recentes</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Solamente se seleccionarán os contactos suxeridos recentes</string>
+  <string name="preference_header_suggested_contacts">Contactos suxeridos</string>
+  <string name="preference_suggested_contacts_mode">Modo de contactos suxeridos</string>
+  <string name="preference_suggested_contacts_clear_all">Limpar os contactos suxeridos</string>
+  <string name="clear_suggested_contacts_dialog_title">Limpar os contactos suxeridos?</string>
+  <string name="default_time">Normal</string>
+  <string name="custom_time">Personalizado</string>
+  <string name="dialog_delete_title">Eliminar</string>
+  <string name="dialog_delete_message">Eliminar o elemento seleccionado?</string>
 </resources>
