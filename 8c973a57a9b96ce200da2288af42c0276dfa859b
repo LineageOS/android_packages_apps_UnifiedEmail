@@ -46,6 +46,30 @@
       "revId": "8c973a57a9b96ce200da2288af42c0276dfa859b",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1fcbff3d_e093a85b",
+        "filename": "src/com/android/mail/utils/NotificationUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1540,
+      "author": {
+        "id": 1063
+      },
+      "writtenOn": "2016-01-13T19:47:51Z",
+      "side": 1,
+      "message": "Mail agents aren\u0027t supposed to normally generate a \"-- \" line ... see RFC3676, section 4.3.\n\nAnd yeah, HTML mails are going to be next to impossible as there doesn\u0027t seem to be a common standard for the format used there.",
+      "parentUuid": "1fcbff3d_402cfc46",
+      "range": {
+        "startLine": 1540,
+        "startChar": 68,
+        "endLine": 1540,
+        "endChar": 76
+      },
+      "revId": "8c973a57a9b96ce200da2288af42c0276dfa859b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
