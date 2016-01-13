@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1fcbff3d_a0be00fd",
+        "filename": "src/com/android/mail/utils/NotificationUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1540,
+      "author": {
+        "id": 3134
+      },
+      "writtenOn": "2016-01-13T18:12:54Z",
+      "side": 1,
+      "message": "Isn\u0027t this a bit hardoded? I think in multiples cases:\n\n1.- Users with html signatures sended from emails clients (xe my work email signature doesn\u0027t have any separator, because is a html signature). So it will still going to show my signature.\n\n2.- Could we nuked some parts of the message? xe:\n\n\"hello, this is some email copy-- check this out\n--\nJorge Ruesga\"\n\nDon\u0027t this will kill the \"check this out part\" of the message?\nOr am i reding wrong the regexp?",
+      "range": {
+        "startLine": 1540,
+        "startChar": 68,
+        "endLine": 1540,
+        "endChar": 76
+      },
+      "revId": "8c973a57a9b96ce200da2288af42c0276dfa859b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
