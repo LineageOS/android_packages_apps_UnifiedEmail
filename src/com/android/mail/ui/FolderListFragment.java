@@ -38,6 +38,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Space;
 
 import com.android.bitmap.BitmapCache;
 import com.android.bitmap.UnrefedBitmapCache;
@@ -173,6 +174,7 @@ public class FolderListFragment extends ListFragment implements
 
     /** Adapter used by the list that wraps both the folder adapter and the accounts adapter. */
     private MergedAdapter<ListAdapter> mMergedAdapter;
+    private HeaderAdapter mHeaderAdapter;
     /** Adapter containing the list of accounts. */
     private AccountsAdapter mAccountsAdapter;
     /** Adapter containing the list of folders and, optionally, headers and the wait view. */
@@ -363,6 +365,7 @@ public class FolderListFragment extends ListFragment implements
             selectedFolder = currentFolder;
         }
 
+        mHeaderAdapter = new HeaderAdapter();
         mAccountsAdapter = newAccountsAdapter();
         mFooterAdapter = new FooterAdapter();
 
@@ -420,9 +423,10 @@ public class FolderListFragment extends ListFragment implements
 
         mMergedAdapter = new MergedAdapter<>();
         if (mAccountsAdapter != null) {
-            mMergedAdapter.setAdapters(mAccountsAdapter, mFolderAdapter, mFooterAdapter);
+            mMergedAdapter.setAdapters(mHeaderAdapter, mAccountsAdapter,
+                    mFolderAdapter, mFooterAdapter);
         } else {
-            mMergedAdapter.setAdapters(mFolderAdapter, mFooterAdapter);
+            mMergedAdapter.setAdapters(mHeaderAdapter, mFolderAdapter, mFooterAdapter);
         }
 
         mFolderWatcher = new FolderWatcher(mActivity, this);
@@ -442,6 +446,12 @@ public class FolderListFragment extends ListFragment implements
     public void toggleDrawerState() {
         if (mDrawerController != null) {
             mDrawerController.toggleDrawerState();
+        }
+    }
+
+    public void setListTopPadding(int padding) {
+        if (mHeaderAdapter != null) {
+            mHeaderAdapter.setTopPadding(padding);
         }
     }
 
@@ -909,8 +919,9 @@ public class FolderListFragment extends ListFragment implements
             final boolean isSelected =
                     item.isHighlighted(mSelectedFolderUri, mSelectedDrawerItemCategory);
             if (type == DrawerItem.VIEW_FOLDER) {
-                mListView.setItemChecked((mAccountsAdapter != null ?
-                        mAccountsAdapter.getCount() : 0) +
+                mListView.setItemChecked(
+                        (mAccountsAdapter != null ? mAccountsAdapter.getCount() : 0) +
+                        mHeaderAdapter.getCount() +
                         position + mListView.getHeaderViewsCount(), isSelected);
             }
             // If this is the current folder, also check to verify that the unread count
@@ -1298,6 +1309,44 @@ public class FolderListFragment extends ListFragment implements
             if (mMiniDrawerAccountsAdapter != null) {
                 mMiniDrawerAccountsAdapter.setAccounts(getAllAccounts(), mCurrentAccount);
             }
+        }
+    }
+
+    private static class HeaderAdapter extends BaseAdapter {
+        private int mTopPadding;
+
+        public HeaderAdapter() {
+            mTopPadding = 0;
+        }
+
+        public void setTopPadding(int padding) {
+            if (mTopPadding != padding) {
+                mTopPadding = padding;
+                notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return mTopPadding == 0 ? 0 : 1;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final Space space = convertView == null
+                    ? new Space(parent.getContext()) : (Space) convertView;
+            space.setMinimumHeight(mTopPadding);
+            return space;
         }
     }
 
