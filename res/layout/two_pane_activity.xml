@@ -40,7 +40,8 @@
                 android:id="@+id/drawer"
                 android:layout_width="@dimen/two_pane_drawer_width_open"
                 android:layout_height="match_parent"
-                android:layout_gravity="left">
+                android:layout_gravity="left"
+                android:tag="@string/drawer_pullout_tag">
 
                 <include layout="@layout/drawer_fragment"
                     android:layout_width="match_parent"

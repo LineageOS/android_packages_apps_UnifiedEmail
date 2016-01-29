@@ -24,12 +24,14 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import androidx.annotation.LayoutRes;
 import androidx.drawerlayout.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.android.mail.ConversationListContext;
@@ -46,7 +48,8 @@ import com.android.mail.utils.Utils;
  * limited. This controller also does the layout, since the layout is simpler in the one pane case.
  */
 
-public final class OnePaneController extends AbstractActivityController {
+public final class OnePaneController extends AbstractActivityController implements
+        ScrimInsetsFrameLayout.OnInsetsCallback {
     /** Key used to store {@link #mLastConversationListTransactionId} */
     private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
     /** Key used to store {@link #mLastConversationTransactionId}. */
@@ -181,6 +184,10 @@ public final class OnePaneController extends AbstractActivityController {
         // CV is initially GONE on 1-pane (mode changes trigger visibility changes)
         mActivity.findViewById(R.id.conversation_pager).setVisibility(View.GONE);
 
+        ScrimInsetsFrameLayout insetsLayout =
+                (ScrimInsetsFrameLayout) mActivity.findViewById(R.id.drawer_scrim_layout);
+        insetsLayout.setOnInsetsCallback(this);
+
         // The parent class sets the correct viewmode and starts the application off.
         super.onCreate(savedInstanceState);
     }
@@ -218,6 +225,14 @@ public final class OnePaneController extends AbstractActivityController {
         // anymore. Let's blank it out so clients calling getCurrentConversation are not misled.
         if (!ViewMode.isConversationMode(newMode)) {
             setCurrentConversation(null);
+        }
+    }
+
+    @Override
+    public void onInsetsChanged(ScrimInsetsFrameLayout layout, Rect insets) {
+        FolderListFragment ff = getFolderListFragment();
+        if (ff != null) {
+            ff.setListTopPadding(insets.top);
         }
     }
 
