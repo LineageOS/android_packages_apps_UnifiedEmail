@@ -604,8 +604,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * the controller and perform the task immediately on {@link Fragment#onActivityCreated(Bundle)}
      */
     protected FolderListFragment getFolderListFragment() {
-        final String drawerPulloutTag = mActivity.getString(R.string.drawer_pullout_tag);
-        final Fragment fragment = mFragmentManager.findFragmentByTag(drawerPulloutTag);
+        final String folderListTag = mActivity.getString(R.string.folder_list_tag);
+        final Fragment fragment = mFragmentManager.findFragmentByTag(folderListTag);
         if (isValidFragment(fragment)) {
             return (FolderListFragment) fragment;
         }
