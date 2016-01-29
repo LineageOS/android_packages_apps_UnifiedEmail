@@ -1019,6 +1019,8 @@
 
     <!-- String tag identifying the drawer pullout view -->
     <string name="drawer_pullout_tag" translatable="false">drawer_pullout</string>
+    <!-- String tag identifying the folder list fragment -->
+    <string name="folder_list_tag" translatable="false">folder_list</string>
 
     <!-- Menu item that displays the help page. [CHAR LIMIT=50]-->
     <string name="help_and_info">Help</string>
