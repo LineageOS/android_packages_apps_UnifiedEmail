@@ -38,6 +38,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
@@ -105,6 +106,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -124,6 +126,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         AttachmentAddedOrDeletedListener, OnAccountChangedListener,
         LoaderManager.LoaderCallbacks<Cursor>, TextView.OnEditorActionListener,
         FeedbackEnabledActivity {
+
     // Identifiers for which type of composition this is
     public static final int COMPOSE = -1;
     public static final int REPLY = 0;
@@ -229,6 +232,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String MIME_TYPE_VIDEO = "video/*";
 
     private static final String KEY_INNER_SAVED_STATE = "compose_state";
+
+    private static final String ANALYTICS_CATEGORY_ERRORS = "compose_errors";
+
+    private static final String DATA_DIRECTORY_ROOT;
+    static {
+        DATA_DIRECTORY_ROOT = Environment.getDataDirectory().toString();
+    }
 
     /**
      * A single thread for running tasks in the background.
@@ -1570,9 +1580,29 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (extras.containsKey(EXTRA_ATTACHMENTS)) {
                 String[] uris = (String[]) extras.getSerializable(EXTRA_ATTACHMENTS);
                 for (String uriString : uris) {
+                    if (uriString == null) {
+                        continue;
+                    }
                     final Uri uri = Uri.parse(uriString);
                     long size = 0;
                     try {
+                        if ("file".equals(uri.getScheme())) {
+                            // We don't allow files from /data, since they can be hard-linked to
+                            // Email private data.
+                            final File file = new File(uri.getPath());
+                            try {
+                                final String filePath = file.getCanonicalPath();
+                                if (filePath.startsWith(DATA_DIRECTORY_ROOT)) {
+                                    Analytics.getInstance().sendEvent(ANALYTICS_CATEGORY_ERRORS,
+                                            "send_intent_attachment", "data_dir", 0);
+                                    throw new AttachmentFailureException("Not allowed to attach "
+                                        + "file:///data/[REDACTED] in application internal data");
+                                }
+                            } catch (IOException e) {
+                                throw new AttachmentFailureException("Failed to get file path", e);
+                            }
+                        }
+
                         final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
                         size = mAttachmentsView.addAttachment(mAccount, a);
 
