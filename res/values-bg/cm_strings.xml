@@ -34,7 +34,7 @@
   <string name="default_time">Нормално</string>
   <string name="custom_time">По избор</string>
   <string name="dialog_delete_title">Изтриване</string>
-  <string name="dialog_delete_message">Премахване на избрания елемент?</string>
+  <string name="dialog_delete_message">Да премахна ли избраният елемент?</string>
   <string name="pref_lights_default">Стандартен</string>
   <string name="pulse_length_always_on">Винаги включен</string>
   <string name="pulse_length_very_short">Много кратко</string>
