@@ -22,7 +22,7 @@
   <string name="prefDialogTitle_suggestedContactsMode_recents">Kürzlich</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Nur kürzlich vorgeschlagene Kontakte sind wählbar</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Alle</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Alle vorgeschlagene Kontakte sind wählbar</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Alle vorgeschlagene Kontakte sind wählbar.</string>
   <string name="preference_header_suggested_contacts">Vorgeschlagene Kontakte</string>
   <string name="preference_suggested_contacts_mode">Modus \"Vorgeschlagene Kontakte\"</string>
   <string name="preference_suggested_contacts_clear_all">Vorgeschlagene Kontakte löschen</string>
