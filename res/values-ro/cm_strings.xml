@@ -29,6 +29,7 @@
   <string name="suggested_contacts_cleared">Contactele recomandate șterse.</string>
   <string name="clear_suggested_contacts_dialog_title">Șterge contactele recomandate?</string>
   <string name="clear_suggested_contacts_dialog_message">Toate contactele recomandate stocate anterior vor fi eliminate.</string>
+  <string name="edit_light_settings">Setări de luminozitate a dosarului</string>
   <string name="pulse_speed_title">Durată și viteză puls</string>
   <string name="default_time">Normal</string>
   <string name="custom_time">Personalizat</string>
