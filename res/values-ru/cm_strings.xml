@@ -20,9 +20,9 @@
   <string name="prefDialogTitle_suggestedContactsMode_none">Выключен</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">Предлагаемые контакты отключены</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Недавние</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Будут доступны для выбора только недавно предложенные контакты</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Позволяет выбрать только недавно предложенные контакты</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Все</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Будут доступны для выбора все предложенные контакты</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Позволяет выбрать все предложенные контакты</string>
   <string name="preference_header_suggested_contacts">Предлагаемые контакты</string>
   <string name="preference_suggested_contacts_mode">Режим предлагаемых контактов</string>
   <string name="preference_suggested_contacts_clear_all">Очистить предлагаемые контакты</string>
@@ -34,7 +34,7 @@
   <string name="default_time">Средне</string>
   <string name="custom_time">Не задано</string>
   <string name="dialog_delete_title">Удалить</string>
-  <string name="dialog_delete_message">Настройки индикатора будут удалены.</string>
+  <string name="dialog_delete_message">Удалить выбранный элемент?</string>
   <string name="pref_lights_default">По умолчанию</string>
   <string name="pulse_length_always_on">Всегда вкл.</string>
   <string name="pulse_length_very_short">Очень коротко</string>
