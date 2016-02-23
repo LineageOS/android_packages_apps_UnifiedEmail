@@ -191,6 +191,8 @@ public class ComposeActivity extends ActionBarActivity
     private static final String EXTRA_CC = "cc";
     private static final String EXTRA_BCC = "bcc";
 
+    public static final String ANALYTICS_CATEGORY_ERRORS = "compose_errors";
+
     /**
      * An optional extra containing a {@link ContentValues} of values to be added to
      * {@link SendOrSaveMessage#mValues}.
@@ -275,9 +277,8 @@ public class ComposeActivity extends ActionBarActivity
     @VisibleForTesting
     public static final AtomicInteger PENDING_SEND_OR_SAVE_TASKS_NUM = new AtomicInteger(0);
 
-    // String representing the uri of the data directory (used for attachment uri checking).
+    /* Path of the data directory (used for attachment uri checking). */
     private static final String DATA_DIRECTORY_ROOT;
-    private static final String ALTERNATE_DATA_DIRECTORY_ROOT;
 
     // Static initializations
     static {
@@ -286,7 +287,6 @@ public class ComposeActivity extends ActionBarActivity
         SEND_SAVE_TASK_HANDLER = new Handler(handlerThread.getLooper());
 
         DATA_DIRECTORY_ROOT = Environment.getDataDirectory().toString();
-        ALTERNATE_DATA_DIRECTORY_ROOT = DATA_DIRECTORY_ROOT + DATA_DIRECTORY_ROOT;
     }
 
     private final Rect mRect = new Rect();
@@ -1143,7 +1143,8 @@ public class ComposeActivity extends ActionBarActivity
                 TextUtils.isEmpty(htmlInPlainText)) {
             LogUtils.w(LOG_TAG, "FAILED HTML CONVERSION: from %d to %d", message.bodyText.length(),
                     htmlInPlainText.length());
-            Analytics.getInstance().sendEvent("errors", "failed_html_conversion", null, 0);
+            Analytics.getInstance().sendEvent(ANALYTICS_CATEGORY_ERRORS,
+                    "failed_html_conversion", null, 0);
             message.bodyHtml = "<p>" + message.bodyText + "</p>";
         }
         message.embedsExternalResources = false;
@@ -1921,35 +1922,14 @@ public class ComposeActivity extends ActionBarActivity
             try {
                 if (uri != null) {
                     if ("file".equals(uri.getScheme())) {
+                        // We must not allow files from /data, even from our process.
                         final File f = new File(uri.getPath());
-                        // We should not be attaching any files from the data directory UNLESS
-                        // the data directory is part of the calling process.
                         final String filePath = f.getCanonicalPath();
                         if (filePath.startsWith(DATA_DIRECTORY_ROOT)) {
-                            final String callingPackage = getCallingPackage();
-                            if (callingPackage == null) {
-                                showErrorToast(getString(R.string.attachment_permission_denied));
-                                continue;
-                            }
-
-                            // So it looks like the data directory are usually /data/data, but
-                            // DATA_DIRECTORY_ROOT is only /data.. so let's check for both
-                            final String pathWithoutRoot;
-                            // We add 1 to the length for the additional / before the package name.
-                            if (filePath.startsWith(ALTERNATE_DATA_DIRECTORY_ROOT)) {
-                                pathWithoutRoot = filePath.substring(
-                                        ALTERNATE_DATA_DIRECTORY_ROOT.length() + 1);
-                            } else {
-                                pathWithoutRoot = filePath.substring(
-                                        DATA_DIRECTORY_ROOT.length() + 1);
-                            }
-
-                            // If we are trying to access a data package that's not part of the
-                            // calling package, show error toast and ignore this attachment.
-                            if (!pathWithoutRoot.startsWith(callingPackage)) {
-                                showErrorToast(getString(R.string.attachment_permission_denied));
-                                continue;
-                            }
+                          showErrorToast(getString(R.string.attachment_permission_denied));
+                          Analytics.getInstance().sendEvent(ANALYTICS_CATEGORY_ERRORS,
+                                  "send_intent_attachment", "data_dir", 0);
+                          continue;
                         }
                     }
                     if (!handleSpecialAttachmentUri(uri)) {
