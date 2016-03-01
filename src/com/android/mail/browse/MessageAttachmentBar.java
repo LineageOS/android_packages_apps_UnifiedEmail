@@ -77,6 +77,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     private final AttachmentActionHandler mActionHandler;
     private boolean mSaveClicked;
     private Account mAccount;
+    private final static String FORMAT_RAW = "RAW";
 
     private final Runnable mUpdateRunnable = new Runnable() {
             @Override
@@ -346,8 +347,16 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
         final String contentType = mAttachment.getContentType();
+
+        Uri contentUri = mAttachment.contentUri;
+        String contentUriString = mAttachment.contentUri.toString();
+        if (contentUriString.endsWith(FORMAT_RAW)) {
+            contentUri = Uri.parse(contentUriString.replace(FORMAT_RAW,
+                    mAttachment.getName()));
+        }
+
         Utils.setIntentDataAndTypeAndNormalize(
-                intent, mAttachment.contentUri, contentType);
+                intent, contentUri, contentType);
 
         // For EML files, we want to open our dedicated
         // viewer rather than let any activity open it.
