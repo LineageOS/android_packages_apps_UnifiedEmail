@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources>
+  <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Način</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Onemogočeno</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">Značilnost predlaganih stikov je onemogočena</string>
@@ -29,6 +30,7 @@
   <string name="suggested_contacts_cleared">Predlagani stiki počiščeni.</string>
   <string name="clear_suggested_contacts_dialog_title">Počisti predlagane stike?</string>
   <string name="clear_suggested_contacts_dialog_message">Vsi prej shranjeni predlagani stiki bodo odstranjeni.</string>
+  <!-- Notification lights dialogs -->
   <string name="edit_light_settings">Svetlobne nastavitve map</string>
   <string name="pulse_speed_title">Dolžina in hitrost utripanja</string>
   <string name="default_time">Običajni</string>
@@ -36,6 +38,7 @@
   <string name="dialog_delete_title">Izbriši</string>
   <string name="dialog_delete_message">Odstrani izbrani predmet?</string>
   <string name="pref_lights_default">Privzeto</string>
+  <!-- Values for the notification lights pulse spinners -->
   <string name="pulse_length_always_on">Vedno vklopljena</string>
   <string name="pulse_length_very_short">Zelo kratka</string>
   <string name="pulse_length_short">Kratka</string>
