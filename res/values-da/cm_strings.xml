@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources>
+  <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Tilstand</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Deaktiveret</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">Funktion til at foreslå kontakter er deaktiveret</string>
@@ -29,6 +30,7 @@
   <string name="suggested_contacts_cleared">Foreslåede kontakter slettet.</string>
   <string name="clear_suggested_contacts_dialog_title">Slet foreslåede kontakter?</string>
   <string name="clear_suggested_contacts_dialog_message">Alle de foreslåede kontakter, der tidligere er gemt, vil blive slettet.</string>
+  <!-- Notification lights dialogs -->
   <string name="edit_light_settings">Lysindstillinger for mappe</string>
   <string name="pulse_speed_title">Blinklængde og hastighed</string>
   <string name="default_time">Normal</string>
@@ -36,6 +38,7 @@
   <string name="dialog_delete_title">Slet</string>
   <string name="dialog_delete_message">Fjern valgte element?</string>
   <string name="pref_lights_default">Standard</string>
+  <!-- Values for the notification lights pulse spinners -->
   <string name="pulse_length_always_on">Altid til</string>
   <string name="pulse_length_very_short">Meget kort</string>
   <string name="pulse_length_short">Kort</string>

@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources>
+  <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Modo</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Desactivado</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">La función de contactos sugeridos está desactivada</string>
@@ -29,4 +30,8 @@
   <string name="suggested_contacts_cleared">Se limpiaron los contactos sugeridos.</string>
   <string name="clear_suggested_contacts_dialog_title">¿Limpiar contactos sugeridos?</string>
   <string name="clear_suggested_contacts_dialog_message">Se quitarán todos los contactos sugeridos almacenados previamente.</string>
+  <!-- Notification lights dialogs -->
+  <string name="pulse_speed_title">Duración y velocidad de pulsación</string>
+  <string name="pref_lights_default">Predeterminada</string>
+  <!-- Values for the notification lights pulse spinners -->
 </resources>
