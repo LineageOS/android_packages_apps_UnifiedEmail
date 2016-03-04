@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources>
+  <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Reĝimo</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Malŝaltita</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">Sugesto de kontaktuloj estas malŝaltita</string>
@@ -29,6 +30,7 @@
   <string name="suggested_contacts_cleared">Sugestitaj kontaktuloj forviŝitaj.</string>
   <string name="clear_suggested_contacts_dialog_title">Ĉu forviŝi sugestitajn kontaktulojn?</string>
   <string name="clear_suggested_contacts_dialog_message">Ĉiuj konservitaj sugestoj estos forigitaj.</string>
+  <!-- Notification lights dialogs -->
   <string name="edit_light_settings">Agordoj de dosierujaj sciigoj</string>
   <string name="pulse_speed_title">Pulsa frekvenco kaj rapideco</string>
   <string name="default_time">Normala</string>
@@ -36,6 +38,7 @@
   <string name="dialog_delete_title">Forigi</string>
   <string name="dialog_delete_message">Ĉu forigi elektitan eron?</string>
   <string name="pref_lights_default">Defaŭlto</string>
+  <!-- Values for the notification lights pulse spinners -->
   <string name="pulse_length_always_on">Ĉiam aktiva</string>
   <string name="pulse_length_very_short">Tre mallonga</string>
   <string name="pulse_length_short">Mallonga</string>

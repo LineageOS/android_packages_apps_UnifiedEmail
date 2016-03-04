@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources>
+  <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">รูปแบบ</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">ปิดแล้ว</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">คุณสมบัติรายชื่อติดต่อที่แนะนำถูกปิดใช้งาน</string>
@@ -29,6 +30,7 @@
   <string name="suggested_contacts_cleared">ล้างรายชื่อติดต่อที่แนะนำแล้ว</string>
   <string name="clear_suggested_contacts_dialog_title">ล้างรายชื่อติดต่อที่แนะนำหรือไม่</string>
   <string name="clear_suggested_contacts_dialog_message">รายชื่อติดต่อแนะนำทั้งหมดที่จัดเก็บไว้ก่อนหน้าจะถูกลบ</string>
+  <!-- Notification lights dialogs -->
   <string name="edit_light_settings">การตั้งค่าแสงของโฟลเดอร์</string>
   <string name="pulse_speed_title">ความเร็วและระยะเวลาการกระพริบ</string>
   <string name="default_time">ปกติ</string>
@@ -36,6 +38,7 @@
   <string name="dialog_delete_title">ลบ</string>
   <string name="dialog_delete_message">ลบรายการที่เลือกหรือไม่</string>
   <string name="pref_lights_default">ค่าเริ่มต้น</string>
+  <!-- Values for the notification lights pulse spinners -->
   <string name="pulse_length_always_on">เปิดตลอด</string>
   <string name="pulse_length_very_short">สั้นมาก</string>
   <string name="pulse_length_short">สั้น</string>
