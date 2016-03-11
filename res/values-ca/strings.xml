@@ -245,7 +245,7 @@
     <string name="hide_elided" msgid="5768235486834692733">"▼ Amaga el text citat"</string>
     <string name="message_invite_title" msgid="5985161025144867256">"Invitació del calendari"</string>
     <string name="message_invite_calendar_view" msgid="9181966650840809197">"Mostra-ho al calendari"</string>
-    <string name="message_invite_label_attending" msgid="4194264767870003397">"Hi assistireu?"</string>
+    <string name="message_invite_label_attending" msgid="4194264767870003397">"Hi aniràs?"</string>
     <string name="message_invite_accept" msgid="8002758842580134835">"Sí"</string>
     <string name="message_invite_tentative" msgid="3199418731566655887">"Potser"</string>
     <string name="message_invite_decline" msgid="6331040872447290777">"No"</string>
@@ -386,7 +386,7 @@
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"Mantén premuda una conversa per seleccionar-la i, a continuació, toca\'n més per seleccionar-les."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"Icona de la carpeta"</string>
     <string name="add_account" msgid="5905863370226612377">"Afegeix un compte"</string>
-    <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Ignora el consell"</string>
+    <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Omet el consell"</string>
     <string name="auto_sync_off" msgid="3691189864057581214">"La sincronització automàtica està desactivada. Toqueu aquí per activar-la."</string>
     <string name="account_sync_off" msgid="5720018952998097061">"La sincronització del compte està desactivada. Activeu-la a &lt;a href=\'http://www.example.com\'&gt;Configuració del compte.&lt;/a&gt;"</string>
     <string name="unsent_messages_in_outbox" msgid="146722891559469589">"<xliff:g id="NUMBER">%1$s</xliff:g> missatges no enviats a <xliff:g id="OUTBOX">%2$s</xliff:g>"</string>

@@ -412,8 +412,8 @@
     <item quantity="other" msgid="5422167728480739361">"<xliff:g id="COUNT">%1$d</xliff:g> прилога"</item>
   </plurals>
     <string name="no_subject" msgid="5622708348540036959">"(без наслова)"</string>
-    <string name="vacation_responder" msgid="5570132559074523806">"Аутоматски одговор"</string>
-    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"Аутоматски одговор"</string>
+    <string name="vacation_responder" msgid="5570132559074523806">"Одговор на одмору"</string>
+    <string name="preferences_vacation_responder_title" msgid="2268482117730576123">"Одговор на одмору"</string>
     <string name="vacation_responder_body_hint_text" msgid="9087613123105158494">"Порука"</string>
     <string name="send_to_contacts_text" msgid="124432913980620545">"Пошаљи само мојим контактима"</string>
     <string name="send_to_domain_text" msgid="5064559546745918393">"Пошаљи само на <xliff:g id="DOMAIN">%1$s</xliff:g>"</string>
@@ -424,8 +424,8 @@
     <string name="custom_date" msgid="5794846334232367838">"Прилагођено"</string>
     <string name="date_none" msgid="1061426502665431412">"Нема"</string>
     <string name="discard_changes" msgid="5699760550972324746">"Желите ли да одбаците промене?"</string>
-    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"Промене аутоматског одговора су сачуване"</string>
-    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"Промене аутоматског одговора су одбачене"</string>
+    <string name="vacation_responder_changes_saved" msgid="91448817268121249">"Промене одговора на одмору су сачуване"</string>
+    <string name="vacation_responder_changes_discarded" msgid="21756037735539983">"Промене одговора на одмору су одбачене"</string>
     <string name="vacation_responder_off" msgid="4429909341193366667">"Искључено"</string>
     <string name="vacation_responder_on" msgid="4913238379320882449">"Укључено од <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="vacation_responder_on_with_end_date" msgid="4360941815371475955">"Укључено од <xliff:g id="START_DATE">%1$s</xliff:g> до <xliff:g id="END_DATE">%2$s</xliff:g>"</string>

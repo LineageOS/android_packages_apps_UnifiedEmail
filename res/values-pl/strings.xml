@@ -80,7 +80,7 @@
     <string name="menu_show_original" msgid="2330398228979616661">"Przywróć automatyczne wymiary"</string>
     <string name="menu_settings" msgid="7993485401501778040">"Ustawienia"</string>
     <string name="menu_search" msgid="1949652467806052768">"Szukaj"</string>
-    <string name="menu_toggle_drawer" msgid="8653049392208282481">"Włącz/wyłącz panel"</string>
+    <string name="menu_toggle_drawer" msgid="8653049392208282481">"Włącz/wyłącz szufladę"</string>
     <string name="drawer_title" msgid="3766219846644975778">"Nawigacja"</string>
     <string name="mark_important" msgid="8781680450177768820">"Oznacz jako ważne"</string>
     <string name="mark_not_important" msgid="3342258155408116917">"Oznacz jako mało ważne"</string>
@@ -380,8 +380,8 @@
     <item quantity="one" msgid="3315412388217832914">"<xliff:g id="COUNT">%1$d</xliff:g> wiadomość zostanie trwale usunięta."</item>
     <item quantity="other" msgid="263840304486020101">"Liczba wiadomości, które zostaną trwale usunięte: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
-    <string name="drawer_open" msgid="2285557278907103851">"Otwórz panel nawigacji"</string>
-    <string name="drawer_close" msgid="2065829742127544297">"Zamknij panel nawigacji"</string>
+    <string name="drawer_open" msgid="2285557278907103851">"Otwórz szufladę nawigacji"</string>
+    <string name="drawer_close" msgid="2065829742127544297">"Zamknij szufladę nawigacji"</string>
     <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Kliknij zdjęcie nadawcy, by wybrać wątek."</string>
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"Kliknij i przytrzymaj, by zaznaczyć jeden wątek, a następnie kliknij, by zaznaczyć więcej."</string>
     <string name="folder_icon_desc" msgid="6272938864914794739">"Ikona folderu"</string>

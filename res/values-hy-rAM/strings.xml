@@ -76,7 +76,7 @@
     <string name="menu_change_folders" msgid="2194946192901276625">"Փոխել պանակները"</string>
     <string name="menu_move_to" msgid="7948877550284452830">"Տեղափոխել՝"</string>
     <string name="menu_move_to_inbox" msgid="258554178236001444">"Տեղափոխել Մուտքի արկղ"</string>
-    <string name="menu_manage_folders" msgid="8486398523679534519">"Պանակի կարգավորումներ"</string>
+    <string name="menu_manage_folders" msgid="8486398523679534519">"Թղթապանակի կարգավորումներ"</string>
     <string name="menu_show_original" msgid="2330398228979616661">"Հետադարձել ավտոչափավորումը"</string>
     <string name="menu_settings" msgid="7993485401501778040">"Կարգավորումներ"</string>
     <string name="menu_search" msgid="1949652467806052768">"Որոնել"</string>
@@ -384,7 +384,7 @@
     <string name="drawer_close" msgid="2065829742127544297">"Փակել նավարկման դարակը"</string>
     <string name="conversation_photo_welcome_text" msgid="836483155429003787">"Հպեք ուղարկողի պատկերը` ընտրելու այդ խոսակցությունը:"</string>
     <string name="long_press_to_select_tip" msgid="1660881999120625177">"Հպեք &amp; պահեք՝ մեկ խոսակցություն ընտրելու համար, այնուհետ հպեք` ավելին ընտրելու համար:"</string>
-    <string name="folder_icon_desc" msgid="6272938864914794739">"Պանակի պատկերակ"</string>
+    <string name="folder_icon_desc" msgid="6272938864914794739">"Թղթապանակի պատկերակ"</string>
     <string name="add_account" msgid="5905863370226612377">"Ավելացնել հաշիվ"</string>
     <string name="dismiss_tip_hover_text" msgid="5400049020835024519">"Անտեսել հուշումը"</string>
     <string name="auto_sync_off" msgid="3691189864057581214">"Ինքնուրույն համաժամեցումն անջատված է: Միացնելու համար հպեք:"</string>

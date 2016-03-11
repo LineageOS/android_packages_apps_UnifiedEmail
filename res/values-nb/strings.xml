@@ -433,7 +433,7 @@
     <string name="view_entire_message" msgid="823281796655014454">"Se hele e-posten"</string>
     <string name="eml_loader_error_toast" msgid="6577383216635400167">"Kan ikke åpne denne filen"</string>
     <string name="help_and_info" msgid="3708286489943154681">"Hjelp"</string>
-    <string name="help_and_feedback" msgid="7211458338163287670">"Hjelp og tilbakemelding"</string>
+    <string name="help_and_feedback" msgid="7211458338163287670">"Hjelp og tilbakemeldinger"</string>
     <string name="feedback" msgid="204247008751740034">"Send tilbakemelding"</string>
     <string name="copyright" msgid="3121335168340432582">"©<xliff:g id="YEAR">%1$d</xliff:g> Google Inc."</string>
     <string name="version" msgid="1161745345056656547">"<xliff:g id="APP_NAME">%1$s</xliff:g> versjon <xliff:g id="VERSION">%2$s</xliff:g>"</string>
@@ -457,7 +457,7 @@
     <string name="preference_confirm_before_delete_title" msgid="7563587174619033835">"Bekreft før sletting"</string>
     <string name="preference_confirm_before_archive_title" msgid="7318645995655875718">"Bekreft før arkivering"</string>
     <string name="preference_confirm_before_send_title" msgid="4136585783513077039">"Bekreft før sending"</string>
-    <string name="preferences_conversation_mode_title" msgid="389352009651720838">"Tilpass meldinger automatisk"</string>
+    <string name="preferences_conversation_mode_title" msgid="389352009651720838">"Automatisk tilpassing"</string>
     <string name="preferences_conversation_mode_summary" msgid="5730999743867653106">"Krymp e-poster slik at de passer til skjermen"</string>
     <string name="preferences_disable_snap_headers_title" msgid="7257824136988429629">"E-postalternativer"</string>
   <string-array name="prefSummaries_snapHeader">
