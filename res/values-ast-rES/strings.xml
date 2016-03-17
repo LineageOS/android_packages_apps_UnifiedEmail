@@ -263,6 +263,12 @@
   <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
   <string name="badge_and_subject"><xliff:g>%1$s</xliff:g> <xliff:g>%2$s</xliff:g></string>
   <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
+  <plurals name="draft">
+    <!-- Title of the screen when there is exactly one draft -->
+    <item quantity="one">Borrador</item>
+    <!-- Title of the screen when there are more than one draft -->
+    <item quantity="other">Borradores</item>
+  </plurals>
   <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
   <string name="sending">Unviando...</string>
   <!-- Message displayed in the outgoing message list item when the message failed to sent and is being retried [CHAR LIMIT=20] -->
@@ -277,6 +283,24 @@
   <!-- String used to represent "me"/"I" when used as an subject pronoun. This string is use when
          showing the list of senders for a conversation list item. [CHAR LIMIT=15] -->
   <string name="me_subject_pronoun">min</string>
+  <plurals name="confirm_delete_conversation">
+    <!-- Dialog message to confirm deletion of one conversation -->
+    <item quantity="one">¿Desaniciar esta conversación?</item>
+    <!-- Dialog message to confirm deletion of several conversations -->
+    <item quantity="other">¿Desaniciar estes <xliff:g id="COUNT">%1$d</xliff:g> conversaciones?</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <!-- Dialog message to confirm archival of one conversation -->
+    <item quantity="one">¿Archivar esta conversación?</item>
+    <!-- Dialog message to confirm archival of several conversations -->
+    <item quantity="other">¿Archivar estes <xliff:g id="COUNT">%1$d</xliff:g> conversaciones?</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <!-- Dialog message to confirm discarding a single draft message [CHAR LIMIT=50] -->
+    <item quantity="one">¿Quies descartar esti mensaxe?</item>
+    <!-- Dialog message to confirm discarding many draft messages [CHAR LIMIT=50] -->
+    <item quantity="other">Descartar estos <xliff:g id="count">%1$d</xliff:g> mensaxes?</item>
+  </plurals>
   <!-- Dialog text: confirm discard -->
   <string name="confirm_discard_text">¿Quies descartar esti mensaxe?</string>
   <!-- Conversation list shared between the Activity and Widget -->
@@ -421,6 +445,11 @@
   <string name="large_unseen_count"><xliff:g id="count" example="99">%d</xliff:g>+ new</string>
   <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
   <string name="unseen_count"><xliff:g id="count" example="4">%d</xliff:g> new</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="one"><xliff:g id="COUNT">%1$d</xliff:g> ensin lleer</item>
+    <!-- String for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
+    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> ensin lleer</item>
+  </plurals>
   <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
   <string name="view_more_conversations">Ver más conversaciones</string>
   <!-- Displayed while we load a conversation. [CHAR LIMIT=100] -->
@@ -574,6 +603,10 @@
   <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
   <string name="label_notification_ticker">"<xliff:g id="LABEL">%s</xliff:g>: <xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
   <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
+  <plurals name="new_messages">
+    <item quantity="one"><xliff:g id="COUNT">%1$d</xliff:g> mensaxes nuevos</item>
+    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> mensaxes nuevos</item>
+  </plurals>
   <!-- Format string used when displaying the title of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
   <string name="single_new_message_notification_title"><xliff:g id="SENDER">%1$s</xliff:g>: <xliff:g id="SUBJECT">%2$s</xliff:g></string>
   <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
@@ -604,6 +637,10 @@
   <!-- Dialog title for empty spam confirmation dialog [CHAR LIMIT=100] -->
   <string name="empty_spam_dialog_title">¿Vaciar carpeta de spam?</string>
   <!-- Dialog message for empty folder confirmation dialog [CHAR LIMIT=300] -->
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one">Va desaniciase dafechu <xliff:g id="COUNT">%1$d</xliff:g> mensaxe.</item>
+    <item quantity="other">Van desaniciase dafechu <xliff:g id="COUNT">%1$d</xliff:g> mensaxes.</item>
+  </plurals>
   <!-- Strings used for accessibility for the items that toggles the drawer action  -->
   <string name="drawer_open">Abrir control de navegación</string>
   <string name="drawer_close">Zarrar control de navegación</string>
@@ -645,6 +682,10 @@
   <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
   <string name="print_all">Impretar too</string>
   <!-- Number of messages in a conversation [CHAR LIMIT=30]-->
+  <plurals name="num_messages">
+    <item quantity="one"><xliff:g id="COUNT">%1$d</xliff:g> mensaxe</item>
+    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> mensaxes</item>
+  </plurals>
   <!-- Display format of an email recipient, displayed in printed message details [CHAR LIMIT=10] -->
   <!-- Shown to display the date of the message [CHAR LIMIT=50] -->
   <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> at <xliff:g id="time">%2$s</xliff:g></string>
@@ -655,6 +696,10 @@
   <!-- Shown to inform the user that the quoted text for this message has been hidden. [CHAR LIMIT=50] -->
   <string name="quoted_text_hidden_print">Testu citáu anubríu</string>
   <!-- Number of attachments in a message [CHAR LIMIT=30]-->
+  <plurals name="num_attachments">
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> axuntu</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> axuntos</item>
+  </plurals>
   <!-- Provider name for widgets -->
   <!-- Title to display when an email has no subject. [CHAR LIMIT=50]-->
   <string name="no_subject">(Ensin asuntu)</string>
