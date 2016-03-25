@@ -1913,6 +1913,15 @@ public class ComposeActivity extends ActionBarActivity
     }
 
     /**
+     * @return the authority of EmailProvider for this app. should be overridden in concrete
+     * app implementations. can't be known here because this project doesn't know about that sort
+     * of thing.
+     */
+    protected String getEmailProviderAuthority() {
+        throw new UnsupportedOperationException("unimplemented, EmailProvider unknown");
+    }
+
+    /**
      * Helper function to handle a list of uris to attach.
      * @return the total size of all successfully attached files.
      */
@@ -1921,7 +1930,7 @@ public class ComposeActivity extends ActionBarActivity
         for (Uri uri : uris) {
             try {
                 if (uri != null) {
-                    if ("file".equals(uri.getScheme())) {
+                    if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
                         // We must not allow files from /data, even from our process.
                         final File f = new File(uri.getPath());
                         final String filePath = f.getCanonicalPath();
@@ -1931,7 +1940,16 @@ public class ComposeActivity extends ActionBarActivity
                                   "send_intent_attachment", "data_dir", 0);
                           continue;
                         }
+                    } else if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+                        // disallow attachments from our own EmailProvider (b/27308057)
+                        if (getEmailProviderAuthority().equals(uri.getAuthority())) {
+                            showErrorToast(getString(R.string.attachment_permission_denied));
+                            Analytics.getInstance().sendEvent(ANALYTICS_CATEGORY_ERRORS,
+                                    "send_intent_attachment", "email_provider", 0);
+                            continue;
+                        }
                     }
+
                     if (!handleSpecialAttachmentUri(uri)) {
                         final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
                         attachments.add(a);
