@@ -16,9 +16,10 @@
      limitations under the License.
 -->
 <resources>
+  <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Mode</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Désactivé</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_none">La suggestion de contacts est désactivée</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">La fonctionnalité de suggestion de contacts est désactivée</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Récents</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Seuls les contacts récemment suggérés seront sélectionnables</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Tous</string>
@@ -29,19 +30,21 @@
   <string name="suggested_contacts_cleared">Contacts suggérés effacés.</string>
   <string name="clear_suggested_contacts_dialog_title">Effacer les contacts suggérés ?</string>
   <string name="clear_suggested_contacts_dialog_message">Tous les contacts suggérés précédemment stockés seront supprimés.</string>
+  <!-- Notification lights dialogs -->
   <string name="edit_light_settings">Paramètres du voyant pour le dossier</string>
-  <string name="pulse_speed_title">Durée d\'impulsion et vitesse</string>
+  <string name="pulse_speed_title">Durée et vitesse du clignotement</string>
   <string name="default_time">Normale</string>
   <string name="custom_time">Personnalisée</string>
   <string name="dialog_delete_title">Supprimer</string>
   <string name="dialog_delete_message">Supprimer l\'élément sélectionné ?</string>
   <string name="pref_lights_default">Par défaut</string>
-  <string name="pulse_length_always_on">Toujours allumée</string>
+  <!-- Values for the notification lights pulse spinners -->
+  <string name="pulse_length_always_on">Toujours allumé</string>
   <string name="pulse_length_very_short">Très courte</string>
-  <string name="pulse_length_short">Court</string>
-  <string name="pulse_length_normal">Normal</string>
-  <string name="pulse_length_long">Long</string>
-  <string name="pulse_length_very_long">Très long</string>
+  <string name="pulse_length_short">Courte</string>
+  <string name="pulse_length_normal">Normale</string>
+  <string name="pulse_length_long">Longue</string>
+  <string name="pulse_length_very_long">Très longue</string>
   <string name="pulse_speed_very_fast">Très rapide</string>
   <string name="pulse_speed_fast">Rapide</string>
   <string name="pulse_speed_normal">Normale</string>

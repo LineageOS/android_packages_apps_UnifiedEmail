@@ -17,152 +17,370 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <!-- Names of packages and authorities that are common to all apps
+    and read from resources -->
+  <!-- Layout tests strings -->
+  <!-- Compose -->
+  <!-- Shown in Compose; the sender of the message [CHAR LIMIT=10] -->
+  <!-- Shown in Compose; the recipient(s) of the message [CHAR LIMIT=10] -->
   <string name="to">قوبۇللىغۇچى</string>
+  <!-- Shown in Compose; the cc recipient(s) of the message [CHAR LIMIT=10] -->
   <string name="cc">كۆچۈرۈپ يوللا</string>
+  <!-- Shown in Compose; the bcc recipient(s) of the message [CHAR LIMIT=10] -->
   <string name="bcc">مەخپىي كۆچۈرۈپ يوللا</string>
+  <!-- Shown in Compose; the subject of the message [CHAR LIMIT=100] -->
   <string name="subject_hint">تېما</string>
+  <!-- Shown in Compose; the body of the message [CHAR LIMIT=100] -->
   <string name="body_hint">يېڭى تورخەت</string>
+  <!--  Compose screen button. Add an attachment to this message [CHAR LIMIT=20] -->
   <string name="add_file_attachment">قوشۇلما ھۆججەت</string>
+  <!--  Compose screen button. Add a photo attachment to this message [CHAR LIMIT=20] -->
   <string name="add_photo_attachment">قوشۇلما رەسىم</string>
+  <!-- Stub string for attaching from a service. Sub-apps should override this. -->
+  <!-- The actual string value doesn't matter, it should never appear. -->
+  <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
   <string name="save_draft">دەسلەپكى نۇسخا ساقلا</string>
+  <!--  Button name: discard this message [CHAR LIMIT=15] -->
   <string name="discard">تاشلىۋەت</string>
+  <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
   <string name="compose">يېڭى ئۇچۇر</string>
+  <!-- The action bar title for the default compose mode [CHAR LIMIT=10] -->
+  <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
   <string-array name="compose_modes">
+    <!-- Reply -->
     <item>جاۋاب قايتۇر</item>
+    <!-- Reply all -->
     <item>ھەممىگە جاۋاپ</item>
+    <!-- Forward -->
     <item>ئۇلاپ يوللا</item>
   </string-array>
+  <!-- Formatting string for the subject when it contains a reply or forward identifier. Do not translate.-->
+  <!-- Compose screen, prefixed to the subject of a message when replying to it (if not already present). Do not translate. -->
+  <!-- Compose screen, Prefix to forwarded message subject. Do not translate. -->
+  <!-- Compose screen, displayed at the top of a message being replied to. Please preserve the HTML entities (surrounded by & and ;).  The two %s strings will be replaced by 1) the date 2) the person who wrote the email being responded to. [CHAR LIMIT=1000]-->
   <string name="reply_attribution"><xliff:g id="DATE">%s</xliff:g> دە، <xliff:g id="PERSON">%s</xliff:g> يازغان:</string>
+  <!-- Compose screen, displayed at the top of a message being forwarded. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000] -->
   <string name="forward_attribution">---------- ئۇلاپ يوللىغان ئۇچۇر ----------&lt;br&gt;يوللىغۇچى: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;چېسلا: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;تېما: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;تاپشۇرۇۋالغۇچى: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;</string>
+  <!-- Compose screen, displayed at the top of a message being forwarded. [CHAR LIMIT=100]-->
   <string name="forward_attribution_no_headers">---------- ئۇلاپ يوللىغان ئۇچۇر ----------</string>
+  <!-- Compose screen, displayed at the top of a message being forwarded if there are any email addresses in the CC list. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000]-->
   <string name="cc_attribution">كۆچۈرۈپ يوللا: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;</string>
+  <!-- Dialog text: select the type of an attachment while composing [CHAR LIMIT=100]-->
   <string name="select_attachment_type">قوشۇلما تىپىنى تاللاڭ</string>
+  <!-- Toast, attachment too large for single file [CHAR LIMIT=100] -->
   <string name="too_large_to_attach_single">چوڭلۇقى <xliff:g id="MAXSIZE">%1$s</xliff:g> دىن ئېشىپ كەتكەن قوشۇلمىنى قوشالمايدۇ.</string>
+  <!-- Toast, attachment too large for multiple files [CHAR LIMIT=100] -->
   <string name="too_large_to_attach_multiple">بىر ياكى بىر قانچە ھۆججەتنى قوشالمىدى. چېكى: <xliff:g id="MAXSIZE">%1$s</xliff:g>.</string>
+  <!-- Toast, attachment too large when existing attachments exist [CHAR LIMIT=100] -->
   <string name="too_large_to_attach_additional">ھۆججەتنى قوشالمىدى. يۇقىرى چېكى <xliff:g id="MAXSIZE">%1$s</xliff:g> گە يەتتى.</string>
+  <!-- Toast, problem attaching file [CHAR LIMIT=100] -->
   <string name="generic_attachment_problem">ھۆججەتنى قوشالمايدۇ.</string>
+  <!-- Toast, cannot attach the provided file because the calling context doesn't have the permission [CHAR LIMIT=100] -->
+  <!-- Displayed for one second after trying to send with no recipients in To field [CHAR LIMIT=200]-->
   <string name="recipient_needed">ئاز دېگەندە بىر قوبۇللىغۇچىنى قوشۇڭ.</string>
+  <!-- Messages for send confirmation dialog [CHAR LIMIT=100]-->
   <string name="confirm_send_message_with_no_subject">ئۇچۇر تېمىسىدا تېكىست يوق.</string>
   <string name="confirm_send_message_with_no_body">ئۇچۇر گەۋدىسىدە تېكىست يوق.</string>
   <string name="confirm_send_message">بۇ ئۇچۇرنى يوللامدۇ؟</string>
+  <!-- Displayed for one second after discarding draft message [CHAR LIMIT=50]-->
   <string name="message_discarded">ئۇچۇر تاشلىۋېتىلدى.</string>
+  <!-- Formatting string for the user's signaure. [CHAR LIMIT=10] -->
   <string name="signature">\n\n\"<xliff:g id="SIGNATURE">%s</xliff:g>\"</string>
+  <!--  Shown in the from dropdown in front of custom from addresses. [CHAR LIMIT=15] -->
   <string name="custom_from_account_label">تورخەت يوللاش ئادرېسى:</string>
+  <!-- Menu item: send this message -->
   <string name="send">يوللا</string>
+  <!-- Menu item: mark this conversation as read -->
   <string name="mark_read">ئوقۇلدى بەلگىسى قوي</string>
+  <!-- Menu item: mark this conversation as unread -->
   <string name="mark_unread">ئوقۇلمىدى بەلگىسى قوي</string>
+  <!-- Menu item: toggle read/unread for menus that contain both read and unread options -->
+  <!--  Menu item: mute this conversation -->
   <string name="mute">ئۈنسىز</string>
+  <!-- Menu item: add a star to this conversation -->
   <string name="add_star">يۇلتۇز قوش</string>
+  <!-- Menu item: remove the star from this conversation -->
   <string name="remove_star">يۇلتۇزنى چىقىرىۋەت</string>
+  <!-- Remove the folder from this conversation [CHAR LIMIT = 30]-->
   <string name="remove_folder"><xliff:g id="FOLDERNAME">%1$s</xliff:g> دىن چىقىرىۋەت</string>
+  <!-- Menu item: archive this conversation -->
   <string name="archive">ئارخىپ</string>
+  <!-- Menu item: report this conversation as spam [CHAR LIMIT = 30] -->
   <string name="report_spam">ئەخلەت تورخەت دوكلاتى</string>
+  <!-- Menu item: report this conversation not as spam [CHAR LIMIT = 30] -->
   <string name="mark_not_spam">ئەخلەت تورخەت ئەمەس دوكلاتى</string>
+  <!-- Menu item: report this conversation as phishing [CHAR LIMIT = 30] -->
   <string name="report_phishing">تور ئالدامچىلىقى دوكلاتى</string>
+  <!-- Menu item: delete this conversation -->
   <string name="delete">ئۆچۈر</string>
+  <!-- Menu item: discard the drafts in this conversation [CHAR LIMIT = 30] -->
   <string name="discard_drafts">دەسلەپكى نۇسخىنى تاشلىۋەت</string>
+  <!-- Menu item: discard the failed messages in this conversation [CHAR LIMIT = 30] -->
+  <!-- Menu item: refresh the inbox -->
   <string name="refresh">يېڭىلا</string>
+  <!-- Menu item: reply to this message -->
   <string name="reply">جاۋاب قايتۇر</string>
+  <!-- Menu item: reply to all recipients in this message [CHAR LIMIT=18] -->
   <string name="reply_all">ھەممىگە جاۋاپ</string>
+  <!-- Menu item: resume a draft message [CHAR LIMIT=12] -->
   <string name="resume_draft">تەھرىر</string>
+  <!-- Menu item: forward this message -->
   <string name="forward">ئۇلاپ يوللا</string>
+  <!-- Menu item: compose a new email -->
   <string name="menu_compose">يېڭى ئۇچۇر</string>
+  <!-- Menu item: change the folders for this conversation. -->
   <string name="menu_change_folders">قىسقۇچ ئۆزگەرت</string>
+  <!-- Menu item: moves to folders for selected conversation(s). [CHAR LIMIT = 30] -->
   <string name="menu_move_to">يۆتكەش ئورنى</string>
+  <!-- Menu item move_to state for displaying as an action or in overflow -->
+  <!-- 0 corresponds to SHOW_AS_ACTION_NEVER -->
+  <!-- Menu item: moves current or selected conversation(s) to Inbox. [CHAR LIMIT = 30] -->
   <string name="menu_move_to_inbox">قوبۇللاش ساندۇقىغا يۆتكە</string>
+  <!-- Menu item: manages the folders for this account. [CHAR LIMIT = 30] -->
   <string name="menu_manage_folders">قىسقۇچ تەڭشەكلەر</string>
+  <!-- Menu item: report an email was not readable or poorly rendered -->
+  <!-- Menu item: report an email's readability has improved -->
+  <!-- Temporary text used for reporting rendering issues Googlers see in testing -->
+  <!-- Temporary text used for reporting rendering improvements Googlers see in testing -->
+  <!-- Menu item text to show the original version of an email conversation, before message manipulation [CHAR LIMIT=25] -->
   <string name="menu_show_original">ئاپتوماتىك چوڭلۇقىنى ئەسلىگە قايتۇر</string>
+  <!-- Menu item: launch the Settings activity -->
   <string name="menu_settings">تەڭشەكلەر</string>
+  <!-- Menu item: search through the Gmail inbox -->
   <string name="menu_search">ئىزدە</string>
+  <!-- Menu item: toggle drawer -->
+  <!-- Title of the drawer, indicating what it is used for, which is navigation of the app -->
+  <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as important [CHAR LIMIT=30] -->
   <string name="mark_important">مۇھىم بەلگىسى سال</string>
+  <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as not important [CHAR LIMIT=30] -->
   <string name="mark_not_important">مۇھىم ئەمەس بەلگىسى سال</string>
+  <!-- Compose screen, menu item: add Cc/Bcc fields -->
   <string name="add_cc_label">Cc/Bcc قوش</string>
+  <!-- Compose screen, menu item: add Bcc field [CHAR_LIMIT=20]-->
   <string name="add_bcc_label">Bcc قوش</string>
+  <!-- Compose screen, Prefix to quoted text in forwarded/replied message [CHAR LIMIT=50]-->
   <string name="quoted_text">نەقىل تېكست بار</string>
+  <!-- Compose screen, Prefix to quoted text in forwarded/replied message; folder for the quoted text area. [CHAR LIMIT=25] -->
   <string name="quoted_text_label">نەقىل تېكست</string>
+  <!--  Button for including inline responses. [CHAR LIMIT=25] -->
   <string name="respond_inline">ئەسلى تورخەت مەزمۇنى ئاساسىدا جاۋاب قايتۇر</string>
+  <!-- Format string for email addresses -->
+  <!-- Attachments -->
+  <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5]-->
   <string name="bytes"><xliff:g id="COUNT">%s</xliff:g> B</string>
+  <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5] -->
   <string name="kilobytes"><xliff:g id="COUNT">%s</xliff:g> KB</string>
+  <!-- Size unit, displayed in a button next to an attachment  [CHAR LIMIT=5]-->
   <string name="megabytes"><xliff:g id="COUNT">%s</xliff:g> MB</string>
+  <!-- Attachment description for image files [CHAR LIMIT=30] -->
   <string name="attachment_image">سۈرەت</string>
+  <!-- Attachment description for video files [CHAR LIMIT=30] -->
   <string name="attachment_video">سىن</string>
+  <!-- Attachment description for audio files [CHAR LIMIT=30] -->
   <string name="attachment_audio">ئۈن</string>
+  <!-- Attachment description for text files [CHAR LIMIT=30] -->
   <string name="attachment_text">قىسقا ئۇچۇر</string>
+  <!-- Attachment description for .doc files [CHAR LIMIT=30] -->
   <string name="attachment_application_msword">پۈتۈك</string>
+  <!-- Attachment description for .ppt files [CHAR LIMIT=30] -->
   <string name="attachment_application_vnd_ms_powerpoint">كۆرسەتمە</string>
+  <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
   <string name="attachment_application_vnd_ms_excel">ئېلېكترونلۇق جەدۋەل</string>
+  <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
   <string name="attachment_application_pdf">PDF</string>
+  <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
   <string name="attachment_unknown"><xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> ھۆججەت</string>
+  <!-- Read email screen, button name. Preview an attachment by Gview. [CHAR LIMIT=18] -->
   <string name="preview_attachment">ئالدىن كۆزەت</string>
+  <!-- Read email screen, button name. Save an attachment to sd card. [CHAR LIMIT=10] -->
   <string name="save_attachment">ساقلا</string>
+  <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
   <string name="download_again">قايتا چۈشۈر</string>
+  <!-- A supplemental option on attachments for apps to override. This string intentionally blank here. [CHAR LIMIT=20] -->
+  <!-- Remove this attachment [CHAR LIMIT=50] -->
+  <!-- Dialog box title [CHAR LIMIT=30] -->
   <string name="more_info_attachment">ئۇچۇر</string>
+  <!-- Dialog box message, displayed when we could not view an attachment. [CHAR LIMIT=200]-->
   <string name="no_application_found">بۇ خىل قوشۇلمىنى ئېچىپ كۆرەلەيدىغان ھېچقانداق ئەپ يوق.</string>
+  <!-- Dialog box title. [CHAR LIMIT=30] -->
   <string name="fetching_attachment">قوشۇلمىنى ئاجرىتىۋاتىدۇ</string>
+  <!-- Dialog box message. [CHAR LIMIT=80] -->
   <string name="please_wait">سەل كۈتۈڭ…</string>
+  <!-- Displayed in the conversation view, next to a file's size and type. Status of a saved attachment. [CHAR LIMIT=20]-->
   <string name="saved">ساقلانغىنى، <xliff:g id="SIZE">%s</xliff:g></string>
+  <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=50]-->
   <string name="download_failed">چۈشۈرەلمەيدۇ، چېكىپ قايتا سىناڭ.</string>
+  <!-- Photo view screen, button name. Save all attachments to sd card. [CHAR LIMIT=17] -->
   <string name="menu_photo_save_all">ھەممىنى ساقلا</string>
+  <!-- Photo view screen, button name. Share attachment. [CHAR LIMIT=10] -->
   <string name="menu_photo_share">ھەمبەھىر</string>
+  <!-- Photo view screen, button name. Share all attachments. [CHAR LIMIT=20] -->
   <string name="menu_photo_share_all">ھەممىنى ھەمبەھىر</string>
+  <!-- Photo view screen, button name. Print photo. [CHAR LIMIT=20] -->
+  <!-- Displayed in the action bar as a subtitle. Save in progress. [CHAR LIMIT=15] -->
   <string name="saving">ساقلاۋاتىدۇ&#8230;</string>
+  <!-- Webview Context Menu Strings -->
+  <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
   <string name="choosertitle_sharevia">ھەمبەھىر ئۇسۇلى</string>
+  <!-- Menu item to open a link  [CHAR LIMIT=50]-->
   <string name="contextmenu_openlink">كۆرگۈدە ئاچ</string>
+  <!-- Menu item to copy the selection  [CHAR LIMIT=50]-->
   <string name="contextmenu_copy">كۆچۈر</string>
+  <!-- Menu item to copy a link  [CHAR LIMIT=50]-->
   <string name="contextmenu_copylink">ئۇلانما تور ئادرېسىنى كۆچۈر</string>
+  <!-- Menu item to view an image  [CHAR LIMIT=50]-->
+  <!-- Menu item to dial a number  [CHAR LIMIT=50]-->
   <string name="contextmenu_dial_dot">نومۇر بۇرا…</string>
+  <!-- Menu item to send an SMS  [CHAR LIMIT=50]-->
   <string name="contextmenu_sms_dot">قىسقا ئۇچۇر…</string>
+  <!-- Menu item to add a contact  [CHAR LIMIT=50]-->
   <string name="contextmenu_add_contact">ئالاقەداش قوش</string>
+  <!-- Menu item to send an email [CHAR LIMIT=50] -->
   <string name="contextmenu_send_mail">تورخەت يوللا</string>
+  <!-- Menu item to show a map  [CHAR LIMIT=50]-->
   <string name="contextmenu_map">خەرىتە</string>
+  <!-- Menu item to share link  [CHAR LIMIT=50]-->
   <string name="contextmenu_sharelink">ئۇلانما ھەمبەھىر</string>
+  <!-- Browse list item strings -->
+  <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMIT=250] -->
+  <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode and the message was received today. [CHAR LIMI=250] -->
+  <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMIT=250] -->
+  <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode and the message was received today. [CHAR LIMI=250] -->
+  <!-- String used in content description field of a conversation list item when device is in accessibility mode and the conversation was read [CHAR LIMIT=250] -->
   <string name="read_string">ئوقۇلغان سۆزلىشىش</string>
+  <!-- String used in content description field of a conversation list item when device is in accessibility mode and the conversation was not read [CHAR LIMIT=250] -->
   <string name="unread_string">ئوقۇلمىغان سۆزلىشىش</string>
+  <!-- Formatting string. If the subject contains the tag of a mailing-list (text surrounded with
+    return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
   <string name="filtered_tag">[<xliff:g id="TAG">%1$s</xliff:g>] <xliff:g id="SUBJECT">%2$s</xliff:g></string>
+  <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
+  <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
   <plurals name="draft">
+    <!-- Title of the screen when there is exactly one draft -->
+    <!-- Title of the screen when there are more than one draft -->
     <item quantity="other">دەسلەپكى نۇسخا</item>
   </plurals>
+  <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
   <string name="sending">يوللاۋاتىدۇ…</string>
+  <!-- Message displayed in the outgoing message list item when the message failed to sent and is being retried [CHAR LIMIT=20] -->
+  <!-- Message displayed in the outgoing message list item when the message failed to send [CHAR LIMIT=20] -->
+  <!-- Message displayed in a browse list item for one second after a send failed [CHAR LIMIT=26]-->
   <string name="send_failed">ئۇچۇر يوللانمىدى.</string>
+  <!-- String used to represent "me" when used as an object pronoun. This string is used when
+         showing the list of recipients of a message [CHAR LIMIT=15] -->
+  <!-- String used to represent "me"/"I" when used as an subject pronoun. This string is use when
+         showing the list of senders for a conversation list item. [CHAR LIMIT=15] -->
   <plurals name="confirm_delete_conversation">
+    <!-- Dialog message to confirm deletion of one conversation -->
+    <!-- Dialog message to confirm deletion of several conversations -->
     <item quantity="other">بۇ سۆزلىشىشنى ئۆچۈرەمدۇ؟</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
+    <!-- Dialog message to confirm archival of one conversation -->
+    <!-- Dialog message to confirm archival of several conversations -->
     <item quantity="other">بۇ سۆزلىشىشنى ئارخىپلاشتۇرامدۇ؟</item>
   </plurals>
+  <!-- Dialog text: confirm discard -->
   <string name="confirm_discard_text">بۇ ئۇچۇرنى تاشلىۋېتەمدۇ؟</string>
+  <!-- Conversation list shared between the Activity and Widget -->
+  <!-- Displayed in the middle of the screen when conversations are being loaded [CHAR LIMIT 100]-->
   <string name="loading_conversations">يۈكلەۋاتىدۇ…</string>
+  <!-- Displayed in the middle of the screen when an inbox is empty [CHAR LIMIT 100]-->
+  <!-- Displayed in the middle of the screen when a search returns no results [CHAR LIMIT 100]-->
+  <!-- Displayed in the middle of the screen when the spam folder is empty [CHAR LIMIT 100]-->
+  <!-- Displayed in the middle of the screen when the trash folder is empty [CHAR LIMIT 100]-->
+  <!-- Displayed in the middle of the screen when a folder is empty [CHAR LIMIT 100]-->
+  <!-- Displayed in the middle of the screen when a folder is loading [CHAR LIMIT 100]-->
+  <!-- Undo bar strings -->
+  <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
   <string name="undo">يېنىۋال</string>
+  <!-- The following are shown as a toast after the operation has completed -->
+  <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
   <string name="deleted">ئۆچۈرۈلدى</string>
+  <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
   <string name="archived">ئارخىپلاندى</string>
+  <!-- Displayed when swiping away a single conversation to remove the currently displayed folder [CHAR LIMIT=80] -->
   <string name="folder_removed"><xliff:g id="FOLDERNAME">%1$s</xliff:g> دىن چىقىرىۋەتتى</string>
+  <!-- Displayed after moving a conversation to a different folder. [CHAR LIMIT=100] -->
   <string name="conversation_folder_moved"><xliff:g id="FOLDERNAME">%1$s</xliff:g> غا يۆتكىدى</string>
+  <!-- Search Results: Text for header that is shown above search results [CHAR LIMIT=30] -->
   <string name="search_results_header">نەتىجىلەر</string>
+  <!-- Toast shown when the user taps the search hard key when viewing an account that does not support search [CHAR LIMIT=100] -->
   <string name="search_unsupported">بۇ ھېسابات ئىزدەشنى قوللىمايدۇ.</string>
+  <!-- Accessibility description for the search suggestion item [CHAR LIMIT=100] -->
+  <!-- Conversation view -->
+  <!--  Text anchor for control to add / change labels on a conversation when
+          viewing it. [CHAR LIMIT=40] -->
   <string name="add_label">قىسقۇچ قوش</string>
+  <!-- New Message notification text that appears over conversation view on incoming messages. [CHAR LIMIT=40] -->
+  <!-- Conversation message header strings -->
+  <!--  Text for showing the date and expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
+  <!--  Text for collapsing recipient details in a message when viewing it. [CHAR LIMIT=40] -->
+  <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
+  <!-- Shown to display the bcc recipient(s) of the message [CHAR LIMIT=10] -->
+  <!--  Icon name for showing sender contact information. [CHAR LIMIT=100] -->
   <string name="contact_info_string"><xliff:g id="NAME">%s</xliff:g> نىڭ ئالاقەداش ئۇچۇرىنى كۆرسەت</string>
+  <!--  Icon name for showing sender contact information when we cannot get sender info. [CHAR LIMIT=100] -->
   <string name="contact_info_string_default">ئالاقەداش ئۇچۇرىنى كۆرسەت</string>
+  <!-- Used for accessibility purposes when a conversation has several previously read
+         messages that are collapsed into a single touch target. Tapping on this touch target
+         expands these messages. [CHAR LIMIT=UNLIMITED] -->
+  <!-- Used for accessibility purposes when a conversation has several previously read
+         messages that are collapsed into a single touch target to announce that the messages
+         have been expanded. [CHAR LIMIT=UNLIMITED] -->
+  <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
+  <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
+  <!-- Shown to display the to recipient(s) of the message [CHAR LIMIT=10] -->
   <string name="to_heading">قوبۇللىغۇچى:</string>
+  <!-- Shown to display the to recipient(s) of the message [CHAR LIMIT=10] -->
+  <!-- Shown to display the cc recipient(s) of the message [CHAR LIMIT=10] -->
+  <!-- Shown to display the bcc recipient(s) of the message [CHAR LIMIT=10] -->
+  <!-- Shown to display the date of the message [CHAR LIMIT=10] -->
+  <!-- Displayed above an HTML message to show the images in that message [CHAR LIMIT=40] -->
   <string name="show_images">رەسىملەرنى كۆرسەت</string>
+  <!-- Displayed above an HTML message to always show images in messages from that sender [CHAR LIMIT=40] -->
   <string name="always_show_images">بۇ ئەۋەتكۈچىنىڭ رەسىملىرىنى ھەمىشە كۆرسەت</string>
+  <!-- Shown in a toast to acknowledge always showing images for a sender [CHAR LIMIT=100] -->
   <string name="always_show_images_toast">بۇ ئەۋەتكۈچىنىڭ رەسىملىرىنى ئۆزلۈكىدىن كۆرسىتىدۇ.</string>
+  <!-- Display format of an email recipient, displayed in expanded message details [CHAR LIMIT=10] -->
   <string name="address_display_format"><xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g></string>
+  <!-- Display format of an email sender if the message has a via domain set, displayed in expanded message details [CHAR LIMIT=15] -->
   <string name="address_display_format_with_via_domain"><xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> ئەۋەتكۈچى <xliff:g id="VIA_DOMAIN">%3$s</xliff:g></string>
+  <!-- Displayed for one second after user saves message as draft [CHAR LIMIT=50]-->
   <string name="message_saved">ئۇچۇر دەسلەپكى نۇسخىغا ساقلاندى.</string>
+  <!-- Displayed for one second while message is being sent [CHAR LIMIT=50]-->
   <string name="sending_message">ئۇچۇر يوللاۋاتىدۇ…</string>
+  <!-- Displayed for one second after trying to send with invalid recipients [CHAR LIMIT=50]-->
   <string name="invalid_recipient">بۇ ئادرېس <xliff:g id="WRONGEMAIL">%s</xliff:g> ئىناۋەتسىز.</string>
+  <!-- Shown in HTML to allow the user to see quoted text; should match Gmail web UI. [CHAR LIMIT=50] -->
+  <!-- Shown in HTML to allow the user to hide quoted text; should match Gmail web UI. 25BC is Unicode for a downward-pointing triangle. [CHAR LIMIT=50] -->
   <string name="hide_elided">▼ نەقىل تېكىستنى يوشۇر</string>
+  <!-- Shown as a heading in message view when a message contains a calendar invite [CHAR LIMIT=30]-->
   <string name="message_invite_title">يىلنامە تەكلىپى</string>
+  <!-- Shown as a button label in message view to launch calendar to see this invite [CHAR LIMIT=40]-->
   <string name="message_invite_calendar_view">يىلنامەدە كۆرسەت</string>
+  <!-- Shown as a text label in message view describing the choices of whether to attend an invite [CHAR LIMIT=20]-->
   <string name="message_invite_label_attending">قاتنىشامسىز؟</string>
+  <!-- Shown as a button label in message view to accept a calendar invite [CHAR LIMIT=20]-->
   <string name="message_invite_accept">ھەئە</string>
+  <!-- Shown as a button label in message view to give a tentative response to a calendar invite [CHAR LIMIT=20]-->
   <string name="message_invite_tentative">بەلكىم</string>
+  <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
   <string name="message_invite_decline">ياق</string>
+  <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
   <string name="enumeration_comma">« ،»</string>
+  <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
+  <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <string name="ok">جەزملە</string>
+  <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <string name="done">تاماملاندى</string>
+  <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <string name="cancel">ۋاز كەچ</string>
+  <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <string name="clear">تازىلا</string>
+  <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
+  <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
+  <!-- Sync status errors. Please do not change the order [CHAR LIMIT=100] -->
   <string-array name="sync_status">
     <item>مۇۋەپپەقىيەتلىك</item>
     <item>No connection</item>
@@ -172,101 +390,337 @@
     <item>ئىچكى خاتالىق</item>
     <item>Server Error</item>
   </string-array>
+  <!-- Widget strings -->
+  <!-- Displayed when user adds a new widget. Tapping on the widget in this
+          mode will bring user to the account selection screen [CHAR LIMIT=35] -->
   <string name="tap_to_configure">چېكىسلە تەڭشەيدۇ</string>
+  <!-- Displayed within a widget that was setup for a non-synced folder [CHAR LIMIT=60] -->
   <string name="non_synced_folder_description">سۆزلىشىشنى كۆرۈش ئۈچۈن، بۇ قىسقۇچنى قەدەمداشلاڭ.</string>
+  <!-- Displayed within a widget that was setup for a non-synced folder.  This is the text of the
+         button that will allow the user to configure sync for the folder [CHAR LIMIT=35] -->
   <string name="tap_to_configure_folder_sync">قىسقۇچنى قەدەمداشلا</string>
+  <!-- Displayed in widget when unread count > 99. [CHAR LIMIT=4] -->
   <string name="widget_large_unread_count">%d+</string>
+  <!-- Displayed when there are >99 unseen messages, see:unseen_count [CHAR LIMIT=3] -->
+  <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
   <plurals name="actionbar_unread_messages">
+    <!-- String for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
     <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> ئۇقۇلمىدى</item>
   </plurals>
+  <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
   <string name="view_more_conversations">تېخىمۇ كۆپ سۆزلىشىشلەرنى كۆرسەت</string>
+  <!-- Displayed while we load a conversation. [CHAR LIMIT=100] -->
   <string name="loading_conversation">يۈكلەۋاتىدۇ…</string>
+  <!-- Name of the Mailboxes activity [CHAR LIMIT=30] -->
   <string name="activity_mailbox_selection">ھېسابات تاللاڭ</string>
+  <!-- Name of the Folders activity [CHAR LIMIT=30] -->
   <string name="activity_folder_selection">قىسقۇچ تاللاڭ</string>
+  <!-- Name of the Folder shortcut widget. Should use "Email" to refer to the app. [CHAR LIMIT=30] -->
   <string name="folder_shortcut_widget_label">تورخەت قىسقۇچ</string>
+  <!-- Folder selection dialog -->
+  <!-- Title for change folders dialog [CHAR LIMIT=30] -->
   <string name="change_folders_selection_dialog_title">قىسقۇچ ئۆزگەرت</string>
+  <!-- Title for move to dialog [CHAR LIMIT=30] -->
   <string name="move_to_selection_dialog_title">يۆتكەش ئورنى</string>
+  <!-- Search -->
+  <!-- Title of the search dialog -->
+  <!-- Shown in light gray in the Search box when no text has been entered [CHAR LIMIT=20]-->
+  <!-- Search Results: Text for status of the search when the results are completely loaded [CHAR LIMIT=10] -->
   <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
+  <!-- Voice search is not supported on this device [CHAR LIMIT=100] -->
+  <!-- Description of the back button [CHAR LIMIT=100] -->
+  <!-- Description of the voice icon [CHAR LIMIT=100] -->
+  <!-- Description of the clear icon (clears the current input text in the search bar) [CHAR LIMIT=100] -->
+  <!-- Shown in conversation list footer when application cannot make a connection [CHAR LIMIT=20]-->
   <string name="network_error">باغلىنىش يوق</string>
+  <!-- Button at bottom of conversation list screen if last attempt to load conversations failed [CHAR LIMIT=20]-->
   <string name="retry">قايتا سىنا</string>
+  <!-- Button at bottom of conversation list screen if the folder for which contents are being shown supports loading more on demand [CHAR LIMIT=20]-->
   <string name="load_more">تېخىمۇ كۆپ يۈكلە</string>
+  <!-- Text for dummy attachments to load the actual attachment. This is not an ideal string, but it's too late to add a new string and get it translated -->
   <string name="load_attachment">@string/load_more</string>
+  <!-- Shortcut strings -->
+  <!-- Title for shortcut naming dialog [CHAR LIMIT=100]-->
   <string name="shortcut_name_title">قىسقۇچ قىسقا يولىنى ئاتايدۇ</string>
+  <!-- Wait fragment strings -->
+  <!-- Displayed in title bar during the initial sync  [CHAR LIMIT=40] -->
   <string name="wait_for_sync_title">قەدەمداشلاشنى كۈتۈۋاتىدۇ</string>
+  <!-- Title for the screen displayed during the initial sync [CHAR LIMIT=100]  -->
   <string name="not_synced_title">ھېسابات تېخى قەدەمداشلانمىدى</string>
+  <!-- Displayed in the middle of the screen during the initial sync [CHAR LIMIT=300]-->
   <string name="wait_for_manual_sync_body">بۇ ھېسابات ئاپتوماتىك قەدەمداش قىلىپ تەڭشەلمىگەن.\n\"<b>"دەرھال قەدەمداشلا"</b>\"نى چېكىپ خەتنى بىر قېتىم قەدەمداشلىغىلى بولىدۇ ياكى قەدەمداش \"<b>"تەڭشەكلەرنى ئۆزگەرت"</b>\"نى چېكىپ بۇ ھېساباتنىڭ تورخەتنى ئۆزلۈكىدىن قەدەمداش قىلىپ تەڭشىگىلى بولىدۇ.</string>
+  <!-- Displayed at the bottom of the screen during the initial sync. If pressed will sync users mail for the selected account. [CHAR LIMIT=12]  -->
   <string name="manual_sync">دەرھال قەدەمداشلا</string>
+  <!-- Displayed at the bottom of the screen during the initial sync. If pressed will open sync setting screen for accounts. [CHAR LIMIT=30]  -->
   <string name="change_sync_settings">قەدەمداش تەڭشەكلەرنى ئۆزگەرت</string>
+  <!-- Displayed when we could not load a photo in the photo viewer. [CHAR LIMIT=30] -->
   <string name="photo_load_failed">سۈرەتنى يۈكلىيەلمەيدۇ</string>
+  <!--  The move message / change labels action can't be taken because the selected messages
+        come from different accounts -->
   <string name="cant_move_or_change_labels">يۆتكىيەلمەيدۇ چۈنكى تاللانغان مەزمۇن كۆپ ھېساباتنىڭ تورخەتلىرىنى ئۆز ئىچىگە ئالىدۇ.</string>
+  <!-- Format string used when displaying a summary in a message summary in list notification that was triggered by several new conversations.
+         Extra space between sender and subject is intentional.  [CHAR LIMIT=120] -->
   <string name="multiple_new_message_notification_item"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>\"   <xliff:g id="SUBJECT">%2$s</xliff:g>\"</string>
+  <!-- Format string used when displaying the big text of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
   <string name="single_new_message_notification_big_text"><xliff:g id="SUBJECT">%1$s</xliff:g>\n<xliff:g id="SNIPPET">%2$s</xliff:g></string>
+  <!-- Displayed in a message subheading. Ignore the current spam warning. [CHAR LIMIT=30] -->
   <string name="ignore_spam_warning">پەرۋا قىلما، بۇ ئۇچۇرغا ئىشىنىمەن</string>
+  <!-- Displayed in the message heading. Shown if the message was sent via another domain. [CHAR LIMIT=10] -->
   <string name="via_domain"><xliff:g id="VIADOMAIN">%1$s</xliff:g> ئارقىلىق</string>
+  <!-- Button text for the button to click to have the user sign in again or adjust their credentials. [CHAR LIMIT=20]-->
   <string name="signin">تىزىمغا كىرىڭ</string>
+  <!-- Button text for the button to click for more information. [CHAR LIMIT=20]-->
   <string name="info">ئۇچۇر</string>
+  <!-- Button text for the button to click to report feedback. [CHAR LIMIT=20]-->
   <string name="report">دوكلات</string>
+  <!-- Button text for the button to click to show newly received messages in the active thread. [CHAR LIMIT=20]-->
+  <!-- Dialog title when a sync error occurs. [CHAR LIMIT=50]-->
   <string name="sync_error">قەدەمداشلىيالمىدى.</string>
+  <!-- Dialog title when a sync error occurs. [CHAR LIMIT=100]-->
   <string name="sync_error_message">ئۈسكۈنىڭىزدە قەدەمداشلاشقا يېتەرلىك ساقلىغۇچ يوق.</string>
+  <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
   <string name="storage">ساقلىغۇچ</string>
+  <!-- Token used as a divider between senders -->
   <string name="senders_split_token">، </string>
   <string name="draft_count_format"> (<xliff:g id="COUNT">%1$s</xliff:g>)</string>
+  <!-- Token to replace senders that are not visible -->
+  <!-- Token used to space out elided senders that are not visible -->
+  <!-- Token used to space out message count, draft text, and senders -->
+  <!-- String used in the FolderListFragment to mark the start of user-defined folders -->
   <string name="all_folders_heading">ھەممە قىسقۇچلار</string>
+  <!-- String used in the FolderListFragment to mark the start of recent folders -->
   <string name="recent_folders_heading">يېقىنقى قىسقۇچلار </string>
+  <!-- Dialog title when showing message header details in a popup window. [CHAR LIMIT=100]-->
   <string name="message_details_title">ئۇچۇر تەپسىلاتى</string>
+  <!-- General preference: Label of the setting for the direction to move to
+         when deleting the current message.
+         Options contain "newer message","older message", etc. [CHAR LIMIT=32] -->
+  <!-- The auto-advance modes -->
   <string-array name="prefEntries_autoAdvance">
+    <!-- Newer conversation -->
     <item>يېڭىراق</item>
+    <!-- Older conversation -->
     <item>كونىراق</item>
+    <!-- Conversation list -->
     <item>سۆزلىشىش تىزىمى</item>
   </string-array>
+  <!-- Description for each auto-advance option to display after the user has picked one -->
+  <!-- The entries here must correspond to the entries in prefEntries_autoAdvance [CHAR LIMIT=60] -->
   <string-array name="prefSummaries_autoAdvance">
+    <!-- Newer conversation -->
     <item>ئۆچۈرۈش مەشغۇلاتىڭىزنى تاماملىغاندا يېڭىراق سۆزلىشىشنى كۆرسىتىدۇ</item>
+    <!-- Older conversation -->
     <item>ئۆچۈرۈش مەشغۇلاتىڭىزنى تاماملىغاندا كونىراق سۆزلىشىشنى كۆرسىتىدۇ</item>
+    <!-- Conversation list -->
     <item>ئۆچۈرۈش مەشغۇلاتىڭىزنى تاماملىغاندا سۆزلىشىش تىزىمىنى كۆرسىتىدۇ</item>
   </string-array>
+  <!-- Dialog title for the auto-advance list -->
+  <!-- TODO: these pref keys that are never user visible should probably be
+    moved to a donttranslate file -->
+  <!-- The default auto-advance mode -->
+  <!-- The auto-advance mode values -->
+  <!-- Settings screen, title of "Restore default for "Show pictures"" [CHAR LIMIT=1000]-->
   <string name="clear_display_images_whitelist_title">رەسىم كۆرسەت تەڭشىكىنى تازىلا</string>
+  <!-- Settings screen, title of dialog shown to confirm action when user taps
+    "Clear picture approvals" in preferences [CHAR LIMIT=200]-->
   <string name="clear_display_images_whitelist_dialog_title">رەسىم كۆرسەت تەڭشىكىنى تازىلامدۇ؟</string>
+  <!-- Settings screen, message of dialog shown to confirm action when tapping
+    "Clear picture approvals" [CHAR LIMIT=1000]-->
   <string name="clear_display_images_whitelist_dialog_message">ئىلگىرى تورخەتتىكى سۈرەتلەرنى كۆرسىتىشكە يول قويۇلغان يوللىغۇچىلارنىڭ تورخېتىدىكى سۈرەتلەرنى كۆرسىتىشنى توختىتىدۇ.</string>
+  <!-- Message shown in toast when the user taps "Restore default for "Show pictures"" in Gmail general preferences. [CHAR LIMIT=50] -->
   <string name="sender_whitelist_cleared">رەسىملەر ئۆزلۈكىدىن كۆرسىتىلمەيدۇ.</string>
+  <!-- Settings screen, name of the setting that lets the user choose their signature [CHAR LIMIT=50] -->
   <string name="preferences_signature_title">ئىمزا</string>
+  <!-- Settings screen, title of the dialog that lets the user configure their signature [CHAR LIMIT=50] -->
   <string name="preferences_signature_dialog_title">ئىمزا</string>
+  <!-- Settings screen, setting summary text when no signature set [CHAR LIMIT=100] -->
   <string name="preferences_signature_summary_not_set">تەڭشەلمىگەن</string>
+  <!-- Notification action for replying to a message. [CHAR LIMIT=20] -->
   <string name="notification_action_reply">جاۋاب قايتۇر</string>
+  <!-- Notification action for replying-all to a message. [CHAR LIMIT=20] -->
   <string name="notification_action_reply_all">ھەممىگە جاۋاپ</string>
+  <!-- Notification action for archiving a message. [CHAR LIMIT=20] -->
   <string name="notification_action_archive">ئارخىپ</string>
+  <!-- Notification action for removing a label from a message. [CHAR LIMIT=20] -->
   <string name="notification_action_remove_label">بەلگىنى چىقىرىۋەت</string>
+  <!-- Notification action for deleting a message. [CHAR LIMIT=20] -->
   <string name="notification_action_delete">ئۆچۈر</string>
+  <!-- Notification undo text after archiving a message. [CHAR LIMIT=30] -->
   <string name="notification_action_undo_archive">ئارخىپلاندى</string>
+  <!-- Notification undo text after removing a label from a message. [CHAR LIMIT=30] -->
   <string name="notification_action_undo_remove_label">بەلگە چىقىرىۋېتىلدى</string>
+  <!-- Notification undo text after deleting a message. [CHAR LIMIT=30] -->
   <string name="notification_action_undo_delete">ئۆچۈرۈلدى</string>
+  <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
+  <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
+  <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
+  <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
+  <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
   <string name="label_notification_ticker">"<xliff:g id="LABEL">%s</xliff:g>:<xliff:g id="NOTIFICATION">%s</xliff:g>"</string>
+  <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
+  <!-- Format string used when displaying the title of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
   <string name="single_new_message_notification_title"><xliff:g id="SENDER">%1$s</xliff:g>:<xliff:g id="SUBJECT">%2$s</xliff:g></string>
+  <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
   <string name="silent_ringtone">ئۈنسىز</string>
+  <!-- Settings screen, preference name for archive vs. delete [CHAR LIMIT=50] -->
+  <!-- Options to select from for whether to have archive or delete as the remove action [CHAR LIMIT=50] -->
+  <!-- Description of currently selected option of whether to use archive or delete as remove action [CHAR LIMIT=200] -->
+  <!-- Dialog title for the choosing whether to use archive or delete as remove action [CHAR LIMIT=150] -->
+  <!-- The default value -->
+  <!--  Settings screen, Reply to all default setting title  [CHAR LIMIT=30] -->
   <string name="preferences_default_reply_all_title">ھەممىگە جاۋاپ</string>
+  <!--  Settings screen, Reply to all default setting summary [CHAR LIMIT=70] -->
+  <!--  DO NOT TRANSLATE THE BELOW STRING - In order to allow overriding of this for K tablets (but not pre-K tablets), we use an indirection with the actual string defined above. -->
+  <!-- Preference name for swipe actions preference [CHAR LIMIT=100]-->
+  <!-- Preference description swiping in conversation list option [CHAR LIMIT=100] -->
   <string name="preference_swipe_description">سۆزلىشىش تىزىمىدا</string>
+  <!-- Preference name for whether to display sender images in conversation list [CHAR LIMIT=100] -->
   <string name="preference_sender_image_title">يوللىغۇچى سۈرىتى</string>
+  <!-- Preference description for whether to display sender image option [CHAR LIMIT=200] -->
   <string name="preference_sender_image_description">سۆزلىشىش تىزىمىدىكى ئىسىمنىڭ يېنىدا كۆرسىتىدۇ</string>
+  <!-- Conversation list screen overflow menu in trash folder [CHAR LIMIT=50]  -->
   <string name="empty_trash">ئەخلەتخانىنى تازىلا</string>
+  <!-- Conversation list screen overflow menu in spam folder [CHAR LIMIT=50]  -->
   <string name="empty_spam">ئەخلەت تورخەتنى تازىلا</string>
+  <!-- Dialog title for empty trash confirmation dialog [CHAR LIMIT=100] -->
   <string name="empty_trash_dialog_title">ئەخلەتخانىنى تازىلامدۇ؟</string>
+  <!-- Dialog title for empty spam confirmation dialog [CHAR LIMIT=100] -->
   <string name="empty_spam_dialog_title">ئەخلەت تورخەتنى تازىلامدۇ؟</string>
+  <!-- Dialog message for empty folder confirmation dialog [CHAR LIMIT=300] -->
   <plurals name="empty_folder_dialog_message">
     <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> ئۇچۇر مەڭگۈلۈك ئۆچۈرۈلىدۇ.</item>
   </plurals>
+  <!-- Strings used for accessibility for the items that toggles the drawer action  -->
   <string name="drawer_open">تارتما يولباشچىنى ئاچ</string>
   <string name="drawer_close">تارتما يولباشچىنى ياپ</string>
   <string name="conversation_photo_welcome_text">يوللىغۇچىنىڭ سۈرىتى چېكىلسە مۇناسىپ سۆزلىشىشلەر تاللىنىدۇ.</string>
   <string name="long_press_to_select_tip">چېكىپ بېسىپ تۇرۇلسا بىر سۆزلىشىش تاللىنىدۇ، ئاندىن يەنە چېكىلسە تېخىمۇ كۆپ سۆزلىشىشنى تاللىغىلى بولىدۇ.</string>
+  <!-- Content description for the folder icon for nested folders. -->
   <string name="folder_icon_desc">قىسقۇچ سىنبەلگە</string>
+  <!--  Button, "Add account" in the preference screen [CHAR LIMIT=30] -->
   <string name="add_account">ھېسابات قوش</string>
+  <!-- Content Provider Authority for Eml Attachments -->
+  <!-- Content description for the "X" image icon for dismissing a tip. This is used for spoken description of the icon when touch explore is enabled. [CHAR LIMIT=50] -->
   <string name="dismiss_tip_hover_text">ئەسكەرتىشكە پەرۋا قىلما</string>
+  <!-- Tip for letting user know that their device auto-sync setting
+        is turned off, in case they are wondering why they are not
+        receiving any new mail. [CHAR LIMIT=250] -->
+  <!-- Tip for letting user know that their account level sync setting
+        is turned off, in case they are wondering why they are not
+        receiving any new mail. Then prompts the user to enable sync in Gmail's
+        account settings. [CHAR LIMIT=250] -->
+  <!-- Hint text that there are X number of unsent messages users
+    Outbox. [CHAR LIMIT=250] -->
   <string name="unsent_messages_in_outbox"><xliff:g id="OUTBOX">%2$s</xliff:g> دىكى <xliff:g id="NUMBER">%1$s</xliff:g> يوللانمىغان خەت</string>
+  <!-- Title of dialog to turn auto-sync on [CHAR LIMIT=100] -->
   <string name="turn_auto_sync_on_dialog_title">ئۆزلۈكىدىن قەدەمداش ئىقتىدارىنى ئاچامدۇ؟</string>
+  <!-- Text of dialog to turn auto-sync on [CHAR LIMIT=500] -->
   <string name="turn_auto_sync_on_dialog_body">ھەممە ئەپ ۋە Gmail ھېساباتىڭىزلا ئەمەس بەلكى ھەممە ھېساباتلىرىڭىزنىڭ ئۆزگەرتىشلىرى تور، باشقا ئۈسكۈنە ۋە   <xliff:g id="PHONE_OR_TABLET">%1$s</xliff:g> ئارىسىدا قەدەمداشلىنىدۇ.</string>
+  <!-- Phone (vs. tablet) for describing this device [CHAR LIMIT=30] -->
   <string name="phone">تېلېفون</string>
+  <!-- Tablet (vs. phone) for describing this device [CHAR LIMIT=30] -->
   <string name="tablet">تاختا كومپيۇتېر</string>
+  <!-- Confirm button text for dialog to turn auto-sync on [CHAR
+         LIMIT=30] -->
   <string name="turn_auto_sync_on_dialog_confirm_btn">ئاچ</string>
+  <!-- Button in conversation list to show more folders [CHAR LIMIT=50] -->
+  <!-- Button in conversation list to hide folders [CHAR LIMIT=50] -->
   <string name="hide_folders">قىسقۇچلارنى يوشۇر</string>
+  <!-- Menu item text to that when clicked will allow a user to print an email message. [CHAR LIMIT=25] -->
+  <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
+  <!-- Number of messages in a conversation [CHAR LIMIT=30]-->
+  <!-- Display format of an email recipient, displayed in printed message details [CHAR LIMIT=10] -->
+  <!-- Shown to display the date of the message [CHAR LIMIT=50] -->
+  <!-- Shown to display the to recipient(s) of the message if the message is a draft [CHAR LIMIT=20] -->
+  <!-- Shown to display in the message header if the message is a draft and there are no "to" addresses in the draft [CHAR LIMIT=10] -->
+  <!-- Shown to inform the user that the quoted text for this message has been hidden. [CHAR LIMIT=50] -->
+  <!-- Number of attachments in a message [CHAR LIMIT=30]-->
+  <!-- Provider name for widgets -->
+  <!-- Title to display when an email has no subject. [CHAR LIMIT=50]-->
+  <!-- Action bar title for the screen to set a vacation responder (out-of-office) message. [CHAR LIMIT=50] -->
+  <!-- Account preference: Title of the setting to set a vacation responder (out-of-office) message. [CHAR LIMIT=50]-->
+  <!-- Shown in vacation responder; the body of the message [CHAR LIMIT=100] -->
+  <!-- Shown in vacation responder; accompanies a checkbox that, if checked, causes vacation responses to be sent to people in the user's contacts [CHAR LIMIT=75] -->
+  <!-- Shown in vacation responder; accompanies a checkbox that, if checked, causes vacation responses to be sent to people in the user's corporate domain [CHAR LIMIT=75] -->
+  <!-- Title text for the button to be pressed if the user wishes to change the start date of the vacation responder. [CHAR LIMIT=25]-->
+  <!-- Title text for the button to be pressed if the user wishes to change the end date of the vacation responder.
+            This text should include a note that this field is optional to set. [CHAR LIMIT=25]-->
+  <!-- Shown to display that an end date in the vacation responder has not been set. [CHAR LIMIT=25]-->
+  <!-- Title text for the dialog that appears when the user wishes to change the end date of the vacation responder.
+            This text should include a note that this field is optional to set. [CHAR LIMIT=35]-->
+  <!-- Shown as an option in a dialog to set a custom end date for a vacation responder message.  [CHAR LIMIT=30] -->
+  <!-- Shown as an option in a dialog to set no end date for a vacation responder message. [CHAR LIMIT=30]-->
+  <!-- Asks the user whether they wish to discard changes. [CHAR LIMIT=50]-->
+  <!-- Toast, vacation responder changes were saved. [CHAR LIMIT=100]-->
+  <!-- Toast, vacation responder changes were discarded. [CHAR LIMIT=100]-->
+  <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
+            when the vacation responder is off. [CHAR LIMIT=50]-->
+  <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
+            when the vacation responder is on but does not have an end date set (only a start date). [CHAR LIMIT=50]-->
+  <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
+            when the vacation responder is on and has both a start and end date set. [CHAR LIMIT=50]-->
+  <!-- Informs the user that both the subject and body of the vacation responder are empty
+         when they try to enable the responder. [CHAR LIMIT=50]-->
+  <!-- Content description for the attach button that appears in compose for tablet layouts.
+         This is not to be confused with the menu items, this is an actual button in the layout.
+         On v18 and below devices, this button is used to attach photos only and so the text
+         is for adding a photo attachment. On v19, it is used to attach an arbitrary file
+         and so this string is overridden to use the "attach file" text. The drawable used
+         for this button is overridden similarly. -->
+  <!-- Displayed below a message that has been truncated to show the full message. [CHAR LIMIT=50] -->
+  <!-- Toast text for error loading an eml file -->
+  <!-- String tag identifying the drawer pullout view -->
+  <!-- Menu item that displays the help page. [CHAR LIMIT=50]-->
   <string name="help_and_info">ياردەم</string>
+  <!-- Menu item that displays the help page. [CHAR LIMIT=50]-->
+  <!-- URI to display the help content; this must be overlayed -->
+  <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
   <string name="feedback">قايتۇرما ئىنكاس يوللا</string>
+  <!-- Copyright text [CHAR LIMIT=50] -->
+  <!-- Version text [CHAR LIMIT=50] -->
+  <!-- Menu item: view a webpage about this application [CHAR LIMIT=50]; this MUST be overlayed -->
+  <!-- URL to a webpage about this application; this MUST be overlayed -->
+  <!-- Menu item: print... [CHAR LIMIT=25] -->
+  <!-- Menu item: copyright information [CHAR LIMIT=25] -->
+  <!-- Menu item: privacy policy [CHAR LIMIT=25] -->
+  <!-- URI to display the privacy; this must be overlayed -->
+  <!-- Menu item: open source licenses [CHAR LIMIT=25] -->
+  <!-- Activity class name for showing a full message url.
+         Empty by default since this should be overridden by implementing apps. -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <!-- Settings screen, heading for grouping action confirmation related  settings together [CHAR LIMIT=100] -->
+  <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
+  <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
+  <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
+  <!--  Settings screen, Conversation mode setting titile  [CHAR LIMIT=30] -->
+  <!--  Settings screen, Conversation mode setting summary [CHAR LIMIT=70] -->
+  <!--  Settings screen, disable snap headers setting title  [CHAR LIMIT=30] -->
+  <!-- The snap header summaries -->
+  <!-- The snap header modes -->
+  <!-- The snap header values -->
+  <!-- Settings screen, title of "Clear search history" menu item -->
+  <!-- Message shown in toast when the user taps "clear search history" in general preferences. [CHAR LIMIT=50] -->
+  <!-- Settings screen, title of dialog shown to confirm action when user taps
+    "Clear search history" in preferences [CHAR LIMIT=200]-->
+  <!-- Settings screen, message of dialog shown to confirm action when user taps
+    "Clear search history" in preferences [CHAR LIMIT=1000]-->
+  <!-- Settings screen, preference item to launch into Settings [CHAR LIMIT=50] -->
+  <!-- Settings screen, main title of the screen, big font [CHAR LIMIT=50]-->
+  <!-- Settings screen title -->
+  <!-- Name of the Settings activity -->
+  <!-- Content description for the action menu overflow button. [CHAR LIMIT=NONE] -->
+  <!-- Text when there is a security hold on an account that needs to be accepted. The email address param takes the for "abc@xyz.com" -->
+  <!-- Text to go to the dialog to accept the security hold -->
+  <!-- Shown when user submits a form. [CHAR LIMIT=40] -->
+  <!-- activity name of the photoviewer -->
 </resources>

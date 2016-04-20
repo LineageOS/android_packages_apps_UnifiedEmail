@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources>
+  <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Mode</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Disabled</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">Suggested contacts feature is disabled</string>
@@ -29,4 +30,6 @@
   <string name="suggested_contacts_cleared">Suggested contacts cleared.</string>
   <string name="clear_suggested_contacts_dialog_title">Clear suggested contacts?</string>
   <string name="clear_suggested_contacts_dialog_message">All the suggested contacts previously stored will be removed.</string>
+  <!-- Notification lights dialogs -->
+  <!-- Values for the notification lights pulse spinners -->
 </resources>
