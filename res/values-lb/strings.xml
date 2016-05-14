@@ -270,6 +270,12 @@
   <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
   <string name="badge_and_subject"><xliff:g>%1$s</xliff:g> <xliff:g>%2$s</xliff:g></string>
   <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
+  <plurals name="draft">
+    <!-- Title of the screen when there is exactly one draft -->
+    <item quantity="one">Brouillon</item>
+    <!-- Title of the screen when there are more than one draft -->
+    <item quantity="other">Brouillonen</item>
+  </plurals>
   <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
   <string name="sending">Gëtt geschéckt\u2026</string>
   <!-- Message displayed in the outgoing message list item when the message failed to sent and is being retried [CHAR LIMIT=20] -->
@@ -284,6 +290,24 @@
   <!-- String used to represent "me"/"I" when used as an subject pronoun. This string is use when
          showing the list of senders for a conversation list item. [CHAR LIMIT=15] -->
   <string name="me_subject_pronoun">ech</string>
+  <plurals name="confirm_delete_conversation">
+    <!-- Dialog message to confirm deletion of one conversation -->
+    <item quantity="one">Dës Konversatioun läschen?</item>
+    <!-- Dialog message to confirm deletion of several conversations -->
+    <item quantity="other">Dës <xliff:g id="count">%1$d</xliff:g> Konversatioune läschen?</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <!-- Dialog message to confirm archival of one conversation -->
+    <item quantity="one">Dës Konversatioun archivéieren?</item>
+    <!-- Dialog message to confirm archival of several conversations -->
+    <item quantity="other">Dës <xliff:g id="count">%1$d</xliff:g> Konversatiounen archivéieren?</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <!-- Dialog message to confirm discarding a single draft message [CHAR LIMIT=50] -->
+    <item quantity="one">Dëse Message verwerfen?</item>
+    <!-- Dialog message to confirm discarding many draft messages [CHAR LIMIT=50] -->
+    <item quantity="other">Dës <xliff:g id="count">%1$d</xliff:g> Messagë verwerfen?</item>
+  </plurals>
   <!-- Dialog text: confirm discard -->
   <string name="confirm_discard_text">Dëse Message verwerfen?</string>
   <!-- Conversation list shared between the Activity and Widget -->
@@ -304,13 +328,65 @@
   <!-- Undo bar strings -->
   <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
   <string name="undo">Réckgängeg maachen</string>
+  <plurals name="conversation_unstarred">
+    <item quantity="one">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatioun ewechgeholl</item>
+    <item quantity="other">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatiounen ewechgeholl</item>
+  </plurals>
   <!-- The following are shown as a toast after the operation has completed -->
+  <plurals name="conversation_muted">
+    <!-- Displayed while muting one conversation -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; roueg geschalt</item>
+    <!-- Displayed while muting several conversations -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; roueg geschalt</item>
+  </plurals>
+  <plurals name="conversation_spammed">
+    <!-- Displayed while reporting one conversation as spam -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Spam gemellt</item>
+    <!-- Displayed while reporting several conversations as spam -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Spam gemellt</item>
+  </plurals>
+  <plurals name="conversation_not_spam">
+    <!-- Displayed while reporting one conversation as not spam -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als net Spam gemellt</item>
+    <!-- Displayed while reporting several conversations as not spam -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als net Spam gemellt</item>
+  </plurals>
+  <plurals name="conversation_not_important">
+    <!-- Displayed while reporting one conversation as not important in the important folder -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als wichteg markéiert</item>
+    <!-- Displayed while reporting several conversations as not important in the important folder -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als wichteg markéiert</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <!-- Displayed while reporting one conversation as phishing -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Phishing gemellt</item>
+    <!-- Displayed while reporting several conversations as phishing -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; als Phishing gemellt</item>
+  </plurals>
+  <plurals name="conversation_archived">
+    <!-- Displayed while archiving one conversation -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; archivéiert</item>
+    <!-- Displayed while archiving multiple conversations -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; archivéiert</item>
+  </plurals>
+  <plurals name="conversation_deleted">
+    <!-- Displayed while deleting one conversation -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; geläscht</item>
+    <!-- Displayed while deleting multiple conversations -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; geläscht</item>
+  </plurals>
   <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
   <string name="deleted">Geläscht</string>
   <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
   <string name="archived">Archivéiert</string>
   <!-- Displayed when swiping away a single conversation to remove the currently displayed folder [CHAR LIMIT=80] -->
   <string name="folder_removed">Aus <xliff:g id="folderName">%1$s</xliff:g> geläscht</string>
+  <plurals name="conversation_folder_changed">
+    <!-- Displayed while adding and removing folders to a single conversation. [CHAR LIMIT=100] -->
+    <item quantity="one">Dossier gewiesselt</item>
+    <!-- Displayed while adding and removing folders to multiple conversations. [CHAR LIMIT=100] -->
+    <item quantity="other">Dossiere gewiesselt</item>
+  </plurals>
   <!-- Displayed after moving a conversation to a different folder. [CHAR LIMIT=100] -->
   <string name="conversation_folder_moved">Geréckelt an den Dossier <xliff:g id="folderName">%1$s</xliff:g></string>
   <!-- Search Results: Text for header that is shown above search results [CHAR LIMIT=30] -->
@@ -324,6 +400,10 @@
           viewing it. [CHAR LIMIT=40] -->
   <string name="add_label">Dossier dobäisetzen</string>
   <!-- New Message notification text that appears over conversation view on incoming messages. [CHAR LIMIT=40] -->
+  <plurals name="new_incoming_messages">
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> neie Message</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> nei Messagen</item>
+  </plurals>
   <!-- Conversation message header strings -->
   <!--  Text for showing the date and expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
   <string name="date_and_view_details"><xliff:g id="date">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Detailer uweisen&lt;/a&gt;</string>
@@ -340,9 +420,17 @@
   <!-- Used for accessibility purposes when a conversation has several previously read
          messages that are collapsed into a single touch target. Tapping on this touch target
          expands these messages. [CHAR LIMIT=UNLIMITED] -->
+  <plurals name="show_messages_read">
+    <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> méi ale Message ausklappen</item>
+    <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> méi al Messagen ausklappen</item>
+  </plurals>
   <!-- Used for accessibility purposes when a conversation has several previously read
          messages that are collapsed into a single touch target to announce that the messages
          have been expanded. [CHAR LIMIT=UNLIMITED] -->
+  <plurals name="super_collapsed_block_accessibility_announcement">
+    <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> méi ale Message ausgeklappt</item>
+    <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> méi al Messagen ausgeklappt</item>
+  </plurals>
   <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
   <string name="from_heading">Vun:</string>
   <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
@@ -430,6 +518,11 @@
   <string name="large_unseen_count"><xliff:g id="count" example="99">%d</xliff:g>+ nei</string>
   <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
   <string name="unseen_count"><xliff:g id="count" example="4">%d</xliff:g> nei</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> ongelies</item>
+    <!-- String for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
+    <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> ongelies</item>
+  </plurals>
   <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
   <string name="view_more_conversations">Méi Konversatiounen uweisen</string>
   <!-- Displayed while we load a conversation. [CHAR LIMIT=100] -->
@@ -589,6 +682,10 @@
   <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
   <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
   <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
+  <plurals name="new_messages">
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> neie Message</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> nei Messagen</item>
+  </plurals>
   <!-- Format string used when displaying the title of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
   <string name="single_new_message_notification_title"><xliff:g id="sender">%1$s</xliff:g>: <xliff:g id="subject">%2$s</xliff:g></string>
   <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
@@ -630,6 +727,10 @@
   <!-- Dialog title for empty spam confirmation dialog [CHAR LIMIT=100] -->
   <string name="empty_spam_dialog_title">Spam eidel maachen?</string>
   <!-- Dialog message for empty folder confirmation dialog [CHAR LIMIT=300] -->
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> Message gëtt permanent geläscht.</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> Messagë gi permanent geläscht.</item>
+  </plurals>
   <!-- Strings used for accessibility for the items that toggles the drawer action  -->
   <string name="drawer_open">Navigatiounsläischt opmaachen</string>
   <string name="drawer_close">Navigatiounsläischt zoumaachen</string>
@@ -674,6 +775,10 @@
   <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
   <string name="print_all">All drécken</string>
   <!-- Number of messages in a conversation [CHAR LIMIT=30]-->
+  <plurals name="num_messages">
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> Message</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> Messagen</item>
+  </plurals>
   <!-- Display format of an email recipient, displayed in printed message details [CHAR LIMIT=10] -->
   <!-- Shown to display the date of the message [CHAR LIMIT=50] -->
   <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> um <xliff:g id="time">%2$s</xliff:g></string>
@@ -684,6 +789,10 @@
   <!-- Shown to inform the user that the quoted text for this message has been hidden. [CHAR LIMIT=50] -->
   <string name="quoted_text_hidden_print">Zitéierten Text verstoppt</string>
   <!-- Number of attachments in a message [CHAR LIMIT=30]-->
+  <plurals name="num_attachments">
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> Unhank</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> Unhäng</item>
+  </plurals>
   <!-- Provider name for widgets -->
   <!-- Title to display when an email has no subject. [CHAR LIMIT=50]-->
   <string name="no_subject">(kee Sujet)</string>

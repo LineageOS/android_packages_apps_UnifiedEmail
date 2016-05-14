@@ -265,6 +265,12 @@
          showing the list of recipients of a message [CHAR LIMIT=15] -->
   <!-- String used to represent "me"/"I" when used as an subject pronoun. This string is use when
          showing the list of senders for a conversation list item. [CHAR LIMIT=15] -->
+  <plurals name="confirm_delete_conversation">
+    <!-- Dialog message to confirm deletion of one conversation -->
+    <item quantity="one">سڕینەوەی ئەم گفتوگۆیە?</item>
+    <!-- Dialog message to confirm deletion of several conversations -->
+    <item quantity="other">سڕینەوەی ئەم گفتوگۆیە?</item>
+  </plurals>
   <!-- Dialog text: confirm discard -->
   <string name="confirm_discard_text">وازهێنان له‌م نامه‌یه‌؟</string>
   <!-- Conversation list shared between the Activity and Widget -->
