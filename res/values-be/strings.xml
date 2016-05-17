@@ -22,7 +22,9 @@
   <!-- Layout tests strings -->
   <!-- Compose -->
   <!-- Shown in Compose; the sender of the message [CHAR LIMIT=10] -->
+  <string name="from">Ад</string>
   <!-- Shown in Compose; the recipient(s) of the message [CHAR LIMIT=10] -->
+  <string name="to">Каму</string>
   <!-- Shown in Compose; the cc recipient(s) of the message [CHAR LIMIT=10] -->
   <!-- Shown in Compose; the bcc recipient(s) of the message [CHAR LIMIT=10] -->
   <!-- Shown in Compose; the subject of the message [CHAR LIMIT=100] -->
@@ -33,6 +35,7 @@
   <!-- The actual string value doesn't matter, it should never appear. -->
   <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
   <!--  Button name: discard this message [CHAR LIMIT=15] -->
+  <string name="discard">Адхіліць</string>
   <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
   <!-- The action bar title for the default compose mode [CHAR LIMIT=10] -->
   <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
@@ -70,6 +73,7 @@
   <!-- Menu item: discard the drafts in this conversation [CHAR LIMIT = 30] -->
   <!-- Menu item: discard the failed messages in this conversation [CHAR LIMIT = 30] -->
   <!-- Menu item: refresh the inbox -->
+  <string name="refresh">Абнавіць</string>
   <!-- Menu item: reply to this message -->
   <!-- Menu item: reply to all recipients in this message [CHAR LIMIT=18] -->
   <!-- Menu item: resume a draft message [CHAR LIMIT=12] -->
@@ -87,6 +91,7 @@
   <!-- Temporary text used for reporting rendering improvements Googlers see in testing -->
   <!-- Menu item text to show the original version of an email conversation, before message manipulation [CHAR LIMIT=25] -->
   <!-- Menu item: launch the Settings activity -->
+  <string name="menu_settings">Налады</string>
   <!-- Menu item: search through the Gmail inbox -->
   <!-- Menu item: toggle drawer -->
   <!-- Title of the drawer, indicating what it is used for, which is navigation of the app -->
