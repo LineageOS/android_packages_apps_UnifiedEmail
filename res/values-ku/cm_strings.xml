@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources>
+  <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">بار</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">ناچالاککرا</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">شێوازی پێشنیاری ناوەکان لەکارخرا</string>
@@ -29,6 +30,7 @@
   <string name="suggested_contacts_cleared">ناوەپیشنیار کراوەکان پاکرایەوە.</string>
   <string name="clear_suggested_contacts_dialog_title">پاکردنەوەی ناوی پیشنیارکراو?</string>
   <string name="clear_suggested_contacts_dialog_message">هەموو ناوە پیشنیارکراوەکان کە پیشتر پاشەکەوتکراوە ئەسڕێتەوە.</string>
+  <!-- Notification lights dialogs -->
   <string name="edit_light_settings">ڕێکخستنی ڕۆشنای خونچە</string>
   <string name="pulse_speed_title">ترپەی درێژی و خێرای</string>
   <string name="default_time">ئاسای</string>
@@ -36,6 +38,7 @@
   <string name="dialog_delete_title">سڕینه‌وه‌</string>
   <string name="dialog_delete_message">سڕینەوەی دیاریکراوەکان?</string>
   <string name="pref_lights_default">بنه‌ڕه‌ت</string>
+  <!-- Values for the notification lights pulse spinners -->
   <string name="pulse_length_always_on">هه‌میشه‌ کراوه‌</string>
   <string name="pulse_length_very_short">زۆر کورت</string>
   <string name="pulse_length_short">کورت</string>
