@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Folder;
@@ -195,7 +196,7 @@ public interface ActivityController extends LayoutListener,
     /**
      * Begin a search with the given query string.
      */
-    void executeSearch(String query);
+    void executeSearch(String query,String factor,boolean isUser);
 
     /**
      * Called by the Mail activity on Activity stop.
@@ -287,4 +288,19 @@ public interface ActivityController extends LayoutListener,
      * Attach layout listener so our custom toolbar can listen to thread list layout events.
      */
     void addConversationListLayoutListener(TwoPaneLayout.ConversationListLayoutListener listener);
+
+    /**
+     *  when user press search button or switch search filter tab .
+     */
+    void buildLocalSearch(String query,String factor,boolean isUser);
+
+    /**
+     *  Called when user press back key then exit local search .
+     */
+    void exitLocalSearch();
+
+    /**
+     * @return   get abstractActivityControll's current ConversationListContext;
+     */
+    ConversationListContext getCurrentConversationListContext();
 }

@@ -51,6 +51,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -61,6 +62,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.emailcommon.service.SearchParams;
 import com.android.mail.ConversationListContext;
 import com.android.mail.MailLogService;
 import com.android.mail.R;
@@ -443,6 +445,8 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     public static final int LAST_FRAGMENT_LOADER_ID = 1000;
 
+    private static final int LOADER_LOCALSEARCH_CONVERSATION_LIST = 1100;
+
     /** Code returned after an account has been added. */
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
     /** Code returned when the user has to enter the new password on an existing account. */
@@ -503,6 +507,10 @@ public abstract class AbstractActivityController implements ActivityController,
     private final MailDrawerListener mDrawerListener = new MailDrawerListener();
     private boolean mHideMenuItems;
 
+    private int mFolderType;
+    private final static String UI_MESSAGES = "uimessages";
+    private final static String UI_LOCAL_SEARCH = "uilocalsearch";
+
     private final DrawIdler mDrawIdler = new DrawIdler();
 
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
@@ -556,7 +564,7 @@ public abstract class AbstractActivityController implements ActivityController,
         return mAccount;
     }
 
-    public ConversationListContext getCurrentListContext() {
+    public ConversationListContext getCurrentConversationListContext() {
         return mConvListContext;
     }
 
@@ -940,6 +948,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 || (mViewMode.getMode() != ViewMode.CONVERSATION_LIST)) {
             setListContext(folder, query);
             showConversationList(mConvListContext);
+            mSearchViewController.restoreLocalSearch();
             // Touch the current folder: it is different, and it has been accessed.
             if (mFolder != null) {
                 mRecentFolderList.touchFolder(mFolder, mAccount);
@@ -1058,24 +1067,11 @@ public abstract class AbstractActivityController implements ActivityController,
         // The first time this runs when the activity is [re-]initialized, we want to re-use the
         // previous loader's instance and data upon configuration change (e.g. rotation).
         // If there was not already an instance of the loader, init it.
-        if (lm.getLoader(LOADER_FOLDER_CURSOR) == null) {
-            lm.initLoader(LOADER_FOLDER_CURSOR, Bundle.EMPTY, mFolderCallbacks);
-        } else {
-            lm.restartLoader(LOADER_FOLDER_CURSOR, Bundle.EMPTY, mFolderCallbacks);
+        final ConversationListFragment conversationList = getConversationListFragment();
+        if (conversationList != null) {
+            conversationList.getListView().setEmptyView(null);
         }
-        if (!wasNull && lm.getLoader(LOADER_CONVERSATION_LIST) != null) {
-            // If there was an existing folder AND we have changed
-            // folders, we want to restart the loader to get the information
-            // for the newly selected folder
-            lm.destroyLoader(LOADER_CONVERSATION_LIST);
-        }
-        final Bundle args = new Bundle(2);
-        args.putParcelable(BUNDLE_ACCOUNT_KEY, mAccount);
-        args.putParcelable(BUNDLE_FOLDER_KEY, mFolder);
-        args.putBoolean(BUNDLE_IGNORE_INITIAL_CONVERSATION_LIMIT_KEY,
-                mIgnoreInitialConversationLimit);
-        mIgnoreInitialConversationLimit = false;
-        lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
+        loadConversationListData(true);
     }
 
     @Override
@@ -1178,7 +1174,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void onConversationListVisibilityChanged(boolean visible) {
         mFloatingComposeButton.setVisibility(
-                !ViewMode.isSearchMode(mViewMode.getMode()) && visible ? View.VISIBLE : View.GONE);
+                !mSearchViewController.isOnlyActionbar() && visible ? View.VISIBLE : View.GONE);
 
         informCursorVisiblity(visible);
         commitAutoAdvanceOperation();
@@ -1368,6 +1364,8 @@ public abstract class AbstractActivityController implements ActivityController,
         // Create the accounts loader; this loads the account switch spinner.
         mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, Bundle.EMPTY,
                 mAccountCallbacks);
+
+        mSearchViewController.restoreLocalSearch();
     }
 
     /**
@@ -2263,18 +2261,16 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void executeSearch(String query) {
+    public void executeSearch(String query ,String factor,boolean isUser) {
+        mSearchViewController.saveRecentQuery(query);
         AnalyticsTimer.getInstance().trackStart(AnalyticsTimer.SEARCH_TO_LIST);
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEARCH);
-        intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, query);
-        intent.putExtra(Utils.EXTRA_ACCOUNT, mAccount);
-        intent.setComponent(mActivity.getComponentName());
         mSearchViewController.showSearchActionBar(
-                MaterialSearchViewController.SEARCH_VIEW_STATE_GONE);
-        // Call startActivityForResult here so we can tell if we have navigated to a different folder
-        // or account from search results.
-        mActivity.startActivityForResult(intent, CHANGE_NAVIGATION_REQUEST_CODE);
+                MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
+        buildLocalSearch(query, factor,isUser);
+        if(!mConvListContext.isLocalSearch()){
+            return;
+        }
+        loadConversationListData(false);
     }
 
     @Override
@@ -2525,23 +2521,6 @@ public abstract class AbstractActivityController implements ActivityController,
             args.putParcelable(Utils.EXTRA_CONVERSATION,
                     intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
             restartOptionalLoader(LOADER_FIRST_FOLDER, mFolderCallbacks, args);
-        } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
-                mHaveSearchResults = false;
-                // Save this search query for future suggestions
-                final String query = intent.getStringExtra(SearchManager.QUERY);
-                mSearchViewController.saveRecentQuery(query);
-                setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                fetchSearchFolder(intent);
-                if (shouldEnterSearchConvMode()) {
-                    mViewMode.enterSearchResultsConversationMode();
-                } else {
-                    mViewMode.enterSearchResultsListMode();
-                }
-            } else {
-                LogUtils.e(LOG_TAG, "Missing account extra from search intent.  Finishing");
-                mActivity.finish();
-            }
         }
         if (mAccount != null) {
             restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR, mAccountCallbacks, Bundle.EMPTY);
@@ -2685,6 +2664,8 @@ public abstract class AbstractActivityController implements ActivityController,
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null && convListFragment.getAnimatedAdapter() != null) {
             convListFragment.getAnimatedAdapter().onConversationSelected();
+            mSearchViewController
+                    .showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_GONE);
         }
         // Only animate destructive actions if we are going to be showing the
         // conversation list when we show the next conversation.
@@ -3433,8 +3414,9 @@ public abstract class AbstractActivityController implements ActivityController,
             if (account == null || folder == null) {
                 return null;
             }
-            return new ConversationCursorLoader(mActivity, account,
-                    folder.conversationListUri, folder.getTypeDescription(),
+
+            return new ConversationCursorLoader((Activity) mActivity,
+                    account, getCurrentFolderConversationListUri(id, args, folder), folder.name,
                     ignoreInitialConversationLimit);
         }
 
@@ -3472,6 +3454,9 @@ public abstract class AbstractActivityController implements ActivityController,
                 informCursorVisiblity(true);
             }
             perhapsShowFirstConversation();
+
+            showLocalSearchResult(loader, data);
+
         }
 
         @Override
@@ -3489,6 +3474,18 @@ public abstract class AbstractActivityController implements ActivityController,
                 // Inform anyone who is interested about the change
                 mTracker.onCursorUpdated();
                 mConversationListObservable.notifyChanged();
+            }
+        }
+    }
+
+    public void updateSearchResultCount(int count) {
+
+        if (mSearchViewController != null) {
+            if (count == 0
+                    && SearchParams.SEARCH_FACTOR_ALL.equals(mConvListContext.getSearchFactor())) {
+                mSearchViewController.updateSearchResultCount(count, true);
+            } else {
+                mSearchViewController.updateSearchResultCount(count, false);
             }
         }
     }
@@ -4482,6 +4479,148 @@ public abstract class AbstractActivityController implements ActivityController,
         @Override
         public void onClick(View v) {
             handleUpPress();
+        }
+    }
+
+
+    private void loadConversationListData(boolean isFolderUpdated) {
+        if (mFolder == null || !mFolder.isInitialized()) {
+            return;
+        }
+        final LoaderManager lm = mActivity.getLoaderManager();
+
+        if (mConvListContext != null && mConvListContext.isLocalSearchExecuted()) {
+            executedLocalSearchLoader(lm);
+        } else {
+            executedChangeFolderLoader(lm, isFolderUpdated);
+        }
+    }
+
+
+    private void executedLocalSearchLoader(LoaderManager lm) {
+        final Bundle args = new Bundle(4);
+        args.putParcelable(BUNDLE_ACCOUNT_KEY, mAccount);
+        args.putParcelable(BUNDLE_FOLDER_KEY, mFolder);
+        args.putString(SearchParams.BUNDLE_QUERY_FACTOR, mConvListContext.getSearchFactor());
+        args.putString(SearchParams.BUNDLE_QUERY_FILTER, mConvListContext.getSearchQuery());
+
+        if (lm.getLoader(LOADER_CONVERSATION_LIST) != null) {
+            lm.destroyLoader(LOADER_CONVERSATION_LIST);
+        }
+
+        lm.restartLoader(LOADER_LOCALSEARCH_CONVERSATION_LIST, args, mListCursorCallbacks);
+    }
+
+    private void executedChangeFolderLoader(LoaderManager lm, boolean isFolderUpdated) {
+        if (lm.getLoader(LOADER_LOCALSEARCH_CONVERSATION_LIST) != null) {
+            lm.destroyLoader(LOADER_LOCALSEARCH_CONVERSATION_LIST);
+        }
+
+        final ConversationCursorLoader ccl = (ConversationCursorLoader) ((Object) lm
+                .getLoader(LOADER_CONVERSATION_LIST));
+        if (ccl != null && !ccl.getUri().equals(mFolder.conversationListUri)
+                && isFolderUpdated) {
+            lm.destroyLoader(LOADER_CONVERSATION_LIST);
+        }
+        final Bundle args = new Bundle(2);
+        args.putParcelable(BUNDLE_ACCOUNT_KEY, mAccount);
+        args.putParcelable(BUNDLE_FOLDER_KEY, mFolder);
+        args.putBoolean(BUNDLE_IGNORE_INITIAL_CONVERSATION_LIMIT_KEY,
+                mIgnoreInitialConversationLimit);
+        mIgnoreInitialConversationLimit = false;
+        lm.initLoader(LOADER_CONVERSATION_LIST, args, mListCursorCallbacks);
+    }
+
+    @Override
+    public void buildLocalSearch(String query, String factor, boolean isUser) {
+        mFloatingComposeButton.setVisibility(View.GONE);
+        if (mConvListContext == null || TextUtils.isEmpty(query)) {
+            return;
+        }
+        if (!mConvListContext.isLocalSearch()) {
+            mActivity.invalidateOptionsMenu();
+        }
+        mConvListContext.setSearchQueryText(query);
+        if (factor == null) {
+            mConvListContext.setSearchFactor(SearchParams.SEARCH_FACTOR_ALL);
+        } else {
+            if (isUser) {
+                mCheckedSet.clear();
+            }
+            mConvListContext.setSearchFactor(factor);
+        }
+        mConvListContext.setLocalSearch(true);
+    }
+
+    @Override
+    public void exitLocalSearch() {
+        mFolder.type = mFolderType;
+        if (getConversationListFragment() != null) {
+            getConversationListFragment().exitSeachView();
+        }
+        if (mConvListContext == null) {
+            return;
+        }
+        mConvListContext.setLocalSearch(false);
+        mConvListContext.setSearchQueryText(null);
+        mConvListContext.setSearchFactor(null);
+        // refresh conversation list.
+        mFloatingComposeButton.setVisibility(View.VISIBLE);
+        mActivity.invalidateOptionsMenu();
+        loadConversationListData(false);
+    }
+
+    private Uri getCurrentFolderConversationListUri(int id, Bundle args, Folder folder) {
+        Uri uri = folder.conversationListUri;
+        if (id == LOADER_LOCALSEARCH_CONVERSATION_LIST) {
+            String filter = args.getString(SearchParams.BUNDLE_QUERY_FILTER);
+            String factor = args.getString(SearchParams.BUNDLE_QUERY_FACTOR);
+            mFolderType = folder.type;
+            folder.type = FolderType.SEARCH;
+            if (!TextUtils.isEmpty(filter) && !TextUtils.isEmpty(factor)) {
+                uri = buildLocalSearchUri(folder, filter, factor);
+            }
+        }
+        return uri;
+    }
+
+    private Uri buildLocalSearchUri(Folder folder, String queryFilter, String queryFactor) {
+        Uri result = null;
+        if (TextUtils.isEmpty(queryFilter)
+                || TextUtils.isEmpty(queryFactor)) {
+            return folder.conversationListUri;
+        } else {
+            result = Uri.parse(folder.conversationListUri.toString().replace(UI_MESSAGES,
+                    UI_LOCAL_SEARCH));
+        }
+        return result
+                .buildUpon()
+                .appendQueryParameter(SearchParams.BUNDLE_QUERY_FILTER, queryFilter)
+                .appendQueryParameter(SearchParams.BUNDLE_QUERY_FACTOR, queryFactor)
+                .build();
+    }
+
+    private void showLocalSearchResult(Loader<ConversationCursor> loader, ConversationCursor data) {
+        if (loader.getId() == LOADER_LOCALSEARCH_CONVERSATION_LIST) {
+            updateSearchResultCount(data.getCount());
+            mCheckedSet.validateAgainstCursor(mConversationListCursor);
+        } else if (mConvListContext != null && mConvListContext.isLocalSearch()) {
+            updateSearchResultCount(0);
+        }
+
+        if (getConversationListFragment() == null) {
+            if (mActivity == null || mActivity.getFragmentManager().isDestroyed()) {
+                return;
+            }
+            int mode = mViewMode.getMode();
+            switch (mode) {
+                case ViewMode.CONVERSATION_LIST:
+                case ViewMode.SEARCH_RESULTS_LIST:
+                    showConversationList(mConvListContext);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

@@ -154,6 +154,11 @@
     <color name="vacation_responder_header_text_color">@color/text_color_grey</color>
     <color name="vacation_responder_main_text_color">@color/text_color_black</color>
 
+    <!-- search filter button color -->
+    <color name="search_factor_normal_color">#EDEDED</color>
+    <color name="search_factor_selector_color">#B2B2B2</color>
+    <color name="search_factor_text_normal_color">#36000000</color>
+    
     <!-- Swipe refresh progress bar colors -->
     <color name="swipe_refresh_color1">#ff0f9d58</color>
     <color name="swipe_refresh_color2">#ffdb4437</color>

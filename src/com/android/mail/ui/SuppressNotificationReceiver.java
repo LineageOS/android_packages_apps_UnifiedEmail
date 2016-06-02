@@ -117,7 +117,7 @@ public class SuppressNotificationReceiver extends BroadcastReceiver {
             return;
         }
 
-        final ConversationListContext listContext = mController.getCurrentListContext();
+        final ConversationListContext listContext = mController.getCurrentConversationListContext();
         if (listContext == null) {
             // A non-null list context was expected
             LogUtils.e(LOG_TAG, "unexpected null context");

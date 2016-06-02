@@ -232,9 +232,11 @@ public final class OnePaneController extends AbstractActivityController {
         enableCabMode();
         mConversationListVisible = true;
         if (ConversationListContext.isSearchResult(listContext)) {
-            mViewMode.enterSearchResultsListMode();
-        } else {
             mViewMode.enterConversationListMode();
+            mSearchViewController.setQueryText(listContext.getSearchQuery());
+            mSearchViewController
+                    .showSearchActionBar(
+                    MaterialSearchViewController.SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
         }
         final int transition = mConversationListNeverShown
                 ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
@@ -281,12 +283,7 @@ public final class OnePaneController extends AbstractActivityController {
             return;
         }
         disableCabMode();
-        if (ConversationListContext.isSearchResult(mConvListContext)) {
-            mViewMode.enterSearchResultsConversationMode();
-        } else {
-            mViewMode.enterConversationMode();
-        }
-
+        mViewMode.enterConversationMode();
         mPagerController.show(mAccount, mFolder, conversation, true /* changeVisibility */,
                 shouldAnimate? mPagerAnimationListener : null);
         onConversationVisibilityChanged(true);
@@ -382,9 +379,7 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean handleBackPress() {
         final int mode = mViewMode.getMode();
 
-        if (mode == ViewMode.SEARCH_RESULTS_LIST) {
-            mActivity.finish();
-        } else if (mViewMode.isListMode() && !inInbox(mAccount, mConvListContext)) {
+        if (mViewMode.isListMode() && !inInbox(mAccount, mConvListContext)) {
             navigateUpFolderHierarchy();
         } else if (mViewMode.isConversationMode() || mViewMode.isAdMode()) {
             transitionBackToConversationListMode();
@@ -422,10 +417,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public boolean handleUpPress() {
         final int mode = mViewMode.getMode();
-        if (mode == ViewMode.SEARCH_RESULTS_LIST) {
-            mActivity.finish();
-            // Not needed, the activity is going away anyway.
-        } else if (mode == ViewMode.CONVERSATION_LIST
+            if (mode == ViewMode.CONVERSATION_LIST
                 || mode == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
             final boolean isTopLevel = Folder.isRoot(mFolder);
 
@@ -435,8 +427,7 @@ public final class OnePaneController extends AbstractActivityController {
             } else {
                 navigateUpFolderHierarchy();
             }
-        } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION
-                || mode == ViewMode.AD) {
+        } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.AD) {
             // Same as go back.
             handleBackPress();
         }
@@ -447,11 +438,7 @@ public final class OnePaneController extends AbstractActivityController {
         final int mode = mViewMode.getMode();
         enableCabMode();
         mConversationListVisible = true;
-        if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
-            mViewMode.enterSearchResultsListMode();
-        } else {
-            mViewMode.enterConversationListMode();
-        }
+        mViewMode.enterConversationListMode();
 
         final Folder folder = mFolder != null ? mFolder : mInbox;
         onFolderChanged(folder, true /* force */);

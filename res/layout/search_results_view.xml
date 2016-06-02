@@ -21,7 +21,7 @@
     android:id="@+id/search_status_view"
     android:layout_width="match_parent"
     android:layout_height="@dimen/notification_view_height"
-    android:background="@color/search_banner_bg"
+    android:background="@android:color/white"
     android:focusable="false"
     android:minHeight="@dimen/notification_view_height"
     android:paddingLeft="@dimen/search_results_padding"
@@ -35,7 +35,7 @@
         android:ellipsize="marquee"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:text="@string/search_results_header"
+        android:text="@string/mail_search_factor_result"
         android:textAllCaps="true"
         style="@style/SearchTextStyle" />
 

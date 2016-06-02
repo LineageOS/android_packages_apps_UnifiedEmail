@@ -47,9 +47,11 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.text.format.DateUtils;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -60,6 +62,8 @@ import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
+import com.android.emailcommon.service.SearchParams;
+import com.android.emailcommon.utility.TextUtilities;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
 import com.android.mail.bitmap.CheckableContactFlipDrawable;
@@ -72,6 +76,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderType;
+import com.android.mail.ui.ActivityController;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationCheckedSet;
@@ -87,8 +92,11 @@ import com.android.mail.utils.Utils;
 import com.android.mail.utils.ViewUtils;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConversationItemView extends View
         implements SwipeableItemView, ToggleableItem, ConversationSetObserver,
@@ -105,6 +113,7 @@ public class ConversationItemView extends View
     private static final String PERF_TAG_CALCULATE_FOLDERS = "CCHV.folders";
     private static final String PERF_TAG_CALCULATE_COORDINATES = "CCHV.coordinates";
     private static final String LOG_TAG = LogTag.getLogTag();
+    private static final int HIGHLIGHT_COLOR_INT = 0xFFE7790D;
 
     private static final Typeface SANS_SERIF_BOLD = Typeface.create("sans-serif", Typeface.BOLD);
 
@@ -207,12 +216,15 @@ public class ConversationItemView extends View
 
     private final CheckableContactFlipDrawable mSendersImageView;
 
+    private SearchParams mSearchParams;
+
     /** The resource id of the color to use to override the background. */
     private int mBackgroundOverrideResId = -1;
     /** The bitmap to use, or <code>null</code> for the default */
     private Bitmap mPhotoBitmap = null;
     private Rect mPhotoRect = new Rect();
 
+    private final static int OFFSET = 5;
     /**
      * A listener for clicks on the various areas of a conversation item.
      */
@@ -527,6 +539,12 @@ public class ConversationItemView extends View
         mHeader = header;
         mActivity = activity;
         mCheckedConversationSet = set;
+
+        ActivityController activityController = (ActivityController) activity
+                .getAccountController();
+        mSearchParams = activityController != null ? activityController
+                .getCurrentConversationListContext().getSearchParams() : null;
+
         if (mCheckedConversationSet != null) {
             mCheckedConversationSet.addObserver(this);
         }
@@ -870,8 +888,9 @@ public class ConversationItemView extends View
             mSendersTextView.setMaxLines(mCoordinates.sendersLineCount);
             mSendersTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCoordinates.sendersFontSize);
             layoutViewExactly(mSendersTextView, w, h);
-
-            mSendersTextView.setText(participantText);
+            SpannableStringBuilder highLightSender = highlightTermsInText(
+                    participantText.toString(), participantText);
+            mSendersTextView.setText(highLightSender);
         }
     }
 
@@ -880,7 +899,8 @@ public class ConversationItemView extends View
         String subject = filterTag(getContext(), mHeader.conversation.subject);
         subject = mAdapter.getBidiFormatter().unicodeWrap(subject);
         subject = Conversation.getSubjectForDisplay(mContext, badgeText, subject);
-        final Spannable displayedStringBuilder = new SpannableString(subject);
+
+        final SpannableString displayedStringBuilder = new SpannableString(subject);
 
         // since spans affect text metrics, add spans to the string before measure/layout or eliding
 
@@ -891,18 +911,23 @@ public class ConversationItemView extends View
                     isUnread ? sSubjectTextUnreadSpan : sSubjectTextReadSpan),
                     badgeTextLength, subject.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+
         if (isActivated() && showActivatedText()) {
             displayedStringBuilder.setSpan(sActivatedTextSpan, badgeTextLength,
                     displayedStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
+        SpannableStringBuilder spannableString = highlightTermsInText(
+                displayedStringBuilder.toString(), new SpannableStringBuilder(
+                        displayedStringBuilder));
+
         final int subjectWidth = mCoordinates.subjectWidth;
-        final int subjectHeight = mCoordinates.subjectHeight;
+        final int subjectHeight = isFactorMatch() ? mCoordinates.subjectHeight + OFFSET
+                : mCoordinates.subjectHeight;
         mSubjectTextView.setLayoutParams(new ViewGroup.LayoutParams(subjectWidth, subjectHeight));
         mSubjectTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCoordinates.subjectFontSize);
         layoutViewExactly(mSubjectTextView, subjectWidth, subjectHeight);
-
-        mSubjectTextView.setText(displayedStringBuilder);
+        mSubjectTextView.setText(spannableString);
     }
 
     private void createSnippet() {
@@ -1779,4 +1804,34 @@ public class ConversationItemView extends View
     public String getAccountEmailAddress() {
         return mAccount.getEmailAddress();
     }
+
+    // judge match the factor
+    private boolean isFactorMatch() {
+        return (mSearchParams != null
+                && !TextUtils.isEmpty(mSearchParams.mFilter)
+                && (SearchParams.SEARCH_FACTOR_SUBJECT.equals(mSearchParams.mFactor)
+                || SearchParams.SEARCH_FACTOR_SENDER.equals(mSearchParams.mFactor)
+                || SearchParams.SEARCH_FACTOR_ALL.equals(mSearchParams.mFactor)));
+    }
+
+    // highlight
+    private SpannableStringBuilder highlightTermsInText(String field,
+            SpannableStringBuilder highLightBuilder) {
+        if (isFactorMatch()) {
+            Pattern pattern = Pattern.compile(mSearchParams.mFilter.toLowerCase());
+            Matcher matcher = pattern.matcher(field.toLowerCase());
+            while (matcher.find()) {
+                highLightBuilder.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR_INT),
+                        matcher.start(), matcher.end(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                highLightBuilder.setSpan(new AbsoluteSizeSpan(16, true), matcher.start(),
+                        matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                highLightBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                        matcher.start(),
+                        matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return highLightBuilder;
+    }
+
 }

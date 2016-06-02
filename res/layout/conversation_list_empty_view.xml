@@ -27,7 +27,7 @@
     <ImageView
             android:id="@+id/empty_icon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     <TextView
             android:id="@+id/empty_text"
@@ -37,6 +37,8 @@
             android:layout_marginTop="@dimen/empty_view_space"
             android:fontFamily="sans-serif-light"
             android:gravity="center"
+            android:layout_marginRight="@dimen/empty_view_margin_right"
+            android:layout_marginLeft="@dimen/empty_view_margin_left"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/empty_view_text_size" />
 

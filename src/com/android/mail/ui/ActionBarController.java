@@ -272,8 +272,8 @@ public class ActionBarController implements ViewMode.ModeChangeListener {
             case ViewMode.CONVERSATION_LIST:
             case ViewMode.SEARCH_RESULTS_LIST:
                 // The search menu item should only be visible for non-tablet devices
-                Utils.setMenuItemPresent(menu, R.id.search,
-                        mAccount.supportsSearch() && !mIsOnTablet);
+                // enable show search menu for local searching except on tablet UI
+                Utils.setMenuItemPresent(menu, R.id.search, !mIsOnTablet);
         }
 
         return;

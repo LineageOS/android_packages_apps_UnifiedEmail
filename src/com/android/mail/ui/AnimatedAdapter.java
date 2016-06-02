@@ -901,6 +901,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
         mHeaders.add(headerView);
     }
 
+    public void removeHeader(View headerView) {
+        if (mHeaders.contains(headerView)) {
+            mHeaders.remove(headerView);
+        }
+    }
+
     public void setFolder(Folder folder) {
         mFolder = folder;
     }
@@ -1193,6 +1199,19 @@ public class AnimatedAdapter extends SimpleCursorAdapter {
     public void saveSpecialItemInstanceState(final Bundle outState) {
         for (final ConversationSpecialItemView specialView : mFleetingViews) {
             specialView.saveInstanceState(outState);
+        }
+    }
+
+    public ArrayList<ConversationSpecialItemView> getmFleetingViews() {
+        return (ArrayList<ConversationSpecialItemView>) mFleetingViews;
+    }
+
+    public void resetmFleetingView(ArrayList<ConversationSpecialItemView> fleetingviews) {
+        if (mFleetingViews != null) {
+            mFleetingViews.clear();
+            if (fleetingviews != null) {
+                mFleetingViews.addAll(fleetingviews);
+            }
         }
     }
 }

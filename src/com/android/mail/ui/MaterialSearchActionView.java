@@ -231,6 +231,7 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
     public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             mController.onSearchPerformed(mQueryText.getText().toString());
+            return true;
         }
         return false;
     }
@@ -241,7 +242,16 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
         // capture them manually here.
         if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_ENTER) {
             mController.onSearchPerformed(mQueryText.getText().toString());
+            return true;
         }
         return false;
+    }
+
+    public String getQueryText(){
+        return mQueryText.getText().toString();
+    }
+
+    public void setQueryText(String query){
+        mQueryText.setText(query);
     }
 }

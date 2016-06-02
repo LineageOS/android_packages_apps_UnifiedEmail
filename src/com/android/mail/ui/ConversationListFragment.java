@@ -40,6 +40,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.emailcommon.service.SearchParams;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.analytics.Analytics;
@@ -59,6 +60,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.ConversationListIcon;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
 import com.android.mail.ui.SwipeableListView.ListItemSwipedListener;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
@@ -71,6 +73,7 @@ import com.android.mail.utils.Utils;
 import com.android.mail.utils.ViewUtils;
 import com.google.common.collect.ImmutableList;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -118,7 +121,6 @@ public final class ConversationListFragment extends Fragment implements
 
     private View mSearchHeaderView;
     private TextView mSearchResultCountTextView;
-
     /**
      * Current Account being viewed
      */
@@ -175,6 +177,7 @@ public final class ConversationListFragment extends Fragment implements
     /** Duration, in milliseconds, of the CAB mode (peek icon) animation. */
     private static long sSelectionModeAnimationDuration = -1;
 
+    private ArrayList<ConversationSpecialItemView> mFleetingViews;
     // Let's ensure that we are only showing one out of the three views at once
     private void showListView() {
         setupEmptyIcon(false);
@@ -196,8 +199,9 @@ public final class ConversationListFragment extends Fragment implements
     private void showEmptyView() {
         // If the callbacks didn't set up the empty icon, then we should show it in the empty view.
         final boolean shouldShowIcon = !setupEmptyIcon(true);
-        mEmptyView.setupEmptyText(mFolder, mViewContext.searchQuery,
-                mListAdapter.getBidiFormatter(), shouldShowIcon);
+        if (!isShowEmptyInSearch(shouldShowIcon)) {
+            return;
+        }
         mListView.setVisibility(View.INVISIBLE);
         mEmptyView.setVisibility(View.VISIBLE);
         mLoadingView.setVisibility(View.INVISIBLE);
@@ -294,15 +298,16 @@ public final class ConversationListFragment extends Fragment implements
     }
 
     /**
-     * Show the header if the current conversation list is showing search
-     * results.
+     * Show the header if the current conversation list is showing search results.
      */
     private void updateSearchResultHeader(int count) {
         if (mActivity == null || mSearchHeaderView == null) {
             return;
         }
-        mSearchResultCountTextView.setText(
-                getResources().getString(R.string.search_results_loaded, count));
+        if(mFolder != null && mFolder.type == FolderType.SEARCH){
+            mSearchResultCountTextView.setText(
+                    getResources().getString(R.string.search_results_loaded, count));
+        }
     }
 
     @Override
@@ -362,14 +367,6 @@ public final class ConversationListFragment extends Fragment implements
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), conversationCursor,
                 mActivity.getCheckedSet(), mActivity, mListView, specialItemViews);
         mListAdapter.addFooter(mFooterView);
-        // Show search result header only if we are in search mode
-        final boolean showSearchHeader = ConversationListContext.isSearchResult(mViewContext);
-        if (showSearchHeader) {
-            mSearchHeaderView = inflater.inflate(R.layout.search_results_view, null);
-            mSearchResultCountTextView = (TextView)
-                    mSearchHeaderView.findViewById(R.id.search_result_count_view);
-            mListAdapter.addHeader(mSearchHeaderView);
-        }
 
         mListView.setAdapter(mListAdapter);
         mCheckedSet = mActivity.getCheckedSet();
@@ -770,6 +767,7 @@ public final class ConversationListFragment extends Fragment implements
         if (mListAdapter != null) {
             mListAdapter.saveSpecialItemInstanceState(outState);
         }
+
     }
 
     @Override
@@ -1030,8 +1028,8 @@ public final class ConversationListFragment extends Fragment implements
      */
     public void onConversationListStatusUpdated() {
         // Also change the cursor here.
+        setDisableInSearch();
         onCursorUpdated();
-
         if (isCursorReadyToShow() && mCanTakeDownLoadingView) {
             hideLoadingViewAndShowContents();
         }
@@ -1043,9 +1041,11 @@ public final class ConversationListFragment extends Fragment implements
         // Update the sync status bar with sync results if needed
         checkSyncStatus();
         mListAdapter.setFooterVisibility(showFooter);
+        if (showFooter && mFolder != null && mFolder.type == FolderType.SEARCH) {
+            mListAdapter.setFooterVisibility(false);
+        }
         mLoadingViewPending = false;
         mHandler.removeCallbacks(mLoadingViewRunnable);
-
         // Even though cursor might be empty, the list adapter might have teasers/footers.
         // So we check the list adapter count if the cursor is fully/partially loaded.
         if (mAccount.securityHold != 0) {
@@ -1375,5 +1375,70 @@ public final class ConversationListFragment extends Fragment implements
                 rootView.setBackgroundResource(0);
             }
         }
+    }
+
+
+    private boolean isShowEmptyInSearch(boolean shouldShowIcon) {
+        ActivityController controller = (ActivityController) mActivity.getAccountController();
+        String queryText = controller != null ? controller.getCurrentConversationListContext()
+                .getSearchParams().mFilter
+                : mViewContext.getSearchQuery();
+        if (controller.getCurrentConversationListContext().isLocalSearch()
+                && !SearchParams.SEARCH_FACTOR_ALL
+                        .equals(controller.getCurrentConversationListContext()
+                                .getSearchFactor())) {
+            return false;
+        }
+        mEmptyView.setupEmptyText(mFolder, queryText,
+                mListAdapter.getBidiFormatter(), shouldShowIcon);
+        return true;
+    }
+
+    private void saveFleetingView() {
+        if (mFleetingViews == null) {
+            mFleetingViews = new ArrayList<>();
+        }
+        if (mListAdapter != null && mSwipeRefreshWidget != null) {
+            mFleetingViews.clear();
+            mFleetingViews.addAll(mListAdapter.getmFleetingViews());
+            if(mFleetingViews.size() != 0){
+                mListAdapter.resetmFleetingView(null);
+            }
+        }
+    }
+
+    public void exitSeachView() {
+        if (mSwipeRefreshWidget != null) {
+            mSwipeRefreshWidget.setEnabled(true);
+        }
+        if (mFleetingViews != null) {
+            mListAdapter.resetmFleetingView(mFleetingViews);
+            mFleetingViews = null;
+        }
+        if(mListAdapter != null){
+            mListAdapter.removeHeader(mSearchHeaderView);
+        }
+    }
+
+    private void setDisableInSearch() {
+        boolean isLocalSearch = ((ActivityController) mActivity.getAccountController())
+                != null ? ((ActivityController) mActivity
+                        .getAccountController()).getCurrentConversationListContext()
+                        .isLocalSearchExecuted() : false;
+        if (mFolder != null && mFolder.type == FolderType.SEARCH && isLocalSearch) {
+            saveFleetingView();
+            mSwipeRefreshWidget.setEnabled(false);
+            mListAdapter.setFooterVisibility(false);
+            addHeadView();
+        }
+    }
+
+    private void addHeadView() {
+        mListAdapter.removeHeader(mSearchHeaderView);
+        mSearchHeaderView = LayoutInflater.from(mActivity.getActivityContext()).inflate(
+                R.layout.search_results_view, null);
+        mSearchResultCountTextView = (TextView)
+                mSearchHeaderView.findViewById(R.id.search_result_count_view);
+        mListAdapter.addHeader(mSearchHeaderView);
     }
 }

@@ -72,7 +72,7 @@
     <dimen name="super_collapsed_height">30sp</dimen>
     <dimen name="super_collapsed_text_size">16sp</dimen>
     <dimen name="super_collapsed_stroke_margin_start">0dp</dimen>
-    <dimen name="notification_view_height">36dp</dimen>
+    <dimen name="notification_view_height">32dp</dimen>
     <dimen name="contact_image_width">40dp</dimen>
     <dimen name="contact_image_height">40dp</dimen>
     <dimen name="message_header_icon_margin">16dp</dimen>
@@ -203,6 +203,8 @@
     <dimen name="empty_view_text_width">228dip</dimen>
     <dimen name="empty_view_text_size">20sp</dimen>
     <dimen name="empty_view_space">16dip</dimen>
+    <dimen name="empty_view_margin_left">60dp</dimen>
+    <dimen name="empty_view_margin_right">60dp</dimen>
 
     <dimen name="avatar_border_width">.5dp</dimen>
     <dimen name="progress_bar_height">12dp</dimen>

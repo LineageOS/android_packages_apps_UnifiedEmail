@@ -29,6 +29,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.emailcommon.service.SearchParams;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.SearchRecentSuggestionsProvider;
@@ -39,7 +40,7 @@ import java.util.Locale;
 /**
  * Controller for interactions between ActivityController and our custom search views.
  */
-public class MaterialSearchViewController implements ViewMode.ModeChangeListener,
+public class MaterialSearchViewController implements
         TwoPaneLayout.ConversationListLayoutListener {
     private static final long FADE_IN_OUT_DURATION_MS = 150;
 
@@ -54,6 +55,8 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     public static final int SEARCH_VIEW_STATE_ONLY_ACTIONBAR = 2;
 
     private static final String EXTRA_CONTROLLER_STATE = "extraSearchViewControllerViewState";
+    private static final String EXTRA_SEARCH_KEY_WORD = "extraSearchKeyWord";
+    private static final String EXTRA_SEARCH_FACTOR = "extraSearchFactor";
 
     private MailActivity mActivity;
     private ActivityController mController;
@@ -62,13 +65,17 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
     private MaterialSearchActionView mSearchActionView;
     private MaterialSearchSuggestionsList mSearchSuggestionList;
-
+    private MaterialSearchFactorSelecteView mSearchFactorView;
     private int mViewMode;
     private int mControllerState;
     private int mEndXCoordForTabletLandscape;
 
     private boolean mSavePending;
     private boolean mDestroyProvider;
+    private String mKeyWord;
+    private final static int INIT_ID = -1000;
+    private int mFactorId = INIT_ID;
+    private boolean mIsShowEmptyView = true;
 
     public MaterialSearchViewController(MailActivity activity, ActivityController controller,
             Intent intent, Bundle savedInstanceState) {
@@ -87,12 +94,16 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
                 R.id.search_actionbar_view);
         mSearchActionView.setController(this, intent.getStringExtra(
                 ConversationListContext.EXTRA_SEARCH_QUERY), supportVoice);
-
+        mSearchFactorView = (MaterialSearchFactorSelecteView) mActivity
+                .findViewById(R.id.mail_filter_and_result);
+        mSearchFactorView.setController(this);
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_CONTROLLER_STATE)) {
             mControllerState = savedInstanceState.getInt(EXTRA_CONTROLLER_STATE);
+            mKeyWord = savedInstanceState.getString(EXTRA_SEARCH_KEY_WORD);
+            mFactorId = savedInstanceState.getInt(EXTRA_SEARCH_FACTOR);
         }
 
-        mActivity.getViewMode().addListener(this);
+
     }
 
     /**
@@ -103,7 +114,6 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
         if (!mSavePending) {
             mSuggestionsProvider.cleanup();
         }
-        mActivity.getViewMode().removeListener(this);
         mActivity = null;
         mController = null;
         mSearchActionView = null;
@@ -112,20 +122,8 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
 
     public void saveState(Bundle outState) {
         outState.putInt(EXTRA_CONTROLLER_STATE, mControllerState);
-    }
-
-    @Override
-    public void onViewModeChanged(int newMode) {
-        final int oldMode = mViewMode;
-        mViewMode = newMode;
-        // Never animate visibility changes that are caused by view state changes.
-        if (mController.shouldShowSearchBarByDefault(mViewMode)) {
-            showSearchActionBar(SEARCH_VIEW_STATE_ONLY_ACTIONBAR, false /* animate */);
-        } else if (oldMode == ViewMode.UNKNOWN) {
-            showSearchActionBar(mControllerState, false /* animate */);
-        } else {
-            showSearchActionBar(SEARCH_VIEW_STATE_GONE, false /* animate */);
-        }
+        outState.putString(EXTRA_SEARCH_KEY_WORD, mKeyWord);
+        outState.putInt(EXTRA_SEARCH_FACTOR, mFactorId);
     }
 
     @Override
@@ -145,12 +143,8 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     public boolean handleBackPress() {
-        final boolean shouldShowSearchBar = mController.shouldShowSearchBarByDefault(mViewMode);
-        if (shouldShowSearchBar && mSearchSuggestionList.isShown()) {
-            showSearchActionBar(SEARCH_VIEW_STATE_ONLY_ACTIONBAR);
-            return true;
-        } else if (!shouldShowSearchBar && mSearchActionView.isShown()) {
-            showSearchActionBar(SEARCH_VIEW_STATE_GONE);
+        if (mSearchActionView.isShown()) {
+            onSearchCanceled();
             return true;
         }
         return false;
@@ -175,20 +169,22 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
         mControllerState = state;
 
         // ACTIONBAR is only applicable in search mode
-        final boolean onlyActionBar = state == SEARCH_VIEW_STATE_ONLY_ACTIONBAR &&
-                mController.shouldShowSearchBarByDefault(mViewMode);
+        final boolean onlyActionBar = state == SEARCH_VIEW_STATE_ONLY_ACTIONBAR;
         final boolean isStateVisible = state == SEARCH_VIEW_STATE_VISIBLE;
 
         final boolean isSearchBarVisible = isStateVisible || onlyActionBar;
 
         final int searchBarVisibility = isSearchBarVisible ? View.VISIBLE : View.GONE;
         final int suggestionListVisibility = isStateVisible ? View.VISIBLE : View.GONE;
+        final int filterVisibility = onlyActionBar ?View.VISIBLE:View.GONE;
         if (animate) {
             fadeInOutView(mSearchActionView, searchBarVisibility);
             fadeInOutView(mSearchSuggestionList, suggestionListVisibility);
+            fadeInOutView(mSearchFactorView, filterVisibility);
         } else {
             setViewVisibilityAndAlpha(mSearchActionView, searchBarVisibility);
             setViewVisibilityAndAlpha(mSearchSuggestionList, suggestionListVisibility);
+            setViewVisibilityAndAlpha(mSearchFactorView, filterVisibility);
         }
         mSearchActionView.focusSearchBar(isStateVisible);
 
@@ -266,21 +262,18 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     public void onSearchCanceled() {
-        // Special case search mode
-        if (ViewMode.isSearchMode(mViewMode)) {
-            mActivity.setResult(Activity.RESULT_OK);
-            mActivity.finish();
-        } else {
-            mSearchActionView.clearSearchQuery();
-            showSearchActionBar(SEARCH_VIEW_STATE_GONE);
-        }
+        showSearchActionBar(SEARCH_VIEW_STATE_GONE);
+        mKeyWord = null;
+        mFactorId = INIT_ID;
+        mSearchActionView.clearSearchQuery();
+        mController.exitLocalSearch();
     }
 
     public void onSearchPerformed(String query) {
         query = query.trim();
         if (!TextUtils.isEmpty(query)) {
-            mSearchActionView.clearSearchQuery();
-            mController.executeSearch(query);
+            mSearchActionView.setQueryText(query);
+            mSearchFactorView.checkAllFactor();
         }
     }
 
@@ -302,7 +295,9 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
     }
 
     public void saveRecentQuery(String query) {
-        new SaveRecentQueryTask().execute(query);
+        if(!TextUtils.isEmpty(query)){
+            new SaveRecentQueryTask().execute(query);
+        }
     }
 
     // static asynctask to save the query in the background.
@@ -328,4 +323,62 @@ public class MaterialSearchViewController implements ViewMode.ModeChangeListener
             mSavePending = false;
         }
     }
+
+    public void changeFactorAction(String factor, boolean isUser) {
+        setKeywordAndFactorId();
+        mController.executeSearch(mKeyWord, factor, isUser);
+    }
+
+    public void updateSearchResultCount(int count, boolean isShowEmptyView) {
+        mIsShowEmptyView = isShowEmptyView;
+        if (isShowEmptyView) {
+            setViewVisibilityAndAlpha(mSearchFactorView, View.GONE);
+        }
+    }
+
+    private void setKeywordAndFactorId() {
+        mKeyWord = mSearchActionView.getQueryText();
+        mFactorId = mSearchFactorView.getCheckRadioButtonId();
+    }
+
+    public void restoreLocalSearch() {
+        if (mControllerState == SEARCH_VIEW_STATE_VISIBLE) {
+            showSearchActionBar(SEARCH_VIEW_STATE_VISIBLE);
+        } else if (mControllerState == SEARCH_VIEW_STATE_ONLY_ACTIONBAR) {
+            if (mKeyWord != null && mFactorId != INIT_ID) {
+                mSearchActionView.setQueryText(mKeyWord);
+                mSearchFactorView
+                        .changeCheckRadioButton(mSearchFactorView.getFactor(mFactorId), false);
+            }
+        }
+    }
+
+    public void setQueryText(String query) {
+        mSearchActionView.setQueryText(query);
+    }
+
+    public boolean isQueryTextNull() {
+        return TextUtils.isEmpty(mSearchActionView.getQueryText().trim());
+    }
+
+    public void focusSearchBar(boolean hasFocus) {
+        mSearchActionView.focusSearchBar(hasFocus);
+    }
+
+    public boolean isOnlyActionbar() {
+        return mControllerState == SEARCH_VIEW_STATE_ONLY_ACTIONBAR;
+    }
+
+    public String getKeyWord() {
+        return mKeyWord;
+    }
+
+    public boolean ismIsShowEmptyView() {
+        return mIsShowEmptyView;
+    }
+
+    public void setFloatingComposeButtonVisible(int visible) {
+        // mController.setFloatingComposeButtonVisible(visible);
+    }
+
 }
