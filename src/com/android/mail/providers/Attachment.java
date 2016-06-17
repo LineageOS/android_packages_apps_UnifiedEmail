@@ -168,6 +168,13 @@ public class Attachment implements Parcelable {
     private boolean supportsDownloadAgain;
 
 
+    /**
+     * Might be null.
+     *
+     * @see MessageColumns#MESSAGE_LOAD_MORE_URI
+     */
+    public Uri messageLoadMoreUri = null;
+
     public Attachment() {
     }
 
@@ -186,6 +193,8 @@ public class Attachment implements Parcelable {
         supportsDownloadAgain = in.readInt() == 1;
         type = in.readInt();
         flags = in.readInt();
+        partId = in.readString();
+        messageLoadMoreUri = in.readParcelable(null);
     }
 
     public Attachment(Cursor cursor) {
@@ -211,6 +220,7 @@ public class Attachment implements Parcelable {
                 cursor.getColumnIndex(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN)) == 1;
         type = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.TYPE));
         flags = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.FLAGS));
+        partId = cursor.getString(cursor.getColumnIndex(AttachmentColumns.CONTENT_ID));
     }
 
     public Attachment(JSONObject srcJson) {
@@ -228,6 +238,7 @@ public class Attachment implements Parcelable {
         supportsDownloadAgain = srcJson.optBoolean(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, true);
         type = srcJson.optInt(AttachmentColumns.TYPE);
         flags = srcJson.optInt(AttachmentColumns.FLAGS);
+        partId = srcJson.optString(AttachmentColumns.CONTENT_ID, null);
     }
 
     /**
@@ -257,6 +268,7 @@ public class Attachment implements Parcelable {
             type = inline ? AttachmentType.INLINE_CURRENT_MESSAGE : AttachmentType.STANDARD;
             partId = cid;
             flags = 0;
+            messageLoadMoreUri = null;
 
             // insert attachment into content provider so that we can open the file
             final ContentResolver resolver = context.getContentResolver();
@@ -348,6 +360,8 @@ public class Attachment implements Parcelable {
         dest.writeInt(supportsDownloadAgain ? 1 : 0);
         dest.writeInt(type);
         dest.writeInt(flags);
+        dest.writeString(partId);
+        dest.writeParcelable(messageLoadMoreUri, flags);
     }
 
     public JSONObject toJSON() throws JSONException {
@@ -367,6 +381,7 @@ public class Attachment implements Parcelable {
         result.put(AttachmentColumns.SUPPORTS_DOWNLOAD_AGAIN, supportsDownloadAgain);
         result.put(AttachmentColumns.TYPE, type);
         result.put(AttachmentColumns.FLAGS, flags);
+        result.put(AttachmentColumns.CONTENT_ID, partId);
 
         return result;
     }
@@ -415,7 +430,7 @@ public class Attachment implements Parcelable {
     }
 
     public boolean canSave() {
-        return !isSavedToExternal() && !isInstallable();
+        return !isInstallable();
     }
 
     public boolean canShare() {
@@ -445,6 +460,10 @@ public class Attachment implements Parcelable {
 
     public boolean isDownloadFinishedOrFailed() {
         return state == AttachmentState.FAILED || state == AttachmentState.SAVED;
+    }
+
+    public boolean isLoadMore() {
+        return (flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0;
     }
 
     public boolean supportsDownloadAgain() {
@@ -526,7 +545,7 @@ public class Attachment implements Parcelable {
      * quoted text).
      */
     public boolean isInlineAttachment() {
-        return type != UIProvider.AttachmentType.STANDARD;
+        return type != UIProvider.AttachmentType.STANDARD && !TextUtils.isEmpty(partId);
     }
 
     @Override

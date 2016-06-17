@@ -217,6 +217,15 @@ public class Message implements Parcelable, HtmlMessage {
      */
     public String permalink;
 
+    /**
+     * @see UIProvider.MessageColumns#MESSAGE_FLAG_LOADED
+     */
+    public int messageFlagLoaded;
+    /**
+     * @see UIProvider.MessageColumns#MESSAGE_LOAD_MORE_URI
+     */
+    public Uri loadMoreUri;
+
     private transient String[] mFromAddresses = null;
     private transient String[] mToAddresses = null;
     private transient String[] mCcAddresses = null;
@@ -298,6 +307,8 @@ public class Message implements Parcelable, HtmlMessage {
         dest.writeInt(sendingState);
         dest.writeInt(clipped ? 1 : 0);
         dest.writeString(permalink);
+        dest.writeInt(messageFlagLoaded);
+        dest.writeParcelable(loadMoreUri, 0);
     }
 
     private Message(Parcel in) {
@@ -334,6 +345,8 @@ public class Message implements Parcelable, HtmlMessage {
         sendingState = in.readInt();
         clipped = in.readInt() != 0;
         permalink = in.readString();
+        messageFlagLoaded = in.readInt();
+        loadMoreUri = in.readParcelable(null);
     }
 
     public Message() {
@@ -414,6 +427,9 @@ public class Message implements Parcelable, HtmlMessage {
             sendingState = cursor.getInt(UIProvider.MESSAGE_SENDING_STATE_COLUMN);
             clipped = cursor.getInt(UIProvider.MESSAGE_CLIPPED_COLUMN) != 0;
             permalink = cursor.getString(UIProvider.MESSAGE_PERMALINK_COLUMN);
+            messageFlagLoaded = cursor.getInt(UIProvider.MESSAGE_FLAG_LOADED_COLUMN);
+            loadMoreUri = Utils.getValidUri(
+                    cursor.getString(UIProvider.MESSAGE_LOAD_MORE_URI_COLUMN));
         }
     }
 

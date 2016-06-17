@@ -37,6 +37,14 @@
         android:visibility="gone"
         style="@style/AttachmentPaddingStyle" />
 
+    <LinearLayout
+        android:id="@+id/attachment_placeholder_load_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical"
+        style="@style/AttachmentMarginStyle" />
+
     <com.android.mail.ui.AttachmentTileGrid
         android:id="@+id/attachment_tile_grid"
         android:layout_width="match_parent"

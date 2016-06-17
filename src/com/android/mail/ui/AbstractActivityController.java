@@ -26,6 +26,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
+import android.content.AsyncQueryHandler;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -2060,6 +2061,27 @@ public abstract class AbstractActivityController implements ActivityController,
                 // TODO: handle errors?
             }
         }.run(mResolver, msg.uri, values, null /* selection*/, null /* selectionArgs */);
+    }
+
+    @Override
+    public void loadMore(ConversationMessage msg) {
+        if (msg != null && msg.loadMoreUri != null) {
+            LoadMoreAction action = new LoadMoreAction(mResolver, msg.loadMoreUri);
+            action.sendCommand();
+        }
+    }
+
+    private class LoadMoreAction extends AsyncQueryHandler {
+        private final Uri mLoadMoreUri;
+
+        public LoadMoreAction(ContentResolver resolver, Uri loadMoreUri) {
+            super(resolver);
+            mLoadMoreUri = loadMoreUri;
+        }
+
+        public void sendCommand() {
+            startQuery(0, null, mLoadMoreUri, null, null, null, null);
+        }
     }
 
     @Override

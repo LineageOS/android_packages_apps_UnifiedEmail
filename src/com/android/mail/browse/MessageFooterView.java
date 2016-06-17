@@ -40,6 +40,7 @@ import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
+import com.android.mail.providers.UIProvider.MessageFlagLoaded;
 import com.android.mail.ui.AccountFeedbackActivity;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
@@ -59,6 +60,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     private FragmentManager mFragmentManager;
     private AttachmentCursor mAttachmentsCursor;
     private View mViewEntireMessagePrompt;
+    private LinearLayout mAttachmentLoadMore;
     private AttachmentTileGrid mAttachmentGrid;
     private LinearLayout mAttachmentBarList;
 
@@ -100,6 +102,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         super.onFinishInflate();
 
         mViewEntireMessagePrompt = findViewById(R.id.view_entire_message_prompt);
+        mAttachmentLoadMore = (LinearLayout) findViewById(R.id.attachment_placeholder_load_more);
         mAttachmentGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
         mAttachmentBarList = (LinearLayout) findViewById(R.id.attachment_bar_list);
 
@@ -129,9 +132,11 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             // attachmentsListUri changes so that we don't
             // repeat the work of layout and measure when
             // we're only updating the attachments.
+            mAttachmentLoadMore.removeAllViewsInLayout();
             mAttachmentGrid.removeAllViewsInLayout();
             mAttachmentBarList.removeAllViewsInLayout();
             mViewEntireMessagePrompt.setVisibility(View.GONE);
+            mAttachmentLoadMore.setVisibility(View.GONE);
             mAttachmentGrid.setVisibility(View.GONE);
             mAttachmentBarList.setVisibility(View.GONE);
         }
@@ -146,14 +151,18 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         }
 
         // Do an initial render if initLoader didn't already do one
-        if (mAttachmentGrid.getChildCount() == 0 &&
-                mAttachmentBarList.getChildCount() == 0) {
+        if (mAttachmentLoadMore.getChildCount() == 0
+                && mAttachmentGrid.getChildCount() == 0
+                && mAttachmentBarList.getChildCount() == 0) {
             renderAttachments(false);
         }
 
         final ConversationMessage message = mMessageHeaderItem.getMessage();
         mViewEntireMessagePrompt.setVisibility(
                 message.clipped && !TextUtils.isEmpty(message.permalink) ? VISIBLE : GONE);
+        boolean showLoadMore =
+                message.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL_COMPLETE;
+        mAttachmentLoadMore.setVisibility(showLoadMore ? View.VISIBLE : View.GONE);
         setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
     }
 
@@ -179,6 +188,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         }
 
         // filter the attachments into tiled and non-tiled
+        Attachment loadMore = null;
         final int maxSize = attachments.size();
         final List<Attachment> tiledAttachments = new ArrayList<Attachment>(maxSize);
         final List<Attachment> barAttachments = new ArrayList<Attachment>(maxSize);
@@ -187,20 +197,26 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             // attachments in secure views are displayed in the footer so the user may interact with
             // them; for normal views there is no need to show inline attachments in the footer
             // since users can interact with them in place
-            if (!attachment.isInlineAttachment() || mCallbacks.isSecure()) {
-                if (AttachmentTile.isTiledAttachment(attachment)) {
-                    tiledAttachments.add(attachment);
-                } else {
-                    barAttachments.add(attachment);
-                }
+            if (attachment.isInlineAttachment()) {
+                LogUtils.d(LOG_TAG, "attachment(" + attachment.contentUri
+                        + ") is inline attachment. Ignore and do not show it!");
+                continue;
+            }
+
+            if (attachment.isLoadMore()) {
+                loadMore = attachment;
+                loadMore.messageLoadMoreUri = mMessageHeaderItem.getMessage().loadMoreUri;
+            } else if (AttachmentTile.isTiledAttachment(attachment)) {
+                tiledAttachments.add(attachment);
+            } else {
+                barAttachments.add(attachment);
             }
         }
 
         mMessageHeaderItem.getMessage().attachmentsJson = Attachment.toJSONArray(attachments);
 
-        // All attachments are inline, don't display anything.
-        if (tiledAttachments.isEmpty() && barAttachments.isEmpty()) {
-            return;
+        if (loadMore != null) {
+            renderLoadMore(loadMore, loaderResult);
         }
 
         if (!tiledAttachments.isEmpty()) {
@@ -209,6 +225,13 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         if (!barAttachments.isEmpty()) {
             renderBarAttachments(barAttachments, loaderResult);
         }
+    }
+
+    private void renderLoadMore(Attachment loadMore, boolean loaderResult) {
+        if (loadMore == null) return;
+
+        mAttachmentLoadMore.setVisibility(View.VISIBLE);
+        renderAttachment(mAttachmentLoadMore, getAccount(), loadMore, loaderResult);
     }
 
     private void renderTiledAttachments(List<Attachment> tiledAttachments, boolean loaderResult) {
@@ -224,20 +247,25 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
         final Account account = getAccount();
         for (Attachment attachment : barAttachments) {
-            final Uri id = attachment.getIdentifierUri();
-            MessageAttachmentBar barAttachmentView =
-                    (MessageAttachmentBar) mAttachmentBarList.findViewWithTag(id);
-
-            if (barAttachmentView == null) {
-                barAttachmentView = MessageAttachmentBar.inflate(mInflater, this);
-                barAttachmentView.setTag(id);
-                barAttachmentView.initialize(mFragmentManager);
-                mAttachmentBarList.addView(barAttachmentView);
-            }
-
-            barAttachmentView.render(attachment, account, mMessageHeaderItem.getMessage(),
-                    loaderResult, getBidiFormatter());
+            renderAttachment(mAttachmentBarList, account, attachment, loaderResult);
         }
+    }
+
+    private void renderAttachment(LinearLayout parentView, Account account, Attachment attachment,
+            boolean loaderResult) {
+        final Uri id = attachment.getIdentifierUri();
+        MessageAttachmentBar barAttachmentView =
+                (MessageAttachmentBar) parentView.findViewWithTag(id);
+
+        if (barAttachmentView == null) {
+            barAttachmentView = MessageAttachmentBar.inflate(mInflater, this);
+            barAttachmentView.setTag(id);
+            barAttachmentView.initialize(mFragmentManager);
+            parentView.addView(barAttachmentView);
+        }
+
+        barAttachmentView.render(attachment, account, mMessageHeaderItem.getMessage(),
+                loaderResult, getBidiFormatter());
     }
 
     private Integer getAttachmentLoaderId() {
