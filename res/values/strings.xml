@@ -1167,4 +1167,6 @@
 
     <!-- activity name of the photoviewer -->
     <string name="photo_view_activity" translatable="false">com.android.mail.photo.MailPhotoViewActivity</string>
+    <string name="download_first">Please Download first</string>
+    <string name="save_to">Save the file to:</string>
 </resources>

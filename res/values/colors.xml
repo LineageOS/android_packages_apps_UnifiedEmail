@@ -194,4 +194,6 @@
 
     <color name="text_color_undo_notification">#feb500</color>
     <color name="text_color_undo_notification_description">@android:color/white</color>
+
+    <color name="attachment_bar_divider_line">#1A000000</color>
 </resources>

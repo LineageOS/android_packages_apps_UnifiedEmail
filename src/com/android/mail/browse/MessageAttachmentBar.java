@@ -72,7 +72,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     private ProgressBar mProgress;
     private ImageButton mCancelButton;
     private PopupMenu mPopup;
-    private ImageView mOverflowButton;
+    private ImageView mSaveAttachmentButton;
+    private TextView mAttachmentBarDivider;
 
     private final AttachmentActionHandler mActionHandler;
     private boolean mSaveClicked;
@@ -149,7 +150,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         if (attachment.isLoadMore()) {
             mIcon.setImageResource(R.drawable.ic_load_more_holo_light);
             mTitle.setText(R.string.load_more);
-            mOverflowButton.setVisibility(View.GONE);
+            mSaveAttachmentButton.setVisibility(View.GONE);
+            mAttachmentBarDivider.setVisibility(View.GONE);
         } else if (prevAttachment == null
                 || !TextUtils.equals(attachmentName, prevAttachment.getName())) {
             mTitle.setText(attachmentName);
@@ -175,11 +177,12 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         mTitle = (TextView) findViewById(R.id.attachment_title);
         mSubTitle = (TextView) findViewById(R.id.attachment_subtitle);
         mProgress = (ProgressBar) findViewById(R.id.attachment_progress);
-        mOverflowButton = (ImageView) findViewById(R.id.overflow);
+        mSaveAttachmentButton = (ImageView) findViewById(R.id.save_attachment);
         mCancelButton = (ImageButton) findViewById(R.id.cancel_attachment);
+        mAttachmentBarDivider = (TextView) findViewById(R.id.attachment_bar_divider);
 
         setOnClickListener(this);
-        mOverflowButton.setOnClickListener(this);
+        mSaveAttachmentButton.setOnClickListener(this);
         mCancelButton.setOnClickListener(this);
     }
 
@@ -195,54 +198,12 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     }
 
     private boolean onClick(final int res, final View v) {
-        if (res == R.id.preview_attachment) {
-            previewAttachment();
-        } else if (res == R.id.save_attachment) {
-            if (mAttachment.canSave()) {
-                mActionHandler.startDownloadingAttachment(AttachmentDestination.EXTERNAL);
+        if (res == R.id.save_attachment) {
 
-                Analytics.getInstance().sendEvent(
+            mActionHandler.saveAttachment(AttachmentDestination.EXTERNAL);
+            Analytics.getInstance().sendEvent(
                         "save_attachment", Utils.normalizeMimeType(mAttachment.getContentType()),
                         "attachment_bar", mAttachment.size);
-            }
-        } else if (res == R.id.download_again) {
-            if (mAttachment.isPresentLocally()) {
-                mActionHandler.showDownloadingDialog();
-                mActionHandler.startRedownloadingAttachment(mAttachment);
-
-                Analytics.getInstance().sendEvent("redownload_attachment",
-                        Utils.normalizeMimeType(mAttachment.getContentType()), "attachment_bar",
-                        mAttachment.size);
-            }
-        } else if (res == R.id.cancel_attachment) {
-            mActionHandler.cancelAttachment();
-            mSaveClicked = false;
-
-            Analytics.getInstance().sendEvent(
-                    "cancel_attachment", Utils.normalizeMimeType(mAttachment.getContentType()),
-                    "attachment_bar", mAttachment.size);
-        } else if (res == R.id.attachment_extra_option1) {
-            mActionHandler.handleOption1();
-        } else if (res == R.id.overflow) {
-            // If no overflow items are visible, just bail out.
-            // We shouldn't be able to get here anyhow since the overflow
-            // button should be hidden.
-            if (shouldShowOverflow()) {
-                if (mPopup == null) {
-                    mPopup = new PopupMenu(getContext(), v);
-                    mPopup.getMenuInflater().inflate(R.menu.message_footer_overflow_menu,
-                            mPopup.getMenu());
-                    mPopup.setOnMenuItemClickListener(this);
-                }
-
-                final Menu menu = mPopup.getMenu();
-                menu.findItem(R.id.preview_attachment).setVisible(shouldShowPreview());
-                menu.findItem(R.id.save_attachment).setVisible(shouldShowSave());
-                menu.findItem(R.id.download_again).setVisible(shouldShowDownloadAgain());
-                menu.findItem(R.id.attachment_extra_option1).setVisible(shouldShowExtraOption1());
-
-                mPopup.show();
-            }
         } else {
             // Handles clicking the attachment
             // in any area that is not the overflow
@@ -260,16 +221,6 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 }
 
                 action = null;
-            }
-            // If we can install, install.
-            else if (MimeType.isInstallable(mAttachment.getContentType())) {
-                // Save to external because the package manager only handles
-                // file:// uris not content:// uris. We do the same
-                // workaround in
-                // UiProvider#getUiAttachmentsCursorForUIAttachments()
-                mActionHandler.showAttachment(AttachmentDestination.EXTERNAL);
-
-                action = "attachment_bar_install";
             }
             // If we can view or play with an on-device app,
             // view or play.
@@ -290,8 +241,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 int dialogMessage = R.string.no_application_found;
                 builder.setTitle(R.string.more_info_attachment)
-                       .setMessage(dialogMessage)
-                       .show();
+                        .setMessage(dialogMessage)
+                        .show();
 
                 action = "attachment_bar_no_viewer";
             }
@@ -320,15 +271,19 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         return mAttachment.supportsDownloadAgain() && mAttachment.isDownloadFinishedOrFailed();
     }
 
+    private boolean shouldCanInstall() {
+        return mAttachment.isInstallable();
+    }
+
     private boolean shouldShowExtraOption1() {
         return !mHideExtraOptionOne &&
                 mActionHandler.shouldShowExtraOption1(mAccount.getType(),
                         mAttachment.getContentType());
     }
 
-    private boolean shouldShowOverflow() {
-        return (shouldShowPreview() || shouldShowSave() || shouldShowDownloadAgain() ||
-                shouldShowExtraOption1()) && !shouldShowCancel();
+    private boolean shouldShowSaveAttachment() {
+        return (shouldShowPreview() || shouldShowSave() || shouldCanInstall())
+                && !shouldShowCancel();
     }
 
     private boolean shouldShowCancel() {
@@ -408,7 +363,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         // To avoid visibility state transition bugs, every button's visibility should be touched
         // once by this routine.
         setButtonVisible(mCancelButton, shouldShowCancel());
-        setButtonVisible(mOverflowButton, shouldShowOverflow());
+        setButtonVisible(mSaveAttachmentButton, shouldShowSaveAttachment());
+        setButtonVisible(mAttachmentBarDivider, shouldShowSaveAttachment());
     }
 
     @Override

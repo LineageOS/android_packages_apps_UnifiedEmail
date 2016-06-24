@@ -33,6 +33,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 
+import android.widget.Toast;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
@@ -40,8 +41,10 @@ import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentContentValueKeys;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
+import com.android.mail.R;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
 
 import org.apache.commons.io.IOUtils;
@@ -111,7 +114,7 @@ public class AttachmentActionHandler {
                         mAttachment.destination == destination)) {
             mView.viewAttachment();
         } else {
-            showDownloadingDialog();
+
             startDownloadingAttachment(destination);
         }
     }
@@ -130,14 +133,28 @@ public class AttachmentActionHandler {
                 mAttachment, destination, rendition, additionalPriority, delayDownload);
     }
 
+    public void saveAttachment(int destination){
+
+        if (mAttachment.state == AttachmentState.SAVED
+                && destination == AttachmentDestination.EXTERNAL){
+            performAttachmentSave(mAttachment);
+        }else{
+            Toast.makeText(mContext, mContext.getResources().getString(R.string.download_first),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void startDownloadingAttachment(
             Attachment attachment, int destination, int rendition, int additionalPriority,
             boolean delayDownload) {
+        //do not auto install apk from stream . must save first so that can be install
         if (attachment.state == AttachmentState.SAVED
-                && destination == AttachmentDestination.EXTERNAL) {
+                && destination == AttachmentDestination.EXTERNAL
+                && !MimeType.isInstallable(attachment.getContentType())) {
             File savedFile = performAttachmentSave(attachment);
-            if (savedFile != null) {
+            if (savedFile != null && mView != null) {
                 // The attachment is saved successfully from cache.
+                mView.viewAttachment();
                 return;
             }
         }
@@ -351,7 +368,9 @@ public class AttachmentActionHandler {
                     false /* do not use media scanner */,
                     attachment.getContentType(), absolutePath, size,
                     true /* show notification */);
-
+            Toast.makeText(mContext,
+                    mContext.getResources().getString(R.string.save_to) + absolutePath,
+                    Toast.LENGTH_SHORT).show();
             return file;
         } catch (IOException ioe) {
             // Ignore. Callers will handle it from the return code.
