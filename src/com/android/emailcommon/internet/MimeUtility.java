@@ -223,21 +223,19 @@ public class MimeUtility {
      * or an error during conversion.
      */
     public static String getTextFromPart(Part part, boolean closeInput) {
+        InputStream in = null;
+        ByteArrayOutputStream out = null;
         try {
             if (part != null && part.getBody() != null) {
-                InputStream in = part.getBody().getInputStream();
+                in = part.getBody().getInputStream();
                 String mimeType = part.getMimeType();
                 if (mimeType != null && MimeUtility.mimeTypeMatches(mimeType, "text/*")) {
                     /*
                      * Now we read the part into a buffer for further processing. Because
                      * the stream is now wrapped we'll remove any transfer encoding at this point.
                      */
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    out = new ByteArrayOutputStream();
                     IOUtils.copy(in, out);
-                    if (closeInput) {
-                        in.close();
-                    }
-                    in = null;      // we want all of our memory back, and close might not release
 
                     /*
                      * We've got a text part, so let's see if it needs to be processed further.
@@ -258,9 +256,7 @@ public class MimeUtility {
                     /*
                      * Convert and return as new String
                      */
-                    String result = out.toString(charset);
-                    out.close();
-                    return result;
+                    return out.toString(charset);
                 }
             }
 
@@ -278,6 +274,11 @@ public class MimeUtility {
              * null and let the upper layers handle the missing content.
              */
             Log.e(LOG_TAG, "Unable to getTextFromPart " + e.toString());
+        } finally {
+            IOUtils.closeQuietly(out);
+            if (closeInput) {
+                IOUtils.closeQuietly(in);
+            }
         }
         return null;
     }
