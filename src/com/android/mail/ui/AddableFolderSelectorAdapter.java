@@ -90,10 +90,7 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
                 }
 
                 if (Folder.isType(type, UIProvider.FolderType.INBOX)
-                        || Folder.isType(type, UIProvider.FolderType.DEFAULT)
-                        || Folder.isType(type, UIProvider.FolderType.DRAFT)
-                        || Folder.isType(type, UIProvider.FolderType.TRASH)
-                        || Folder.isType(type, UIProvider.FolderType.SPAM)) {
+                        || Folder.isType(type, UIProvider.FolderType.DEFAULT)) {
                     folder[UIProvider.FOLDER_ID_COLUMN] = folderCursor
                             .getLong(UIProvider.FOLDER_ID_COLUMN);
                     folder[UIProvider.FOLDER_PERSISTENT_ID_COLUMN] = folderCursor

@@ -68,24 +68,6 @@
             gm:entrySummaries="@array/prefSummaries_autoAdvance" />
 
     <PreferenceCategory
-            android:title="@string/preference_header_suggested_contacts"
-            android:key="suggested-contacts">
-
-        <com.android.mail.ui.settings.FancySummaryListPreference
-                android:defaultValue="@string/prefDefault_suggestedContactsMode"
-                android:dialogTitle="@string/prefDialogTitle_suggestedContactsMode"
-                android:entries="@array/suggested_contacts_mode_entries"
-                android:entryValues="@array/suggested_contacts_mode_values"
-                android:key="suggested-contacts-mode"
-                android:title="@string/preference_suggested_contacts_mode"
-                gm:entrySummaries="@array/suggested_contacts_mode_summaries" />
-
-        <Preference
-                android:key="suggested-contacts-clear-all"
-                android:title="@string/preference_suggested_contacts_clear_all" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
             android:title="@string/preference_header_action_confirmations"
             android:key="removal-actions-group">
         <CheckBoxPreference

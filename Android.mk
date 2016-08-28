@@ -43,20 +43,21 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 LOCAL_STATIC_JAVA_LIBRARIES += android-opt-bitmap
 LOCAL_STATIC_JAVA_LIBRARIES += android-opt-datetimepicker
 LOCAL_STATIC_JAVA_LIBRARIES += owasp-html-sanitizer
-LOCAL_STATIC_JAVA_LIBRARIES += com.android.emailcommon
+
+LOCAL_SDK_VERSION := current
 
 LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs)) \
         $(call all-logtags-files-under, $(src_dirs))
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 LOCAL_AAPT_FLAGS := --auto-add-overlay
-LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo:android.support.v7.appcompat:android.support.v7.gridlayout:com.android.bitmap:com.android.datetimepicker:com.android.emailcommon
+LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo:android.support.v7.appcompat:android.support.v7.gridlayout:com.android.bitmap:com.android.datetimepicker
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 ifeq (eng,$(TARGET_BUILD_VARIANT))
   LOCAL_PROGUARD_FLAG_FILES += proguard-test.flags
 endif
 
-LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.mail.*,com.android.emailcommon.*,com.google.android.mail.*
+LOCAL_EMMA_COVERAGE_FILTER := +com.android.mail.*, +com.android.emailcommon.*, +com.google.android.mail.*
 
 include $(BUILD_PACKAGE)
 

@@ -222,20 +222,20 @@ public class MimeUtility {
      * @return a String containing the converted text in the body, or null if there was no text
      * or an error during conversion.
      */
-    public static String getTextFromPart(Part part, boolean closeInput) {
-        InputStream in = null;
-        ByteArrayOutputStream out = null;
+    public static String getTextFromPart(Part part) {
         try {
             if (part != null && part.getBody() != null) {
-                in = part.getBody().getInputStream();
+                InputStream in = part.getBody().getInputStream();
                 String mimeType = part.getMimeType();
                 if (mimeType != null && MimeUtility.mimeTypeMatches(mimeType, "text/*")) {
                     /*
                      * Now we read the part into a buffer for further processing. Because
                      * the stream is now wrapped we'll remove any transfer encoding at this point.
                      */
-                    out = new ByteArrayOutputStream();
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
                     IOUtils.copy(in, out);
+                    in.close();
+                    in = null;      // we want all of our memory back, and close might not release
 
                     /*
                      * We've got a text part, so let's see if it needs to be processed further.
@@ -256,7 +256,9 @@ public class MimeUtility {
                     /*
                      * Convert and return as new String
                      */
-                    return out.toString(charset);
+                    String result = out.toString(charset);
+                    out.close();
+                    return result;
                 }
             }
 
@@ -274,11 +276,6 @@ public class MimeUtility {
              * null and let the upper layers handle the missing content.
              */
             Log.e(LOG_TAG, "Unable to getTextFromPart " + e.toString());
-        } finally {
-            IOUtils.closeQuietly(out);
-            if (closeInput) {
-                IOUtils.closeQuietly(in);
-            }
         }
         return null;
     }
