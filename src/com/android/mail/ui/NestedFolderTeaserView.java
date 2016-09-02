@@ -277,13 +277,14 @@ public class NestedFolderTeaserView extends LinearLayout implements Conversation
             // Clear out the folder views
             mNestedFolderContainer.removeAllViews();
 
+            if (mSortedFolderHolders != null) {
             // We either show all folders if it's not over the threshold, or we show none.
-            if (mSortedFolderHolders.size() <= sCollapsedFolderThreshold || !mCollapsed) {
-                for (final FolderHolder folderHolder : mSortedFolderHolders) {
-                    mNestedFolderContainer.addView(folderHolder.getItemView());
+                if (mSortedFolderHolders.size() <= sCollapsedFolderThreshold || !mCollapsed) {
+                    for (final FolderHolder folderHolder : mSortedFolderHolders) {
+                        mNestedFolderContainer.addView(folderHolder.getItemView());
+                    }
                 }
             }
-
             updateShowMoreView();
             mListUpdated = false;
         }
