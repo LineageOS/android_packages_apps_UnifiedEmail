@@ -3751,7 +3751,9 @@ public class ComposeActivity extends ActionBarActivity
                 if (!mAccount.expungeMessageUri.equals(Uri.EMPTY)) {
                     getContentResolver().update(mAccount.expungeMessageUri, values, null, null);
                 } else {
-                    getContentResolver().delete(mDraft.uri, null, null);
+                    if (mDraft.uri != null) {
+                        getContentResolver().delete(mDraft.uri, null, null);
+                    }
                 }
                 // This is not strictly necessary (since we should not try to
                 // save the draft after calling this) but it ensures that if we
