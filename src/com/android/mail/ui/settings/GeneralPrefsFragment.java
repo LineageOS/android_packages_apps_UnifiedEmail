@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -37,6 +38,7 @@ import com.android.mail.preferences.MailPrefs.PreferenceKeys;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.android.mail.R;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -92,6 +94,13 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
          */
         menu.clear();
         inflater.inflate(R.menu.general_prefs_fragment_menu, menu);
+
+        MenuItem feedbackMenuItem = menu.findItem(R.id.help_info_menu_item);
+        Uri feedbackUri = Utils.getValidUri(getString(R.string.email_feedback_uri));
+
+        if (feedbackMenuItem != null) {
+            feedbackMenuItem.setVisible(!Uri.EMPTY.equals(feedbackUri));
+        }
     }
 
     @Override
