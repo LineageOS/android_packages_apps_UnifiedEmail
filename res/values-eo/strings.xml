@@ -73,6 +73,7 @@
   <!-- Menu item: reply to this message -->
   <!-- Menu item: reply to all recipients in this message [CHAR LIMIT=18] -->
   <!-- Menu item: resume a draft message [CHAR LIMIT=12] -->
+  <string name="resume_draft">Redakti</string>
   <!-- Menu item: forward this message -->
   <!-- Menu item: compose a new email -->
   <!-- Menu item: change the folders for this conversation. -->
@@ -87,6 +88,7 @@
   <!-- Temporary text used for reporting rendering improvements Googlers see in testing -->
   <!-- Menu item text to show the original version of an email conversation, before message manipulation [CHAR LIMIT=25] -->
   <!-- Menu item: launch the Settings activity -->
+  <string name="menu_settings">Agordoj</string>
   <!-- Menu item: search through the Gmail inbox -->
   <!-- Menu item: toggle drawer -->
   <!-- Title of the drawer, indicating what it is used for, which is navigation of the app -->
@@ -103,10 +105,12 @@
   <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5] -->
   <!-- Size unit, displayed in a button next to an attachment  [CHAR LIMIT=5]-->
   <!-- Attachment description for image files [CHAR LIMIT=30] -->
+  <string name="attachment_image">Bildo</string>
   <!-- Attachment description for video files [CHAR LIMIT=30] -->
   <!-- Attachment description for audio files [CHAR LIMIT=30] -->
   <!-- Attachment description for text files [CHAR LIMIT=30] -->
   <!-- Attachment description for .doc files [CHAR LIMIT=30] -->
+  <string name="attachment_application_msword">Dokumento</string>
   <!-- Attachment description for .ppt files [CHAR LIMIT=30] -->
   <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
   <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
@@ -150,6 +154,12 @@
     return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
   <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
   <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
+  <plurals name="draft">
+    <!-- Title of the screen when there is exactly one draft -->
+    <item quantity="one">Malneto</item>
+    <!-- Title of the screen when there are more than one draft -->
+    <item quantity="other">Malnetoj</item>
+  </plurals>
   <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
   <!-- Message displayed in the outgoing message list item when the message failed to sent and is being retried [CHAR LIMIT=20] -->
   <!-- Message displayed in the outgoing message list item when the message failed to send [CHAR LIMIT=20] -->
@@ -171,6 +181,7 @@
   <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
   <!-- The following are shown as a toast after the operation has completed -->
   <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
+  <string name="deleted">Forigita</string>
   <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
   <!-- Displayed when swiping away a single conversation to remove the currently displayed folder [CHAR LIMIT=80] -->
   <!-- Displayed after moving a conversation to a different folder. [CHAR LIMIT=100] -->
@@ -215,13 +226,16 @@
   <!-- Shown as a button label in message view to launch calendar to see this invite [CHAR LIMIT=40]-->
   <!-- Shown as a text label in message view describing the choices of whether to attend an invite [CHAR LIMIT=20]-->
   <!-- Shown as a button label in message view to accept a calendar invite [CHAR LIMIT=20]-->
+  <string name="message_invite_accept">Jes</string>
   <!-- Shown as a button label in message view to give a tentative response to a calendar invite [CHAR LIMIT=20]-->
   <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
+  <string name="message_invite_decline">Ne</string>
   <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+  <string name="cancel">Nuligi</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
   <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
@@ -279,6 +293,7 @@
   <!-- Dialog title when a sync error occurs. [CHAR LIMIT=100]-->
   <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
   <!-- Token used as a divider between senders -->
+  <string name="draft_count_format">\u00A0(<xliff:g id="count">%1$s</xliff:g>)</string>
   <!-- Token to replace senders that are not visible -->
   <!-- Token used to space out elided senders that are not visible -->
   <!-- Token used to space out message count, draft text, and senders -->
@@ -313,6 +328,7 @@
   <!-- Notification undo text after archiving a message. [CHAR LIMIT=30] -->
   <!-- Notification undo text after removing a label from a message. [CHAR LIMIT=30] -->
   <!-- Notification undo text after deleting a message. [CHAR LIMIT=30] -->
+  <string name="notification_action_undo_delete">Forigita</string>
   <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
@@ -409,6 +425,7 @@
   <!-- URI to display the help content; this must be overlayed -->
   <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
   <!-- Copyright text [CHAR LIMIT=50] -->
+  <string name="copyright">©<xliff:g id="year" example="2010">%1$d</xliff:g> Google Inc.</string>
   <!-- Version text [CHAR LIMIT=50] -->
   <!-- Menu item: view a webpage about this application [CHAR LIMIT=50]; this MUST be overlayed -->
   <!-- URL to a webpage about this application; this MUST be overlayed -->
@@ -420,6 +437,7 @@
   <!-- Activity class name for showing a full message url.
          Empty by default since this should be overridden by implementing apps. -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+  <string name="reply_choice_yes">Jes</string>
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
@@ -450,6 +468,7 @@
   <!-- Settings screen, main title of the screen, big font [CHAR LIMIT=50]-->
   <!-- Settings screen title -->
   <!-- Name of the Settings activity -->
+  <string name="activity_preferences">Agordoj</string>
   <!-- Content description for the action menu overflow button. [CHAR LIMIT=NONE] -->
   <!-- Text when there is a security hold on an account that needs to be accepted. The email address param takes the for "abc@xyz.com" -->
   <!-- Text to go to the dialog to accept the security hold -->
