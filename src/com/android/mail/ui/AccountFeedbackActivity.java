@@ -17,14 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-
 import com.android.mail.R;
 import com.android.mail.browse.ConversationAccountController;
 import com.android.mail.content.ObjectCursor;
@@ -32,12 +24,20 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.Utils;
 
+import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
 /**
  * Activity that provides support for querying an {@link Account}
  * as well as showing settings/help/send feedback in the action
  * overflow menu.
  */
-public abstract class AccountFeedbackActivity extends ActionBarActivity
+public abstract class AccountFeedbackActivity extends Activity
         implements ConversationAccountController, AccountLoadCallbacks.AccountLoadCallbackListener {
     public static final String EXTRA_ACCOUNT_URI = "extra-account-uri";
 
@@ -57,7 +57,7 @@ public abstract class AccountFeedbackActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_feedback_activity);
 
-        final ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         final Intent intent = getIntent();
