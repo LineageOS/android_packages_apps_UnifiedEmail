@@ -755,7 +755,7 @@
     </style>
 
     <style name="SearchTextStyle">
-        <item name="android:textColor">@color/search_factor_text_normal_color</item>
+        <item name="android:textColor">@color/search_banner_text</item>
         <item name="android:textSize">@dimen/search_banner_text_size</item>
     </style>
 
@@ -920,14 +920,4 @@
         <item name="android:paddingRight">@dimen/account_item_name_end_padding</item>
     </style>
 
-    <style name="MailSearchFactorItemStyle">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:button">@null</item>
-        <item name="android:gravity">center</item>
-        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
-        <item name="android:textColor">@color/search_factor_text_normal_color</item>
-        <item name="android:textSize">14sp</item>
-    </style>
 </resources>

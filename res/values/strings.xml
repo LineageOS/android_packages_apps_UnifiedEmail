@@ -1157,24 +1157,6 @@
 
     <string name="user_agent_format" translatable="false">%1$s AndroidUnifiedEmail/%2$s</string>
 
-    <!--Email search function filter text  -->
-    <string name="mail_search_factor_all">ALL</string>
-    <string name="mail_search_factor_subject">SUBJECT</string>
-    <string name="mail_search_factor_sender">SENDER</string>
-    <string name="mail_search_factor_receiver">RECEIVER</string>
-    <string name="mail_search_factor_result">RESULTS</string>
-
-
-    <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
-    <string name="preference_confirm_before_forward_title">Confirm before forwarding</string>
-    <!-- Confirm forward dialog message -->
-    <string name="confirm_forward_message">If this message has unloaded attachment(s), what do you want?</string>
-    <string name="confirm_forward_normal">Send after loaded</string>
-    <string name="confirm_forward_drop_unloaded">Drop unloaded</string>
-    <!-- Forward dialog message -->
-    <string name="forward_dialog_message">Do you want forward this message?</string>
-    <!-- Feedback uri to be used when feedback is enabled -->
-    <string name="email_feedback_uri" translatable="false"></string>
     <!-- Text when there is a security hold on an account that needs to be accepted. The email address param takes the for "abc@xyz.com" -->
     <string name="security_hold_required_text">Security update required for <xliff:g id="email_address">%1$s</xliff:g></string>
 

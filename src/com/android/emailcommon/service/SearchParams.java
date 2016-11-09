@@ -48,15 +48,6 @@ public class SearchParams implements Parcelable {
     // The id of the "search" mailbox being used
     public long mSearchMailboxId;
 
-    public static final String SEARCH_FACTOR_ALL = "ALL";
-    public static final String SEARCH_FACTOR_SUBJECT = "SUBJECT";
-    public static final String SEARCH_FACTOR_SENDER = "SENDER";
-    public static final String SEARCH_FACTOR_RECEIVER  = "RECEIVER";
-    public static final String BUNDLE_QUERY_FACTOR = "queryFactor";
-    public static final String BUNDLE_QUERY_FILTER = "queryFilter";
-
-    public String mFactor = SEARCH_FACTOR_ALL;
-
     /**
      * Error codes returned by the searchMessages API
      */
@@ -65,26 +56,16 @@ public class SearchParams implements Parcelable {
         public static final int CANT_SEARCH_CHILDREN = -2;
     }
 
-    public SearchParams(long mailboxId, String filter, String factor) {
+    public SearchParams(long mailboxId, String filter) {
         mMailboxId = mailboxId;
         mFilter = filter;
         mStartDate = null;
         mEndDate = null;
-        mFactor = factor;
     }
 
     public SearchParams(long mailboxId, String filter, long searchMailboxId) {
         mMailboxId = mailboxId;
         mFilter = filter;
-        mStartDate = null;
-        mEndDate = null;
-        mSearchMailboxId = searchMailboxId;
-    }
-
-    public SearchParams(long mailboxId, String filter, String factor, long searchMailboxId) {
-        mMailboxId = mailboxId;
-        mFilter = filter;
-        mFactor = factor;
         mStartDate = null;
         mEndDate = null;
         mSearchMailboxId = searchMailboxId;
@@ -115,26 +96,21 @@ public class SearchParams implements Parcelable {
                 && Objects.equal(mStartDate, os.mStartDate)
                 && Objects.equal(mEndDate, os.mEndDate)
                 && mLimit == os.mLimit
-                && mOffset == os.mOffset
-
-                && mFactor.equals(os.mFactor);
-
+                && mOffset == os.mOffset;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(mMailboxId, mFilter, mStartDate, mEndDate, mLimit, mOffset,
-                mFactor);
+        return Objects.hashCode(mMailboxId, mFilter, mStartDate, mEndDate, mLimit, mOffset);
     }
-
 
     @Override
     public String toString() {
-        return "SearchParams [mMailboxId=" + mMailboxId + ", mIncludeChildren="
-                + mIncludeChildren + ", mFilter=" + mFilter + ", mStartDate="
-                + mStartDate + ", mEndDate=" + mEndDate + ", mLimit=" + mLimit
-                + ", mOffset=" + mOffset + ", mSearchMailboxId="
-                + mSearchMailboxId + ", mFactor=" + mFactor + "]";
+        return "[SearchParams "
+                + mMailboxId + ":" + mFilter
+                + " (" + mOffset + ", " + mLimit + ")"
+                + " {" + mStartDate + ", " + mEndDate + "}"
+                + "]";
     }
 
     @Override
@@ -168,7 +144,6 @@ public class SearchParams implements Parcelable {
         dest.writeString(mFilter);
         dest.writeInt(mLimit);
         dest.writeInt(mOffset);
-        dest.writeString(mFactor);
         SparseArray<Object> dateWindow = new SparseArray<Object>(2);
         if (mStartDate != null) {
             dateWindow.put(0, mStartDate.getTime());
@@ -188,7 +163,6 @@ public class SearchParams implements Parcelable {
         mFilter = in.readString();
         mLimit = in.readInt();
         mOffset = in.readInt();
-        mFactor = in.readString();
         SparseArray dateWindow = in.readSparseArray(this.getClass().getClassLoader());
         if (dateWindow.get(0) != null) {
             mStartDate = new Date((Long)dateWindow.get(0));

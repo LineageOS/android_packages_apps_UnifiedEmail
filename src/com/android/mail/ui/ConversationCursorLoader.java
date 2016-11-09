@@ -137,9 +137,4 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
         cancelLoad();
         mConversationCursor.pause();
     }
-
-    public Uri getUri() {
-        return mUri;
-    }
-
 }

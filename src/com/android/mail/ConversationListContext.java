@@ -21,7 +21,6 @@ import android.content.UriMatcher;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.android.emailcommon.service.SearchParams;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -56,14 +55,7 @@ public class ConversationListContext {
     /**
      * The search query whose results we are displaying, if any.
      */
-    public String searchQuery;
-
-    private boolean mIsLocalSearch = false;
-    private String mSearchFactor = "";
-    private SearchParams mSearchParams = new SearchParams(0, null, null);
-    public static final String EXTRA_SEARCH_LOCAL = "search_local";
-    public static final String EXTRA_SEARCH_FACTOR = "Search_factor";
-
+    public final String searchQuery;
 
     static {
         sUrlMatcher.addURI(UIProvider.AUTHORITY, "account/*/folder/*", 0);
@@ -77,15 +69,7 @@ public class ConversationListContext {
         // We should probably be reading an account instance from our controller.
         Account account = bundle.getParcelable(Utils.EXTRA_ACCOUNT);
         Folder folder = bundle.getParcelable(Utils.EXTRA_FOLDER);
-        boolean isLocal = bundle.getBoolean(EXTRA_SEARCH_LOCAL, false);
-
-        String factor = bundle.getString(EXTRA_SEARCH_FACTOR);
-        ConversationListContext convListContext = new ConversationListContext(account,
-                bundle.getString(EXTRA_SEARCH_QUERY), folder);
-        convListContext.setLocalSearch(isLocal);
-        convListContext.setSearchFactor(factor);
-
-        return convListContext;
+        return new ConversationListContext(account, bundle.getString(EXTRA_SEARCH_QUERY), folder);
     }
 
     /**
@@ -118,40 +102,7 @@ public class ConversationListContext {
         account = a;
         searchQuery = query;
         folder = f;
-        mSearchParams = new SearchParams(folder.id, searchQuery, mSearchFactor);
     }
-
-
-    public void setSearchFactor(String factor) {
-        mSearchFactor = factor;
-        mSearchParams = new SearchParams(folder.id, searchQuery, mSearchFactor);
-    }
-
-    public String getSearchQuery() {
-        return searchQuery;
-    }
-
-    public String getSearchFactor() {
-        return mSearchFactor;
-    }
-
-    public SearchParams getSearchParams() {
-        return mSearchParams;
-    }
-
-    public void setLocalSearch(boolean isLocalSearch) {
-        mIsLocalSearch = isLocalSearch;
-    }
-
-    public boolean isLocalSearch() {
-        return mIsLocalSearch;
-    }
-
-    public void setSearchQueryText(String query) {
-        searchQuery = query;
-        mSearchParams = new SearchParams(folder.id, searchQuery, mSearchFactor);
-    }
-
 
     /**
      * Returns true if the provided context represents search results.
@@ -159,14 +110,7 @@ public class ConversationListContext {
      * @return true the context represents search results. False otherwise
      */
     public static final boolean isSearchResult(ConversationListContext in) {
-        return in != null && !TextUtils.isEmpty(in.searchQuery) && !in.mIsLocalSearch;
-    }
-
-
-
-    public boolean isLocalSearchExecuted() {
-        return isLocalSearch() && !TextUtils.isEmpty(getSearchQuery())
-                && !TextUtils.isEmpty(getSearchQuery().trim());
+        return in != null && !TextUtils.isEmpty(in.searchQuery);
     }
 
     /**
@@ -177,8 +121,6 @@ public class ConversationListContext {
         result.putParcelable(Utils.EXTRA_ACCOUNT, account);
         result.putString(EXTRA_SEARCH_QUERY, searchQuery);
         result.putParcelable(Utils.EXTRA_FOLDER, folder);
-        result.putBoolean(EXTRA_SEARCH_LOCAL, mIsLocalSearch);
-        result.putString(EXTRA_SEARCH_FACTOR, mSearchFactor);
         return result;
     }
 }
