@@ -477,22 +477,6 @@
     <string name="manage_accounts_menu_item" msgid="4734660452395086786">"管理帐户"</string>
     <string name="general_preferences_title" msgid="4212138728220418162">"常规设置"</string>
     <string name="activity_preferences" msgid="8966077432517613292">"设置"</string>
-
-    <!-- Email search function filter text-->
-    <string name="mail_search_factor_all">全部</string>
-    <string name="mail_search_factor_subject">主题</string>
-    <string name="mail_search_factor_sender">发件人</string>
-    <string name="mail_search_factor_receiver">收件人</string>
-    <string name="mail_search_factor_result">搜索结果</string>
-
-    <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
-    <string name="preference_confirm_before_forward_title">转发前先确认</string>
-    <!-- Confirm forward message -->
-    <string name="confirm_forward_message">"若该邮件含有未下载的附件，如何转发该邮件？"</string>
-    <string name="confirm_forward_normal">"下载完成后发送"</string>
-    <string name="confirm_forward_drop_unloaded">"舍弃未完成的"</string>
-    <!-- Forward dialog message -->
-    <string name="forward_dialog_message">"您是否希望转发这封邮件？"</string>
     <string name="overflow_description" msgid="7886090597023240426">"更多选项"</string>
     <string name="security_hold_required_text" msgid="6619955920101834286">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>需要进行安全更新"</string>
     <string name="update_security_text" msgid="3527335757205741077">"立即更新"</string>

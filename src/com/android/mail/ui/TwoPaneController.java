@@ -160,7 +160,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     /**
      * Render the conversation list in the correct pane.
      */
-     void renderConversationList() {
+    private void renderConversationList() {
         if (mActivity == null) {
             return;
         }
