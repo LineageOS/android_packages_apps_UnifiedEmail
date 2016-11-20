@@ -19,16 +19,35 @@
   <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Modo</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Desactivado</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">O servizo de suxerir contactos está desactivado</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recentes</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Solamente se seleccionarán os contactos suxeridos recentes</string>
+  <string name="prefDialogTitle_suggestedContactsMode_all">Todos</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Todos os contactos suxeridos serán seleccionables</string>
   <string name="preference_header_suggested_contacts">Contactos suxeridos</string>
   <string name="preference_suggested_contacts_mode">Modo de contactos suxeridos</string>
   <string name="preference_suggested_contacts_clear_all">Limpar os contactos suxeridos</string>
+  <string name="suggested_contacts_cleared">Borraronse os contactos suxeridos.</string>
   <string name="clear_suggested_contacts_dialog_title">Limpar os contactos suxeridos?</string>
+  <string name="clear_suggested_contacts_dialog_message">Vanse eliminar todos os contactos suxeridos anteriormente.</string>
   <!-- Notification lights dialogs -->
+  <string name="edit_light_settings">Axustes da luz do cartafol</string>
+  <string name="pulse_speed_title">Duración e velocidade ao pestanexar</string>
   <string name="default_time">Normal</string>
   <string name="custom_time">Personalizado</string>
   <string name="dialog_delete_title">Eliminar</string>
   <string name="dialog_delete_message">Eliminar o elemento seleccionado?</string>
+  <string name="pref_lights_default">Predefinido</string>
   <!-- Values for the notification lights pulse spinners -->
+  <string name="pulse_length_always_on">Sempre acendida</string>
+  <string name="pulse_length_very_short">Moi curta</string>
+  <string name="pulse_length_short">Curta</string>
+  <string name="pulse_length_normal">Normal</string>
+  <string name="pulse_length_long">Longa</string>
+  <string name="pulse_length_very_long">Moi longa</string>
+  <string name="pulse_speed_very_fast">Moi rápida</string>
+  <string name="pulse_speed_fast">Rápida</string>
+  <string name="pulse_speed_normal">Normal</string>
+  <string name="pulse_speed_slow">Lenta</string>
+  <string name="pulse_speed_very_slow">Moi lenta</string>
 </resources>
