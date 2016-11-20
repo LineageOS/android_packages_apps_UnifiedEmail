@@ -32,19 +32,10 @@
   <!-- Stub string for attaching from a service. Sub-apps should override this. -->
   <!-- The actual string value doesn't matter, it should never appear. -->
   <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
-  <string name="save_draft">Konservi malneton</string>
   <!--  Button name: discard this message [CHAR LIMIT=15] -->
   <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
   <!-- The action bar title for the default compose mode [CHAR LIMIT=10] -->
   <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
-  <string-array name="compose_modes">
-    <!-- Reply -->
-    <item>Reply</item>
-    <!-- Reply all -->
-    <item>Reply all</item>
-    <!-- Forward -->
-    <item>Plusendi</item>
-  </string-array>
   <!-- Formatting string for the subject when it contains a reply or forward identifier. Do not translate.-->
   <!-- Compose screen, prefixed to the subject of a message when replying to it (if not already present). Do not translate. -->
   <!-- Compose screen, Prefix to forwarded message subject. Do not translate. -->
@@ -64,7 +55,6 @@
   <!-- Formatting string for the user's signaure. [CHAR LIMIT=10] -->
   <!--  Shown in the from dropdown in front of custom from addresses. [CHAR LIMIT=15] -->
   <!-- Menu item: send this message -->
-  <string name="send">Sendi</string>
   <!-- Menu item: mark this conversation as read -->
   <!-- Menu item: mark this conversation as unread -->
   <!-- Menu item: toggle read/unread for menus that contain both read and unread options -->
@@ -77,16 +67,13 @@
   <!-- Menu item: report this conversation not as spam [CHAR LIMIT = 30] -->
   <!-- Menu item: report this conversation as phishing [CHAR LIMIT = 30] -->
   <!-- Menu item: delete this conversation -->
-  <string name="delete">Forigi</string>
   <!-- Menu item: discard the drafts in this conversation [CHAR LIMIT = 30] -->
   <!-- Menu item: discard the failed messages in this conversation [CHAR LIMIT = 30] -->
   <!-- Menu item: refresh the inbox -->
   <!-- Menu item: reply to this message -->
   <!-- Menu item: reply to all recipients in this message [CHAR LIMIT=18] -->
   <!-- Menu item: resume a draft message [CHAR LIMIT=12] -->
-  <string name="resume_draft">Redakti</string>
   <!-- Menu item: forward this message -->
-  <string name="forward">Plusendi</string>
   <!-- Menu item: compose a new email -->
   <!-- Menu item: change the folders for this conversation. -->
   <!-- Menu item: moves to folders for selected conversation(s). [CHAR LIMIT = 30] -->
@@ -100,9 +87,7 @@
   <!-- Temporary text used for reporting rendering improvements Googlers see in testing -->
   <!-- Menu item text to show the original version of an email conversation, before message manipulation [CHAR LIMIT=25] -->
   <!-- Menu item: launch the Settings activity -->
-  <string name="menu_settings">Agordoj</string>
   <!-- Menu item: search through the Gmail inbox -->
-  <string name="menu_search">Serĉi</string>
   <!-- Menu item: toggle drawer -->
   <!-- Title of the drawer, indicating what it is used for, which is navigation of the app -->
   <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as important [CHAR LIMIT=30] -->
@@ -115,25 +100,19 @@
   <!-- Format string for email addresses -->
   <!-- Attachments -->
   <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5]-->
-  <string name="bytes"><xliff:g id="count">%s</xliff:g> B</string>
   <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5] -->
-  <string name="kilobytes"><xliff:g id="count">%s</xliff:g> kB</string>
   <!-- Size unit, displayed in a button next to an attachment  [CHAR LIMIT=5]-->
-  <string name="megabytes"><xliff:g id="count">%s</xliff:g> MB</string>
   <!-- Attachment description for image files [CHAR LIMIT=30] -->
-  <string name="attachment_image">Bildo</string>
   <!-- Attachment description for video files [CHAR LIMIT=30] -->
   <!-- Attachment description for audio files [CHAR LIMIT=30] -->
   <!-- Attachment description for text files [CHAR LIMIT=30] -->
   <!-- Attachment description for .doc files [CHAR LIMIT=30] -->
-  <string name="attachment_application_msword">Dokumento</string>
   <!-- Attachment description for .ppt files [CHAR LIMIT=30] -->
   <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
   <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
   <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
   <!-- Read email screen, button name. Preview an attachment by Gview. [CHAR LIMIT=18] -->
   <!-- Read email screen, button name. Save an attachment to sd card. [CHAR LIMIT=10] -->
-  <string name="save_attachment">Konservi</string>
   <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
   <!-- A supplemental option on attachments for apps to override. This string intentionally blank here. [CHAR LIMIT=20] -->
   <!-- Remove this attachment [CHAR LIMIT=50] -->
@@ -145,10 +124,8 @@
   <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=50]-->
   <!-- Photo view screen, button name. Save all attachments to sd card. [CHAR LIMIT=17] -->
   <!-- Photo view screen, button name. Share attachment. [CHAR LIMIT=10] -->
-  <string name="menu_photo_share">Konigi</string>
   <!-- Photo view screen, button name. Share all attachments. [CHAR LIMIT=20] -->
   <!-- Photo view screen, button name. Print photo. [CHAR LIMIT=20] -->
-  <string name="menu_photo_print">Presi</string>
   <!-- Displayed in the action bar as a subtitle. Save in progress. [CHAR LIMIT=15] -->
   <!-- Webview Context Menu Strings -->
   <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
@@ -159,7 +136,6 @@
   <!-- Menu item to dial a number  [CHAR LIMIT=50]-->
   <!-- Menu item to send an SMS  [CHAR LIMIT=50]-->
   <!-- Menu item to add a contact  [CHAR LIMIT=50]-->
-  <string name="contextmenu_add_contact">Aldoni kontakton</string>
   <!-- Menu item to send an email [CHAR LIMIT=50] -->
   <!-- Menu item to show a map  [CHAR LIMIT=50]-->
   <!-- Menu item to share link  [CHAR LIMIT=50]-->
@@ -174,12 +150,6 @@
     return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
   <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
   <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
-  <plurals name="draft">
-    <!-- Title of the screen when there is exactly one draft -->
-    <item quantity="one">Malneto</item>
-    <!-- Title of the screen when there are more than one draft -->
-    <item quantity="other">Malnetoj</item>
-  </plurals>
   <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
   <!-- Message displayed in the outgoing message list item when the message failed to sent and is being retried [CHAR LIMIT=20] -->
   <!-- Message displayed in the outgoing message list item when the message failed to send [CHAR LIMIT=20] -->
@@ -201,7 +171,6 @@
   <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
   <!-- The following are shown as a toast after the operation has completed -->
   <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
-  <string name="deleted">Forigita</string>
   <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
   <!-- Displayed when swiping away a single conversation to remove the currently displayed folder [CHAR LIMIT=80] -->
   <!-- Displayed after moving a conversation to a different folder. [CHAR LIMIT=100] -->
@@ -212,10 +181,6 @@
   <!--  Text anchor for control to add / change labels on a conversation when
           viewing it. [CHAR LIMIT=40] -->
   <!-- New Message notification text that appears over conversation view on incoming messages. [CHAR LIMIT=40] -->
-  <plurals name="new_incoming_messages">
-    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> nova mesaĝo</item>
-    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> novaj mesaĝoj</item>
-  </plurals>
   <!-- Conversation message header strings -->
   <!--  Text for showing the date and expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
   <!--  Text for collapsing recipient details in a message when viewing it. [CHAR LIMIT=40] -->
@@ -250,17 +215,13 @@
   <!-- Shown as a button label in message view to launch calendar to see this invite [CHAR LIMIT=40]-->
   <!-- Shown as a text label in message view describing the choices of whether to attend an invite [CHAR LIMIT=20]-->
   <!-- Shown as a button label in message view to accept a calendar invite [CHAR LIMIT=20]-->
-  <string name="message_invite_accept">Jes</string>
   <!-- Shown as a button label in message view to give a tentative response to a calendar invite [CHAR LIMIT=20]-->
   <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
-  <string name="message_invite_decline">Ne</string>
   <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
-  <string name="enumeration_comma">,\u0020</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
-  <string name="cancel">Nuligi</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
   <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
@@ -285,9 +246,7 @@
   <!-- Search -->
   <!-- Title of the search dialog -->
   <!-- Shown in light gray in the Search box when no text has been entered [CHAR LIMIT=20]-->
-  <string name="search_hint">Serĉi</string>
   <!-- Search Results: Text for status of the search when the results are completely loaded [CHAR LIMIT=10] -->
-  <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
   <!-- Voice search is not supported on this device [CHAR LIMIT=100] -->
   <!-- Description of the back button [CHAR LIMIT=100] -->
   <!-- Description of the voice icon [CHAR LIMIT=100] -->
@@ -309,7 +268,6 @@
         come from different accounts -->
   <!-- Format string used when displaying a summary in a message summary in list notification that was triggered by several new conversations.
          Extra space between sender and subject is intentional.  [CHAR LIMIT=120] -->
-  <string name="multiple_new_message_notification_item"><b><xliff:g id="sender">%1$s</xliff:g></b>\u0020\u0020\u0020<xliff:g id="subject">%2$s</xliff:g></string>
   <!-- Format string used when displaying the big text of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
   <!-- Displayed in a message subheading. Ignore the current spam warning. [CHAR LIMIT=30] -->
   <!-- Displayed in the message heading. Shown if the message was sent via another domain. [CHAR LIMIT=10] -->
@@ -321,7 +279,6 @@
   <!-- Dialog title when a sync error occurs. [CHAR LIMIT=100]-->
   <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
   <!-- Token used as a divider between senders -->
-  <string name="draft_count_format">\u00A0(<xliff:g id="count">%1$s</xliff:g>)</string>
   <!-- Token to replace senders that are not visible -->
   <!-- Token used to space out elided senders that are not visible -->
   <!-- Token used to space out message count, draft text, and senders -->
@@ -352,37 +309,21 @@
   <!-- Notification action for replying-all to a message. [CHAR LIMIT=20] -->
   <!-- Notification action for archiving a message. [CHAR LIMIT=20] -->
   <!-- Notification action for removing a label from a message. [CHAR LIMIT=20] -->
-  <string name="notification_action_remove_label">Forigi etikedon</string>
   <!-- Notification action for deleting a message. [CHAR LIMIT=20] -->
-  <string name="notification_action_delete">Forigi</string>
   <!-- Notification undo text after archiving a message. [CHAR LIMIT=30] -->
   <!-- Notification undo text after removing a label from a message. [CHAR LIMIT=30] -->
   <!-- Notification undo text after deleting a message. [CHAR LIMIT=30] -->
-  <string name="notification_action_undo_delete">Forigita</string>
   <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
   <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
   <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
-  <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
   <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
-  <plurals name="new_messages">
-    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> nova mesaĝo</item>
-    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> novaj mesaĝoj</item>
-  </plurals>
   <!-- Format string used when displaying the title of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
   <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
   <!-- Settings screen, preference name for archive vs. delete [CHAR LIMIT=50] -->
   <!-- Options to select from for whether to have archive or delete as the remove action [CHAR LIMIT=50] -->
-  <string-array name="prefEntries_removal_action">
-    <item>Archive</item>
-    <item>Forigi</item>
-  </string-array>
   <!-- Description of currently selected option of whether to use archive or delete as remove action [CHAR LIMIT=200] -->
-  <string-array name="prefSummaries_removal_action_summary">
-    <item>Archive</item>
-    <item>Forigi</item>
-  </string-array>
   <!-- Dialog title for the choosing whether to use archive or delete as remove action [CHAR LIMIT=150] -->
   <!-- The default value -->
   <!--  Settings screen, Reply to all default setting title  [CHAR LIMIT=30] -->
@@ -420,7 +361,6 @@
   <!-- Button in conversation list to show more folders [CHAR LIMIT=50] -->
   <!-- Button in conversation list to hide folders [CHAR LIMIT=50] -->
   <!-- Menu item text to that when clicked will allow a user to print an email message. [CHAR LIMIT=25] -->
-  <string name="print">Presi</string>
   <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
   <!-- Number of messages in a conversation [CHAR LIMIT=30]-->
   <!-- Display format of an email recipient, displayed in printed message details [CHAR LIMIT=10] -->
@@ -434,7 +374,6 @@
   <!-- Action bar title for the screen to set a vacation responder (out-of-office) message. [CHAR LIMIT=50] -->
   <!-- Account preference: Title of the setting to set a vacation responder (out-of-office) message. [CHAR LIMIT=50]-->
   <!-- Shown in vacation responder; the body of the message [CHAR LIMIT=100] -->
-  <string name="vacation_responder_body_hint_text">Mesaĝo</string>
   <!-- Shown in vacation responder; accompanies a checkbox that, if checked, causes vacation responses to be sent to people in the user's contacts [CHAR LIMIT=75] -->
   <!-- Shown in vacation responder; accompanies a checkbox that, if checked, causes vacation responses to be sent to people in the user's corporate domain [CHAR LIMIT=75] -->
   <!-- Title text for the button to be pressed if the user wishes to change the start date of the vacation responder. [CHAR LIMIT=25]-->
@@ -444,7 +383,6 @@
   <!-- Title text for the dialog that appears when the user wishes to change the end date of the vacation responder.
             This text should include a note that this field is optional to set. [CHAR LIMIT=35]-->
   <!-- Shown as an option in a dialog to set a custom end date for a vacation responder message.  [CHAR LIMIT=30] -->
-  <string name="custom_date">Propra</string>
   <!-- Shown as an option in a dialog to set no end date for a vacation responder message. [CHAR LIMIT=30]-->
   <!-- Asks the user whether they wish to discard changes. [CHAR LIMIT=50]-->
   <!-- Toast, vacation responder changes were saved. [CHAR LIMIT=100]-->
@@ -471,7 +409,6 @@
   <!-- URI to display the help content; this must be overlayed -->
   <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
   <!-- Copyright text [CHAR LIMIT=50] -->
-  <string name="copyright">©<xliff:g id="year" example="2010">%1$d</xliff:g> Google Inc.</string>
   <!-- Version text [CHAR LIMIT=50] -->
   <!-- Menu item: view a webpage about this application [CHAR LIMIT=50]; this MUST be overlayed -->
   <!-- URL to a webpage about this application; this MUST be overlayed -->
@@ -483,7 +420,6 @@
   <!-- Activity class name for showing a full message url.
          Empty by default since this should be overridden by implementing apps. -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
-  <string name="reply_choice_yes">Jes</string>
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
@@ -514,7 +450,6 @@
   <!-- Settings screen, main title of the screen, big font [CHAR LIMIT=50]-->
   <!-- Settings screen title -->
   <!-- Name of the Settings activity -->
-  <string name="activity_preferences">Agordoj</string>
   <!-- Content description for the action menu overflow button. [CHAR LIMIT=NONE] -->
   <!-- Text when there is a security hold on an account that needs to be accepted. The email address param takes the for "abc@xyz.com" -->
   <!-- Text to go to the dialog to accept the security hold -->
