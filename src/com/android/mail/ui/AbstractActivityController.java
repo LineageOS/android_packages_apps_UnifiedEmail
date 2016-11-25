@@ -2500,6 +2500,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     intent.getBooleanExtra(Utils.EXTRA_IGNORE_INITIAL_CONVERSATION_LIMIT, false);
 
             args.putParcelable(Utils.EXTRA_FOLDER_URI, folderUri);
+            intent.setExtrasClassLoader(Conversation.class.getClassLoader());
             args.putParcelable(Utils.EXTRA_CONVERSATION,
                     intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
             restartOptionalLoader(LOADER_FIRST_FOLDER, mFolderCallbacks, args);
