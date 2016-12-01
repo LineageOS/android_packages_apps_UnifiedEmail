@@ -16,6 +16,7 @@
 package com.android.mail.utils;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -548,8 +549,6 @@ public class NotificationUtils {
             final Account account, boolean getAttention, boolean ignoreUnobtrusiveSetting,
             NotificationKey key, final ContactFetcher contactFetcher) {
 
-        final Resources res = context.getResources();
-
         // Check that the folder supports notifications, prior to create all the
         // NotificationManager stuff
         final boolean isInbox = folder.folderUri.equals(account.settings.defaultInbox);
@@ -651,7 +650,8 @@ public class NotificationUtils {
                     new ArrayMap<Integer, NotificationBuilders>();
 
             if (com.android.mail.utils.Utils.isRunningLOrLater()) {
-                notification.setColor(res.getColor(R.color.notification_icon_color));
+                notification.setColor(
+                        context.getResources().getColor(R.color.notification_icon_color));
             }
 
             if(unseenCount > 1) {
@@ -787,10 +787,9 @@ public class NotificationUtils {
 
             // TODO(skennedy) Why do we do any of the above if we're just going to bail here?
             if (eventInfoConfigured) {
-                boolean isArgbNotifColorSupported = res.getBoolean(
-                        com.android.internal.R.bool.config_multiColorNotificationLed);
                 NotificationLight notificationLight = folderPreferences.getNotificationLight();
-                if (isArgbNotifColorSupported && notificationLight.mOn) {
+                if (notificationLight.mOn && context.getSystemService(NotificationManager.class)
+                        .doLightsSupport(NotificationManager.LIGHTS_RGB_NOTIFICATION_LED)) {
                     notification.setLights(notificationLight.mColor,
                             notificationLight.mTimeOn, notificationLight.mTimeOff);
                 } else {
