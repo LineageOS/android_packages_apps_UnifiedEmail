@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5f681702_05d96782",
+        "filename": "src/com/android/mail/utils/NotificationUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 793,
+      "author": {
+        "id": 1063
+      },
+      "writtenOn": "2016-12-01T13:36:08Z",
+      "side": 1,
+      "message": "I thought getSystemService() takes a string constant?",
+      "revId": "9e51a33a7e1a42175886da27a5cc0965e6c4f9ba",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
