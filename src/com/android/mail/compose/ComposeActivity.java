@@ -1586,23 +1586,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     final Uri uri = Uri.parse(uriString);
                     long size = 0;
                     try {
-                        if ("file".equals(uri.getScheme())) {
-                            // We don't allow files from /data, since they can be hard-linked to
-                            // Email private data.
-                            final File file = new File(uri.getPath());
-                            try {
-                                final String filePath = file.getCanonicalPath();
-                                if (filePath.startsWith(DATA_DIRECTORY_ROOT)) {
-                                    Analytics.getInstance().sendEvent(ANALYTICS_CATEGORY_ERRORS,
-                                            "send_intent_attachment", "data_dir", 0);
-                                    throw new AttachmentFailureException("Not allowed to attach "
-                                        + "file:///data/[REDACTED] in application internal data");
-                                }
-                            } catch (IOException e) {
-                                throw new AttachmentFailureException("Failed to get file path", e);
-                            }
-                        }
-
+                        checkInternalFile(uri);
                         final Attachment a = mAttachmentsView.generateLocalAttachment(uri);
                         size = mAttachmentsView.addAttachment(mAccount, a);
 
@@ -1717,6 +1701,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return;
         }
         try {
+            checkInternalFile(contentUri);
             addAttachmentAndUpdateView(mAttachmentsView.generateLocalAttachment(contentUri));
         } catch (AttachmentFailureException e) {
             LogUtils.e(LOG_TAG, e, "Error adding attachment");
@@ -1737,6 +1722,31 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } catch (AttachmentFailureException e) {
             LogUtils.e(LOG_TAG, e, "Error adding attachment");
             showAttachmentTooBigToast(e.getErrorRes());
+        }
+    }
+
+    /**
+     * Checks whether {@code uri} is a file under private /data folder. We
+     * don't allow files from /data, since they can be hard-linked to Email
+     * private data.
+     *
+     * @param uri Uri of the resource which will be checked
+     * @throws AttachmentFailureException if {@code uri} is a file from /data
+     */
+    private void checkInternalFile(Uri uri) throws AttachmentFailureException {
+        if ("file".equals(uri.getScheme())) {
+            final File file = new File(uri.getPath());
+            try {
+                final String filePath = file.getCanonicalPath();
+                if (filePath.startsWith(DATA_DIRECTORY_ROOT)) {
+                    Analytics.getInstance().sendEvent(ANALYTICS_CATEGORY_ERRORS,
+                            "send_intent_attachment", "data_dir", 0);
+                    throw new AttachmentFailureException("Not allowed to attach "
+                        + "file:///data/[REDACTED] in application internal data");
+                }
+            } catch (IOException e) {
+                throw new AttachmentFailureException("Failed to get file path", e);
+            }
         }
     }
 
