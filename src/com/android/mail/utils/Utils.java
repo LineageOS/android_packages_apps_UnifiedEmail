@@ -145,6 +145,10 @@ public class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
+    public static boolean isRunningNOrLater() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+    }
+
     /**
      * @return Whether we are running on a low memory device.  This is used to disable certain
      * memory intensive features in the app.
