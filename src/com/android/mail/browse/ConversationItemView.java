@@ -575,7 +575,7 @@ public class ConversationItemView extends View
         Utils.traceEndSection();
 
         final int ignoreFolderType;
-        if (mDisplayedFolder.isInbox()) {
+        if (mDisplayedFolder != null && mDisplayedFolder.isInbox()) {
             ignoreFolderType = FolderType.INBOX;
         } else {
             ignoreFolderType = -1;
