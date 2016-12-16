@@ -18,6 +18,5 @@
 <resources>
   <!-- Suggested contacts preferences -->
   <!-- Notification lights dialogs -->
-  <string name="dialog_delete_title">Forigi</string>
   <!-- Values for the notification lights pulse spinners -->
 </resources>
