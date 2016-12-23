@@ -170,6 +170,7 @@
   <!-- Undo bar strings -->
   <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
   <!-- The following are shown as a toast after the operation has completed -->
+  <skip></skip>
   <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
   <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
   <!-- Displayed when swiping away a single conversation to remove the currently displayed folder [CHAR LIMIT=80] -->
@@ -314,9 +315,13 @@
   <!-- Notification undo text after removing a label from a message. [CHAR LIMIT=30] -->
   <!-- Notification undo text after deleting a message. [CHAR LIMIT=30] -->
   <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
+  <string name="veiled_address"></string>
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
+  <string name="veiled_alternate_text"></string>
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
+  <string name="veiled_alternate_text_unknown_person"></string>
   <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
+  <string name="veiled_summary_unknown_person"></string>
   <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
   <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
   <!-- Format string used when displaying the title of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
@@ -411,6 +416,7 @@
   <!-- Copyright text [CHAR LIMIT=50] -->
   <!-- Version text [CHAR LIMIT=50] -->
   <!-- Menu item: view a webpage about this application [CHAR LIMIT=50]; this MUST be overlayed -->
+  <string name="view_app_page"></string>
   <!-- URL to a webpage about this application; this MUST be overlayed -->
   <!-- Menu item: print... [CHAR LIMIT=25] -->
   <!-- Menu item: copyright information [CHAR LIMIT=25] -->
