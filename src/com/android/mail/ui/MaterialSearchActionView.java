@@ -37,7 +37,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.mail.R;
 import com.android.mail.utils.ViewUtils;
@@ -69,8 +68,6 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
     private ImageView mBackButton;
     private EditText mQueryText;
     private ImageView mEndingButton;
-    private Context mContext;
-    public final static int SEARCH_INPUT_LIMIT_NUMBER = 40;
 
     public MaterialSearchActionView(Context context) {
         this(context, null);
@@ -90,8 +87,6 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
         mDarkBgVoiceDrawable = R.drawable.ic_mic_wht_24dp;
         mLightBgTextColor = res.getColor(R.color.search_query_text);
         mDarkBgTextColor = res.getColor(android.R.color.white);
-
-        mContext = context;
     }
 
     // PUBLIC API
@@ -208,14 +203,6 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
     public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
         mController.onQueryTextChanged(charSequence.toString());
         setupEndingButton(charSequence);
-        limitInputLength(charSequence);
-    }
-
-    private void limitInputLength(CharSequence charSequence) {
-        if(charSequence.length()>=SEARCH_INPUT_LIMIT_NUMBER){
-            Toast.makeText(mContext,R.string.search_input_limit_number,Toast.LENGTH_LONG).show();
-        }
-
     }
 
     @Override

@@ -50,7 +50,6 @@
         android:singleLine="true"
         android:textAlignment="viewStart"
         android:textColor="@color/search_query_text"
-        android:maxLength="40"
         android:textColorHint="@color/search_query_hint_text"
         android:textSize="16sp" />
 

@@ -602,7 +602,6 @@
     <string name="search_title" translatable="false">Unified Email</string>
     <!-- Shown in light gray in the Search box when no text has been entered [CHAR LIMIT=20]-->
     <string name="search_hint">Search</string>
-    <string name="search_input_limit_number">Search word Input number limit of 40</string>
     <!-- Search Results: Text for status of the search when the results are completely loaded [CHAR LIMIT=10] -->
     <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
     <!-- Voice search is not supported on this device [CHAR LIMIT=100] -->
