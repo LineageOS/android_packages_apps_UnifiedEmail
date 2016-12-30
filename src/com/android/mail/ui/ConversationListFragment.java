@@ -1421,11 +1421,10 @@ public final class ConversationListFragment extends Fragment implements
     }
 
     private void setDisableInSearch() {
-        ActivityController controller = (ActivityController) mActivity.getAccountController();
-        boolean isLocalSearch = false;
-        if (controller != null && controller.getCurrentConversationListContext() != null) {
-            isLocalSearch = controller.getCurrentConversationListContext().isLocalSearchExecuted();
-        }
+        boolean isLocalSearch = ((ActivityController) mActivity.getAccountController())
+                != null ? ((ActivityController) mActivity
+                        .getAccountController()).getCurrentConversationListContext()
+                        .isLocalSearchExecuted() : false;
         if (mFolder != null && mFolder.type == FolderType.SEARCH && isLocalSearch) {
             saveFleetingView();
             mSwipeRefreshWidget.setEnabled(false);
