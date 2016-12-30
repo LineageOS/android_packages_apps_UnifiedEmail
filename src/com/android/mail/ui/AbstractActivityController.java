@@ -4554,9 +4554,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void exitLocalSearch() {
-        if (mFolder != null) {
-            mFolder.type = mFolderType;
-        }
+        mFolder.type = mFolderType;
         if (getConversationListFragment() != null) {
             getConversationListFragment().exitSeachView();
         }
