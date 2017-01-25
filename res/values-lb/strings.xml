@@ -954,4 +954,6 @@
   <!-- Shown when user submits a form. [CHAR LIMIT=40] -->
   <string name="forms_are_disabled">Formulairë sinn a Gmail desaktivéiert</string>
   <!-- activity name of the photoviewer -->
+  <string name="download_first">W.e.g. fir d\'éischt eroflueden</string>
+  <string name="save_to">Fichier späicheren ënner:</string>
 </resources>
