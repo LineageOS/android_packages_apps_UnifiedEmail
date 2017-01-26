@@ -200,7 +200,6 @@
   <!-- Undo bar strings -->
   <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
   <!-- The following are shown as a toast after the operation has completed -->
-  <skip></skip>
   <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
   <string name="deleted">Forigita</string>
   <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
@@ -361,13 +360,9 @@
   <!-- Notification undo text after deleting a message. [CHAR LIMIT=30] -->
   <string name="notification_action_undo_delete">Forigita</string>
   <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
-  <string name="veiled_address"></string>
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
-  <string name="veiled_alternate_text"></string>
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
-  <string name="veiled_alternate_text_unknown_person"></string>
   <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
-  <string name="veiled_summary_unknown_person"></string>
   <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
   <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
   <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
@@ -479,7 +474,6 @@
   <string name="copyright">©<xliff:g id="year" example="2010">%1$d</xliff:g> Google Inc.</string>
   <!-- Version text [CHAR LIMIT=50] -->
   <!-- Menu item: view a webpage about this application [CHAR LIMIT=50]; this MUST be overlayed -->
-  <string name="view_app_page"></string>
   <!-- URL to a webpage about this application; this MUST be overlayed -->
   <!-- Menu item: print... [CHAR LIMIT=25] -->
   <!-- Menu item: copyright information [CHAR LIMIT=25] -->
