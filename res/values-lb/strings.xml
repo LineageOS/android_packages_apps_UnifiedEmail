@@ -333,7 +333,6 @@
     <item quantity="other">Stär bei <xliff:g id="count">%1$d</xliff:g> Konversatiounen ewechgeholl</item>
   </plurals>
   <!-- The following are shown as a toast after the operation has completed -->
-  <skip></skip>
   <plurals name="conversation_muted">
     <!-- Displayed while muting one conversation -->
     <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; roueg geschalt</item>
@@ -677,13 +676,9 @@
   <!-- Notification undo text after deleting a message. [CHAR LIMIT=30] -->
   <string name="notification_action_undo_delete">Geläscht</string>
   <!-- Regex that specifies veiled addresses. These are all empty because this is disabled currently. -->
-  <string name="veiled_address"></string>
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
-  <string name="veiled_alternate_text"></string>
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
-  <string name="veiled_alternate_text_unknown_person"></string>
   <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
-  <string name="veiled_summary_unknown_person"></string>
   <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
   <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
   <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
@@ -866,7 +861,6 @@
   <!-- Version text [CHAR LIMIT=50] -->
   <string name="version"><xliff:g id="app_name" example="Email">%1$s</xliff:g> Versioun <xliff:g id="version" example="2.2.1">%2$s</xliff:g></string>
   <!-- Menu item: view a webpage about this application [CHAR LIMIT=50]; this MUST be overlayed -->
-  <string name="view_app_page"></string>
   <!-- URL to a webpage about this application; this MUST be overlayed -->
   <!-- Menu item: print... [CHAR LIMIT=25] -->
   <string name="print_dialog">Drécken\u2026</string>
