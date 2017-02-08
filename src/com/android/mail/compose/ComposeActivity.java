@@ -1788,15 +1788,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (contentUri == null) {
             return;
         }
-        try {
-            addAttachmentAndUpdateView(mAttachmentsView.generateLocalAttachment(contentUri));
-        } catch (AttachmentFailureException e) {
-            LogUtils.e(LOG_TAG, e, "Error adding attachment");
-            showErrorToast(getResources().getString(
-                    e.getErrorRes(),
-                    AttachmentUtils.convertToHumanReadableSize(
-                            getApplicationContext(), mAccount.settings.getMaxAttachmentSize())));
-        }
+		final long size = handleAttachmentUrisFromIntent(Arrays.asList(contentUri));
+        if (size > 0) {
+            mAttachmentsChanged = true;
+            updateSaveUi();
+         }
     }
 
     public void addAttachmentAndUpdateView(Attachment attachment) {
