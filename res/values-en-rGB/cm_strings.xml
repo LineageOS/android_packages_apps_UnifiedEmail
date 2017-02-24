@@ -17,6 +17,15 @@
 -->
 <resources>
   <!-- Suggested contacts preferences -->
+  <string name="prefDialogTitle_suggestedContactsMode">Modo</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">Disabled</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">Suggested contacts feature is disabled</string>
+  <string name="prefDialogTitle_suggestedContactsMode_recents">Recents</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Only recently suggested contacts will be selectable</string>
+  <string name="prefDialogTitle_suggestedContactsMode_all">All</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">All suggested contacts will be selectable</string>
+  <string name="preference_header_suggested_contacts">Suggested contacts</string>
+  <string name="clear_suggested_contacts_dialog_title">Clear suggested contacts?</string>
   <!-- Notification lights dialogs -->
   <!-- Values for the notification lights pulse spinners -->
 </resources>
