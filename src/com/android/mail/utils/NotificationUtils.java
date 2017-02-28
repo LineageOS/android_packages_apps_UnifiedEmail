@@ -771,11 +771,13 @@ public class NotificationUtils {
              * We do not want to notify if this is coming back from an Undo notification, hence the
              * oldWhen check.
              */
-            if (getAttention && oldWhen == 0 && hasNewConversationNotification) {
+            if (getAttention && oldWhen == 0) {
                 final AccountPreferences accountPreferences =
                         new AccountPreferences(context, account.getAccountId());
                 if (accountPreferences.areNotificationsEnabled()) {
-                    if (vibrate) {
+                    if (!hasNewConversationNotification) {
+                        notification.setOnlyAlertOnce(true);
+                    } else if (vibrate) {
                         defaults |= Notification.DEFAULT_VIBRATE;
                     }
 
