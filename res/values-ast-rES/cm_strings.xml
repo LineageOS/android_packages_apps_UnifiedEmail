@@ -17,6 +17,8 @@
 -->
 <resources>
   <!-- Suggested contacts preferences -->
+  <string name="prefDialogTitle_suggestedContactsMode">Mou</string>
+  <string name="prefDialogTitle_suggestedContactsMode_recents">Recientes</string>
   <!-- Notification lights dialogs -->
   <!-- Values for the notification lights pulse spinners -->
 </resources>
