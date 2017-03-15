@@ -19,6 +19,14 @@
   <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Mou</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recientes</string>
+  <string name="preference_header_suggested_contacts">Contautos suxeríos</string>
+  <string name="preference_suggested_contacts_mode">Mou de contautos suxeríos</string>
+  <string name="preference_suggested_contacts_clear_all">Llimpiar contautos suxeríos</string>
+  <string name="suggested_contacts_cleared">Llimpiáronse los contautos suxeríos.</string>
+  <string name="clear_suggested_contacts_dialog_title">¿Llimpiar contautos suxeríos?</string>
   <!-- Notification lights dialogs -->
+  <string name="default_time">Normal</string>
   <!-- Values for the notification lights pulse spinners -->
+  <string name="pulse_length_normal">Normal</string>
+  <string name="pulse_speed_normal">Normal</string>
 </resources>

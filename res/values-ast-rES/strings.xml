@@ -220,8 +220,10 @@
   <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+  <string name="ok">ACEUTAR</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+  <string name="cancel">Encaboxar</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
   <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
@@ -254,7 +256,9 @@
   <!-- Shown in conversation list footer when application cannot make a connection [CHAR LIMIT=20]-->
   <!-- Button at bottom of conversation list screen if last attempt to load conversations failed [CHAR LIMIT=20]-->
   <!-- Button at bottom of conversation list screen if the folder for which contents are being shown supports loading more on demand [CHAR LIMIT=20]-->
+  <string name="load_more">Cargar más</string>
   <!-- Text for dummy attachments to load the actual attachment. This is not an ideal string, but it's too late to add a new string and get it translated -->
+  <string name="load_attachment">@string/load_more</string>
   <!-- Shortcut strings -->
   <!-- Title for shortcut naming dialog [CHAR LIMIT=100]-->
   <!-- Wait fragment strings -->
