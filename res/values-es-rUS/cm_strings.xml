@@ -37,7 +37,7 @@
   <string name="custom_time">Personalizado</string>
   <string name="dialog_delete_title">Borrar</string>
   <string name="dialog_delete_message">¿Quitar el elemento seleccionado?</string>
-  <string name="pref_lights_default">Predeterminada</string>
+  <string name="pref_lights_default">Predefinida</string>
   <!-- Values for the notification lights pulse spinners -->
   <string name="pulse_length_always_on">Siempre encendida</string>
   <string name="pulse_length_very_short">Muy corta</string>

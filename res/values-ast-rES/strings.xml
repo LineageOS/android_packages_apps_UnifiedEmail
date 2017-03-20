@@ -87,6 +87,7 @@
   <!-- Temporary text used for reporting rendering improvements Googlers see in testing -->
   <!-- Menu item text to show the original version of an email conversation, before message manipulation [CHAR LIMIT=25] -->
   <!-- Menu item: launch the Settings activity -->
+  <string name="menu_settings">Axustes</string>
   <!-- Menu item: search through the Gmail inbox -->
   <!-- Menu item: toggle drawer -->
   <!-- Title of the drawer, indicating what it is used for, which is navigation of the app -->
@@ -228,6 +229,15 @@
   <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
   <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
   <!-- Sync status errors. Please do not change the order [CHAR LIMIT=100] -->
+  <string-array name="sync_status">
+    <item>Success</item>
+    <item>No connection</item>
+    <item>Couldn\'t sign in</item>
+    <item>Fallu de seguranza</item>
+    <item>Couldn\'t sync</item>
+    <item>Internal Error</item>
+    <item>Server Error</item>
+  </string-array>
   <!-- Widget strings -->
   <!-- Displayed when user adds a new widget. Tapping on the widget in this
           mode will bring user to the account selection screen [CHAR LIMIT=35] -->
@@ -452,8 +462,10 @@
     "Clear search history" in preferences [CHAR LIMIT=1000]-->
   <!-- Settings screen, preference item to launch into Settings [CHAR LIMIT=50] -->
   <!-- Settings screen, main title of the screen, big font [CHAR LIMIT=50]-->
+  <string name="general_preferences_title">Axustes xenerales</string>
   <!-- Settings screen title -->
   <!-- Name of the Settings activity -->
+  <string name="activity_preferences">Axustes</string>
   <!-- Content description for the action menu overflow button. [CHAR LIMIT=NONE] -->
   <!-- Text when there is a security hold on an account that needs to be accepted. The email address param takes the for "abc@xyz.com" -->
   <!-- Text to go to the dialog to accept the security hold -->
