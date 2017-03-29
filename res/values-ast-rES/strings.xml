@@ -114,6 +114,7 @@
   <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
   <!-- Read email screen, button name. Preview an attachment by Gview. [CHAR LIMIT=18] -->
   <!-- Read email screen, button name. Save an attachment to sd card. [CHAR LIMIT=10] -->
+  <string name="save_attachment">Guardar</string>
   <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
   <!-- A supplemental option on attachments for apps to override. This string intentionally blank here. [CHAR LIMIT=20] -->
   <!-- Remove this attachment [CHAR LIMIT=50] -->
@@ -124,6 +125,7 @@
   <!-- Displayed in the conversation view, next to a file's size and type. Status of a saved attachment. [CHAR LIMIT=20]-->
   <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=50]-->
   <!-- Photo view screen, button name. Save all attachments to sd card. [CHAR LIMIT=17] -->
+  <string name="menu_photo_save_all">Guardar too</string>
   <!-- Photo view screen, button name. Share attachment. [CHAR LIMIT=10] -->
   <!-- Photo view screen, button name. Share all attachments. [CHAR LIMIT=20] -->
   <!-- Photo view screen, button name. Print photo. [CHAR LIMIT=20] -->

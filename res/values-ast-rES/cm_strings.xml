@@ -18,14 +18,24 @@
 <resources>
   <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Mou</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">Deshabilitáu</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">La función de contautos suxeríos ta deshabilitada</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recientes</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Namái van ser seleicionables los contautos suxeríos</string>
+  <string name="prefDialogTitle_suggestedContactsMode_all">Toos</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Van ser seleicionables tolos contautos suxeríos</string>
   <string name="preference_header_suggested_contacts">Contautos suxeríos</string>
   <string name="preference_suggested_contacts_mode">Mou de contautos suxeríos</string>
   <string name="preference_suggested_contacts_clear_all">Llimpiar contautos suxeríos</string>
   <string name="suggested_contacts_cleared">Llimpiáronse los contautos suxeríos.</string>
   <string name="clear_suggested_contacts_dialog_title">¿Llimpiar contautos suxeríos?</string>
+  <string name="clear_suggested_contacts_dialog_message">Van desaniciase  tolos contautos suxeríos almacenaos previamente.</string>
   <!-- Notification lights dialogs -->
+  <string name="edit_light_settings">Axustes de lluz de carpeta</string>
+  <string name="pulse_speed_title">Duración y velocidá</string>
   <string name="default_time">Normal</string>
+  <string name="custom_time">Personalizáu</string>
+  <string name="dialog_delete_title">Desaniciar</string>
   <!-- Values for the notification lights pulse spinners -->
   <string name="pulse_length_normal">Normal</string>
   <string name="pulse_speed_normal">Normal</string>
