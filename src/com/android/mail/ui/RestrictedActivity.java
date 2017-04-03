@@ -49,7 +49,7 @@ public interface RestrictedActivity {
     /**
      * @see android.app.Activity#findViewById(int)
      */
-    View findViewById(int id);
+    <T extends View> T findViewById(int id);
 
     /**
      * @see android.app.Activity#finish()
