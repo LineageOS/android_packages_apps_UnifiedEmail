@@ -32,7 +32,7 @@
   <string name="clear_suggested_contacts_dialog_message">Alle foreslåtte kontakter lagrede fjernes.</string>
   <!-- Notification lights dialogs -->
   <string name="edit_light_settings">Lys mappeinnstillinger</string>
-  <string name="pulse_speed_title">Puls lengde og hastighet</string>
+  <string name="pulse_speed_title">Pulseringshastighet og lengde</string>
   <string name="default_time">Normal</string>
   <string name="custom_time">Egendefinert</string>
   <string name="dialog_delete_title">Slett</string>

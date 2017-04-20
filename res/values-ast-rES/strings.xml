@@ -33,6 +33,7 @@
   <!-- The actual string value doesn't matter, it should never appear. -->
   <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
   <!--  Button name: discard this message [CHAR LIMIT=15] -->
+  <string name="discard">Escartar</string>
   <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
   <!-- The action bar title for the default compose mode [CHAR LIMIT=10] -->
   <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
@@ -375,6 +376,7 @@
   <!-- Confirm button text for dialog to turn auto-sync on [CHAR
          LIMIT=30] -->
   <!-- Button in conversation list to show more folders [CHAR LIMIT=50] -->
+  <string name="show_n_more_folders">Amosar <xliff:g id="number">%1$s</xliff:g> carpetes</string>
   <!-- Button in conversation list to hide folders [CHAR LIMIT=50] -->
   <!-- Menu item text to that when clicked will allow a user to print an email message. [CHAR LIMIT=25] -->
   <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
@@ -463,6 +465,7 @@
   <!-- Settings screen, message of dialog shown to confirm action when user taps
     "Clear search history" in preferences [CHAR LIMIT=1000]-->
   <!-- Settings screen, preference item to launch into Settings [CHAR LIMIT=50] -->
+  <string name="manage_accounts_menu_item">Xestionar cuentes</string>
   <!-- Settings screen, main title of the screen, big font [CHAR LIMIT=50]-->
   <string name="general_preferences_title">Axustes xenerales</string>
   <!-- Settings screen title -->
