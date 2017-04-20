@@ -732,6 +732,11 @@ public class UIProvider {
         */
         public static final String QUERY_IDENTIFER = "query_identifier";
 
+        /**
+         * Parameter used to specify the folder to search in
+         */
+        public static final String FOLDER_ID = "folder_id";
+
         private SearchQueryParameters() {}
     }
 
