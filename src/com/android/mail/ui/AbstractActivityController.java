@@ -875,9 +875,10 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param intent Intent that the app was started with. This intent contains the search query.
      */
     private void fetchSearchFolder(Intent intent) {
-        final Bundle args = new Bundle(1);
+        final Bundle args = new Bundle(2);
         args.putString(ConversationListContext.EXTRA_SEARCH_QUERY, intent
                 .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
+        args.putParcelable(Utils.EXTRA_FOLDER, intent.getParcelableExtra(Utils.EXTRA_FOLDER));
         mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, mFolderCallbacks);
     }
 
@@ -2247,6 +2248,7 @@ public abstract class AbstractActivityController implements ActivityController,
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, query);
         intent.putExtra(Utils.EXTRA_ACCOUNT, mAccount);
+        intent.putExtra(Utils.EXTRA_FOLDER, mFolder);
         intent.setComponent(mActivity.getComponentName());
         mSearchViewController.showSearchActionBar(
                 MaterialSearchViewController.SEARCH_VIEW_STATE_GONE);
@@ -3508,6 +3510,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 case LOADER_SEARCH:
                     LogUtils.d(LOG_TAG, "LOADER_SEARCH created");
                     return Folder.forSearchResults(mAccount,
+                            (Folder) args.getParcelable(Utils.EXTRA_FOLDER),
                             args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
                             // We can just use current time as a unique identifier for this search
                             Long.toString(SystemClock.uptimeMillis()),
