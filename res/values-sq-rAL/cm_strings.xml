@@ -17,6 +17,37 @@
 -->
 <resources>
   <!-- Suggested contacts preferences -->
+  <string name="prefDialogTitle_suggestedContactsMode">Profili</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">I çaktivizuar</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">Funksioni i kontakteve të sygjeruar është i çaktivizuar</string>
+  <string name="prefDialogTitle_suggestedContactsMode_recents">Së fundmi</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Vetëm kontaktet e sygjeruar së fundmi do të mund të zgjidhen</string>
+  <string name="prefDialogTitle_suggestedContactsMode_all">Të gjithë</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Të gjithë kontaktet e sygjeruar së fundmi do të mund të zgjidhen</string>
+  <string name="preference_header_suggested_contacts">Kontaktet e sygjeruar</string>
+  <string name="preference_suggested_contacts_mode">Kontaktet e sygjeruar</string>
+  <string name="preference_suggested_contacts_clear_all">Hiq kontaktet e sygjeruar</string>
+  <string name="suggested_contacts_cleared">Kontaktet e sygjeruar u hoqën.</string>
+  <string name="clear_suggested_contacts_dialog_title">Dëshiron të heqësh kontaktet e sygjeruar?</string>
+  <string name="clear_suggested_contacts_dialog_message">Të gjithë kontaktet e sygjeruar do të hiqen.</string>
   <!-- Notification lights dialogs -->
+  <string name="edit_light_settings">Parametrat e dritave të dosjeve</string>
+  <string name="pulse_speed_title">Gjatësia dhe shpejtësia e pulsimit</string>
+  <string name="default_time">Normale</string>
+  <string name="custom_time">E personalizuar</string>
+  <string name="dialog_delete_title">Fshi</string>
+  <string name="dialog_delete_message">Dëshiron ta heqësh elementin e zgjedhur?</string>
+  <string name="pref_lights_default">E paracaktuar</string>
   <!-- Values for the notification lights pulse spinners -->
+  <string name="pulse_length_always_on">Gjithmonë e ndezur</string>
+  <string name="pulse_length_very_short">Shumë e shkurtër</string>
+  <string name="pulse_length_short">E shkurtër</string>
+  <string name="pulse_length_normal">Normale</string>
+  <string name="pulse_length_long">E gjatë</string>
+  <string name="pulse_length_very_long">Shumë e gjatë</string>
+  <string name="pulse_speed_very_fast">Shumë e shpejtë</string>
+  <string name="pulse_speed_fast">E shpejtë</string>
+  <string name="pulse_speed_normal">Normale</string>
+  <string name="pulse_speed_slow">E ngadaltë</string>
+  <string name="pulse_speed_very_slow">Shumë e ngadaltë</string>
 </resources>

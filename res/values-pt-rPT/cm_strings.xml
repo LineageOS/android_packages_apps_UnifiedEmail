@@ -23,7 +23,7 @@
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recentes</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Só contactos sugeridos recentemente serão selecionáveis</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Todos</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Todos os contatos sugeridos serão selecionáveis</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Todos os contactos sugeridos serão selecionáveis</string>
   <string name="preference_header_suggested_contacts">Contactos sugeridos</string>
   <string name="preference_suggested_contacts_mode">Modo de contactos sugeridos</string>
   <string name="preference_suggested_contacts_clear_all">Limpar os contactos sugeridos</string>

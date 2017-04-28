@@ -31,7 +31,7 @@
   <string name="clear_suggested_contacts_dialog_title">Vols netejar els contactes suggerits?</string>
   <string name="clear_suggested_contacts_dialog_message">Tots els contactes suggerits prèviament emmagatzemats seran esborrats.</string>
   <!-- Notification lights dialogs -->
-  <string name="edit_light_settings">Ajustaments de llum de carpeta</string>
+  <string name="edit_light_settings">Configuració de la llum de carpeta</string>
   <string name="pulse_speed_title">Durada i velocitat del parpalleig</string>
   <string name="default_time">Normal</string>
   <string name="custom_time">Personalitzat</string>
