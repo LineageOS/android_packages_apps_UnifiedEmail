@@ -219,10 +219,12 @@ public class MimeUtility {
      * Reads the Part's body and returns a String based on any charset conversion that needed
      * to be done.
      * @param part The part containing a body
+     * @param outInputStreams A list of input streams the opened body stream should be added to.
+     *                        If null is passed the stream should be closed.
      * @return a String containing the converted text in the body, or null if there was no text
      * or an error during conversion.
      */
-    public static String getTextFromPart(Part part, boolean closeInput) {
+    public static String getTextFromPart(Part part, ArrayList<InputStream> outInputStreams) {
         InputStream in = null;
         ByteArrayOutputStream out = null;
         try {
@@ -276,7 +278,9 @@ public class MimeUtility {
             Log.e(LOG_TAG, "Unable to getTextFromPart " + e.toString());
         } finally {
             IOUtils.closeQuietly(out);
-            if (closeInput) {
+            if (outInputStreams != null && in != null) {
+                outInputStreams.add(in);
+            } else {
                 IOUtils.closeQuietly(in);
             }
         }
