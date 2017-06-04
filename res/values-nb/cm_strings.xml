@@ -31,7 +31,7 @@
   <string name="clear_suggested_contacts_dialog_title">Fjern foreslåtte kontakter?</string>
   <string name="clear_suggested_contacts_dialog_message">Alle foreslåtte kontakter lagrede fjernes.</string>
   <!-- Notification lights dialogs -->
-  <string name="edit_light_settings">Lys mappeinnstillinger</string>
+  <string name="edit_light_settings">Lysinnstillinger for mappe</string>
   <string name="pulse_speed_title">Pulseringshastighet og lengde</string>
   <string name="default_time">Normal</string>
   <string name="custom_time">Egendefinert</string>
