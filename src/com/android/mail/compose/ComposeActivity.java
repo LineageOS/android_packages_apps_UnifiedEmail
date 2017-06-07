@@ -51,7 +51,7 @@ import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
 import android.support.v4.app.RemoteInput;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.text.Editable;
 import android.text.Html;
@@ -138,7 +138,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ComposeActivity extends ActionBarActivity
+public class ComposeActivity extends AppCompatActivity
         implements OnClickListener, ActionBar.OnNavigationListener,
         RespondInlineListener, TextWatcher,
         AttachmentAddedOrDeletedListener, OnAccountChangedListener,
