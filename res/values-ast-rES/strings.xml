@@ -69,7 +69,9 @@
   <!-- Menu item: report this conversation as phishing [CHAR LIMIT = 30] -->
   <!-- Menu item: delete this conversation -->
   <!-- Menu item: discard the drafts in this conversation [CHAR LIMIT = 30] -->
+  <string name="discard_drafts">Escartar borradores</string>
   <!-- Menu item: discard the failed messages in this conversation [CHAR LIMIT = 30] -->
+  <string name="discard_failed">Escartar fallíos</string>
   <!-- Menu item: refresh the inbox -->
   <!-- Menu item: reply to this message -->
   <!-- Menu item: reply to all recipients in this message [CHAR LIMIT=18] -->
@@ -133,6 +135,7 @@
   <!-- Displayed in the action bar as a subtitle. Save in progress. [CHAR LIMIT=15] -->
   <!-- Webview Context Menu Strings -->
   <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
+  <string name="choosertitle_sharevia">Compartir per</string>
   <!-- Menu item to open a link  [CHAR LIMIT=50]-->
   <!-- Menu item to copy the selection  [CHAR LIMIT=50]-->
   <!-- Menu item to copy a link  [CHAR LIMIT=50]-->
@@ -162,10 +165,19 @@
          showing the list of recipients of a message [CHAR LIMIT=15] -->
   <!-- String used to represent "me"/"I" when used as an subject pronoun. This string is use when
          showing the list of senders for a conversation list item. [CHAR LIMIT=15] -->
+  <plurals name="confirm_discard_drafts_conversation">
+    <!-- Dialog message to confirm discarding a single draft message [CHAR LIMIT=50] -->
+    <item quantity="one">¿Escartar esti mensaxe?</item>
+    <!-- Dialog message to confirm discarding many draft messages [CHAR LIMIT=50] -->
+    <item quantity="other">¿Escartar estos <xliff:g id="count">%1$d</xliff:g> mensaxes?</item>
+  </plurals>
   <!-- Dialog text: confirm discard -->
+  <string name="confirm_discard_text">¿Escartar esti mensaxe?</string>
   <!-- Conversation list shared between the Activity and Widget -->
   <!-- Displayed in the middle of the screen when conversations are being loaded [CHAR LIMIT 100]-->
+  <string name="loading_conversations">Cargando\u2026</string>
   <!-- Displayed in the middle of the screen when an inbox is empty [CHAR LIMIT 100]-->
+  <string name="empty_inbox">¡Too fecho! Qu\'esfrutes el día.</string>
   <!-- Displayed in the middle of the screen when a search returns no results [CHAR LIMIT 100]-->
   <!-- Displayed in the middle of the screen when the spam folder is empty [CHAR LIMIT 100]-->
   <!-- Displayed in the middle of the screen when the trash folder is empty [CHAR LIMIT 100]-->
@@ -226,6 +238,7 @@
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <string name="ok">ACEUTAR</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+  <string name="done">Fecho</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <string name="cancel">Encaboxar</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
@@ -252,6 +265,7 @@
   <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
   <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
   <!-- Displayed while we load a conversation. [CHAR LIMIT=100] -->
+  <string name="loading_conversation">Cargando\u2026</string>
   <!-- Name of the Mailboxes activity [CHAR LIMIT=30] -->
   <!-- Name of the Folders activity [CHAR LIMIT=30] -->
   <!-- Name of the Folder shortcut widget. Should use "Email" to refer to the app. [CHAR LIMIT=30] -->
@@ -285,6 +299,7 @@
         come from different accounts -->
   <!-- Format string used when displaying a summary in a message summary in list notification that was triggered by several new conversations.
          Extra space between sender and subject is intentional.  [CHAR LIMIT=120] -->
+  <string name="multiple_new_message_notification_item"><b><xliff:g id="sender">%1$s</xliff:g></b>\u0020\u0020\u0020<xliff:g id="subject">%2$s</xliff:g></string>
   <!-- Format string used when displaying the big text of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
   <!-- Displayed in a message subheading. Ignore the current spam warning. [CHAR LIMIT=30] -->
   <!-- Displayed in the message heading. Shown if the message was sent via another domain. [CHAR LIMIT=10] -->
@@ -296,6 +311,7 @@
   <!-- Dialog title when a sync error occurs. [CHAR LIMIT=100]-->
   <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
   <!-- Token used as a divider between senders -->
+  <string name="senders_split_token">,\u00A0</string>
   <!-- Token to replace senders that are not visible -->
   <!-- Token used to space out elided senders that are not visible -->
   <!-- Token used to space out message count, draft text, and senders -->
@@ -319,6 +335,7 @@
   <!-- Settings screen, message of dialog shown to confirm action when tapping
     "Clear picture approvals" [CHAR LIMIT=1000]-->
   <!-- Message shown in toast when the user taps "Restore default for "Show pictures"" in Gmail general preferences. [CHAR LIMIT=50] -->
+  <string name="sender_whitelist_cleared">Les semeyes nun s\'amosarán automáticamente.</string>
   <!-- Settings screen, name of the setting that lets the user choose their signature [CHAR LIMIT=50] -->
   <!-- Settings screen, title of the dialog that lets the user configure their signature [CHAR LIMIT=50] -->
   <!-- Settings screen, setting summary text when no signature set [CHAR LIMIT=100] -->
@@ -356,6 +373,7 @@
   <!-- Dialog title for empty spam confirmation dialog [CHAR LIMIT=100] -->
   <!-- Dialog message for empty folder confirmation dialog [CHAR LIMIT=300] -->
   <!-- Strings used for accessibility for the items that toggles the drawer action  -->
+  <string name="conversation_photo_welcome_text">Toca la imaxe d\'un remitente pa esbillar esa conversación.</string>
   <!-- Content description for the folder icon for nested folders. -->
   <!--  Button, "Add account" in the preference screen [CHAR LIMIT=30] -->
   <!-- Content Provider Authority for Eml Attachments -->
@@ -375,6 +393,7 @@
   <!-- Tablet (vs. phone) for describing this device [CHAR LIMIT=30] -->
   <!-- Confirm button text for dialog to turn auto-sync on [CHAR
          LIMIT=30] -->
+  <string name="turn_auto_sync_on_dialog_confirm_btn">Activar</string>
   <!-- Button in conversation list to show more folders [CHAR LIMIT=50] -->
   <string name="show_n_more_folders">Amosar <xliff:g id="number">%1$s</xliff:g> carpetes</string>
   <!-- Button in conversation list to hide folders [CHAR LIMIT=50] -->
@@ -403,6 +422,7 @@
   <!-- Shown as an option in a dialog to set a custom end date for a vacation responder message.  [CHAR LIMIT=30] -->
   <!-- Shown as an option in a dialog to set no end date for a vacation responder message. [CHAR LIMIT=30]-->
   <!-- Asks the user whether they wish to discard changes. [CHAR LIMIT=50]-->
+  <string name="discard_changes">¿Escartar cambeos?</string>
   <!-- Toast, vacation responder changes were saved. [CHAR LIMIT=100]-->
   <!-- Toast, vacation responder changes were discarded. [CHAR LIMIT=100]-->
   <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
@@ -457,6 +477,11 @@
   <!--  Settings screen, disable snap headers setting title  [CHAR LIMIT=30] -->
   <!-- The snap header summaries -->
   <!-- The snap header modes -->
+  <string-array name="prefEntries_snapHeader">
+    <item>Amosar siempres</item>
+    <item>Only show in portrait</item>
+    <item>Don\'t show</item>
+  </string-array>
   <!-- The snap header values -->
   <!-- Settings screen, title of "Clear search history" menu item -->
   <!-- Message shown in toast when the user taps "clear search history" in general preferences. [CHAR LIMIT=50] -->
@@ -476,4 +501,6 @@
   <!-- Text to go to the dialog to accept the security hold -->
   <!-- Shown when user submits a form. [CHAR LIMIT=40] -->
   <!-- activity name of the photoviewer -->
+  <string name="download_first">Báxalu primero, por favor</string>
+  <string name="save_to">Guardar ficheru en:</string>
 </resources>
