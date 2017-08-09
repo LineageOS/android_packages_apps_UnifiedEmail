@@ -32,7 +32,7 @@
   <string name="clear_suggested_contacts_dialog_message">所有之前儲存的建議聯絡人都將被移除。</string>
   <!-- Notification lights dialogs -->
   <string name="edit_light_settings">資料夾指示燈設定</string>
-  <string name="pulse_speed_title">呼吸燈長度與速度</string>
+  <string name="pulse_speed_title">閃爍呼吸燈長度與速度</string>
   <string name="default_time">一般</string>
   <string name="custom_time">自訂</string>
   <string name="dialog_delete_title">刪除</string>
