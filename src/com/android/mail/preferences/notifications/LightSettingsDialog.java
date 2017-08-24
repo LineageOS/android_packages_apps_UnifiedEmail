@@ -315,6 +315,7 @@ public class LightSettingsDialog extends AlertDialog implements
 
         final Notification.Builder builder = new Notification.Builder(getContext());
         builder.setLights(color, speedOn, speedOff);
+        builder.setSmallIcon(R.drawable.ic_email);
         builder.setExtras(b);
 
         mNotificationManager.notify(R.layout.notification_pulse_time_item, builder.build());
