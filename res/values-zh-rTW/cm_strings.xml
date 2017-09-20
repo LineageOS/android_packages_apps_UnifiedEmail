@@ -21,7 +21,7 @@
   <string name="prefDialogTitle_suggestedContactsMode_none">已停用</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_none">建議聯絡人功能已被停用</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">最近</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">僅最近建議的聯絡人將可以選擇</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">僅有最近建議的聯絡人可被選擇</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">全部</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_all">所有建議聯絡人都可被選擇</string>
   <string name="preference_header_suggested_contacts">建議的聯絡人</string>
@@ -32,7 +32,7 @@
   <string name="clear_suggested_contacts_dialog_message">所有之前儲存的建議聯絡人都將被移除。</string>
   <!-- Notification lights dialogs -->
   <string name="edit_light_settings">資料夾指示燈設定</string>
-  <string name="pulse_speed_title">呼吸燈長度與速度</string>
+  <string name="pulse_speed_title">閃爍呼吸燈長度與速度</string>
   <string name="default_time">一般</string>
   <string name="custom_time">自訂</string>
   <string name="dialog_delete_title">刪除</string>
