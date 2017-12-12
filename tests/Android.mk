@@ -33,7 +33,7 @@ LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs))
 LOCAL_AAPT_FLAGS := --auto-add-overlay
 LOCAL_STATIC_JAVA_LIBRARIES := android-support-test
 
-LOCAL_JAVA_LIBRARIES := android.test.mock.sdk legacy-android-test
+LOCAL_JAVA_LIBRARIES := android.test.mock.stubs legacy-android-test
 
 include $(BUILD_PACKAGE)
 
