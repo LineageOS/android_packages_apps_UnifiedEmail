@@ -455,4 +455,6 @@
   <!-- Text to go to the dialog to accept the security hold -->
   <!-- Shown when user submits a form. [CHAR LIMIT=40] -->
   <!-- activity name of the photoviewer -->
+  <string name="download_first">Lawrlwytho’n gyntaf</string>
+  <string name="save_to">Cadw\'r ffeil i:</string>
 </resources>
