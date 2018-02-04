@@ -51,13 +51,10 @@
   <!-- Toast, cannot attach the provided file because the calling context doesn't have the permission [CHAR LIMIT=100] -->
   <!-- Displayed for one second after trying to send with no recipients in To field [CHAR LIMIT=200]-->
   <!-- Messages for send confirmation dialog [CHAR LIMIT=100]-->
-  <string name="confirm_send_message">Anfon y neges hon?</string>
   <!-- Displayed for one second after discarding draft message [CHAR LIMIT=50]-->
   <!-- Formatting string for the user's signaure. [CHAR LIMIT=10] -->
   <!--  Shown in the from dropdown in front of custom from addresses. [CHAR LIMIT=15] -->
-  <string name="custom_from_account_label">Anfon post fel:</string>
   <!-- Menu item: send this message -->
-  <string name="send">Anfon</string>
   <!-- Menu item: mark this conversation as read -->
   <!-- Menu item: mark this conversation as unread -->
   <!-- Menu item: toggle read/unread for menus that contain both read and unread options -->
@@ -139,9 +136,7 @@
   <!-- Menu item to dial a number  [CHAR LIMIT=50]-->
   <!-- Menu item to send an SMS  [CHAR LIMIT=50]-->
   <!-- Menu item to add a contact  [CHAR LIMIT=50]-->
-  <string name="contextmenu_add_contact">Ychwanegu cyswllt</string>
   <!-- Menu item to send an email [CHAR LIMIT=50] -->
-  <string name="contextmenu_send_mail">Anfon ebost</string>
   <!-- Menu item to show a map  [CHAR LIMIT=50]-->
   <!-- Menu item to share link  [CHAR LIMIT=50]-->
   <!-- Browse list item strings -->
@@ -156,7 +151,6 @@
   <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
   <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
   <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
-  <string name="sending">Yn anfon\u2026</string>
   <!-- Message displayed in the outgoing message list item when the message failed to sent and is being retried [CHAR LIMIT=20] -->
   <!-- Message displayed in the outgoing message list item when the message failed to send [CHAR LIMIT=20] -->
   <!-- Message displayed in a browse list item for one second after a send failed [CHAR LIMIT=26]-->
@@ -214,7 +208,6 @@
   <!-- Display format of an email sender if the message has a via domain set, displayed in expanded message details [CHAR LIMIT=15] -->
   <!-- Displayed for one second after user saves message as draft [CHAR LIMIT=50]-->
   <!-- Displayed for one second while message is being sent [CHAR LIMIT=50]-->
-  <string name="sending_message">Yn anfon neges\u2026</string>
   <!-- Displayed for one second after trying to send with invalid recipients [CHAR LIMIT=50]-->
   <!-- Shown in HTML to allow the user to see quoted text; should match Gmail web UI. [CHAR LIMIT=50] -->
   <!-- Shown in HTML to allow the user to hide quoted text; should match Gmail web UI. 25BC is Unicode for a downward-pointing triangle. [CHAR LIMIT=50] -->
@@ -226,9 +219,7 @@
   <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
   <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
-  <string name="send_anyway">Anfon beth bynnag</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
-  <string name="ok">Iawn</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
@@ -384,7 +375,6 @@
   <!-- Account preference: Title of the setting to set a vacation responder (out-of-office) message. [CHAR LIMIT=50]-->
   <!-- Shown in vacation responder; the body of the message [CHAR LIMIT=100] -->
   <!-- Shown in vacation responder; accompanies a checkbox that, if checked, causes vacation responses to be sent to people in the user's contacts [CHAR LIMIT=75] -->
-  <string name="send_to_contacts_text">Anfon at fy Nghysylltiadau yn unig</string>
   <!-- Shown in vacation responder; accompanies a checkbox that, if checked, causes vacation responses to be sent to people in the user's corporate domain [CHAR LIMIT=75] -->
   <!-- Title text for the button to be pressed if the user wishes to change the start date of the vacation responder. [CHAR LIMIT=25]-->
   <!-- Title text for the button to be pressed if the user wishes to change the end date of the vacation responder.
@@ -418,7 +408,6 @@
   <!-- Menu item that displays the help page. [CHAR LIMIT=50]-->
   <!-- URI to display the help content; this must be overlayed -->
   <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
-  <string name="feedback">Anfon adborth</string>
   <!-- Copyright text [CHAR LIMIT=50] -->
   <!-- Version text [CHAR LIMIT=50] -->
   <!-- Menu item: view a webpage about this application [CHAR LIMIT=50]; this MUST be overlayed -->
@@ -433,7 +422,6 @@
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
-  <string name="reply_choice_ok">Iawn</string>
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
   <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
@@ -446,7 +434,6 @@
   <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
   <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
   <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
-  <string name="preference_confirm_before_send_title">Cadarnhau cyn anfon</string>
   <!--  Settings screen, Conversation mode setting titile  [CHAR LIMIT=30] -->
   <!--  Settings screen, Conversation mode setting summary [CHAR LIMIT=70] -->
   <!--  Settings screen, disable snap headers setting title  [CHAR LIMIT=30] -->
@@ -468,6 +455,4 @@
   <!-- Text to go to the dialog to accept the security hold -->
   <!-- Shown when user submits a form. [CHAR LIMIT=40] -->
   <!-- activity name of the photoviewer -->
-  <string name="download_first">Lawrlwytho’n gyntaf</string>
-  <string name="save_to">Cadw\'r ffeil i:</string>
 </resources>
