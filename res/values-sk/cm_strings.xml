@@ -32,7 +32,7 @@
   <string name="clear_suggested_contacts_dialog_message">Všetky navrhované kontakty sa odstránia.</string>
   <!-- Notification lights dialogs -->
   <string name="edit_light_settings">Nastavenia svetiel priečinka</string>
-  <string name="pulse_speed_title">Dĺžka a rýchlosť impulzu</string>
+  <string name="pulse_speed_title">Dĺžka a rýchlosť blikania</string>
   <string name="default_time">Normálny</string>
   <string name="custom_time">Vlastný</string>
   <string name="dialog_delete_title">Vymazať</string>
