@@ -255,11 +255,6 @@
   <string name="filtered_tag">[<xliff:g id="TAG">%1$s</xliff:g>] <xliff:g id="SUBJECT">%2$s</xliff:g></string>
   <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
   <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
-  <plurals name="draft">
-    <!-- Title of the screen when there is exactly one draft -->
-    <!-- Title of the screen when there are more than one draft -->
-    <item quantity="other">دەسلەپكى نۇسخا</item>
-  </plurals>
   <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
   <string name="sending">يوللاۋاتىدۇ…</string>
   <!-- Message displayed in the outgoing message list item when the message failed to sent and is being retried [CHAR LIMIT=20] -->
@@ -270,16 +265,6 @@
          showing the list of recipients of a message [CHAR LIMIT=15] -->
   <!-- String used to represent "me"/"I" when used as an subject pronoun. This string is use when
          showing the list of senders for a conversation list item. [CHAR LIMIT=15] -->
-  <plurals name="confirm_delete_conversation">
-    <!-- Dialog message to confirm deletion of one conversation -->
-    <!-- Dialog message to confirm deletion of several conversations -->
-    <item quantity="other">بۇ سۆزلىشىشنى ئۆچۈرەمدۇ؟</item>
-  </plurals>
-  <plurals name="confirm_archive_conversation">
-    <!-- Dialog message to confirm archival of one conversation -->
-    <!-- Dialog message to confirm archival of several conversations -->
-    <item quantity="other">بۇ سۆزلىشىشنى ئارخىپلاشتۇرامدۇ؟</item>
-  </plurals>
   <!-- Dialog text: confirm discard -->
   <string name="confirm_discard_text">بۇ ئۇچۇرنى تاشلىۋېتەمدۇ؟</string>
   <!-- Conversation list shared between the Activity and Widget -->
@@ -403,10 +388,6 @@
   <string name="widget_large_unread_count">%d+</string>
   <!-- Displayed when there are >99 unseen messages, see:unseen_count [CHAR LIMIT=3] -->
   <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
-  <plurals name="actionbar_unread_messages">
-    <!-- String for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
-    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> ئۇقۇلمىدى</item>
-  </plurals>
   <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
   <string name="view_more_conversations">تېخىمۇ كۆپ سۆزلىشىشلەرنى كۆرسەت</string>
   <!-- Displayed while we load a conversation. [CHAR LIMIT=100] -->
@@ -587,9 +568,6 @@
   <!-- Dialog title for empty spam confirmation dialog [CHAR LIMIT=100] -->
   <string name="empty_spam_dialog_title">ئەخلەت تورخەتنى تازىلامدۇ؟</string>
   <!-- Dialog message for empty folder confirmation dialog [CHAR LIMIT=300] -->
-  <plurals name="empty_folder_dialog_message">
-    <item quantity="other"><xliff:g id="COUNT">%1$d</xliff:g> ئۇچۇر مەڭگۈلۈك ئۆچۈرۈلىدۇ.</item>
-  </plurals>
   <!-- Strings used for accessibility for the items that toggles the drawer action  -->
   <string name="drawer_open">تارتما يولباشچىنى ئاچ</string>
   <string name="drawer_close">تارتما يولباشچىنى ياپ</string>
