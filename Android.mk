@@ -24,19 +24,19 @@ LOCAL_PACKAGE_NAME := UnifiedEmail
 LOCAL_STATIC_ANDROID_LIBRARIES := \
     libchips \
     libphotoviewer_appcompat \
-    androidx.core_core \
-    androidx.media_media \
-    androidx.legacy_legacy-support-core-utils \
-    androidx.legacy_legacy-support-core-ui \
-    androidx.fragment_fragment \
-    androidx.appcompat_appcompat \
-    androidx.gridlayout_gridlayout \
-    androidx.legacy_legacy-support-v13 \
+    android-support-compat \
+    android-support-media-compat \
+    android-support-core-utils \
+    android-support-core-ui \
+    android-support-fragment \
+    android-support-v7-appcompat \
+    android-support-v7-gridlayout \
+    android-support-v13 \
     android-opt-bitmap \
     android-opt-datetimepicker
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
-    androidx.annotation_annotation \
+    android-support-annotations \
     guava \
     android-common \
     owasp-html-sanitizer

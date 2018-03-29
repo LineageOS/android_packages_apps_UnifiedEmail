@@ -17,7 +17,7 @@
 
 package com.android.mail.ui;
 
-import androidx.drawerlayout.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout;
 
 /**
  * Drawer-related functionality.

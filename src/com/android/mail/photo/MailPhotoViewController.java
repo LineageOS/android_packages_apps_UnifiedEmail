@@ -23,7 +23,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.print.PrintHelper;
+import android.support.v4.print.PrintHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;

@@ -18,7 +18,7 @@
 package com.android.mail.ui;
 
 import android.content.Context;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.view.View;
 

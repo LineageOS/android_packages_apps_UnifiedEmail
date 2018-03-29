@@ -35,7 +35,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.SystemClock;
-import androidx.collection.SparseArrayCompat;
+import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 
 import com.android.mail.content.ThreadSafeCursorWrapper;

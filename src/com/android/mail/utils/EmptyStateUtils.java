@@ -18,7 +18,7 @@
 package com.android.mail.utils;
 
 import android.content.res.Resources;
-import androidx.core.text.BidiFormatter;
+import android.support.v4.text.BidiFormatter;
 import android.widget.ImageView;
 import android.widget.TextView;
 

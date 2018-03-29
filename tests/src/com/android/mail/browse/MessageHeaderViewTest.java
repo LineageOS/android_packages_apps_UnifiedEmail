@@ -17,7 +17,7 @@
 
 package com.android.mail.browse;
 
-import androidx.core.text.BidiFormatter;
+import android.support.v4.text.BidiFormatter;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 

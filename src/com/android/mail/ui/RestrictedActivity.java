@@ -25,8 +25,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.view.ActionMode;
+import android.support.v7.app.ActionBar;
+import android.support.v7.view.ActionMode;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,9 +36,9 @@ import android.view.Window;
 
 /**
  * {@link RestrictedActivity} gives access to a subset of
- * {@link androidx.appcompat.app.AppCompatActivity} methods.
+ * {@link android.support.v7.app.AppCompatActivity} methods.
  * These methods match the signatures from
- * {@link androidx.appcompat.app.AppCompatActivity}.
+ * {@link android.support.v7.app.AppCompatActivity}.
  */
 public interface RestrictedActivity {
     /*
@@ -57,7 +57,7 @@ public interface RestrictedActivity {
     void finish();
 
     /**
-     * @see androidx.appcompat.app.AppCompatActivity#getSupportActionBar()
+     * @see android.support.v7.app.AppCompatActivity#getSupportActionBar()
      */
     ActionBar getSupportActionBar();
 
@@ -102,7 +102,7 @@ public interface RestrictedActivity {
     Window getWindow();
 
     /**
-     * @see androidx.appcompat.app.AppCompatActivity#supportInvalidateOptionsMenu()
+     * @see android.support.v7.app.AppCompatActivity#supportInvalidateOptionsMenu()
      */
     void supportInvalidateOptionsMenu();
 
@@ -147,7 +147,7 @@ public interface RestrictedActivity {
     void showDialog(int id);
 
     /**
-     * @see androidx.appcompat.app.AppCompatActivity#startSupportActionMode(ActionMode.Callback)
+     * @see android.support.v7.app.AppCompatActivity#startSupportActionMode(ActionMode.Callback)
      */
     ActionMode startSupportActionMode(ActionMode.Callback callback);
 

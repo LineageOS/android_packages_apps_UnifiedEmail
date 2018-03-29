@@ -26,7 +26,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Looper;
-import androidx.core.app.TaskStackBuilder;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;

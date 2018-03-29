@@ -26,7 +26,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
