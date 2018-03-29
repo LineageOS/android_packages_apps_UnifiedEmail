@@ -24,7 +24,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import androidx.core.text.BidiFormatter;
+import android.support.v4.text.BidiFormatter;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;

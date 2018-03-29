@@ -24,7 +24,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 import com.android.mail.R;
 
