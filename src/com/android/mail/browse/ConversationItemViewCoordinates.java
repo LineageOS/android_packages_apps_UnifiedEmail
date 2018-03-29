@@ -22,7 +22,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
-import androidx.core.view.ViewCompat;
+import android.support.v4.view.ViewCompat;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;

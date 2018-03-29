@@ -20,7 +20,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import com.android.mail.content.ObjectCursor;
 import com.android.mail.providers.Account;

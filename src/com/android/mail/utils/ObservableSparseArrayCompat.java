@@ -16,7 +16,7 @@
 package com.android.mail.utils;
 
 import android.database.DataSetObservable;
-import androidx.collection.SparseArrayCompat;
+import android.support.v4.util.SparseArrayCompat;
 
 public class ObservableSparseArrayCompat<E> extends SparseArrayCompat<E> {
     private final DataSetObservable mDataSetObservable;

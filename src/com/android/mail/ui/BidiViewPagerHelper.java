@@ -17,7 +17,7 @@
 
 package com.android.mail.ui;
 
-import androidx.viewpager.widget.ViewPager;
+import android.support.v4.view.ViewPager;
 
 import com.android.mail.utils.ViewUtils;
 
