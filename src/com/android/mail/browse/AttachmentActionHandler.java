@@ -19,6 +19,7 @@ package com.android.mail.browse;
 
 
 import android.app.DialogFragment;
+import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -26,10 +27,13 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 
+import android.widget.Toast;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
@@ -37,10 +41,19 @@ import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentContentValueKeys;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
+import com.android.mail.R;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class AttachmentActionHandler {
@@ -101,7 +114,7 @@ public class AttachmentActionHandler {
                         mAttachment.destination == destination)) {
             mView.viewAttachment();
         } else {
-            showDownloadingDialog();
+
             startDownloadingAttachment(destination);
         }
     }
@@ -120,9 +133,32 @@ public class AttachmentActionHandler {
                 mAttachment, destination, rendition, additionalPriority, delayDownload);
     }
 
+    public void saveAttachment(int destination){
+
+        if (mAttachment.state == AttachmentState.SAVED
+                && destination == AttachmentDestination.EXTERNAL){
+            performAttachmentSave(mAttachment);
+        }else{
+            Toast.makeText(mContext, mContext.getResources().getString(R.string.download_first),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void startDownloadingAttachment(
             Attachment attachment, int destination, int rendition, int additionalPriority,
             boolean delayDownload) {
+        //do not auto install apk from stream . must save first so that can be install
+        if (attachment.state == AttachmentState.SAVED
+                && destination == AttachmentDestination.EXTERNAL
+                && !MimeType.isInstallable(attachment.getContentType())) {
+            File savedFile = performAttachmentSave(attachment);
+            if (savedFile != null && mView != null) {
+                // The attachment is saved successfully from cache.
+                mView.viewAttachment();
+                return;
+            }
+        }
+
         final ContentValues params = new ContentValues(5);
         params.put(AttachmentColumns.STATE, AttachmentState.DOWNLOADING);
         params.put(AttachmentColumns.DESTINATION, destination);
@@ -283,5 +319,63 @@ public class AttachmentActionHandler {
                 Attachment attachment, FragmentManager fm) {
             // no-op
         }
+    }
+
+    private File createUniqueFile(File directory, String filename) throws IOException {
+        File file = new File(directory, filename);
+        if (file.createNewFile()) {
+            return file;
+        }
+        // Get the extension of the file, if any.
+        int index = filename.lastIndexOf('.');
+        String format;
+        if (index != -1) {
+            String name = filename.substring(0, index);
+            String extension = filename.substring(index);
+            format = name + "-%d" + extension;
+        } else {
+            format = filename + "-%d";
+        }
+
+        for (int i = 2; i < Integer.MAX_VALUE; i++) {
+            file = new File(directory, String.format(format, i));
+            if (file.createNewFile()) {
+                return file;
+            }
+        }
+        return null;
+    }
+
+    private File performAttachmentSave(final Attachment attachment) {
+        try {
+            File downloads = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS);
+            downloads.mkdirs();
+            File file = createUniqueFile(downloads, attachment.getName());
+            Uri contentUri = attachment.contentUri;
+            InputStream in = mContext.getContentResolver().openInputStream(contentUri);
+            OutputStream out = new FileOutputStream(file);
+            int size = IOUtils.copy(in, out);
+            out.flush();
+            out.close();
+            in.close();
+            String absolutePath = file.getAbsolutePath();
+            MediaScannerConnection.scanFile(mContext, new String[] {absolutePath},
+                    null, null);
+            DownloadManager dm =
+                    (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+            dm.addCompletedDownload(attachment.getName(), attachment.getName(),
+                    false /* do not use media scanner */,
+                    attachment.getContentType(), absolutePath, size,
+                    true /* show notification */);
+            Toast.makeText(mContext,
+                    mContext.getResources().getString(R.string.save_to) + absolutePath,
+                    Toast.LENGTH_SHORT).show();
+            return file;
+        } catch (IOException ioe) {
+            // Ignore. Callers will handle it from the return code.
+        }
+
+        return null;
     }
 }

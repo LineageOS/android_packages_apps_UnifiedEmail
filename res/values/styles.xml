@@ -375,7 +375,7 @@
         <item name="android:scaleType">center</item>
     </style>
 
-    <style name="MessageHeaderOverflowButtonStyle" parent="@style/OverflowButtonStyle">
+    <style name="MessageHeaderOverflowButtonStyle" parent="@style/SaveAttachmentButtonStyle">
         <item name="android:layout_width">@dimen/message_header_overflow_button_width</item>
         <item name="android:layout_height">@dimen/message_header_action_button_height</item>
         <item name="android:layout_marginTop">@dimen/message_header_action_button_margin_top</item>
@@ -454,8 +454,8 @@
         <item name="android:layout_marginTop">16dip</item>
     </style>
 
-    <style name="OverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_overflow_24dp</item>
+    <style name="SaveAttachmentButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/save</item>
     </style>
 
     <style name="ActionBarOverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">

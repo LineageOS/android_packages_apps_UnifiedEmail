@@ -58,6 +58,8 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.MessageFlagLoaded;
 import com.android.mail.text.EmailAddressSpan;
 import com.android.mail.ui.AbstractConversationViewFragment;
 import com.android.mail.ui.ImageCanvas;
@@ -923,6 +925,8 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
                     text + "\n\n" + mCallbacks.getMessageTransforms(mMessage));
         } else if (id == R.id.edit_draft) {
             ComposeActivity.editDraft(getContext(), getAccount(), mMessage);
+        } else if (id == R.id.load_more) {
+            mMessage.loadMore();
         } else if (id == R.id.overflow) {
             if (mPopup == null) {
                 mPopup = new PopupMenu(getContext(), v);
@@ -937,6 +941,12 @@ public class MessageHeaderView extends SnapHeader implements OnClickListener,
             m.findItem(R.id.reply_all).setVisible(!defaultReplyAll);
             m.findItem(R.id.print_message).setVisible(Utils.isRunningKitkatOrLater());
 
+            // Update the load more menu visible value.
+            MenuItem fetch = m.findItem(R.id.load_more);
+            if (fetch != null) {
+                fetch.setVisible(mMessage.messageFlagLoaded
+                        == MessageFlagLoaded.FLAG_LOADED_PARTIAL_COMPLETE);
+            }
             final boolean isStarred = mMessage.starred;
             boolean showStar = true;
             final Conversation conversation = mMessage.getConversation();

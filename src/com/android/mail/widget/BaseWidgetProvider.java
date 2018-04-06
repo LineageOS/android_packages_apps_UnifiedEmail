@@ -340,7 +340,6 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
             final Intent configureIntent = new Intent(context, MailboxSelectionActivity.class);
             configureIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             configureIntent.setData(Uri.parse(configureIntent.toUri(Intent.URI_INTENT_SCHEME)));
-            configureIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             PendingIntent clickIntent = PendingIntent.getActivity(context, 0, configureIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.widget_configuration, clickIntent);

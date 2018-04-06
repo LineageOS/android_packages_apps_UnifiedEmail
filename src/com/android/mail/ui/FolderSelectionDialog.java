@@ -22,6 +22,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -32,6 +33,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -86,7 +88,13 @@ public abstract class FolderSelectionDialog extends DialogFragment implements On
         mCurrentFolder = args.getParcelable(ARG_FOLDER_TAG);
         mAccount = args.getParcelable(ARG_ACCOUNT_TAG);
         mBatch = args.getBoolean(ARG_BATCH_TAG);
-        mTarget = Arrays.asList((Conversation[])args.getParcelableArray(ARG_TARGET_TAG));
+        mTarget = new ArrayList<>();
+        Parcelable[] temps = args.getParcelableArray(ARG_TARGET_TAG);
+        if(temps != null){
+            for(Parcelable temp:temps){
+                mTarget.add((Conversation) temp);
+            }
+        }
     }
 
     @Override

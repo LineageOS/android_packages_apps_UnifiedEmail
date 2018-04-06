@@ -20,8 +20,11 @@ package com.android.mail.browse;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -61,6 +64,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         OnMenuItemClickListener, AttachmentViewInterface {
 
     private Attachment mAttachment;
+    private ImageView mIcon;
     private TextView mTitle;
     private TextView mSubTitle;
     private String mAttachmentSizeText;
@@ -68,11 +72,13 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     private ProgressBar mProgress;
     private ImageButton mCancelButton;
     private PopupMenu mPopup;
-    private ImageView mOverflowButton;
+    private ImageView mSaveAttachmentButton;
+    private TextView mAttachmentBarDivider;
 
     private final AttachmentActionHandler mActionHandler;
     private boolean mSaveClicked;
     private Account mAccount;
+    private final static String FORMAT_RAW = "RAW";
 
     private final Runnable mUpdateRunnable = new Runnable() {
             @Override
@@ -141,8 +147,11 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 attachment.getContentType(), attachment.flags);
 
         final String attachmentName = attachment.getName();
-        if ((attachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
-            mTitle.setText(R.string.load_attachment);
+        if (attachment.isLoadMore()) {
+            mIcon.setImageResource(R.drawable.ic_load_more_holo_light);
+            mTitle.setText(R.string.load_more);
+            mSaveAttachmentButton.setVisibility(View.GONE);
+            mAttachmentBarDivider.setVisibility(View.GONE);
         } else if (prevAttachment == null
                 || !TextUtils.equals(attachmentName, prevAttachment.getName())) {
             mTitle.setText(attachmentName);
@@ -164,14 +173,16 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        mIcon = (ImageView) findViewById(R.id.attachment_icon);
         mTitle = (TextView) findViewById(R.id.attachment_title);
         mSubTitle = (TextView) findViewById(R.id.attachment_subtitle);
         mProgress = (ProgressBar) findViewById(R.id.attachment_progress);
-        mOverflowButton = (ImageView) findViewById(R.id.overflow);
+        mSaveAttachmentButton = (ImageView) findViewById(R.id.save_attachment);
         mCancelButton = (ImageButton) findViewById(R.id.cancel_attachment);
+        mAttachmentBarDivider = (TextView) findViewById(R.id.attachment_bar_divider);
 
         setOnClickListener(this);
-        mOverflowButton.setOnClickListener(this);
+        mSaveAttachmentButton.setOnClickListener(this);
         mCancelButton.setOnClickListener(this);
     }
 
@@ -187,55 +198,12 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     }
 
     private boolean onClick(final int res, final View v) {
-        if (res == R.id.preview_attachment) {
-            previewAttachment();
-        } else if (res == R.id.save_attachment) {
-            if (mAttachment.canSave()) {
-                mActionHandler.startDownloadingAttachment(AttachmentDestination.EXTERNAL);
-                mSaveClicked = true;
+        if (res == R.id.save_attachment) {
 
-                Analytics.getInstance().sendEvent(
+            mActionHandler.saveAttachment(AttachmentDestination.EXTERNAL);
+            Analytics.getInstance().sendEvent(
                         "save_attachment", Utils.normalizeMimeType(mAttachment.getContentType()),
                         "attachment_bar", mAttachment.size);
-            }
-        } else if (res == R.id.download_again) {
-            if (mAttachment.isPresentLocally()) {
-                mActionHandler.showDownloadingDialog();
-                mActionHandler.startRedownloadingAttachment(mAttachment);
-
-                Analytics.getInstance().sendEvent("redownload_attachment",
-                        Utils.normalizeMimeType(mAttachment.getContentType()), "attachment_bar",
-                        mAttachment.size);
-            }
-        } else if (res == R.id.cancel_attachment) {
-            mActionHandler.cancelAttachment();
-            mSaveClicked = false;
-
-            Analytics.getInstance().sendEvent(
-                    "cancel_attachment", Utils.normalizeMimeType(mAttachment.getContentType()),
-                    "attachment_bar", mAttachment.size);
-        } else if (res == R.id.attachment_extra_option1) {
-            mActionHandler.handleOption1();
-        } else if (res == R.id.overflow) {
-            // If no overflow items are visible, just bail out.
-            // We shouldn't be able to get here anyhow since the overflow
-            // button should be hidden.
-            if (shouldShowOverflow()) {
-                if (mPopup == null) {
-                    mPopup = new PopupMenu(getContext(), v);
-                    mPopup.getMenuInflater().inflate(R.menu.message_footer_overflow_menu,
-                            mPopup.getMenu());
-                    mPopup.setOnMenuItemClickListener(this);
-                }
-
-                final Menu menu = mPopup.getMenu();
-                menu.findItem(R.id.preview_attachment).setVisible(shouldShowPreview());
-                menu.findItem(R.id.save_attachment).setVisible(shouldShowSave());
-                menu.findItem(R.id.download_again).setVisible(shouldShowDownloadAgain());
-                menu.findItem(R.id.attachment_extra_option1).setVisible(shouldShowExtraOption1());
-
-                mPopup.show();
-            }
         } else {
             // Handles clicking the attachment
             // in any area that is not the overflow
@@ -244,23 +212,15 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             final String mime = Utils.normalizeMimeType(mAttachment.getContentType());
             final String action;
 
-            if ((mAttachment.flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0) {
-                // This is a dummy. We need to download it, but not attempt to open or preview.
-                mActionHandler.showDownloadingDialog();
-                mActionHandler.setViewOnFinish(false);
-                mActionHandler.startDownloadingAttachment(AttachmentDestination.CACHE);
+            if (mAttachment.isLoadMore()) {
+                // Changed to use the Message's load more uri to get the entire mail.
+                if (mAttachment.messageLoadMoreUri != null) {
+                    LoadMoreAction loadmore = new LoadMoreAction(getContext().getContentResolver(),
+                            mAttachment.messageLoadMoreUri);
+                    loadmore.sendCommand();
+                }
 
                 action = null;
-            }
-            // If we can install, install.
-            else if (MimeType.isInstallable(mAttachment.getContentType())) {
-                // Save to external because the package manager only handles
-                // file:// uris not content:// uris. We do the same
-                // workaround in
-                // UiProvider#getUiAttachmentsCursorForUIAttachments()
-                mActionHandler.showAttachment(AttachmentDestination.EXTERNAL);
-
-                action = "attachment_bar_install";
             }
             // If we can view or play with an on-device app,
             // view or play.
@@ -281,8 +241,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 int dialogMessage = R.string.no_application_found;
                 builder.setTitle(R.string.more_info_attachment)
-                       .setMessage(dialogMessage)
-                       .show();
+                        .setMessage(dialogMessage)
+                        .show();
 
                 action = "attachment_bar_no_viewer";
             }
@@ -302,7 +262,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     }
 
     private boolean shouldShowSave() {
-        return mAttachment.canSave() && !mSaveClicked;
+        return mAttachment.canSave() && !mSaveClicked && !mAttachment.isLoadMore();
     }
 
     private boolean shouldShowDownloadAgain() {
@@ -311,15 +271,19 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         return mAttachment.supportsDownloadAgain() && mAttachment.isDownloadFinishedOrFailed();
     }
 
+    private boolean shouldCanInstall() {
+        return mAttachment.isInstallable();
+    }
+
     private boolean shouldShowExtraOption1() {
         return !mHideExtraOptionOne &&
                 mActionHandler.shouldShowExtraOption1(mAccount.getType(),
                         mAttachment.getContentType());
     }
 
-    private boolean shouldShowOverflow() {
-        return (shouldShowPreview() || shouldShowSave() || shouldShowDownloadAgain() ||
-                shouldShowExtraOption1()) && !shouldShowCancel();
+    private boolean shouldShowSaveAttachment() {
+        return (shouldShowPreview() || shouldShowSave() || shouldCanInstall())
+                && !shouldShowCancel();
     }
 
     private boolean shouldShowCancel() {
@@ -338,8 +302,16 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
         final String contentType = mAttachment.getContentType();
+
+        Uri contentUri = mAttachment.contentUri;
+        String contentUriString = mAttachment.contentUri.toString();
+        if (contentUriString.endsWith(FORMAT_RAW)) {
+            contentUri = Uri.parse(contentUriString.replace(FORMAT_RAW,
+                    mAttachment.getName()));
+        }
+
         Utils.setIntentDataAndTypeAndNormalize(
-                intent, mAttachment.contentUri, contentType);
+                intent, contentUri, contentType);
 
         // For EML files, we want to open our dedicated
         // viewer rather than let any activity open it.
@@ -391,7 +363,8 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
         // To avoid visibility state transition bugs, every button's visibility should be touched
         // once by this routine.
         setButtonVisible(mCancelButton, shouldShowCancel());
-        setButtonVisible(mOverflowButton, shouldShowOverflow());
+        setButtonVisible(mSaveAttachmentButton, shouldShowSaveAttachment());
+        setButtonVisible(mAttachmentBarDivider, shouldShowSaveAttachment());
     }
 
     @Override
@@ -431,5 +404,18 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             }
         }
         mSubTitle.setText(sb.toString());
+    }
+
+    private class LoadMoreAction extends AsyncQueryHandler {
+        private final Uri mLoadMoreUri;
+
+        public LoadMoreAction(ContentResolver resolver, Uri loadMoreUri) {
+            super(resolver);
+            mLoadMoreUri = loadMoreUri;
+        }
+
+        public void sendCommand() {
+            startQuery(0, null, mLoadMoreUri, null, null, null, null);
+        }
     }
 }

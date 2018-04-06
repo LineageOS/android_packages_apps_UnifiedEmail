@@ -176,6 +176,13 @@ public class Attachment implements Parcelable {
     private boolean supportsDownloadAgain;
 
 
+    /**
+     * Might be null.
+     *
+     * @see MessageColumns#MESSAGE_LOAD_MORE_URI
+     */
+    public Uri messageLoadMoreUri = null;
+
     public Attachment() {
     }
 
@@ -195,6 +202,8 @@ public class Attachment implements Parcelable {
         type = in.readInt();
         flags = in.readInt();
         virtualMimeType = in.readString();
+        partId = in.readString();
+        messageLoadMoreUri = in.readParcelable(null);
     }
 
     public Attachment(Cursor cursor) {
@@ -221,6 +230,7 @@ public class Attachment implements Parcelable {
         type = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.TYPE));
         flags = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.FLAGS));
         virtualMimeType = cursor.getString(cursor.getColumnIndex(AttachmentColumns.VIRTUAL_MIME_TYPE));
+        partId = cursor.getString(cursor.getColumnIndex(AttachmentColumns.CONTENT_ID));
     }
 
     public Attachment(JSONObject srcJson) {
@@ -239,6 +249,7 @@ public class Attachment implements Parcelable {
         type = srcJson.optInt(AttachmentColumns.TYPE);
         flags = srcJson.optInt(AttachmentColumns.FLAGS);
         virtualMimeType = srcJson.optString(AttachmentColumns.VIRTUAL_MIME_TYPE, null);
+        partId = srcJson.optString(AttachmentColumns.CONTENT_ID, null);
     }
 
     /**
@@ -269,6 +280,7 @@ public class Attachment implements Parcelable {
             partId = cid;
             flags = 0;
             virtualMimeType = null;
+            messageLoadMoreUri = null;
 
             // insert attachment into content provider so that we can open the file
             final ContentResolver resolver = context.getContentResolver();
@@ -363,6 +375,8 @@ public class Attachment implements Parcelable {
         dest.writeInt(type);
         dest.writeInt(flags);
         dest.writeString(virtualMimeType);
+        dest.writeString(partId);
+        dest.writeParcelable(messageLoadMoreUri, flags);
     }
 
     public JSONObject toJSON() throws JSONException {
@@ -383,6 +397,7 @@ public class Attachment implements Parcelable {
         result.put(AttachmentColumns.TYPE, type);
         result.put(AttachmentColumns.FLAGS, flags);
         result.put(AttachmentColumns.VIRTUAL_MIME_TYPE, virtualMimeType);
+        result.put(AttachmentColumns.CONTENT_ID, partId);
 
         return result;
     }
@@ -431,7 +446,7 @@ public class Attachment implements Parcelable {
     }
 
     public boolean canSave() {
-        return !isSavedToExternal() && !isInstallable();
+        return !isInstallable();
     }
 
     public boolean canShare() {
@@ -461,6 +476,10 @@ public class Attachment implements Parcelable {
 
     public boolean isDownloadFinishedOrFailed() {
         return state == AttachmentState.FAILED || state == AttachmentState.SAVED;
+    }
+
+    public boolean isLoadMore() {
+        return (flags & Attachment.FLAG_DUMMY_ATTACHMENT) != 0;
     }
 
     public boolean supportsDownloadAgain() {
@@ -542,7 +561,7 @@ public class Attachment implements Parcelable {
      * quoted text).
      */
     public boolean isInlineAttachment() {
-        return type != UIProvider.AttachmentType.STANDARD;
+        return type != UIProvider.AttachmentType.STANDARD && !TextUtils.isEmpty(partId);
     }
 
     @Override

@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
-        <item name="android:actionBarWidgetTheme">@style/ActionBarWidgetTheme</item>
-        <item name="android:actionModeBackground">@color/action_mode_background</item>
-        <item name="android:actionOverflowButtonStyle">@style/ActionBarOverflowButtonStyle</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp_with_rtl</item>
-        <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
-    </style>
-
     <style name="ActionBarWidgetTheme" parent="@android:style/Theme.Holo">
         <item name="android:dropDownListViewStyle">@style/ActionBarDividerlessListViewStyle</item>
         <item name="android:popupMenuStyle">@android:style/Widget.Holo.Light.ListPopupWindow</item>
@@ -38,6 +29,12 @@
         <item name="android:windowDrawsSystemBarBackgrounds" tools:ignore="NewApi">true</item>
         <!-- Set the status bar to fully transparent. We’ll draw it ourselves since we want to draw other content over it. -->
         <item name="android:statusBarColor" tools:ignore="NewApi">@color/mail_activity_status_bar_color</item>
+    </style>
+
+    <style name="HeaderTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:colorAccent">@color/primary_color</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:colorBackground">@color/primary_color</item>
     </style>
 
     <style name="MailActivityTheme" parent="@style/UnifiedEmailTheme.Appcompat.Toolbar" />

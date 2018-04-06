@@ -134,6 +134,8 @@ public class MaterialSearchSuggestionsList extends LinearLayout
                         result.add(new SuggestionItem(suggestion, iconUri));
                     } while (c.moveToNext());
                 }
+            } catch (IllegalStateException e) {
+                // db could have been closed due to cleanup, simply don't do anything.
             } finally {
                 if (c != null) {
                     c.close();
