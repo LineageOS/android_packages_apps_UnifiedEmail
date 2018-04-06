@@ -23,6 +23,7 @@ import com.android.emailcommon.mail.Part;
 
 import android.text.TextUtils;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class ConversionUtilities {
@@ -62,13 +63,21 @@ public class ConversionUtilities {
      * Parse body text (plain and/or HTML) from MimeMessage to {@link BodyFieldData}.
      */
     public static BodyFieldData parseBodyFields(ArrayList<Part> viewables)
-    throws MessagingException {
+            throws MessagingException {
+        return  parseBodyFields(viewables, null);
+    }
+
+    /**
+     * Parse body text (plain and/or HTML) from MimeMessage to {@link BodyFieldData}.
+     */
+    public static BodyFieldData parseBodyFields(ArrayList<Part> viewables,
+            ArrayList<InputStream> outInputStreams) throws MessagingException {
         final BodyFieldData data = new BodyFieldData();
         StringBuffer sbHtml = null;
         StringBuffer sbText = null;
 
         for (Part viewable : viewables) {
-            String text = MimeUtility.getTextFromPart(viewable);
+            String text = MimeUtility.getTextFromPart(viewable, outInputStreams);
             // Deploy text as marked by the various tags
             boolean isHtml = "text/html".equalsIgnoreCase(viewable.getMimeType());
 

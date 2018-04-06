@@ -16,6 +16,7 @@
 package com.android.mail.utils;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -56,6 +57,7 @@ import com.android.mail.photomanager.LetterTileProvider;
 import com.android.mail.preferences.AccountPreferences;
 import com.android.mail.preferences.FolderPreferences;
 import com.android.mail.preferences.MailPrefs;
+import com.android.mail.preferences.FolderPreferences.NotificationLight;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -547,6 +549,26 @@ public class NotificationUtils {
             final Account account, boolean getAttention, boolean ignoreUnobtrusiveSetting,
             NotificationKey key, final ContactFetcher contactFetcher) {
 
+        // Check that the folder supports notifications, prior to create all the
+        // NotificationManager stuff
+        final boolean isInbox = folder.folderUri.equals(account.settings.defaultInbox);
+        final FolderPreferences folderPreferences =
+                new FolderPreferences(context, account.getAccountId(), folder, isInbox);
+
+        if (isInbox) {
+            final AccountPreferences accountPreferences =
+                    new AccountPreferences(context, account.getAccountId());
+            moveNotificationSetting(accountPreferences, folderPreferences);
+        }
+
+        if (!folderPreferences.areNotificationsEnabled()) {
+            LogUtils.i(LOG_TAG, "Notifications are disabled for this folder; not notifying");
+            // Don't notify
+            return;
+        }
+
+
+
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
 
         final NotificationMap notificationMap = getNotificationMap(context);
@@ -675,22 +697,6 @@ public class NotificationUtils {
 
             boolean eventInfoConfigured = false;
 
-            final boolean isInbox = folder.folderUri.equals(account.settings.defaultInbox);
-            final FolderPreferences folderPreferences =
-                    new FolderPreferences(context, account.getAccountId(), folder, isInbox);
-
-            if (isInbox) {
-                final AccountPreferences accountPreferences =
-                        new AccountPreferences(context, account.getAccountId());
-                moveNotificationSetting(accountPreferences, folderPreferences);
-            }
-
-            if (!folderPreferences.areNotificationsEnabled()) {
-                LogUtils.i(LOG_TAG, "Notifications are disabled for this folder; not notifying");
-                // Don't notify
-                return;
-            }
-
             if (unreadCount > 0) {
                 // How can I order this properly?
                 if (cursor.moveToNext()) {
@@ -767,26 +773,32 @@ public class NotificationUtils {
              * We do not want to notify if this is coming back from an Undo notification, hence the
              * oldWhen check.
              */
-            if (getAttention && oldWhen == 0 && hasNewConversationNotification) {
-                final AccountPreferences accountPreferences =
-                        new AccountPreferences(context, account.getAccountId());
-                if (accountPreferences.areNotificationsEnabled()) {
-                    if (vibrate) {
-                        defaults |= Notification.DEFAULT_VIBRATE;
-                    }
-
-                    notification.setSound(TextUtils.isEmpty(ringtoneUri) ? null
-                            : Uri.parse(ringtoneUri));
-                    LogUtils.i(LOG_TAG, "New email in %s vibrateWhen: %s, playing notification: %s",
-                            LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()), vibrate,
-                            ringtoneUri);
+            if (getAttention && oldWhen == 0) {
+                if (!hasNewConversationNotification) {
+                    notification.setOnlyAlertOnce(true);
+                } else if (vibrate) {
+                    defaults |= Notification.DEFAULT_VIBRATE;
                 }
+
+                notification.setSound(TextUtils.isEmpty(ringtoneUri) ? null
+                        : Uri.parse(ringtoneUri));
+                LogUtils.i(LOG_TAG, "New email in %s vibrateWhen: %s, playing notification: %s",
+                        LogUtils.sanitizeName(LOG_TAG, account.getEmailAddress()), vibrate,
+                        ringtoneUri);
             }
 
             // TODO(skennedy) Why do we do any of the above if we're just going to bail here?
             if (eventInfoConfigured) {
-                defaults |= Notification.DEFAULT_LIGHTS;
-                notification.setDefaults(defaults);
+                NotificationLight notificationLight = folderPreferences.getNotificationLight();
+                NotificationManager notifMgr = context.getSystemService(NotificationManager.class);
+                if (notificationLight.mOn && notifMgr.doLightsSupport(
+                        NotificationManager.LIGHTS_RGB_NOTIFICATION_LED)) {
+                    notification.setLights(notificationLight.mColor,
+                            notificationLight.mTimeOn, notificationLight.mTimeOff);
+                } else {
+                    defaults |= Notification.DEFAULT_LIGHTS;
+                    notification.setDefaults(defaults);
+                }
 
                 if (oldWhen != 0) {
                     // We do not want to display the ticker again if we are re-displaying this
@@ -1525,7 +1537,9 @@ public class NotificationUtils {
         final TextAppearanceSpan notificationSubjectSpan = new TextAppearanceSpan(
                 context, R.style.NotificationPrimaryText);
 
-        final String snippet = getMessageBodyWithoutElidedText(message);
+        String snippet = getMessageBodyWithoutElidedText(message);
+        // Remove email signatures
+        snippet = !TextUtils.isEmpty(snippet) ? snippet.replaceAll("(?ms)^-- .*", "") : "";
 
         // Change multiple newlines (with potential white space between), into a single new line
         final String collapsedSnippet =

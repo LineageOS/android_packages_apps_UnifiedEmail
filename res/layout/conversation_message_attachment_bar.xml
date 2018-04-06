@@ -68,15 +68,29 @@
             <include layout="@layout/conversation_message_attachment_bar_progress_bar"/>
         </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/overflow"
-            style="@style/OverflowButtonStyle"
-            android:layout_width="48dip"
-            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/attachment_bar_divider"
+            android:layout_width="1dip"
+            android:layout_height="40dip"
+            android:background="@color/attachment_bar_divider_line"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="18dp"/>
+
+        <RelativeLayout
+            android:layout_width="46dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/save_attachment"
+                android:src="@drawable/save"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerInParent="true"
+                android:background="?android:attr/selectableItemBackgroundBorderless"/>
+        </RelativeLayout>
 
         <ImageButton
             android:id="@+id/cancel_attachment"
-            android:layout_width="48dip"
+            android:layout_width="46dip"
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"

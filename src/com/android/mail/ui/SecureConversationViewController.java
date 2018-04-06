@@ -44,6 +44,7 @@ import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.print.PrintUtils;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
+import com.android.mail.providers.UIProvider.MessageFlagLoaded;
 import com.android.mail.utils.ConversationViewUtils;
 
 /**
@@ -212,9 +213,14 @@ public class SecureConversationViewController implements
         mSnapHeaderView.unbind();
         mSnapHeaderView.bind(item, false);
 
-        if (mMessage.hasAttachments) {
+        if (mMessage.hasAttachments
+                || mMessage.messageFlagLoaded == MessageFlagLoaded.FLAG_LOADED_PARTIAL_COMPLETE) {
+            // Do not have the attachment, but the flag is partial complete, it must contains
+            // the load more placeholder, and we will show it.
             mMessageFooterView.setVisibility(View.VISIBLE);
             mMessageFooterView.bind(item, false);
+        } else {
+            mMessageFooterView.setVisibility(View.GONE);
         }
     }
 

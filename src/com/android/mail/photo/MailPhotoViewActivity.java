@@ -51,6 +51,9 @@ public class MailPhotoViewActivity extends PhotoViewActivity implements
      */
     public static void startMailPhotoViewActivity(final Context context, final String account,
             final String accountType, final ConversationMessage msg, final int photoIndex) {
+        if (msg.attachmentListUri == null) {
+            return;
+        }
         final Intents.PhotoViewIntentBuilder builder =
                 Intents.newPhotoViewIntentBuilder(context,
                         context.getString(R.string.photo_view_activity));

@@ -481,4 +481,5 @@
     <string name="security_hold_required_text" msgid="6619955920101834286">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>需要进行安全更新"</string>
     <string name="update_security_text" msgid="3527335757205741077">"立即更新"</string>
     <string name="forms_are_disabled" msgid="2876312737118986789">"Gmail已停用表单"</string>
+    <string name="save_to">保存文件至:</string>
 </resources>

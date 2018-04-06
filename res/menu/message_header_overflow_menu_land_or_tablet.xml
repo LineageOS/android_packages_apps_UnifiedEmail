@@ -21,6 +21,8 @@
           android:title="@string/reply" />
     <item android:id="@+id/reply_all"
           android:title="@string/reply_all" />
+    <item android:id="@+id/load_more"
+          android:title="@string/load_more"/>
     <item android:id="@+id/add_star"
           android:title="@string/add_star" />
     <item android:id="@+id/remove_star"
