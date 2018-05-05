@@ -17,6 +17,21 @@
 -->
 <resources>
   <!-- Suggested contacts preferences -->
+  <string name="prefDialogTitle_suggestedContactsMode">Modalidade</string>
+  <string name="prefDialogTitle_suggestedContactsMode_none">Disabilitadu</string>
   <!-- Notification lights dialogs -->
+  <string name="default_time">Normale</string>
+  <string name="custom_time">Personalizadu</string>
+  <string name="dialog_delete_title">Iscantzella</string>
+  <string name="pref_lights_default">Predefinidu</string>
   <!-- Values for the notification lights pulse spinners -->
+  <string name="pulse_length_short">Curtzu</string>
+  <string name="pulse_length_normal">Normale</string>
+  <string name="pulse_length_long">Longu</string>
+  <string name="pulse_length_very_long">Longu meda</string>
+  <string name="pulse_speed_very_fast">Lestru meda</string>
+  <string name="pulse_speed_fast">Lestru</string>
+  <string name="pulse_speed_normal">Normale</string>
+  <string name="pulse_speed_slow">Lentu</string>
+  <string name="pulse_speed_very_slow">Lentu meda</string>
 </resources>
