@@ -222,8 +222,6 @@ public class MaterialSearchActionView extends LinearLayout implements TextWatche
             } else {
                 mController.onVoiceSearch();
             }
-        } else if (view == mQueryText) {
-            mController.showSearchActionBar(MaterialSearchViewController.SEARCH_VIEW_STATE_VISIBLE);
         }
     }
 
