@@ -41,7 +41,9 @@
   <!-- Compose screen, Prefix to forwarded message subject. Do not translate. -->
   <!-- Compose screen, displayed at the top of a message being replied to. Please preserve the HTML entities (surrounded by & and ;).  The two %s strings will be replaced by 1) the date 2) the person who wrote the email being responded to. [CHAR LIMIT=1000]-->
   <!-- Compose screen, displayed at the top of a message being forwarded. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000] -->
+  <string name="forward_attribution">---------- Neges wedi\'i hanfon ymlaen ----------&lt;br&gt;Oddi wrth: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Dyddiad: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Pwnc: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;At: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
   <!-- Compose screen, displayed at the top of a message being forwarded. [CHAR LIMIT=100]-->
+  <string name="forward_attribution_no_headers">---------- Neges wedi\'i hanfon ymlaen ----------</string>
   <!-- Compose screen, displayed at the top of a message being forwarded if there are any email addresses in the CC list. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000]-->
   <!-- Dialog text: select the type of an attachment while composing [CHAR LIMIT=100]-->
   <!-- Toast, attachment too large for single file [CHAR LIMIT=100] -->
@@ -50,10 +52,12 @@
   <!-- Toast, problem attaching file [CHAR LIMIT=100] -->
   <!-- Toast, cannot attach the provided file because the calling context doesn't have the permission [CHAR LIMIT=100] -->
   <!-- Displayed for one second after trying to send with no recipients in To field [CHAR LIMIT=200]-->
+  <string name="recipient_needed">Rhaid rhoi o leiaf un derbynnydd.</string>
   <!-- Messages for send confirmation dialog [CHAR LIMIT=100]-->
   <string name="confirm_send_message">Anfon y neges hon?</string>
   <!-- Displayed for one second after discarding draft message [CHAR LIMIT=50]-->
   <!-- Formatting string for the user's signaure. [CHAR LIMIT=10] -->
+  <string name="signature">\n\n<xliff:g id="signature">%s</xliff:g></string>
   <!--  Shown in the from dropdown in front of custom from addresses. [CHAR LIMIT=15] -->
   <string name="custom_from_account_label">Anfon post fel:</string>
   <!-- Menu item: send this message -->
@@ -63,6 +67,7 @@
   <!-- Menu item: toggle read/unread for menus that contain both read and unread options -->
   <!--  Menu item: mute this conversation -->
   <!-- Menu item: add a star to this conversation -->
+  <string name="add_star">Ychwanegu seren</string>
   <!-- Menu item: remove the star from this conversation -->
   <!-- Remove the folder from this conversation [CHAR LIMIT = 30]-->
   <!-- Menu item: archive this conversation -->
@@ -96,7 +101,9 @@
   <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as important [CHAR LIMIT=30] -->
   <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as not important [CHAR LIMIT=30] -->
   <!-- Compose screen, menu item: add Cc/Bcc fields -->
+  <string name="add_cc_label">Ychwanegu Cc/Bcc</string>
   <!-- Compose screen, menu item: add Bcc field [CHAR_LIMIT=20]-->
+  <string name="add_bcc_label">Ychwanegu Bcc</string>
   <!-- Compose screen, Prefix to quoted text in forwarded/replied message [CHAR LIMIT=50]-->
   <!-- Compose screen, Prefix to quoted text in forwarded/replied message; folder for the quoted text area. [CHAR LIMIT=25] -->
   <!--  Button for including inline responses. [CHAR LIMIT=25] -->
@@ -114,6 +121,7 @@
   <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
   <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
   <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
+  <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> Ffeil</string>
   <!-- Read email screen, button name. Preview an attachment by Gview. [CHAR LIMIT=18] -->
   <!-- Read email screen, button name. Save an attachment to sd card. [CHAR LIMIT=10] -->
   <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
@@ -146,14 +154,20 @@
   <!-- Menu item to share link  [CHAR LIMIT=50]-->
   <!-- Browse list item strings -->
   <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMIT=250] -->
+  <string name="content_description"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> ynghylch <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> ar <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g></string>
   <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode and the message was received today. [CHAR LIMI=250] -->
+  <string name="content_description_today"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> ynghylch <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> am <xliff:g id="time">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g></string>
   <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMIT=250] -->
+  <string name="content_description_with_folders"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> ynghylch <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> ar <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g>, labeli: <xliff:g id="folders">%7$s</xliff:g></string>
   <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode and the message was received today. [CHAR LIMI=250] -->
+  <string name="content_description_today_with_folders"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> ynghylch <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> am <xliff:g id="time">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g>, labeli: <xliff:g id="folders">%7$s</xliff:g></string>
   <!-- String used in content description field of a conversation list item when device is in accessibility mode and the conversation was read [CHAR LIMIT=250] -->
   <!-- String used in content description field of a conversation list item when device is in accessibility mode and the conversation was not read [CHAR LIMIT=250] -->
   <!-- Formatting string. If the subject contains the tag of a mailing-list (text surrounded with
     return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
+  <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
   <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
+  <string name="badge_and_subject"><xliff:g>%1$s</xliff:g> <xliff:g>%2$s</xliff:g></string>
   <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
   <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
   <string name="sending">Yn anfon\u2026</string>
@@ -176,6 +190,76 @@
   <!-- Undo bar strings -->
   <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
   <!-- The following are shown as a toast after the operation has completed -->
+  <plurals name="conversation_muted">
+    <item quantity="zero">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u distewi</item>
+    <!-- Displayed while muting one conversation -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'i distewi</item>
+    <item quantity="two">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u distewi</item>
+    <item quantity="few">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u distewi</item>
+    <item quantity="many">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u distewi</item>
+    <!-- Displayed while muting several conversations -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u distewi</item>
+  </plurals>
+  <plurals name="conversation_spammed">
+    <item quantity="zero">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel sbam</item>
+    <!-- Displayed while reporting one conversation as spam -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'i riportio fel sbam</item>
+    <item quantity="two">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel sbam</item>
+    <item quantity="few">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel sbam</item>
+    <item quantity="many">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel sbam</item>
+    <!-- Displayed while reporting several conversations as spam -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel sbam</item>
+  </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="zero">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio ddim yn sbam</item>
+    <!-- Displayed while reporting one conversation as not spam -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'i riportio ddim yn sbam</item>
+    <item quantity="two">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio ddim yn sbam</item>
+    <item quantity="few">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio ddim yn sbam</item>
+    <item quantity="many">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio ddim yn sbam</item>
+    <!-- Displayed while reporting several conversations as not spam -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio ddim yn sbam</item>
+  </plurals>
+  <plurals name="conversation_not_important">
+    <item quantity="zero">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u marcio ddim yn bwysig</item>
+    <!-- Displayed while reporting one conversation as not important in the important folder -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'i marcio ddim yn bwysig</item>
+    <item quantity="two">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u marcio ddim yn bwysig</item>
+    <item quantity="few">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u marcio ddim yn bwysig</item>
+    <item quantity="many">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u marcio ddim yn bwysig</item>
+    <!-- Displayed while reporting several conversations as not important in the important folder -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u marcio ddim yn bwysig</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="zero">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel gwe-rwydo</item>
+    <!-- Displayed while reporting one conversation as phishing -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'i riportio fel gwe-rwydo</item>
+    <item quantity="two">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel gwe-rwydo</item>
+    <item quantity="few">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel gwe-rwydo</item>
+    <item quantity="many">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel gwe-rwydo</item>
+    <!-- Displayed while reporting several conversations as phishing -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u riportio fel gwe-rwydo</item>
+  </plurals>
+  <plurals name="conversation_archived">
+    <item quantity="zero">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u harchifo</item>
+    <!-- Displayed while archiving one conversation -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'i archifo</item>
+    <item quantity="two">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u harchifo</item>
+    <item quantity="few">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u harchifo</item>
+    <item quantity="many">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u harchifo</item>
+    <!-- Displayed while archiving multiple conversations -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u harchifo</item>
+  </plurals>
+  <plurals name="conversation_deleted">
+    <item quantity="zero">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u dileu</item>
+    <!-- Displayed while deleting one conversation -->
+    <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'i dileu</item>
+    <item quantity="two">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u dileu</item>
+    <item quantity="few">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u dileu</item>
+    <item quantity="many">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u dileu</item>
+    <!-- Displayed while deleting multiple conversations -->
+    <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; wedi\'u dileu</item>
+  </plurals>
   <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
   <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
   <!-- Displayed when swiping away a single conversation to remove the currently displayed folder [CHAR LIMIT=80] -->
@@ -186,9 +270,19 @@
   <!-- Conversation view -->
   <!--  Text anchor for control to add / change labels on a conversation when
           viewing it. [CHAR LIMIT=40] -->
+  <string name="add_label">Ychwanegu ffolder</string>
   <!-- New Message notification text that appears over conversation view on incoming messages. [CHAR LIMIT=40] -->
+  <plurals name="new_incoming_messages">
+    <item quantity="zero"><xliff:g id="count">%1$d</xliff:g> negeseuon newydd</item>
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+    <item quantity="two"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+    <item quantity="few"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+    <item quantity="many"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+  </plurals>
   <!-- Conversation message header strings -->
   <!--  Text for showing the date and expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
+  <string name="date_and_view_details"><xliff:g id="date">%1$s</xliff:g> &lt;a href=\'http://www.enghraifft.cymru\'&gt;Gweld manylion&lt;/a&gt;</string>
   <!--  Text for collapsing recipient details in a message when viewing it. [CHAR LIMIT=40] -->
   <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
   <!-- Shown to display the bcc recipient(s) of the message [CHAR LIMIT=10] -->
@@ -211,13 +305,16 @@
   <!-- Displayed above an HTML message to always show images in messages from that sender [CHAR LIMIT=40] -->
   <!-- Shown in a toast to acknowledge always showing images for a sender [CHAR LIMIT=100] -->
   <!-- Display format of an email recipient, displayed in expanded message details [CHAR LIMIT=10] -->
+  <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g></string>
   <!-- Display format of an email sender if the message has a via domain set, displayed in expanded message details [CHAR LIMIT=15] -->
+  <string name="address_display_format_with_via_domain"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g> trwy <xliff:g id="via_domain">%3$s</xliff:g></string>
   <!-- Displayed for one second after user saves message as draft [CHAR LIMIT=50]-->
   <!-- Displayed for one second while message is being sent [CHAR LIMIT=50]-->
   <string name="sending_message">Yn anfon neges\u2026</string>
   <!-- Displayed for one second after trying to send with invalid recipients [CHAR LIMIT=50]-->
   <!-- Shown in HTML to allow the user to see quoted text; should match Gmail web UI. [CHAR LIMIT=50] -->
   <!-- Shown in HTML to allow the user to hide quoted text; should match Gmail web UI. 25BC is Unicode for a downward-pointing triangle. [CHAR LIMIT=50] -->
+  <string name="hide_elided">\u25BC Cuddio\'r testun a ddyfynnwyd</string>
   <!-- Shown as a heading in message view when a message contains a calendar invite [CHAR LIMIT=30]-->
   <!-- Shown as a button label in message view to launch calendar to see this invite [CHAR LIMIT=40]-->
   <!-- Shown as a text label in message view describing the choices of whether to attend an invite [CHAR LIMIT=20]-->
@@ -225,6 +322,7 @@
   <!-- Shown as a button label in message view to give a tentative response to a calendar invite [CHAR LIMIT=20]-->
   <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
   <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
+  <string name="enumeration_comma">,\u0020</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
   <string name="send_anyway">Anfon beth bynnag</string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
@@ -244,7 +342,18 @@
          button that will allow the user to configure sync for the folder [CHAR LIMIT=35] -->
   <!-- Displayed in widget when unread count > 99. [CHAR LIMIT=4] -->
   <!-- Displayed when there are >99 unseen messages, see:unseen_count [CHAR LIMIT=3] -->
+  <string name="large_unseen_count"><xliff:g id="count" example="99">%d</xliff:g>+ newydd</string>
   <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
+  <string name="unseen_count"><xliff:g id="count" example="4">%d</xliff:g> newydd</string>
+  <plurals name="actionbar_unread_messages">
+    <item quantity="zero"><xliff:g id="count" example="4">%1$d</xliff:g> heb eu darllen</item>
+    <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> heb ei darllen</item>
+    <item quantity="two"><xliff:g id="count" example="4">%1$d</xliff:g> heb eu darllen</item>
+    <item quantity="few"><xliff:g id="count" example="4">%1$d</xliff:g> heb eu darllen</item>
+    <item quantity="many"><xliff:g id="count" example="4">%1$d</xliff:g> heb eu darllen</item>
+    <!-- String for the actionbar subtitle when messages are unread [CHAR LIMIT=30] -->
+    <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> heb eu darllen</item>
+  </plurals>
   <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
   <!-- Displayed while we load a conversation. [CHAR LIMIT=100] -->
   <!-- Name of the Mailboxes activity [CHAR LIMIT=30] -->
@@ -257,6 +366,7 @@
   <!-- Title of the search dialog -->
   <!-- Shown in light gray in the Search box when no text has been entered [CHAR LIMIT=20]-->
   <!-- Search Results: Text for status of the search when the results are completely loaded [CHAR LIMIT=10] -->
+  <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
   <!-- Voice search is not supported on this device [CHAR LIMIT=100] -->
   <!-- Description of the back button [CHAR LIMIT=100] -->
   <!-- Description of the voice icon [CHAR LIMIT=100] -->
@@ -270,6 +380,7 @@
   <!-- Wait fragment strings -->
   <!-- Displayed in title bar during the initial sync  [CHAR LIMIT=40] -->
   <!-- Title for the screen displayed during the initial sync [CHAR LIMIT=100]  -->
+  <string name="not_synced_title">Cyfrif heb ei gysoni</string>
   <!-- Displayed in the middle of the screen during the initial sync [CHAR LIMIT=300]-->
   <!-- Displayed at the bottom of the screen during the initial sync. If pressed will sync users mail for the selected account. [CHAR LIMIT=12]  -->
   <!-- Displayed at the bottom of the screen during the initial sync. If pressed will open sync setting screen for accounts. [CHAR LIMIT=30]  -->
@@ -279,6 +390,7 @@
   <!-- Format string used when displaying a summary in a message summary in list notification that was triggered by several new conversations.
          Extra space between sender and subject is intentional.  [CHAR LIMIT=120] -->
   <!-- Format string used when displaying the big text of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
+  <string name="single_new_message_notification_big_text"><xliff:g id="subject">%1$s</xliff:g>\n<xliff:g id="snippet">%2$s</xliff:g></string>
   <!-- Displayed in a message subheading. Ignore the current spam warning. [CHAR LIMIT=30] -->
   <!-- Displayed in the message heading. Shown if the message was sent via another domain. [CHAR LIMIT=10] -->
   <!-- Button text for the button to click to have the user sign in again or adjust their credentials. [CHAR LIMIT=20]-->
@@ -289,6 +401,7 @@
   <!-- Dialog title when a sync error occurs. [CHAR LIMIT=100]-->
   <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
   <!-- Token used as a divider between senders -->
+  <string name="draft_count_format">\u00A0(<xliff:g id="count">%1$s</xliff:g>)</string>
   <!-- Token to replace senders that are not visible -->
   <!-- Token used to space out elided senders that are not visible -->
   <!-- Token used to space out message count, draft text, and senders -->
@@ -302,6 +415,7 @@
   <!-- Description for each auto-advance option to display after the user has picked one -->
   <!-- The entries here must correspond to the entries in prefEntries_autoAdvance [CHAR LIMIT=60] -->
   <!-- Dialog title for the auto-advance list -->
+  <string name="prefDialogTitle_autoAdvance">Mynd ymlaen i</string>
   <!-- TODO: these pref keys that are never user visible should probably be
     moved to a donttranslate file -->
   <!-- The default auto-advance mode -->
@@ -329,8 +443,18 @@
   <!-- String to be shown instead of a veiled addresses. [CHAR LIMIT=50] -->
   <!-- Summary string to be shown instead of a veiled recipient. [CHAR LIMIT=50] -->
   <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
+  <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
   <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
+  <plurals name="new_messages">
+    <item quantity="zero"><xliff:g id="count">%1$d</xliff:g> negeseuon newydd</item>
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+    <item quantity="two"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+    <item quantity="few"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+    <item quantity="many"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> neges newydd</item>
+  </plurals>
   <!-- Format string used when displaying the title of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
+  <string name="single_new_message_notification_title"><xliff:g id="sender">%1$s</xliff:g>: <xliff:g id="subject">%2$s</xliff:g></string>
   <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
   <!-- Settings screen, preference name for archive vs. delete [CHAR LIMIT=50] -->
   <!-- Options to select from for whether to have archive or delete as the remove action [CHAR LIMIT=50] -->
@@ -349,9 +473,18 @@
   <!-- Dialog title for empty trash confirmation dialog [CHAR LIMIT=100] -->
   <!-- Dialog title for empty spam confirmation dialog [CHAR LIMIT=100] -->
   <!-- Dialog message for empty folder confirmation dialog [CHAR LIMIT=300] -->
+  <plurals name="empty_folder_dialog_message">
+    <item quantity="zero">Caiff <xliff:g id="count">%1$d</xliff:g> negeseuon eu dileu yn barhaol.</item>
+    <item quantity="one">Caiff <xliff:g id="count">%1$d</xliff:g> neges ei dileu yn barhaol.</item>
+    <item quantity="two">Caiff <xliff:g id="count">%1$d</xliff:g> neges eu dileu yn barhaol.</item>
+    <item quantity="few">Caiff <xliff:g id="count">%1$d</xliff:g> neges eu dileu yn barhaol.</item>
+    <item quantity="many">Caiff <xliff:g id="count">%1$d</xliff:g> neges eu dileu yn barhaol.</item>
+    <item quantity="other">Caiff <xliff:g id="count">%1$d</xliff:g> neges eu dileu yn barhaol.</item>
+  </plurals>
   <!-- Strings used for accessibility for the items that toggles the drawer action  -->
   <!-- Content description for the folder icon for nested folders. -->
   <!--  Button, "Add account" in the preference screen [CHAR LIMIT=30] -->
+  <string name="add_account">Ychwanegu cyfrif</string>
   <!-- Content Provider Authority for Eml Attachments -->
   <!-- Content description for the "X" image icon for dismissing a tip. This is used for spoken description of the icon when touch explore is enabled. [CHAR LIMIT=50] -->
   <!-- Tip for letting user know that their device auto-sync setting
@@ -361,8 +494,11 @@
         is turned off, in case they are wondering why they are not
         receiving any new mail. Then prompts the user to enable sync in Gmail's
         account settings. [CHAR LIMIT=250] -->
+  <string name="account_sync_off">Mae cysoniad cyfrif i ffwrdd. Gellir ei droi ymlaen yn &lt;a href=\'http://www.enghraifft.cymru\'&gt;Cyfrif\u00A0gosodiadau.&lt;/a&gt;</string>
   <!-- Hint text that there are X number of unsent messages users
     Outbox. [CHAR LIMIT=250] -->
+  <string name="unsent_messages_in_outbox"><xliff:g id="number">%1$s</xliff:g>
+    heb eu hanfon yn <xliff:g id="outbox">%2$s</xliff:g></string>
   <!-- Title of dialog to turn auto-sync on [CHAR LIMIT=100] -->
   <!-- Text of dialog to turn auto-sync on [CHAR LIMIT=500] -->
   <!-- Phone (vs. tablet) for describing this device [CHAR LIMIT=30] -->
@@ -374,14 +510,32 @@
   <!-- Menu item text to that when clicked will allow a user to print an email message. [CHAR LIMIT=25] -->
   <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
   <!-- Number of messages in a conversation [CHAR LIMIT=30]-->
+  <plurals name="num_messages">
+    <item quantity="zero"><xliff:g id="count">%1$d</xliff:g> negeseuon</item>
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> neges</item>
+    <item quantity="two"><xliff:g id="count">%1$d</xliff:g> neges</item>
+    <item quantity="few"><xliff:g id="count">%1$d</xliff:g> neges</item>
+    <item quantity="many"><xliff:g id="count">%1$d</xliff:g> neges</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> neges</item>
+  </plurals>
   <!-- Display format of an email recipient, displayed in printed message details [CHAR LIMIT=10] -->
   <!-- Shown to display the date of the message [CHAR LIMIT=50] -->
+  <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> am <xliff:g id="time">%2$s</xliff:g></string>
   <!-- Shown to display the to recipient(s) of the message if the message is a draft [CHAR LIMIT=20] -->
   <!-- Shown to display in the message header if the message is a draft and there are no "to" addresses in the draft [CHAR LIMIT=10] -->
   <!-- Shown to inform the user that the quoted text for this message has been hidden. [CHAR LIMIT=50] -->
   <!-- Number of attachments in a message [CHAR LIMIT=30]-->
+  <plurals name="num_attachments">
+    <item quantity="zero"><xliff:g id="count">%1$d</xliff:g> atodiadau</item>
+    <item quantity="one"><xliff:g id="count">%1$d</xliff:g> atodiad</item>
+    <item quantity="two"><xliff:g id="count">%1$d</xliff:g> atodiad</item>
+    <item quantity="few"><xliff:g id="count">%1$d</xliff:g> atodiad</item>
+    <item quantity="many"><xliff:g id="count">%1$d</xliff:g> atodiad</item>
+    <item quantity="other"><xliff:g id="count">%1$d</xliff:g> atodiad</item>
+  </plurals>
   <!-- Provider name for widgets -->
   <!-- Title to display when an email has no subject. [CHAR LIMIT=50]-->
+  <string name="no_subject">(Dim pwnc)</string>
   <!-- Action bar title for the screen to set a vacation responder (out-of-office) message. [CHAR LIMIT=50] -->
   <!-- Account preference: Title of the setting to set a vacation responder (out-of-office) message. [CHAR LIMIT=50]-->
   <!-- Shown in vacation responder; the body of the message [CHAR LIMIT=100] -->
@@ -408,6 +562,7 @@
             when the vacation responder is on and has both a start and end date set. [CHAR LIMIT=50]-->
   <!-- Informs the user that both the subject and body of the vacation responder are empty
          when they try to enable the responder. [CHAR LIMIT=50]-->
+  <string name="vacation_responder_empty_subject_and_body_warning">Rho bwnc neu neges</string>
   <!-- Content description for the attach button that appears in compose for tablet layouts.
          This is not to be confused with the menu items, this is an actual button in the layout.
          On v18 and below devices, this button is used to attach photos only and so the text
@@ -427,6 +582,7 @@
   <string name="feedback">Anfon adborth</string>
   <!-- Copyright text [CHAR LIMIT=50] -->
   <!-- Version text [CHAR LIMIT=50] -->
+  <string name="version"><xliff:g id="app_name" example="Email">%1$s</xliff:g> fersiwn<xliff:g id="version" example="2.2.1">%2$s</xliff:g></string>
   <!-- Menu item: view a webpage about this application [CHAR LIMIT=50]; this MUST be overlayed -->
   <!-- URL to a webpage about this application; this MUST be overlayed -->
   <!-- Menu item: print... [CHAR LIMIT=25] -->
