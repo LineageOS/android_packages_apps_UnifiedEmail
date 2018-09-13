@@ -25,6 +25,6 @@
   *** setAnimatedHeightFraction(...);
 }
 
--keepclasseswithmembers class * extends com.android.mail.ui.ConversationSpecialItemView {
+-keepclasseswithmembers class * implements com.android.mail.ui.ConversationSpecialItemView {
   *** setAnimatedHeight(...);
 }
