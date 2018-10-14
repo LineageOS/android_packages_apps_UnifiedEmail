@@ -43,7 +43,9 @@
   <!-- Compose screen, Prefix to forwarded message subject. Do not translate. -->
   <!-- Compose screen, displayed at the top of a message being replied to. Please preserve the HTML entities (surrounded by & and ;).  The two %s strings will be replaced by 1) the date 2) the person who wrote the email being responded to. [CHAR LIMIT=1000]-->
   <!-- Compose screen, displayed at the top of a message being forwarded. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000] -->
+  <string name="forward_attribution">---------- Mensaxe reunviáu ----------&lt;br&gt;De: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Data: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Asuntu: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;Pa: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
   <!-- Compose screen, displayed at the top of a message being forwarded. [CHAR LIMIT=100]-->
+  <string name="forward_attribution_no_headers">---------- Mensaxe reunviáu ----------</string>
   <!-- Compose screen, displayed at the top of a message being forwarded if there are any email addresses in the CC list. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000]-->
   <!-- Dialog text: select the type of an attachment while composing [CHAR LIMIT=100]-->
   <!-- Toast, attachment too large for single file [CHAR LIMIT=100] -->
@@ -56,6 +58,7 @@
   <!-- Messages for send confirmation dialog [CHAR LIMIT=100]-->
   <!-- Displayed for one second after discarding draft message [CHAR LIMIT=50]-->
   <!-- Formatting string for the user's signaure. [CHAR LIMIT=10] -->
+  <string name="signature">\n\n<xliff:g id="signature">%s</xliff:g></string>
   <!--  Shown in the from dropdown in front of custom from addresses. [CHAR LIMIT=15] -->
   <!-- Menu item: send this message -->
   <!-- Menu item: mark this conversation as read -->
@@ -109,6 +112,7 @@
   <!-- Attachment description for image files [CHAR LIMIT=30] -->
   <!-- Attachment description for video files [CHAR LIMIT=30] -->
   <!-- Attachment description for audio files [CHAR LIMIT=30] -->
+  <string name="attachment_audio">Audiu</string>
   <!-- Attachment description for text files [CHAR LIMIT=30] -->
   <!-- Attachment description for .doc files [CHAR LIMIT=30] -->
   <!-- Attachment description for .ppt files [CHAR LIMIT=30] -->
@@ -157,6 +161,7 @@
   <!-- String used in content description field of a conversation list item when device is in accessibility mode and the conversation was not read [CHAR LIMIT=250] -->
   <!-- Formatting string. If the subject contains the tag of a mailing-list (text surrounded with
     return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
+  <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
   <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
   <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
   <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
@@ -238,6 +243,7 @@
   <!-- Displayed for one second after trying to send with invalid recipients [CHAR LIMIT=50]-->
   <!-- Shown in HTML to allow the user to see quoted text; should match Gmail web UI. [CHAR LIMIT=50] -->
   <!-- Shown in HTML to allow the user to hide quoted text; should match Gmail web UI. 25BC is Unicode for a downward-pointing triangle. [CHAR LIMIT=50] -->
+  <string name="hide_elided">\u25BC Anubrir testu citáu</string>
   <!-- Shown as a heading in message view when a message contains a calendar invite [CHAR LIMIT=30]-->
   <!-- Shown as a button label in message view to launch calendar to see this invite [CHAR LIMIT=40]-->
   <!-- Shown as a text label in message view describing the choices of whether to attend an invite [CHAR LIMIT=20]-->
@@ -245,6 +251,7 @@
   <!-- Shown as a button label in message view to give a tentative response to a calendar invite [CHAR LIMIT=20]-->
   <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
   <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
+  <string name="enumeration_comma">, </string>
   <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
   <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
   <string name="ok">ACEUTAR</string>
@@ -270,6 +277,7 @@
   <!-- Displayed within a widget that was setup for a non-synced folder.  This is the text of the
          button that will allow the user to configure sync for the folder [CHAR LIMIT=35] -->
   <!-- Displayed in widget when unread count > 99. [CHAR LIMIT=4] -->
+  <string name="widget_large_unread_count">%d+</string>
   <!-- Displayed when there are >99 unseen messages, see:unseen_count [CHAR LIMIT=3] -->
   <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
   <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
@@ -296,6 +304,7 @@
   <!-- Button at bottom of conversation list screen if last attempt to load conversations failed [CHAR LIMIT=20]-->
   <!-- Button at bottom of conversation list screen if the folder for which contents are being shown supports loading more on demand [CHAR LIMIT=20]-->
   <!-- Text for dummy attachments to load the actual attachment. This is not an ideal string, but it's too late to add a new string and get it translated -->
+  <string name="load_attachment">@string/load_more</string>
   <!-- Shortcut strings -->
   <!-- Title for shortcut naming dialog [CHAR LIMIT=100]-->
   <!-- Wait fragment strings -->
@@ -323,10 +332,12 @@
   <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
   <!-- Token used as a divider between senders -->
   <string name="senders_split_token">,\u00A0</string>
+  <string name="draft_count_format"> (<xliff:g id="COUNT">%1$s</xliff:g>)</string>
   <!-- Token to replace senders that are not visible -->
   <!-- Token used to space out elided senders that are not visible -->
   <!-- Token used to space out message count, draft text, and senders -->
   <!-- String used in the FolderListFragment to mark the start of user-defined folders -->
+  <string name="all_folders_heading">Toles carpetes</string>
   <!-- String used in the FolderListFragment to mark the start of recent folders -->
   <!-- Dialog title when showing message header details in a popup window. [CHAR LIMIT=100]-->
   <!-- General preference: Label of the setting for the direction to move to
@@ -427,6 +438,7 @@
   <!-- Number of attachments in a message [CHAR LIMIT=30]-->
   <!-- Provider name for widgets -->
   <!-- Title to display when an email has no subject. [CHAR LIMIT=50]-->
+  <string name="no_subject">(nun hai asuntu)</string>
   <!-- Action bar title for the screen to set a vacation responder (out-of-office) message. [CHAR LIMIT=50] -->
   <!-- Account preference: Title of the setting to set a vacation responder (out-of-office) message. [CHAR LIMIT=50]-->
   <!-- Shown in vacation responder; the body of the message [CHAR LIMIT=100] -->
@@ -466,6 +478,7 @@
   <!-- URI to display the help content; this must be overlayed -->
   <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
   <!-- Copyright text [CHAR LIMIT=50] -->
+  <string name="copyright">©<xliff:g id="year" example="2010">%1$d</xliff:g> Google Inc.</string>
   <!-- Version text [CHAR LIMIT=50] -->
   <!-- Menu item: view a webpage about this application [CHAR LIMIT=50]; this MUST be overlayed -->
   <!-- URL to a webpage about this application; this MUST be overlayed -->

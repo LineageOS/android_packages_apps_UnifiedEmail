@@ -19,7 +19,7 @@
   <!-- Suggested contacts preferences -->
   <string name="prefDialogTitle_suggestedContactsMode">Modo</string>
   <string name="prefDialogTitle_suggestedContactsMode_none">Desactivado</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_none">La función de contactos sugeridos está desactivada</string>
+  <string name="prefDialogTitle_suggestedContactsMode_summary_none">La característica de contactos sugeridos está desactivada</string>
   <string name="prefDialogTitle_suggestedContactsMode_recents">Recientes</string>
   <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Solamente serán seleccionables los contactos sugeridos recientes</string>
   <string name="prefDialogTitle_suggestedContactsMode_all">Todos</string>
