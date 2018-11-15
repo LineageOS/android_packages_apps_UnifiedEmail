@@ -265,7 +265,7 @@
     <string name="unread_string">sgwrs heb ei darllen</string>
     <!-- Formatting string. If the subject contains the tag of a mailing-list (text surrounded with
     return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
-    <string name="filtered_tag">[<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
+    <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
     <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
     <string name="badge_and_subject"><xliff:g>%1$s</xliff:g> <xliff:g>%2$s</xliff:g></string>
     <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
