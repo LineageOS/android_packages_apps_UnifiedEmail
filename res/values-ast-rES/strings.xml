@@ -161,7 +161,7 @@
     <!-- String used in content description field of a conversation list item when device is in accessibility mode and the conversation was not read [CHAR LIMIT=250] -->
     <!-- Formatting string. If the subject contains the tag of a mailing-list (text surrounded with
     return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
-    <string name="filtered_tag">[<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
+    <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
     <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
     <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
     <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
@@ -251,7 +251,7 @@
     <!-- Shown as a button label in message view to give a tentative response to a calendar invite [CHAR LIMIT=20]-->
     <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
     <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
-    <string name="enumeration_comma">,</string>
+    <string name="enumeration_comma">, </string>
     <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
     <string name="ok">ACEUTAR</string>

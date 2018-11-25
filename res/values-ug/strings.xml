@@ -457,7 +457,7 @@
     <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
     <string name="storage">ساقلىغۇچ</string>
     <!-- Token used as a divider between senders -->
-    <string name="senders_split_token">،</string>
+    <string name="senders_split_token">، </string>
     <string name="draft_count_format"> (<xliff:g id="COUNT">%1$s</xliff:g>)</string>
     <!-- Token to replace senders that are not visible -->
     <!-- Token used to space out elided senders that are not visible -->
@@ -465,7 +465,7 @@
     <!-- String used in the FolderListFragment to mark the start of user-defined folders -->
     <string name="all_folders_heading">ھەممە قىسقۇچلار</string>
     <!-- String used in the FolderListFragment to mark the start of recent folders -->
-    <string name="recent_folders_heading">يېقىنقى قىسقۇچلار</string>
+    <string name="recent_folders_heading">يېقىنقى قىسقۇچلار </string>
     <!-- Dialog title when showing message header details in a popup window. [CHAR LIMIT=100]-->
     <string name="message_details_title">ئۇچۇر تەپسىلاتى</string>
     <!-- General preference: Label of the setting for the direction to move to

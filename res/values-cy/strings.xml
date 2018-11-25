@@ -286,7 +286,7 @@
     <!-- Message displayed in the outgoing message list item when the message failed to send [CHAR LIMIT=20] -->
     <string name="message_failed">Methwyd</string>
     <!-- Message displayed in a browse list item for one second after a send failed [CHAR LIMIT=26]-->
-    <string name="send_failed">Neges heb ei hanfon.</string>
+    <string name="send_failed">Neges heb ei anfon.</string>
     <!-- String used to represent "me" when used as an object pronoun. This string is used when
          showing the list of recipients of a message [CHAR LIMIT=15] -->
     <string name="me_object_pronoun">fi</string>
