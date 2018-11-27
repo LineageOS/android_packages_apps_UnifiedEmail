@@ -466,6 +466,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         launcher.startActivity(intent);
     }
 
+    /** Returns true if activity is started from an intent from an external application. */
+    public boolean isExternal() {
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -473,6 +478,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mInnerSavedState = (savedInstanceState != null) ?
                 savedInstanceState.getBundle(KEY_INNER_SAVED_STATE) : null;
         checkValidAccounts();
+    }
+
+    /** Used for escaping plaintext. If the input is null, then it will return an empty String. */
+    private static String escapeAndReplaceHtml(CharSequence text) {
+      if (text == null) {
+        return "";
+      }
+      String body = Html.escapeHtml(text);
+      // Replace \r\n and \n with <br> tags
+      return body.replaceAll("(&#13;&#10;|&#10;)", "<br>");
     }
 
     private void finishCreate() {
@@ -503,6 +518,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             message = (Message) intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
             previews = intent.getParcelableArrayListExtra(EXTRA_ATTACHMENT_PREVIEWS);
             mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
+            if (isExternal() && mRefMessage != null && !TextUtils.isEmpty(mRefMessage.bodyHtml)) {
+                mRefMessage.bodyHtml = escapeAndReplaceHtml(mRefMessage.bodyHtml);
+            }
             mRefMessageUri = (Uri) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI);
 
             if (Analytics.isLoggable()) {
@@ -1310,6 +1328,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 }
                 String body = intent.getStringExtra(EXTRA_BODY);
                 if (body != null) {
+                    if (isExternal()) {
+                        body = escapeAndReplaceHtml(body);
+                    }
                     setBody(body, false /* withSignature */);
                 }
             }
@@ -1455,7 +1476,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 } else if (EXTRA_BODY.equals(extra)) {
                     setBody(value, true /* with signature */);
                 } else if (EXTRA_QUOTED_TEXT.equals(extra)) {
-                    initQuotedText(value, true /* shouldQuoteText */);
+                     if (isExternal()) {
+                         value = escapeAndReplaceHtml(value);
+                     }
+                     initQuotedText(value, true /* shouldQuoteText */);
                 }
             }
         }
