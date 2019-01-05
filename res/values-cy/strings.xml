@@ -148,12 +148,13 @@
     <!-- Temporary text used for reporting rendering issues Googlers see in testing -->
     <!-- Temporary text used for reporting rendering improvements Googlers see in testing -->
     <!-- Menu item text to show the original version of an email conversation, before message manipulation [CHAR LIMIT=25] -->
+    <string name="menu_show_original">Troi\'n ôl at faint gwreiddiol</string>
     <!-- Menu item: launch the Settings activity -->
     <string name="menu_settings">Gosodiadau</string>
     <!-- Menu item: search through the Gmail inbox -->
     <string name="menu_search">Chwilio</string>
     <!-- Menu item: toggle drawer -->
-    <string name="menu_toggle_drawer">Drôr toglo</string>
+    <string name="menu_toggle_drawer">Toglo\'r drôr</string>
     <!-- Title of the drawer, indicating what it is used for, which is navigation of the app -->
     <string name="drawer_title">Llywio</string>
     <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as important [CHAR LIMIT=30] -->
@@ -535,9 +536,11 @@
     <!-- Shown as a text label in message view describing the choices of whether to attend an invite [CHAR LIMIT=20]-->
     <string name="message_invite_label_attending">Am fynd?</string>
     <!-- Shown as a button label in message view to accept a calendar invite [CHAR LIMIT=20]-->
+    <string name="message_invite_accept">Derbyn</string>
     <!-- Shown as a button label in message view to give a tentative response to a calendar invite [CHAR LIMIT=20]-->
     <string name="message_invite_tentative">Efallai</string>
     <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
+    <string name="message_invite_decline">Gwrthod</string>
     <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
     <string name="enumeration_comma">,\u0020</string>
     <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
@@ -574,6 +577,7 @@
          button that will allow the user to configure sync for the folder [CHAR LIMIT=35] -->
     <string name="tap_to_configure_folder_sync">Ffolder Cysoni</string>
     <!-- Displayed in widget when unread count > 99. [CHAR LIMIT=4] -->
+    <string name="widget_large_unread_count">%d+</string>
     <!-- Displayed when there are >99 unseen messages, see:unseen_count [CHAR LIMIT=3] -->
     <string name="large_unseen_count"><xliff:g id="count" example="99">%d</xliff:g>+ newydd</string>
     <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
@@ -644,11 +648,13 @@
     <string name="cant_move_or_change_labels">Methu a\'i symud gan fod y dewis yn cynnwys nifer o wahanol gyfrifon.</string>
     <!-- Format string used when displaying a summary in a message summary in list notification that was triggered by several new conversations.
          Extra space between sender and subject is intentional.  [CHAR LIMIT=120] -->
+    <string name="multiple_new_message_notification_item"><b><xliff:g id="sender">%1$s</xliff:g></b>\u0020\u0020\u0020<xliff:g id="subject">%2$s</xliff:g></string>
     <!-- Format string used when displaying the big text of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
     <string name="single_new_message_notification_big_text"><xliff:g id="subject">%1$s</xliff:g>\n<xliff:g id="snippet">%2$s</xliff:g></string>
     <!-- Displayed in a message subheading. Ignore the current spam warning. [CHAR LIMIT=30] -->
     <string name="ignore_spam_warning">Anwybyddu. Dw i\'n ymddiried yn y neges.</string>
     <!-- Displayed in the message heading. Shown if the message was sent via another domain. [CHAR LIMIT=10] -->
+    <string name="via_domain">trwy <xliff:g id="viaDomain">%1$s</xliff:g></string>
     <!-- Button text for the button to click to have the user sign in again or adjust their credentials. [CHAR LIMIT=20]-->
     <string name="signin">Mewngofnodi</string>
     <!-- Button text for the button to click for more information. [CHAR LIMIT=20]-->
@@ -664,6 +670,7 @@
     <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
     <string name="storage">Storfa</string>
     <!-- Token used as a divider between senders -->
+    <string name="senders_split_token">,\u00A0</string>
     <string name="draft_count_format">\u00A0(<xliff:g id="count">%1$s</xliff:g>)</string>
     <!-- Token to replace senders that are not visible -->
     <!-- Token used to space out elided senders that are not visible -->
@@ -708,6 +715,7 @@
     "Clear picture approvals" in preferences [CHAR LIMIT=200]-->
     <!-- Settings screen, message of dialog shown to confirm action when tapping
     "Clear picture approvals" [CHAR LIMIT=1000]-->
+    <string name="clear_display_images_whitelist_dialog_message">Stopio dangos delweddau mewn negeseuon gan anfonwyr rwyt wedi eu caniatáu.</string>
     <!-- Message shown in toast when the user taps "Restore default for "Show pictures"" in Gmail general preferences. [CHAR LIMIT=50] -->
     <string name="sender_whitelist_cleared">Ni chaiff lluniau eu dangos yn awtomatig.</string>
     <!-- Settings screen, name of the setting that lets the user choose their signature [CHAR LIMIT=50] -->
@@ -797,8 +805,8 @@
         <item quantity="other">Caiff <xliff:g id="count">%1$d</xliff:g> neges eu dileu yn barhaol.</item>
     </plurals>
     <!-- Strings used for accessibility for the items that toggles the drawer action  -->
-    <string name="drawer_open">Agor y blwch llywio</string>
-    <string name="drawer_close">Cau blwch pori</string>
+    <string name="drawer_open">Agor y drôr llywio</string>
+    <string name="drawer_close">Cau\'r drôr llywio</string>
     <string name="conversation_photo_welcome_text">Cyffyrdda delwedd anfonwr i ddewis y sgwrs honno.</string>
     <string name="long_press_to_select_tip">Cyffyrdda a dal i ddewis un sgwrs, yna cyffwrdd i ddewis rhagor.</string>
     <!-- Content description for the folder icon for nested folders. -->
@@ -965,8 +973,11 @@
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
     <string name="reply_choice_later">Iawn. Ddo\'i nôl atat ti.</string>
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_smiling_face">:)</string>
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_frowning_face">:(</string>
     <!-- Settings screen, heading for grouping action confirmation related  settings together [CHAR LIMIT=100] -->
+    <string name="preference_header_action_confirmations">Cadarnhad Gweithredoedd</string>
     <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
     <string name="preference_confirm_before_delete_title">Cadarnhau cyn dileu</string>
     <!--  Settings screen, confirm on action option title [CHAR LIMIT=150] -->
