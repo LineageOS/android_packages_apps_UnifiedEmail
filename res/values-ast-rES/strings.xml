@@ -33,15 +33,19 @@
     <!-- The actual string value doesn't matter, it should never appear. -->
     <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
     <!--  Button name: discard this message [CHAR LIMIT=15] -->
+    <string name="discard">Escartar</string>
     <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
     <!-- The action bar title for the default compose mode [CHAR LIMIT=10] -->
+    <string name="compose_title">Componer</string>
     <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
     <!-- Formatting string for the subject when it contains a reply or forward identifier. Do not translate.-->
     <!-- Compose screen, prefixed to the subject of a message when replying to it (if not already present). Do not translate. -->
     <!-- Compose screen, Prefix to forwarded message subject. Do not translate. -->
     <!-- Compose screen, displayed at the top of a message being replied to. Please preserve the HTML entities (surrounded by & and ;).  The two %s strings will be replaced by 1) the date 2) the person who wrote the email being responded to. [CHAR LIMIT=1000]-->
     <!-- Compose screen, displayed at the top of a message being forwarded. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000] -->
+    <string name="forward_attribution">---------- Mensaxe reunviáu ----------&lt;br&gt;De: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Data: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Asuntu: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;Pa: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
     <!-- Compose screen, displayed at the top of a message being forwarded. [CHAR LIMIT=100]-->
+    <string name="forward_attribution_no_headers">---------- Mensaxe reunviáu ----------</string>
     <!-- Compose screen, displayed at the top of a message being forwarded if there are any email addresses in the CC list. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000]-->
     <!-- Dialog text: select the type of an attachment while composing [CHAR LIMIT=100]-->
     <!-- Toast, attachment too large for single file [CHAR LIMIT=100] -->
@@ -49,10 +53,12 @@
     <!-- Toast, attachment too large when existing attachments exist [CHAR LIMIT=100] -->
     <!-- Toast, problem attaching file [CHAR LIMIT=100] -->
     <!-- Toast, cannot attach the provided file because the calling context doesn't have the permission [CHAR LIMIT=100] -->
+    <string name="attachment_permission_denied">Ñegóse el permisu pal axuntu.</string>
     <!-- Displayed for one second after trying to send with no recipients in To field [CHAR LIMIT=200]-->
     <!-- Messages for send confirmation dialog [CHAR LIMIT=100]-->
     <!-- Displayed for one second after discarding draft message [CHAR LIMIT=50]-->
     <!-- Formatting string for the user's signaure. [CHAR LIMIT=10] -->
+    <string name="signature">\n\n<xliff:g id="signature">%s</xliff:g></string>
     <!--  Shown in the from dropdown in front of custom from addresses. [CHAR LIMIT=15] -->
     <!-- Menu item: send this message -->
     <!-- Menu item: mark this conversation as read -->
@@ -89,6 +95,7 @@
     <!-- Menu item: launch the Settings activity -->
     <!-- Menu item: search through the Gmail inbox -->
     <!-- Menu item: toggle drawer -->
+    <string name="menu_toggle_drawer">Alternar caxón</string>
     <!-- Title of the drawer, indicating what it is used for, which is navigation of the app -->
     <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as important [CHAR LIMIT=30] -->
     <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as not important [CHAR LIMIT=30] -->
@@ -105,6 +112,7 @@
     <!-- Attachment description for image files [CHAR LIMIT=30] -->
     <!-- Attachment description for video files [CHAR LIMIT=30] -->
     <!-- Attachment description for audio files [CHAR LIMIT=30] -->
+    <string name="attachment_audio">Audiu</string>
     <!-- Attachment description for text files [CHAR LIMIT=30] -->
     <!-- Attachment description for .doc files [CHAR LIMIT=30] -->
     <!-- Attachment description for .ppt files [CHAR LIMIT=30] -->
@@ -112,10 +120,12 @@
     <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
     <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
     <!-- Read email screen, button name. Preview an attachment by Gview. [CHAR LIMIT=18] -->
+    <string name="preview_attachment">Previsualización</string>
     <!-- Read email screen, button name. Save an attachment to sd card. [CHAR LIMIT=10] -->
     <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
     <!-- A supplemental option on attachments for apps to override. This string intentionally blank here. [CHAR LIMIT=20] -->
     <!-- Remove this attachment [CHAR LIMIT=50] -->
+    <string name="remove_attachment_desc">Desaniciar axuntu <xliff:g id="attachmentName">%s</xliff:g></string>
     <!-- Dialog box title [CHAR LIMIT=30] -->
     <!-- Dialog box message, displayed when we could not view an attachment. [CHAR LIMIT=200]-->
     <!-- Dialog box title. [CHAR LIMIT=30] -->
@@ -129,6 +139,7 @@
     <!-- Displayed in the action bar as a subtitle. Save in progress. [CHAR LIMIT=15] -->
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
+    <string name="choosertitle_sharevia">Compartir per</string>
     <!-- Menu item to open a link  [CHAR LIMIT=50]-->
     <!-- Menu item to copy the selection  [CHAR LIMIT=50]-->
     <!-- Menu item to copy a link  [CHAR LIMIT=50]-->
@@ -143,11 +154,14 @@
     <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMIT=250] -->
     <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode and the message was received today. [CHAR LIMI=250] -->
     <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMIT=250] -->
+    <string name="content_description_with_folders"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> tocante a <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> el <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g> etiquetes: <xliff:g id="folders">%7$s</xliff:g></string>
     <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode and the message was received today. [CHAR LIMI=250] -->
+    <string name="content_description_today_with_folders"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> tocante a <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> a les <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g> etiquetes: <xliff:g id="folders">%7$s</xliff:g></string>
     <!-- String used in content description field of a conversation list item when device is in accessibility mode and the conversation was read [CHAR LIMIT=250] -->
     <!-- String used in content description field of a conversation list item when device is in accessibility mode and the conversation was not read [CHAR LIMIT=250] -->
     <!-- Formatting string. If the subject contains the tag of a mailing-list (text surrounded with
     return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
+    <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
     <!-- Displayed in conversation list item in the form of "badge subject" [CHAR LIMIT=7] -->
     <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
     <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
@@ -158,10 +172,19 @@
          showing the list of recipients of a message [CHAR LIMIT=15] -->
     <!-- String used to represent "me"/"I" when used as an subject pronoun. This string is use when
          showing the list of senders for a conversation list item. [CHAR LIMIT=15] -->
+    <plurals name="confirm_discard_drafts_conversation">
+        <!-- Dialog message to confirm discarding a single draft message [CHAR LIMIT=50] -->
+        <item quantity="one">¿Escartar esti mensaxe?</item>
+        <!-- Dialog message to confirm discarding many draft messages [CHAR LIMIT=50] -->
+        <item quantity="other">¿Escartar estos <xliff:g id="count">%1$d</xliff:g> mensaxes?</item>
+    </plurals>
     <!-- Dialog text: confirm discard -->
+    <string name="confirm_discard_text">¿Escartar esti mensaxe?</string>
     <!-- Conversation list shared between the Activity and Widget -->
     <!-- Displayed in the middle of the screen when conversations are being loaded [CHAR LIMIT 100]-->
+    <string name="loading_conversations">Cargando\u2026</string>
     <!-- Displayed in the middle of the screen when an inbox is empty [CHAR LIMIT 100]-->
+    <string name="empty_inbox">¡Too fecho! Qu\'esfrutes el día.</string>
     <!-- Displayed in the middle of the screen when a search returns no results [CHAR LIMIT 100]-->
     <!-- Displayed in the middle of the screen when the spam folder is empty [CHAR LIMIT 100]-->
     <!-- Displayed in the middle of the screen when the trash folder is empty [CHAR LIMIT 100]-->
@@ -169,6 +192,10 @@
     <!-- Displayed in the middle of the screen when a folder is loading [CHAR LIMIT 100]-->
     <!-- Undo bar strings -->
     <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
+    <plurals name="conversation_unstarred">
+        <item quantity="one">Desmarcando <xliff:g id="count">%1$d</xliff:g> conversación</item>
+        <item quantity="other">Desmarcando <xliff:g id="count">%1$d</xliff:g> conversaciones</item>
+    </plurals>
     <!-- The following are shown as a toast after the operation has completed -->
     <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
     <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
@@ -177,10 +204,15 @@
     <!-- Search Results: Text for header that is shown above search results [CHAR LIMIT=30] -->
     <!-- Toast shown when the user taps the search hard key when viewing an account that does not support search [CHAR LIMIT=100] -->
     <!-- Accessibility description for the search suggestion item [CHAR LIMIT=100] -->
+    <string name="search_suggestion_desc">Suxerencia: <xliff:g id="suggestion">%s</xliff:g></string>
     <!-- Conversation view -->
     <!--  Text anchor for control to add / change labels on a conversation when
           viewing it. [CHAR LIMIT=40] -->
     <!-- New Message notification text that appears over conversation view on incoming messages. [CHAR LIMIT=40] -->
+    <plurals name="new_incoming_messages">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> mensaxe nuevu</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> mensaxes nuevos</item>
+    </plurals>
     <!-- Conversation message header strings -->
     <!--  Text for showing the date and expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
     <!--  Text for collapsing recipient details in a message when viewing it. [CHAR LIMIT=40] -->
@@ -211,6 +243,7 @@
     <!-- Displayed for one second after trying to send with invalid recipients [CHAR LIMIT=50]-->
     <!-- Shown in HTML to allow the user to see quoted text; should match Gmail web UI. [CHAR LIMIT=50] -->
     <!-- Shown in HTML to allow the user to hide quoted text; should match Gmail web UI. 25BC is Unicode for a downward-pointing triangle. [CHAR LIMIT=50] -->
+    <string name="hide_elided">\u25BC Anubrir testu citáu</string>
     <!-- Shown as a heading in message view when a message contains a calendar invite [CHAR LIMIT=30]-->
     <!-- Shown as a button label in message view to launch calendar to see this invite [CHAR LIMIT=40]-->
     <!-- Shown as a text label in message view describing the choices of whether to attend an invite [CHAR LIMIT=20]-->
@@ -218,14 +251,25 @@
     <!-- Shown as a button label in message view to give a tentative response to a calendar invite [CHAR LIMIT=20]-->
     <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
     <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
+    <string name="enumeration_comma">, </string>
     <!-- Button name, displayed in dialogs [CHAR LIMIT=20]-->
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
+    <string name="ok">ACEUTAR</string>
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
     <!-- Button name, displayed in dialogs [CHAR LIMIT=10] -->
     <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
     <!-- Button name, used as part of a multi-step process [CHAR LIMIT=10] -->
     <!-- Sync status errors. Please do not change the order [CHAR LIMIT=100] -->
+    <string-array name="sync_status">
+        <item>Success</item>
+        <item>No connection</item>
+        <item>Couldn\'t sign in</item>
+        <item>Fallu de seguranza</item>
+        <item>Couldn\'t sync</item>
+        <item>Internal Error</item>
+        <item>Server Error</item>
+    </string-array>
     <!-- Widget strings -->
     <!-- Displayed when user adds a new widget. Tapping on the widget in this
           mode will bring user to the account selection screen [CHAR LIMIT=35] -->
@@ -233,10 +277,12 @@
     <!-- Displayed within a widget that was setup for a non-synced folder.  This is the text of the
          button that will allow the user to configure sync for the folder [CHAR LIMIT=35] -->
     <!-- Displayed in widget when unread count > 99. [CHAR LIMIT=4] -->
+    <string name="widget_large_unread_count">%d+</string>
     <!-- Displayed when there are >99 unseen messages, see:unseen_count [CHAR LIMIT=3] -->
     <!-- Displayed when there are unseen messages [CHAR LIMIT=3] [BACKUP_MESSAGE_ID: 3377106103106345367] -->
     <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
     <!-- Displayed while we load a conversation. [CHAR LIMIT=100] -->
+    <string name="loading_conversation">Cargando\u2026</string>
     <!-- Name of the Mailboxes activity [CHAR LIMIT=30] -->
     <!-- Name of the Folders activity [CHAR LIMIT=30] -->
     <!-- Name of the Folder shortcut widget. Should use "Email" to refer to the app. [CHAR LIMIT=30] -->
@@ -246,15 +292,19 @@
     <!-- Search -->
     <!-- Title of the search dialog -->
     <!-- Shown in light gray in the Search box when no text has been entered [CHAR LIMIT=20]-->
+    <string name="search_hint">Search</string>
     <!-- Search Results: Text for status of the search when the results are completely loaded [CHAR LIMIT=10] -->
     <!-- Voice search is not supported on this device [CHAR LIMIT=100] -->
+    <string name="voice_search_not_supported">La gueta per voz nun se sofita nesti preséu.</string>
     <!-- Description of the back button [CHAR LIMIT=100] -->
     <!-- Description of the voice icon [CHAR LIMIT=100] -->
+    <string name="search_voice_desc">Anicia la gueta per voz</string>
     <!-- Description of the clear icon (clears the current input text in the search bar) [CHAR LIMIT=100] -->
     <!-- Shown in conversation list footer when application cannot make a connection [CHAR LIMIT=20]-->
     <!-- Button at bottom of conversation list screen if last attempt to load conversations failed [CHAR LIMIT=20]-->
     <!-- Button at bottom of conversation list screen if the folder for which contents are being shown supports loading more on demand [CHAR LIMIT=20]-->
     <!-- Text for dummy attachments to load the actual attachment. This is not an ideal string, but it's too late to add a new string and get it translated -->
+    <string name="load_attachment">@string/load_more</string>
     <!-- Shortcut strings -->
     <!-- Title for shortcut naming dialog [CHAR LIMIT=100]-->
     <!-- Wait fragment strings -->
@@ -268,6 +318,7 @@
         come from different accounts -->
     <!-- Format string used when displaying a summary in a message summary in list notification that was triggered by several new conversations.
          Extra space between sender and subject is intentional.  [CHAR LIMIT=120] -->
+    <string name="multiple_new_message_notification_item"><b><xliff:g id="sender">%1$s</xliff:g></b>\u0020\u0020\u0020<xliff:g id="subject">%2$s</xliff:g></string>
     <!-- Format string used when displaying the big text of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
     <!-- Displayed in a message subheading. Ignore the current spam warning. [CHAR LIMIT=30] -->
     <!-- Displayed in the message heading. Shown if the message was sent via another domain. [CHAR LIMIT=10] -->
@@ -275,14 +326,18 @@
     <!-- Button text for the button to click for more information. [CHAR LIMIT=20]-->
     <!-- Button text for the button to click to report feedback. [CHAR LIMIT=20]-->
     <!-- Button text for the button to click to show newly received messages in the active thread. [CHAR LIMIT=20]-->
+    <string name="show">Amosar</string>
     <!-- Dialog title when a sync error occurs. [CHAR LIMIT=50]-->
     <!-- Dialog title when a sync error occurs. [CHAR LIMIT=100]-->
     <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
     <!-- Token used as a divider between senders -->
+    <string name="senders_split_token">,\u00A0</string>
+    <string name="draft_count_format"> (<xliff:g id="COUNT">%1$s</xliff:g>)</string>
     <!-- Token to replace senders that are not visible -->
     <!-- Token used to space out elided senders that are not visible -->
     <!-- Token used to space out message count, draft text, and senders -->
     <!-- String used in the FolderListFragment to mark the start of user-defined folders -->
+    <string name="all_folders_heading">Toles carpetes</string>
     <!-- String used in the FolderListFragment to mark the start of recent folders -->
     <!-- Dialog title when showing message header details in a popup window. [CHAR LIMIT=100]-->
     <!-- General preference: Label of the setting for the direction to move to
@@ -302,6 +357,7 @@
     <!-- Settings screen, message of dialog shown to confirm action when tapping
     "Clear picture approvals" [CHAR LIMIT=1000]-->
     <!-- Message shown in toast when the user taps "Restore default for "Show pictures"" in Gmail general preferences. [CHAR LIMIT=50] -->
+    <string name="sender_whitelist_cleared">Les semeyes nun s\'amosarán automáticamente.</string>
     <!-- Settings screen, name of the setting that lets the user choose their signature [CHAR LIMIT=50] -->
     <!-- Settings screen, title of the dialog that lets the user configure their signature [CHAR LIMIT=50] -->
     <!-- Settings screen, setting summary text when no signature set [CHAR LIMIT=100] -->
@@ -322,9 +378,19 @@
     <!-- Format string used when displaying the title of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
     <!-- Settings screen, what to display for Ringtone when the user chooses "silent" [CHAR LIMIT=100]-->
     <!-- Settings screen, preference name for archive vs. delete [CHAR LIMIT=50] -->
+    <string name="preference_removal_action_title">Aición por defeutu</string>
     <!-- Options to select from for whether to have archive or delete as the remove action [CHAR LIMIT=50] -->
+    <string-array name="prefEntries_removal_action">
+        <item>Archive</item>
+        <item>Desaniciar</item>
+    </string-array>
     <!-- Description of currently selected option of whether to use archive or delete as remove action [CHAR LIMIT=200] -->
+    <string-array name="prefSummaries_removal_action_summary">
+        <item>Archive</item>
+        <item>Desaniciar</item>
+    </string-array>
     <!-- Dialog title for the choosing whether to use archive or delete as remove action [CHAR LIMIT=150] -->
+    <string name="prefDialogTitle_removal_action">Aición por defeutu</string>
     <!-- The default value -->
     <!--  Settings screen, Reply to all default setting title  [CHAR LIMIT=30] -->
     <!--  Settings screen, Reply to all default setting summary [CHAR LIMIT=70] -->
@@ -359,6 +425,7 @@
     <!-- Confirm button text for dialog to turn auto-sync on [CHAR
          LIMIT=30] -->
     <!-- Button in conversation list to show more folders [CHAR LIMIT=50] -->
+    <string name="show_n_more_folders">Amosar <xliff:g id="number">%1$s</xliff:g> carpetes</string>
     <!-- Button in conversation list to hide folders [CHAR LIMIT=50] -->
     <!-- Menu item text to that when clicked will allow a user to print an email message. [CHAR LIMIT=25] -->
     <!-- Menu item text to that when clicked will allow a user to print an email conversation. [CHAR LIMIT=25] -->
@@ -371,6 +438,7 @@
     <!-- Number of attachments in a message [CHAR LIMIT=30]-->
     <!-- Provider name for widgets -->
     <!-- Title to display when an email has no subject. [CHAR LIMIT=50]-->
+    <string name="no_subject">(nun hai asuntu)</string>
     <!-- Action bar title for the screen to set a vacation responder (out-of-office) message. [CHAR LIMIT=50] -->
     <!-- Account preference: Title of the setting to set a vacation responder (out-of-office) message. [CHAR LIMIT=50]-->
     <!-- Shown in vacation responder; the body of the message [CHAR LIMIT=100] -->
@@ -385,6 +453,7 @@
     <!-- Shown as an option in a dialog to set a custom end date for a vacation responder message.  [CHAR LIMIT=30] -->
     <!-- Shown as an option in a dialog to set no end date for a vacation responder message. [CHAR LIMIT=30]-->
     <!-- Asks the user whether they wish to discard changes. [CHAR LIMIT=50]-->
+    <string name="discard_changes">¿Escartar cambeos?</string>
     <!-- Toast, vacation responder changes were saved. [CHAR LIMIT=100]-->
     <!-- Toast, vacation responder changes were discarded. [CHAR LIMIT=100]-->
     <!-- Account preference: Subtitle of the setting to set a vacation responder (out-of-office) message
@@ -440,6 +509,11 @@
     <!--  Settings screen, disable snap headers setting title  [CHAR LIMIT=30] -->
     <!-- The snap header summaries -->
     <!-- The snap header modes -->
+    <string-array name="prefEntries_snapHeader">
+        <item>Amosar siempres</item>
+        <item>Only show in portrait</item>
+        <item>Don\'t show</item>
+    </string-array>
     <!-- The snap header values -->
     <!-- Settings screen, title of "Clear search history" menu item -->
     <!-- Message shown in toast when the user taps "clear search history" in general preferences. [CHAR LIMIT=50] -->
@@ -452,8 +526,12 @@
     <!-- Settings screen title -->
     <!-- Name of the Settings activity -->
     <!-- Content description for the action menu overflow button. [CHAR LIMIT=NONE] -->
+    <string name="overflow_description">Más opciones</string>
     <!-- Text when there is a security hold on an account that needs to be accepted. The email address param takes the for "abc@xyz.com" -->
+    <string name="security_hold_required_text">Anovamientu de seguranza riquíu pa <xliff:g id="email_address">%1$s</xliff:g></string>
     <!-- Text to go to the dialog to accept the security hold -->
+    <string name="update_security_text">anovar agora</string>
     <!-- Shown when user submits a form. [CHAR LIMIT=40] -->
+    <string name="forms_are_disabled">Los formularios tán deshabilitaos en Gmail</string>
     <!-- activity name of the photoviewer -->
 </resources>
