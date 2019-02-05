@@ -148,7 +148,8 @@ public class ComposeActivity extends AppCompatActivity
      * An {@link Intent} action that launches {@link ComposeActivity}, but is handled as if the
      * {@link Activity} were launched with no special action.
      */
-    private static final String ACTION_LAUNCH_COMPOSE =
+    @VisibleForTesting
+    static final String ACTION_LAUNCH_COMPOSE =
             "com.android.mail.intent.action.LAUNCH_COMPOSE";
 
     // Identifiers for which type of composition this is
@@ -510,6 +511,11 @@ public class ComposeActivity extends AppCompatActivity
         context.startActivity(intent);
     }
 
+    /** Returns true if activity is started from an intent from an external application. */
+    public boolean isExternal() {
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -527,6 +533,16 @@ public class ComposeActivity extends AppCompatActivity
         mInnerSavedState = (savedInstanceState != null) ?
                 savedInstanceState.getBundle(KEY_INNER_SAVED_STATE) : null;
         checkValidAccounts();
+    }
+
+    /** Used for escaping plaintext. If the input is null, then it will return an empty String. */
+    private static String escapeAndReplaceHtml(CharSequence text) {
+      if (text == null) {
+        return "";
+      }
+      String body = Html.escapeHtml(text);
+      // Replace \r\n and \n with <br> tags
+      return body.replaceAll("(&#13;&#10;|&#10;)", "<br>");
     }
 
     private void finishCreate() {
@@ -567,6 +583,9 @@ public class ComposeActivity extends AppCompatActivity
             message = intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
             previews = intent.getParcelableArrayListExtra(EXTRA_ATTACHMENT_PREVIEWS);
             mRefMessage = intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
+            if (isExternal() && mRefMessage != null && !TextUtils.isEmpty(mRefMessage.bodyHtml)) {
+                mRefMessage.bodyHtml = escapeAndReplaceHtml(mRefMessage.bodyHtml);
+            }
             mRefMessageUri = intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI);
             quotedText = null;
 
@@ -1533,6 +1552,9 @@ public class ComposeActivity extends AppCompatActivity
                 }
                 String body = intent.getStringExtra(EXTRA_BODY);
                 if (body != null) {
+                    if (isExternal()) {
+                        body = escapeAndReplaceHtml(body);
+                    }
                     setBody(body, false /* withSignature */);
                 }
             }
@@ -1696,7 +1718,10 @@ public class ComposeActivity extends AppCompatActivity
                 } else if (EXTRA_BODY.equals(extra)) {
                     setBody(value, true /* with signature */);
                 } else if (EXTRA_QUOTED_TEXT.equals(extra)) {
-                    initQuotedText(value, true /* shouldQuoteText */);
+                     if (isExternal()) {
+                         value = escapeAndReplaceHtml(value);
+                     }
+                     initQuotedText(value, true /* shouldQuoteText */);
                 }
             }
         }
