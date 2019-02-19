@@ -105,7 +105,7 @@ public class EmlMessageLoader extends MailAsyncTaskLoader<ConversationMessage> {
             intent.setClass(getContext(), EmlTempFileDeletionService.class);
             intent.setData(message.attachmentListUri);
 
-            getContext().startService(intent);
+            EmlTempFileDeletionService.enqueueWork(getContext(), intent);
         }
     }
 }
