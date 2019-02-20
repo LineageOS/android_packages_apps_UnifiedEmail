@@ -15,10 +15,11 @@
  */
 package com.android.mail;
 
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+
+import androidx.core.app.JobIntentService;
 
 import com.android.mail.analytics.Analytics;
 import com.android.mail.photo.ContactFetcher;
@@ -34,7 +35,7 @@ import com.android.mail.utils.Utils;
 /**
  * A service to handle various intents asynchronously.
  */
-public class MailIntentService extends IntentService {
+public class MailIntentService extends JobIntentService {
     private static final String LOG_TAG = LogTag.getLogTag();
 
     public static final String ACTION_RESEND_NOTIFICATIONS =
@@ -56,16 +57,18 @@ public class MailIntentService extends IntentService {
 
     public static final String CONVERSATION_EXTRA = "conversation";
 
+    public static final int JOB_ID = 100;
+
     public MailIntentService() {
-        super("MailIntentService");
+        super();
     }
 
-    protected MailIntentService(final String name) {
-        super(name);
+    public static void enqueueWork(Context context, Intent work) {
+        enqueueWork(context, MailIntentService.class, JOB_ID, work);
     }
 
     @Override
-    protected void onHandleIntent(final Intent intent) {
+    protected void onHandleWork(final Intent intent) {
         // UnifiedEmail does not handle all Intents
 
         LogUtils.v(LOG_TAG, "Handling intent %s", intent);
@@ -124,7 +127,7 @@ public class MailIntentService extends IntentService {
     public static void broadcastBackupDataChanged(final Context context) {
         final Intent intent = new Intent(ACTION_BACKUP_DATA_CHANGED);
         intent.setPackage(context.getPackageName());
-        context.startService(intent);
+        MailIntentService.enqueueWork(context, intent);
     }
 
     /**
