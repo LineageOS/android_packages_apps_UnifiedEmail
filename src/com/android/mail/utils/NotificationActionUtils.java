@@ -877,7 +877,7 @@ public class NotificationActionUtils {
         if (folder != null) {
             intent.putExtra(Utils.EXTRA_FOLDER_URI, folder.folderUri.fullUri);
         }
-        context.startService(intent);
+        MailIntentService.enqueueWork(context, intent);
     }
 
     public static void registerUndoNotificationObserver(final DataSetObserver observer) {
