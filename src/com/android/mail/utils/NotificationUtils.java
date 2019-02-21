@@ -483,7 +483,7 @@ public class NotificationUtils {
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         intent.putExtra(Utils.EXTRA_FOLDER, folder);
         intent.putExtra(EXTRA_GET_ATTENTION, getAttention);
-        MailIntentService.enqueueWork(context, intent);
+        context.startService(intent);
     }
 
     /**
