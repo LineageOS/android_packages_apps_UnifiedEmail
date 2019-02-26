@@ -627,6 +627,7 @@
     <!-- Button at bottom of conversation list screen if the folder for which contents are being shown supports loading more on demand [CHAR LIMIT=20]-->
     <string name="load_more">Llwytho rhagor</string>
     <!-- Text for dummy attachments to load the actual attachment. This is not an ideal string, but it's too late to add a new string and get it translated -->
+    <string name="load_attachment">@string/load_more</string>
     <!-- Shortcut strings -->
     <!-- Title for shortcut naming dialog [CHAR LIMIT=100]-->
     <string name="shortcut_name_title">Enwi\'r llwybr byr i\'r ffolder</string>
@@ -711,8 +712,10 @@
     <!-- The default auto-advance mode -->
     <!-- The auto-advance mode values -->
     <!-- Settings screen, title of "Restore default for "Show pictures"" [CHAR LIMIT=1000]-->
+    <string name="clear_display_images_whitelist_title">Clirio caniatâd lluniau</string>
     <!-- Settings screen, title of dialog shown to confirm action when user taps
     "Clear picture approvals" in preferences [CHAR LIMIT=200]-->
+    <string name="clear_display_images_whitelist_dialog_title">Clirio caniatâd lluniau?</string>
     <!-- Settings screen, message of dialog shown to confirm action when tapping
     "Clear picture approvals" [CHAR LIMIT=1000]-->
     <string name="clear_display_images_whitelist_dialog_message">Stopio dangos delweddau mewn negeseuon gan anfonwyr rwyt wedi eu caniatáu.</string>
@@ -815,7 +818,7 @@
     <string name="add_account">Ychwanegu cyfrif</string>
     <!-- Content Provider Authority for Eml Attachments -->
     <!-- Content description for the "X" image icon for dismissing a tip. This is used for spoken description of the icon when touch explore is enabled. [CHAR LIMIT=50] -->
-    <string name="dismiss_tip_hover_text">Wfftio\'r awgrym</string>
+    <string name="dismiss_tip_hover_text">Diystyru\'r awgrym</string>
     <!-- Tip for letting user know that their device auto-sync setting
         is turned off, in case they are wondering why they are not
         receiving any new mail. [CHAR LIMIT=250] -->
@@ -957,7 +960,9 @@
     <!-- Activity class name for showing a full message url.
          Empty by default since this should be overridden by implementing apps. -->
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_yes">Iawn</string>
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
+    <string name="reply_choice_no">Na</string>
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
     <string name="reply_choice_ok">Iawn</string>
     <!-- One of the default canned responses used when replying to an email on a wearable device [CHAR LIMIT=30] -->
