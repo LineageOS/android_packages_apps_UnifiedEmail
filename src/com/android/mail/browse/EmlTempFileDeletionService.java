@@ -17,25 +17,33 @@
 
 package com.android.mail.browse;
 
-import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+
+import androidx.core.app.JobIntentService;
 
 /**
  * {@link IntentService} that cleans up temporary files in the cache for the eml viewer.
  */
-public class EmlTempFileDeletionService extends IntentService {
+public class EmlTempFileDeletionService extends JobIntentService {
+
+    public static final int JOB_ID = 101;
 
     public EmlTempFileDeletionService() {
-        super("EmlTempFileDeletionService");
+        super();
     }
 
     public EmlTempFileDeletionService(String name) {
-        super(name);
+        super();
+    }
+
+    public static void enqueueWork(Context context, Intent work) {
+        enqueueWork(context, EmlTempFileDeletionService.class, JOB_ID, work);
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleWork(Intent intent) {
         final String action = intent.getAction();
         if (Intent.ACTION_DELETE.equals(action)) {
             final Uri uri = intent.getData();
