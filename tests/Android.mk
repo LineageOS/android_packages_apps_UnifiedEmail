@@ -23,9 +23,8 @@ include $(CLEAR_VARS)
 # We only want this apk build for tests.
 LOCAL_MODULE_TAGS := tests
 
-# LOCAL_JAVA_LIBRARIES := android.test.runner
-
 LOCAL_SDK_VERSION := current
+LOCAL_MIN_SDK_VERSION := 14
 LOCAL_PACKAGE_NAME := UnifiedEmailTests
 LOCAL_INSTRUMENTATION_FOR := UnifiedEmail
 
@@ -37,7 +36,6 @@ LOCAL_JAVA_LIBRARIES := \
     android.test.mock.stubs \
     android.test.runner.stubs \
     android.test.base.stubs \
-
 
 include $(BUILD_PACKAGE)
 
