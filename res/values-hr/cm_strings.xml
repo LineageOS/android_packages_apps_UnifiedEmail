@@ -16,38 +16,35 @@
      limitations under the License.
 -->
 <resources>
-  <!-- Suggested contacts preferences -->
-  <string name="prefDialogTitle_suggestedContactsMode">Način</string>
-  <string name="prefDialogTitle_suggestedContactsMode_none">Onemogućeno</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_none">Predložena mogućnost za kontakte je onemogućena</string>
-  <string name="prefDialogTitle_suggestedContactsMode_recents">Nedavne</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Jedino skorašnje sugestije kontakata mogu biti odabrane</string>
-  <string name="prefDialogTitle_suggestedContactsMode_all">Sve</string>
-  <string name="prefDialogTitle_suggestedContactsMode_summary_all">Svi predloženi kontakti mogu biti izabrani</string>
-  <string name="preference_header_suggested_contacts">Predloženi kontakti</string>
-  <string name="preference_suggested_contacts_mode">Način predloženih kontakata</string>
-  <string name="preference_suggested_contacts_clear_all">Izbriši predložene kontakte</string>
-  <string name="suggested_contacts_cleared">Predloženi kontakti su obrisani.</string>
-  <string name="clear_suggested_contacts_dialog_title">Izbriši predložene kontakte?</string>
-  <string name="clear_suggested_contacts_dialog_message">Svi predloženi kontakti prethodno pohranjeni će biti uklonjeni.</string>
-  <!-- Notification lights dialogs -->
-  <string name="edit_light_settings">Postavljanje svjetla mape</string>
-  <string name="pulse_speed_title">Pulsiraj duljinu i brzinu</string>
-  <string name="default_time">Normalno</string>
-  <string name="custom_time">Prilagođeno</string>
-  <string name="dialog_delete_title">Obriši</string>
-  <string name="dialog_delete_message">Ukloniti odabranu stavku?</string>
-  <string name="pref_lights_default">Zadano</string>
-  <!-- Values for the notification lights pulse spinners -->
-  <string name="pulse_length_always_on">Uvijek uključeno</string>
-  <string name="pulse_length_very_short">Vrlo kratko</string>
-  <string name="pulse_length_short">Kratko</string>
-  <string name="pulse_length_normal">Normalno</string>
-  <string name="pulse_length_long">Dugo</string>
-  <string name="pulse_length_very_long">Jako dugo</string>
-  <string name="pulse_speed_very_fast">Jako brzo</string>
-  <string name="pulse_speed_fast">Brzo</string>
-  <string name="pulse_speed_normal">Normalno</string>
-  <string name="pulse_speed_slow">Sporo</string>
-  <string name="pulse_speed_very_slow">Jako sporo</string>
+    <string name="prefDialogTitle_suggestedContactsMode">Način</string>
+    <string name="prefDialogTitle_suggestedContactsMode_none">Onemogućeno</string>
+    <string name="prefDialogTitle_suggestedContactsMode_summary_none">Predložena mogućnost za kontakte je onemogućena</string>
+    <string name="prefDialogTitle_suggestedContactsMode_recents">Nedavne</string>
+    <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Jedino skorašnje sugestije kontakata mogu biti odabrane</string>
+    <string name="prefDialogTitle_suggestedContactsMode_all">Sve</string>
+    <string name="prefDialogTitle_suggestedContactsMode_summary_all">Svi predloženi kontakti mogu biti izabrani</string>
+    <string name="preference_header_suggested_contacts">Predloženi kontakti</string>
+    <string name="preference_suggested_contacts_mode">Način predloženih kontakata</string>
+    <string name="preference_suggested_contacts_clear_all">Izbriši predložene kontakte</string>
+    <string name="suggested_contacts_cleared">Predloženi kontakti su obrisani.</string>
+    <string name="clear_suggested_contacts_dialog_title">Izbriši predložene kontakte?</string>
+    <string name="clear_suggested_contacts_dialog_message">Svi predloženi kontakti prethodno pohranjeni će biti uklonjeni.</string>
+    <string name="edit_light_settings">Postavljanje svjetla mape</string>
+    <string name="pulse_speed_title">Pulsiraj duljinu i brzinu</string>
+    <string name="default_time">Normalno</string>
+    <string name="custom_time">Prilagođeno</string>
+    <string name="dialog_delete_title">Obriši</string>
+    <string name="dialog_delete_message">Ukloniti odabranu stavku?</string>
+    <string name="pref_lights_default">Zadano</string>
+    <string name="pulse_length_always_on">Uvijek uključeno</string>
+    <string name="pulse_length_very_short">Vrlo kratko</string>
+    <string name="pulse_length_short">Kratko</string>
+    <string name="pulse_length_normal">Normalno</string>
+    <string name="pulse_length_long">Dugo</string>
+    <string name="pulse_length_very_long">Jako dugo</string>
+    <string name="pulse_speed_very_fast">Jako brzo</string>
+    <string name="pulse_speed_fast">Brzo</string>
+    <string name="pulse_speed_normal">Normalno</string>
+    <string name="pulse_speed_slow">Sporo</string>
+    <string name="pulse_speed_very_slow">Jako sporo</string>
 </resources>
