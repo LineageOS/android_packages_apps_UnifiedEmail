@@ -171,9 +171,9 @@ public class ComposeActivity extends AppCompatActivity
 
     private static final String MAIL_TO = "mailto";
 
-    private static final String EXTRA_SUBJECT = "subject";
+    public static final String EXTRA_SUBJECT = "subject";
 
-    private static final String EXTRA_BODY = "body";
+    public static final String EXTRA_BODY = "body";
     private static final String EXTRA_TEXT_CHANGED ="extraTextChanged";
 
     private static final String EXTRA_SKIP_PARSING_BODY = "extraSkipParsingBody";
@@ -189,9 +189,9 @@ public class ComposeActivity extends AppCompatActivity
 
     // Extra that we can get passed from other activities
     @VisibleForTesting
-    protected static final String EXTRA_TO = "to";
-    private static final String EXTRA_CC = "cc";
-    private static final String EXTRA_BCC = "bcc";
+    public static final String EXTRA_TO = "to";
+    public static final String EXTRA_CC = "cc";
+    public static final String EXTRA_BCC = "bcc";
 
     public static final String ANALYTICS_CATEGORY_ERRORS = "compose_errors";
 
