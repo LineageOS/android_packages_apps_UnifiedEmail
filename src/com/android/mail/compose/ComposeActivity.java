@@ -153,9 +153,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private static final String MAIL_TO = "mailto";
 
-    private static final String EXTRA_SUBJECT = "subject";
+    public static final String EXTRA_SUBJECT = "subject";
 
-    private static final String EXTRA_BODY = "body";
+    public static final String EXTRA_BODY = "body";
 
     /**
      * Expected to be html formatted text.
@@ -168,9 +168,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     // Extra that we can get passed from other activities
     @VisibleForTesting
-    protected static final String EXTRA_TO = "to";
-    private static final String EXTRA_CC = "cc";
-    private static final String EXTRA_BCC = "bcc";
+    public static final String EXTRA_TO = "to";
+    public static final String EXTRA_CC = "cc";
+    public static final String EXTRA_BCC = "bcc";
 
     /**
      * An optional extra containing a {@link ContentValues} of values to be added to
