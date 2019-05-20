@@ -661,17 +661,9 @@ public class NotificationUtils {
             notification.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
             notification.setCategory(NotificationCompat.CATEGORY_EMAIL);
 
-            final long when;
-
             final long oldWhen =
                     NotificationActionUtils.sNotificationTimestamps.get(notificationId);
-            if (oldWhen != 0) {
-                when = oldWhen;
-            } else {
-                when = System.currentTimeMillis();
-            }
-
-            notification.setWhen(when);
+            long when = oldWhen;
 
             // The timestamp is now stored in the notification, so we can remove it from here
             NotificationActionUtils.sNotificationTimestamps.delete(notificationId);
@@ -721,13 +713,18 @@ public class NotificationUtils {
 
                     clickIntent = createClickPendingIntent(context, notificationIntent);
 
-                    configureLatestEventInfoFromConversation(context, account, folderPreferences,
+                    when = configureLatestEventInfoFromConversation(context, account, folderPreferences,
                             notification, wearableExtender, msgNotifications, notificationId,
                             cursor, clickIntent, notificationIntent, unreadCount, unseenCount,
-                            folder, when, contactFetcher);
+                            folder, contactFetcher);
                     eventInfoConfigured = true;
                 }
             }
+
+            if (when == 0) {
+                when = System.currentTimeMillis();
+            }
+            notification.setWhen(when);
 
             final boolean vibrate = folderPreferences.isNotificationVibrateEnabled();
             final String ringtoneUri = folderPreferences.getNotificationRingtoneUri();
@@ -968,7 +965,7 @@ public class NotificationUtils {
         return bg;
     }
 
-    private static void configureLatestEventInfoFromConversation(final Context context,
+    private static long  configureLatestEventInfoFromConversation(final Context context,
             final Account account, final FolderPreferences folderPreferences,
             final NotificationCompat.Builder notificationBuilder,
             final NotificationCompat.WearableExtender wearableExtender,
@@ -976,9 +973,10 @@ public class NotificationUtils {
             final int summaryNotificationId, final Cursor conversationCursor,
             final PendingIntent clickIntent, final Intent notificationIntent,
             final int unreadCount, final int unseenCount,
-            final Folder folder, final long when, final ContactFetcher contactFetcher) {
+            final Folder folder, final ContactFetcher contactFetcher) {
         final Resources res = context.getResources();
         final boolean multipleUnseen = unseenCount > 1;
+        long when = 0;
 
         LogUtils.i(LOG_TAG, "Showing notification with unreadCount of %d and unseenCount of %d",
                 unreadCount, unseenCount);
@@ -1114,12 +1112,13 @@ public class NotificationUtils {
                             final ConfigResult result =
                                     configureNotifForOneConversation(context, account,
                                     folderPreferences, conversationNotif, conversationWearExtender,
-                                    conversationCursor, notificationIntent, folder, when, res,
+                                    conversationCursor, notificationIntent, folder, res,
                                     isInbox, notificationLabelName, conversationNotificationId,
                                     contactFetcher);
                             msgNotifications.put(conversationNotificationId,
                                     NotificationBuilders.of(conversationNotif,
                                             conversationWearExtender));
+                            when = Math.max(when, result.when);
 
                             if (firstResult == null) {
                                 firstResult = result;
@@ -1158,9 +1157,10 @@ public class NotificationUtils {
 
             final ConfigResult result = configureNotifForOneConversation(context, account,
                     folderPreferences, notificationBuilder, wearableExtender, conversationCursor,
-                    notificationIntent, folder, when, res, isInbox, notificationLabelName,
+                    notificationIntent, folder, res, isInbox, notificationLabelName,
                     summaryNotificationId, contactFetcher);
             notificationTicker = result.notificationTicker;
+            when = result.when;
 
             if (result.contactIconInfo != null) {
                 wearableExtender.setBackground(result.contactIconInfo.wearableBg);
@@ -1187,6 +1187,7 @@ public class NotificationUtils {
         }
 
         notificationBuilder.setContentIntent(clickIntent);
+        return when;
     }
 
     /**
@@ -1197,13 +1198,15 @@ public class NotificationUtils {
             Account account, FolderPreferences folderPreferences,
             NotificationCompat.Builder notificationBuilder,
             NotificationCompat.WearableExtender wearExtender, Cursor conversationCursor,
-            Intent notificationIntent, Folder folder, long when, Resources res,
+            Intent notificationIntent, Folder folder, Resources res,
             boolean isInbox, String notificationLabelName, int notificationId,
             final ContactFetcher contactFetcher) {
 
         final ConfigResult result = new ConfigResult();
 
         final Conversation conversation = new Conversation(conversationCursor);
+
+        result.when = conversation.dateMs;
 
         // Set of all unique senders for unseen messages
         final HashSet<String> senderAddressesSet = new HashSet<String>();
@@ -1304,7 +1307,7 @@ public class NotificationUtils {
 
                     NotificationActionUtils.addNotificationActions(context, notificationIntent,
                             notificationBuilder, wearExtender, account, conversation, message,
-                            folder, notificationId, when, notificationActions);
+                            folder, notificationId, result.when, notificationActions);
                 }
             } else {
                 // For an old-style notification
@@ -2040,6 +2043,7 @@ public class NotificationUtils {
     private static class ConfigResult {
         public String notificationTicker;
         public ContactIconInfo contactIconInfo;
+        public long when;
     }
 
     public static class ContactIconInfo {
