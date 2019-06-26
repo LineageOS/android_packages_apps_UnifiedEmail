@@ -51,9 +51,7 @@ LOCAL_USE_AAPT2 := true
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
-ifeq (eng,$(TARGET_BUILD_VARIANT))
-  LOCAL_PROGUARD_FLAG_FILES += proguard-test.flags
-endif
+LOCAL_PROGUARD_FLAG_FILES += proguard-test.flags
 
 LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.mail.*,com.android.emailcommon.*,com.google.android.mail.*
 
