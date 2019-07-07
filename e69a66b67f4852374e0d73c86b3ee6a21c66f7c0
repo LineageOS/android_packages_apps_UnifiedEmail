@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "519fb7fe_59397d70",
+        "filename": "src/com/android/mail/utils/NotificationUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 968,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2019-07-07T07:52:08Z",
+      "side": 1,
+      "message": "double space",
+      "revId": "e69a66b67f4852374e0d73c86b3ee6a21c66f7c0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
