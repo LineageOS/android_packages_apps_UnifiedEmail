@@ -77,7 +77,7 @@
     <!-- Compose screen, Prefix to forwarded message subject. Do not translate. -->
     <string name="forward_subject_label" translatable="false">Fwd:</string>
     <!-- Compose screen, displayed at the top of a message being replied to. Please preserve the HTML entities (surrounded by & and ;).  The two %s strings will be replaced by 1) the date 2) the person who wrote the email being responded to. [CHAR LIMIT=1000]-->
-    <string name="reply_attribution">On <xliff:g id="date">%s</xliff:g>, <xliff:g id="person">%s</xliff:g> wrote:</string>
+    <string name="reply_attribution">On <xliff:g id="date">%1$s</xliff:g>, <xliff:g id="person">%2$s</xliff:g> wrote:</string>
     <!-- Compose screen, displayed at the top of a message being forwarded. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000] -->
     <string name="forward_attribution">---------- Forwarded message ----------&lt;br&gt;From: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Subject: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;To: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
     <!-- Compose screen, displayed at the top of a message being forwarded. [CHAR LIMIT=100]-->
@@ -796,7 +796,7 @@
     <string name="veiled_summary_unknown_person"/>
 
     <!-- Notification ticker text for per-label notification [CHAR LIMIT=30]-->
-    <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
+    <string name="label_notification_ticker">"<xliff:g id="label">%1$s</xliff:g>: <xliff:g id="notification">%2$s</xliff:g>"</string>
 
     <!-- Notification message to the user upon new messages for a conversation. [CHAR LIMIT=120] -->
     <plurals name="new_messages">
