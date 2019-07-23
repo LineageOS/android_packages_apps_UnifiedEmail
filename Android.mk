@@ -32,8 +32,7 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
     androidx.appcompat_appcompat \
     androidx.gridlayout_gridlayout \
     androidx.legacy_legacy-support-v13 \
-    android-opt-bitmap \
-    android-opt-datetimepicker
+    android-opt-bitmap
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     androidx.annotation_annotation \
