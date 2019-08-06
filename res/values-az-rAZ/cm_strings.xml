@@ -17,8 +17,8 @@
 -->
 <resources>
     <string name="prefDialogTitle_suggestedContactsMode">Rejim</string>
-    <string name="prefDialogTitle_suggestedContactsMode_none">Ləğv edildi</string>
-    <string name="prefDialogTitle_suggestedContactsMode_summary_none">Təklif edilən şəxslər funksiyası ləğv edildi</string>
+    <string name="prefDialogTitle_suggestedContactsMode_none">Sıradan çıxarıldı</string>
+    <string name="prefDialogTitle_suggestedContactsMode_summary_none">Təklif edilən şəxslər özəlliyi sıradan çxıarıldı</string>
     <string name="prefDialogTitle_suggestedContactsMode_recents">Son şəxslər</string>
     <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Yalnız əvvəlcədən təklif edilən şəxslər seçilə bilər</string>
     <string name="prefDialogTitle_suggestedContactsMode_all">Hamısı</string>

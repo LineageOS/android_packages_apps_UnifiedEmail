@@ -20,9 +20,9 @@
     <string name="prefDialogTitle_suggestedContactsMode_none">Deaktiveret</string>
     <string name="prefDialogTitle_suggestedContactsMode_summary_none">Funktion til at foreslå kontakter er deaktiveret</string>
     <string name="prefDialogTitle_suggestedContactsMode_recents">Seneste</string>
-    <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Kun nyligt foreslåede kontakter kan vælges</string>
+    <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Kun senest foreslåede kontaktpersoner vil være valgbare</string>
     <string name="prefDialogTitle_suggestedContactsMode_all">Alle</string>
-    <string name="prefDialogTitle_suggestedContactsMode_summary_all">Alle foreslåede kontaktpersoner kan vælges</string>
+    <string name="prefDialogTitle_suggestedContactsMode_summary_all">Alle foreslåede kontaktpersoner vil være valgbare</string>
     <string name="preference_header_suggested_contacts">Foreslåede kontakter</string>
     <string name="preference_suggested_contacts_mode">Tilstand for foreslåede kontakter</string>
     <string name="preference_suggested_contacts_clear_all">Slet foreslåede kontakter</string>
