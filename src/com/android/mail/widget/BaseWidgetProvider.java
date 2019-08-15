@@ -214,6 +214,10 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
 
         @Override
         protected Void doInBackground(final Void... params) {
+            return null;
+        }
+
+        protected Void onPostExecute(Boolean result) {
             for (int i = 0; i < mAppWidgetIds.length; ++i) {
                 // Get the account for this widget from preference
                 final String accountFolder = MailPrefs.get(mContext).getWidgetConfiguration(
