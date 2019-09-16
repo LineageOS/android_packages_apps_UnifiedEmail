@@ -308,10 +308,18 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         updateWidgetIntent.putExtra(EXTRA_FOLDER_TYPE, folderType);
         updateWidgetIntent.putExtra(EXTRA_FOLDER_CAPABILITIES, folderCapabilities);
         updateWidgetIntent.putExtra(EXTRA_FOLDER_URI, folderUri);
-        updateWidgetIntent.putExtra(EXTRA_FOLDER_CONVERSATION_LIST_URI, folderConversationListUri);
-        updateWidgetIntent.putExtra(EXTRA_FOLDER_DISPLAY_NAME, folderDisplayName);
 
-        context.sendBroadcast(updateWidgetIntent);
+        if (folderConversationListUri != null) {
+            updateWidgetIntent.putExtra(EXTRA_FOLDER_CONVERSATION_LIST_URI,
+                    folderConversationListUri);
+        }
+        if (folderDisplayName != null) {
+            updateWidgetIntent.putExtra(EXTRA_FOLDER_DISPLAY_NAME, folderDisplayName);
+        }
+        updateWidgetIntent.setPackage(context.getPackageName());
+
+        context.sendBroadcast(updateWidgetIntent,
+                context.getString(R.string.permission_update_widget));
     }
 
     public static void validateAllWidgets(Context context, String accountMimeType) {
