@@ -26,6 +26,13 @@
 
     <string name="app_name" translatable="false">Unified Email</string>
 
+    <!-- The name of the permission to get widget update notifications. -->
+    <string name="permission_update_widget" translatable="false">com.android.email.permission.GET_WIDGET_UPDATE</string>
+    <!-- Permission label for receiving updates for the widget. -->
+    <string name="permission_update_widget_label">Update widget</string>
+    <!-- Permission description for receiving updates for the widget. -->
+    <string name="permission_update_widget_desc">Allows the app to receive notifications when the widget should be refreshed, including the account name and folder name.</string>
+
     <!-- Compose -->
     <!-- Shown in Compose; the sender of the message [CHAR LIMIT=10] -->
     <string name="from">From</string>
