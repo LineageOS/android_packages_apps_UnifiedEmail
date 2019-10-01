@@ -247,7 +247,7 @@ public class ComposeActivity extends AppCompatActivity
     private static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
     // If this is a reply/forward then this extra will hold a uri we must query
     // to get the original message.
-    protected static final String EXTRA_IN_REFERENCE_TO_MESSAGE_URI = "in-reference-to-message-uri";
+    public static final String EXTRA_IN_REFERENCE_TO_MESSAGE_URI = "in-reference-to-message-uri";
     // If this is an action to edit an existing draft message, this extra will hold the
     // draft message
     private static final String ORIGINAL_DRAFT_MESSAGE = "original-draft-message";
