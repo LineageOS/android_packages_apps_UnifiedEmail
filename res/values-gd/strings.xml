@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="from">O</string>
+    <string name="to">Gu</string>
+    <string name="discard">Tilg air falbh</string>
+    <string name="compose">Sgrìobh</string>
+    <string name="compose_title">Sgrìobh</string>
+    <string name="mark_read">Cuir comharra gun deach a leughadh</string>
+    <string name="mark_unread">Cuir comharra nach deach a leughadh</string>
+    <string name="add_star">Cuir rionnag ris</string>
+    <string name="remove_star">Thoir an rionnag air falbh</string>
+    <string name="refresh">Ath-nuadhaich</string>
+    <string name="resume_draft">Deasaich</string>
+    <string name="menu_compose">Sgrìobh</string>
+    <string name="menu_settings">Roghainnean</string>
+    <string name="menu_search">Lorg</string>
+    <string name="drawer_title">Seòladaireachd</string>
+    <string name="attachment_image">Dealbh</string>
+    <string name="attachment_audio">Fuaimean</string>
+    <string name="attachment_text">Teacsa</string>
+    <string name="attachment_application_msword">Sgrìobainn</string>
+    <string name="save_attachment">Sàbhail</string>
+    <string name="more_info_attachment">Fiosrachadh</string>
+    <string name="please_wait">Fuirich ort…</string>
+    <string name="menu_photo_save_all">Sàbhail na h-uile</string>
+    <string name="menu_photo_share">Co-roinn</string>
+    <string name="choosertitle_sharevia">Co-roinn slighe</string>
+    <string name="contextmenu_copylink">Dèan lethbhreac dhen URL</string>
+    <string name="contextmenu_view_image">Seall an dealbh</string>
+    <string name="contextmenu_dial_dot">Daitheal…</string>
+    <string name="contextmenu_send_mail">Cuir post-d</string>
+    <string name="contextmenu_map">Mapa</string>
+    <string name="contextmenu_sharelink">Co-roinn an ceangal</string>
+    <plurals name="draft">
+        <item quantity="one">Dreachd</item>
+        <item quantity="two">Dreachdan</item>
+        <item quantity="few">Dreachdan</item>
+        <item quantity="other">Dreachdan</item>
+    </plurals>
+    <string name="me_object_pronoun">thugamsa</string>
+    <string name="me_subject_pronoun">uamsa</string>
+    <string name="undo">Neo-dhèan</string>
+    <string name="search_results_header">Toraidhean</string>
+    <string name="to_heading_no_space">Gu:</string>
+    <string name="sending_message">A’ cur na teachdaireachd…</string>
+    <string name="message_invite_tentative">Gun chinnt</string>
+    <string name="next">Air adhart</string>
+    <string-array name="sync_status">
+        <item>Success</item>
+        <item>Chan eil ceangal ann</item>
+        <item>Couldn\'t sign in</item>
+        <item>Security error</item>
+        <item>Couldn\'t sync</item>
+        <item>Mearachd inntearnail</item>
+        <item>Server Error</item>
+    </string-array>
+    <string name="search_hint">Lorg</string>
+    <string name="search_voice_desc">Tòisich air lorg gutha</string>
+    <string name="network_error">Chan eil ceangal ann</string>
+    <string name="retry">Feuch ris a-rithist</string>
+    <string name="manual_sync">Sioncronaich an-dràsta</string>
+    <string name="info">Fiosrachadh</string>
+    <string name="show">Seall</string>
+    <string name="preferences_signature_title">Earr-sgrìobhadh</string>
+    <string name="preferences_signature_dialog_title">Earr-sgrìobhadh</string>
+    <string name="silent_ringtone">’Na thost</string>
+    <string name="empty_trash">Falamhaich an sgudal</string>
+    <string name="drawer_open">Fosgail drathair na seòladaireachd</string>
+    <string name="drawer_close">Dùin drathair na seòladaireachd</string>
+    <string name="phone">fòn</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn">Cuir air</string>
+    <string name="draft_heading">Dreachd</string>
+    <string name="no_subject">(gun chuspair)</string>
+    <string name="pick_start_date_title">Àm-tòiseachaidh</string>
+    <string name="custom_date">Gnàthaichte</string>
+    <string name="vacation_responder_off">Dheth</string>
+    <string name="help_and_info">Cobhair</string>
+    <string name="open_source_licenses">Ceadachasan Open Source</string>
+    <string name="reply_choice_nice">Snog</string>
+    <string name="preference_confirm_before_send_title">Dearbh mus dèid a chur</string>
+    <string-array name="prefEntries_snapHeader">
+        <item>Always show</item>
+        <item>Only show in portrait</item>
+        <item>Na seall</item>
+    </string-array>
+    <string name="clear_history_title">Falamhaich eachdraidh nan lorg</string>
+    <string name="activity_preferences">Roghainnean</string>
+    <string name="overflow_description">Barrachd roghainnean</string>
+</resources>
