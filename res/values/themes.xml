@@ -8,6 +8,7 @@
     </style>
 
     <style name="UnifiedEmailTheme.Appcompat" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:forceDarkAllowed">true</item>
         <item name="actionModeBackground">@color/action_mode_background</item>
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_dark_color</item>
@@ -17,6 +18,7 @@
     </style>
 
     <style name="UnifiedEmailTheme.Appcompat.Toolbar" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:forceDarkAllowed">true</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="actionModeBackground">@color/action_mode_background</item>
         <item name="colorPrimary">@color/primary_color</item>
@@ -58,6 +60,7 @@
     <style name="ShortcutWidgetTheme" parent="@style/UnifiedEmailTheme.Appcompat" />
 
     <style name="InvisibleShortcutWidgetTheme" parent="@style/ShortcutWidgetTheme">
+        <item name="android:forceDarkAllowed">true</item>
         <item name="android:windowNoDisplay">true</item>
     </style>
 
