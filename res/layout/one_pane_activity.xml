@@ -19,8 +19,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <!-- DrawerLayout current only supports one content view (b/8752191) -->
     <LinearLayout
@@ -58,7 +57,6 @@
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
         android:tag="@string/drawer_pullout_tag"
         app:insetForeground="#4000">
 
