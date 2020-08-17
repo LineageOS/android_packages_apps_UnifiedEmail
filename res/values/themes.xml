@@ -8,22 +8,22 @@
     </style>
 
     <style name="UnifiedEmailTheme.Appcompat" parent="@style/Theme.AppCompat.Light.DarkActionBar">
-		<item name="android:forceDarkAllowed">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:forceDarkAllowed">true</item>
         <item name="actionModeBackground">@color/action_mode_background</item>
         <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@color/primary_dark_color</item>
-        <item name="colorAccent">@color/accent_blue</item>
+        <item name="colorAccent">@color/primary_dark_color</item>
         <item name="android:colorEdgeEffect">@color/edge_effect_color</item>
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp_with_rtl</item>
     </style>
 
     <style name="UnifiedEmailTheme.Appcompat.Toolbar" parent="@style/Theme.AppCompat.Light.NoActionBar">
-		<item name="android:forceDarkAllowed">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:forceDarkAllowed">true</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="actionModeBackground">@color/action_mode_background</item>
         <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@color/primary_dark_color</item>
-        <item name="colorAccent">@color/accent_blue</item>
+        <item name="colorAccent">@color/primary_dark_color</item>
         <item name="android:colorEdgeEffect">@color/edge_effect_color</item>
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp_with_rtl</item>
         <item name="windowActionModeOverlay">true</item>
