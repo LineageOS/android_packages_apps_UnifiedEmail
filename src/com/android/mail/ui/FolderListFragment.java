@@ -1104,9 +1104,6 @@ public class FolderListFragment extends ListFragment implements
             // Add all inboxes (sectioned Inboxes included) before recent folders.
             addFolderDivision(itemList, inboxFolders, BLANK_HEADER_RESOURCE);
 
-            // Add recent folders next.
-            addRecentsToList(itemList);
-
             // Add the remaining folders.
             addFolderDivision(itemList, allFoldersList, R.string.all_folders_heading);
 
@@ -1133,34 +1130,6 @@ public class FolderListFragment extends ListFragment implements
                     destination.add(DrawerItem.ofBlankHeader(mActivity));
                 }
                 destination.addAll(source);
-            }
-        }
-
-        /**
-         * Add recent folders to the list in order as acquired by the {@link RecentFolderList}.
-         *
-         * @param destination List of drawer items to populate
-         */
-        private void addRecentsToList(List<DrawerItem> destination) {
-            // If there are recent folders, add them.
-            final List<Folder> recentFolderList = getRecentFolders(mRecentFolders);
-
-            // Remove any excluded folder types
-            if (mExcludedFolderTypes != null) {
-                final Iterator<Folder> iterator = recentFolderList.iterator();
-                while (iterator.hasNext()) {
-                    if (isFolderTypeExcluded(iterator.next())) {
-                        iterator.remove();
-                    }
-                }
-            }
-
-            if (recentFolderList.size() > 0) {
-                destination.add(DrawerItem.ofHeader(mActivity, R.string.recent_folders_heading));
-                // Recent folders are not queried for position.
-                for (Folder f : recentFolderList) {
-                    destination.add(DrawerItem.ofFolder(mActivity, f, DrawerItem.FOLDER_RECENT));
-                }
             }
         }
 
