@@ -75,7 +75,7 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ScrollView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -293,7 +293,7 @@ public class ComposeActivity extends AppCompatActivity
 
     private final Rect mRect = new Rect();
 
-    private ScrollView mScrollView;
+    private FrameLayout mFrameLayout;
     private RecipientEditTextView mTo;
     private RecipientEditTextView mCc;
     private RecipientEditTextView mBcc;
@@ -889,7 +889,6 @@ public class ComposeActivity extends AppCompatActivity
         boolean showBcc = !TextUtils.isEmpty(mBcc.getText()) || (savedInstanceState != null &&
                 savedInstanceState.getBoolean(EXTRA_SHOW_BCC));
         mCcBccView.show(false /* animate */, showCc, showBcc);
-        updateHideOrShowCcBcc();
         updateHideOrShowQuotedText(mShowQuotedText);
 
         mRespondedInline = mInnerSavedState != null &&
@@ -1365,8 +1364,8 @@ public class ComposeActivity extends AppCompatActivity
     }
 
     private void findViews() {
-        mScrollView = (ScrollView) findViewById(R.id.compose);
-        mScrollView.setVisibility(View.VISIBLE);
+        mFrameLayout = (FrameLayout) findViewById(R.id.compose);
+        mFrameLayout.setVisibility(View.VISIBLE);
         mCcBccButton = findViewById(R.id.add_cc_bcc);
         if (mCcBccButton != null) {
             mCcBccButton.setOnClickListener(this);
@@ -2018,19 +2017,6 @@ public class ComposeActivity extends AppCompatActivity
         }
     }
 
-    private void updateHideOrShowCcBcc() {
-        // Its possible there is a menu item OR a button.
-        boolean ccVisible = mCcBccView.isCcVisible();
-        boolean bccVisible = mCcBccView.isBccVisible();
-        if (mCcBccButton != null) {
-            if (!ccVisible || !bccVisible) {
-                mCcBccButton.setVisibility(View.VISIBLE);
-            } else {
-                mCcBccButton.setVisibility(View.GONE);
-            }
-        }
-    }
-
     /**
      * Add attachment and update the compose area appropriately.
      */
@@ -2366,22 +2352,6 @@ public class ComposeActivity extends AppCompatActivity
             final boolean showCcBccFields = !TextUtils.isEmpty(mCc.getText()) ||
                     !TextUtils.isEmpty(mBcc.getText());
             mCcBccView.show(false /* animate */, showCcBccFields, showCcBccFields);
-            mCcBccButton.setVisibility(showCcBccFields ? View.GONE : View.VISIBLE);
-
-            // On phones autoscroll down so that Cc aligns to the top if we are showing cc/bcc.
-            if (getResources().getBoolean(R.bool.auto_scroll_cc) && showCcBccFields) {
-                final int[] coords = new int[2];
-                mCc.getLocationOnScreen(coords);
-
-                // Subtract status bar and action bar height from y-coord.
-                getWindow().getDecorView().getWindowVisibleDisplayFrame(mRect);
-                final int deltaY = coords[1] - getSupportActionBar().getHeight() - mRect.top;
-
-                // Only scroll down
-                if (deltaY > 0) {
-                    mScrollView.smoothScrollBy(0, deltaY);
-                }
-            }
         }
     }
 
@@ -3476,9 +3446,10 @@ public class ComposeActivity extends AppCompatActivity
     }
 
     private void showCcBccViews() {
-        mCcBccView.show(true, true, true);
-        if (mCcBccButton != null) {
-            mCcBccButton.setVisibility(View.GONE);
+        if (mCcBccView.getVisibility() == View.VISIBLE)
+            mCcBccView.show(true, false, false);
+        } else {
+            mCcBccView.show(true, true, true);
         }
     }
 
@@ -3557,7 +3528,6 @@ public class ComposeActivity extends AppCompatActivity
             }
             mCcBccView.show(false /* animate */, showCc, showBcc);
         }
-        updateHideOrShowCcBcc();
         initChangeListeners();
         return true;
     }
