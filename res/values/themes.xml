@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="ActionBarWidgetTheme" parent="@android:style/Theme.Holo">
         <item name="android:dropDownListViewStyle">@style/ActionBarDividerlessListViewStyle</item>
         <item name="android:popupMenuStyle">@android:style/Widget.Holo.Light.ListPopupWindow</item>
-        <item name="android:textAppearanceLargePopupMenu">@style/ActionBarTextAppearanceLargeStyle</item>
-        <item name="android:textAppearanceSmallPopupMenu">@style/ActionBarTextAppearanceSmallStyle</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/ActionBarTextAppearanceLargeStyle
+        </item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/ActionBarTextAppearanceSmallStyle
+        </item>
     </style>
 
     <style name="UnifiedEmailTheme.Appcompat" parent="@style/Theme.AppCompat.Light.DarkActionBar">
@@ -17,6 +20,8 @@
         <item name="colorAccent">@color/primary_dark_color</item>
         <item name="android:colorEdgeEffect">@color/edge_effect_color</item>
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp_with_rtl</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="UnifiedEmailTheme.Appcompat.Toolbar" parent="@style/Theme.AppCompat.Light.NoActionBar">
@@ -57,7 +62,6 @@
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:colorBackgroundCacheHint">@android:color/white</item>
         <item name="android:dropDownListViewStyle">@style/ComposeDropdownListViewStyle</item>
-        <item name="android:windowBackground">@android:color/white</item>
     </style>
 
     <style name="ComposeDropdownListViewStyle" parent="@style/Widget.AppCompat.Light.ListView.DropDown">
@@ -72,7 +76,7 @@
     <style name="ShortcutWidgetTheme" parent="@style/UnifiedEmailTheme.Appcompat" />
 
     <style name="InvisibleShortcutWidgetTheme" parent="@style/ShortcutWidgetTheme">
-		<item name="android:forceDarkAllowed">true</item>
+        <item name="android:forceDarkAllowed">true</item>
         <item name="android:windowNoDisplay">true</item>
     </style>
 
@@ -93,5 +97,4 @@
         <item name="colorAccent">@color/primary_dark_color</item>
         <item name="android:colorEdgeEffect">@color/edge_effect_color</item>
     </style>
-
 </resources>
