@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:elevation="4dp"
         android:theme="@style/HeaderTheme"
-        android:background="@color/primary_color"
+        android:background="@color/primary_dark_color"
         android:navigationIcon="?attr/homeAsUpIndicator"
         android:minHeight="?android:attr/actionBarSize" />
 
