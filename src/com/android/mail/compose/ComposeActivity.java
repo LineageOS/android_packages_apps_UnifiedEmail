@@ -3446,7 +3446,7 @@ public class ComposeActivity extends AppCompatActivity
     }
 
     private void showCcBccViews() {
-        if (mCcBccView.getVisibility() == View.VISIBLE)
+        if (mCcBccView.getVisibility() == View.VISIBLE) {
             mCcBccView.show(true, false, false);
         } else {
             mCcBccView.show(true, true, true);
