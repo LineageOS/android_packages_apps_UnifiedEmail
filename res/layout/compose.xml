@@ -15,89 +15,93 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/ComposeAreaWrapper">
 
-    <include layout="@layout/wait_fragment" />
+    <include
+        layout="@layout/wait_fragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/compose"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Horizontal layout to get side paddings for tablets -->
+        <!-- Main compose content -->
         <LinearLayout
+            android:id="@+id/content"
+            style="@style/ComposeArea"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <!-- Start border -->
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="@integer/compose_padding_weight" />
+            <!-- From -->
+            <include
+                layout="@layout/compose_from"
+                android:layout_width="match_parent" />
 
-            <!-- Main compose content -->
-            <LinearLayout
-                android:id="@+id/content"
+            <!-- To/Cc/Bcc -->
+            <include
+                layout="@layout/compose_recipients"
+                android:layout_width="match_parent" />
+
+            <!-- Subject -->
+            <include
+                layout="@layout/compose_subject"
+                android:layout_width="match_parent" />
+
+            <!-- Body -->
+            <include
+                layout="@layout/compose_body"
+                android:layout_width="match_parent" />
+
+            <!--  Attachments -->
+            <com.android.mail.compose.AttachmentsView
+                android:id="@+id/attachments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:focusable="true"
                 android:orientation="vertical"
-                style="@style/ComposeArea">
+                android:paddingLeft="5dip"
+                android:paddingTop="8dip"
+                android:paddingRight="5dip"
+                android:paddingBottom="0dip"
+                android:visibility="gone">
 
-                <!-- From -->
-                <include layout="@layout/compose_from" />
+                <include
+                    layout="@layout/compose_attachments"
+                    android:layout_width="match_parent" />
 
-                <!-- To/Cc/Bcc -->
-                <include layout="@layout/compose_recipients" />
+            </com.android.mail.compose.AttachmentsView>
 
-                <!-- Subject -->
-                <include layout="@layout/compose_subject" />
+            <!-- Quoted text -->
+            <com.android.mail.compose.QuotedTextView
+                android:id="@+id/quoted_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
-                <!-- Body -->
-                <include layout="@layout/compose_body" />
-
-                <!--  Attachments -->
-                <com.android.mail.compose.AttachmentsView
-                    android:id="@+id/attachments"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:focusable="true"
-                    android:orientation="vertical"
-                    android:paddingTop="8dip"
-                    android:paddingRight="5dip"
-                    android:paddingBottom="0dip"
-                    android:paddingLeft="5dip"
-                    android:visibility="gone">
-
-                    <include layout="@layout/compose_attachments" />
-
-                </com.android.mail.compose.AttachmentsView>
-
-                <!-- Quoted text -->
-                <com.android.mail.compose.QuotedTextView
-                    android:id="@+id/quoted_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
-
-                <View
-                    android:id="@+id/composearea_tap_trap_bottom"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="true" />
-
-            </LinearLayout>
-
-            <!-- End border -->
-            <Space
-                android:layout_width="0dp"
+            <View
+                android:id="@+id/composearea_tap_trap_bottom"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="@integer/compose_padding_weight" />
+                android:clickable="true" />
 
         </LinearLayout>
-
     </FrameLayout>
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
