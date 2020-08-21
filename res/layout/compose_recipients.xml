@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/compose_recipients_wrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,15 +28,15 @@
         style="@style/RecipientComposeFieldLayout">
 
         <LinearLayout
+            style="@style/ComposeFieldContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="0dp"
-            style="@style/ComposeFieldContent">
+            android:paddingRight="0dp">
 
             <TextView
+                style="@style/ComposeHeading"
                 android:contentDescription="@string/to"
-                android:text="@string/to"
-                style="@style/ComposeHeading" />
+                android:text="@string/to" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,15 +49,17 @@
 
                     <com.android.ex.chips.RecipientEditTextView
                         android:id="@+id/to"
+                        style="@style/ToRecipientEditTextViewStyle"
                         android:contentDescription="@string/to"
-                        android:dropDownAnchor="@id/to_content"
-                        style="@style/ToRecipientEditTextViewStyle" />
+                        android:dropDownAnchor="@id/to_content" />
 
-                    <ImageView
+                    <ToggleButton
                         android:id="@+id/add_cc_bcc"
-                        android:src="@drawable/ic_expand_more_24dp"
+                        style="@style/ComposeFieldButton"
+                        android:checked="false"
                         android:contentDescription="@string/add_cc_label"
-                        style="@style/ComposeFieldButton" />
+                        android:drawableEnd="@drawable/ic_expand"
+                        android:textColor="#00FFFFFF" />
 
                 </LinearLayout>
 
@@ -66,9 +69,9 @@
                 -->
                 <Space
                     android:id="@+id/compose_to_dropdown_anchor"
+                    style="@style/ComposeToDropdownAnchor"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    style="@style/ComposeToDropdownAnchor" />
+                    android:layout_height="0dp" />
 
             </LinearLayout>
 
