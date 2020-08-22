@@ -20,8 +20,6 @@
         <item name="colorAccent">@color/primary_dark_color</item>
         <item name="android:colorEdgeEffect">@color/edge_effect_color</item>
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp_with_rtl</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="UnifiedEmailTheme.Appcompat.Toolbar" parent="@style/Theme.AppCompat.Light.NoActionBar">
@@ -35,7 +33,7 @@
         <item name="colorAccent">@color/primary_dark_color</item>
         <item name="android:colorEdgeEffect">@color/edge_effect_color</item>
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_wht_24dp_with_rtl</item>
-        <item name="windowActionModeOverlay">false</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="HeaderTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
