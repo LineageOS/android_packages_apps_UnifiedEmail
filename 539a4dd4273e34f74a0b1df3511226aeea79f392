@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "068f0dff_58a652a9",
+        "filename": "res/values/themes.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2020-11-14T22:37:51Z",
+      "side": 0,
+      "message": "same",
+      "revId": "539a4dd4273e34f74a0b1df3511226aeea79f392",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ffe1e593_54b25587",
+        "filename": "res/values/themes.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2020-11-14T22:37:51Z",
+      "side": 0,
+      "message": "same",
+      "revId": "539a4dd4273e34f74a0b1df3511226aeea79f392",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
