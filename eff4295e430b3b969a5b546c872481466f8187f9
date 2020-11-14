@@ -1,0 +1,135 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9bf981bd_c7e552fc",
+        "filename": "res/drawable/ic_expand.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2020-11-14T22:33:20Z",
+      "side": 1,
+      "message": "missing empty newline",
+      "revId": "eff4295e430b3b969a5b546c872481466f8187f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c652a41_96ab89be",
+        "filename": "res/layout/compose_recipients.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2020-11-14T22:33:20Z",
+      "side": 1,
+      "message": "where do you use anything from tools?",
+      "revId": "eff4295e430b3b969a5b546c872481466f8187f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bfa96762_35c052bb",
+        "filename": "res/layout/compose_recipients.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2020-11-14T22:33:20Z",
+      "side": 1,
+      "message": "this changes nothing",
+      "range": {
+        "startLine": 31,
+        "startChar": 12,
+        "endLine": 35,
+        "endChar": 0
+      },
+      "revId": "eff4295e430b3b969a5b546c872481466f8187f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0201a6d4_b9f3ed57",
+        "filename": "res/layout/compose_recipients.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2020-11-14T22:33:20Z",
+      "side": 1,
+      "message": "same",
+      "revId": "eff4295e430b3b969a5b546c872481466f8187f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ac1ede6_f8cc545e",
+        "filename": "res/layout/compose_recipients.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2020-11-14T22:33:20Z",
+      "side": 1,
+      "message": "same",
+      "revId": "eff4295e430b3b969a5b546c872481466f8187f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75bfb6fd_7a667bda",
+        "filename": "res/layout/compose_recipients.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2020-11-14T22:33:20Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 72,
+        "startChar": 9,
+        "endLine": 74,
+        "endChar": 50
+      },
+      "revId": "eff4295e430b3b969a5b546c872481466f8187f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08390fc4_862c89e1",
+        "filename": "src/com/android/mail/compose/CcBccView.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2020-11-14T22:33:20Z",
+      "side": 1,
+      "message": "useless",
+      "revId": "eff4295e430b3b969a5b546c872481466f8187f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
