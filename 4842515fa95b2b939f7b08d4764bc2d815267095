@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76c4d11a_16ad5a89",
+        "filename": "res/values/themes.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1063
+      },
+      "writtenOn": "2020-11-16T14:01:56Z",
+      "side": 1,
+      "message": "After having compared current version and version after your patch: What\u0027s the reason for changing the status bar color to be the same as toolbar color? Other apps (Contacts, Messaging,  Eleven, just to name a few, and various 3rd party apps as well) color the status bar darker than the toolbar, which is what the current version also does. Unless there\u0027s strong reasoning I think it should stay that way.",
+      "revId": "4842515fa95b2b939f7b08d4764bc2d815267095",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
