@@ -18,88 +18,501 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="from">O</string>
     <string name="to">Gu</string>
+    <string name="cc">Cc</string>
+    <string name="bcc">Bcc</string>
+    <string name="subject_hint">Cuspair</string>
+    <string name="body_hint">Sgrìobh post ùr</string>
+    <string name="add_file_attachment">Ceangail faidhle ris</string>
+    <string name="add_photo_attachment">Ceangail dealbh ris</string>
+    <string name="save_draft">Sàbhail dreachd</string>
     <string name="discard">Tilg air falbh</string>
     <string name="compose">Sgrìobh</string>
     <string name="compose_title">Sgrìobh</string>
+    <string-array name="compose_modes">
+        <item>Freagair</item>
+        <item>Freagair na h-uile</item>
+        <item>Sìn air adhart</item>
+    </string-array>
+    <string name="reply_attribution">Sgrìobh <xliff:g id="person">%s</xliff:g> <xliff:g id="date">%s</xliff:g>:</string>
+    <string name="forward_attribution">---------- An teachdaireachd a tha ’ga shìneadh air adhart ----------&lt;br&gt;O: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Ceann-latha: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Cuspair: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;Gu: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
+    <string name="forward_attribution_no_headers">-------- An teachdaireachd a tha ’ga shìneadh air adhart --------</string>
+    <string name="cc_attribution">Cc: <xliff:g id="cc">%1$s</xliff:g>&lt;br&gt;</string>
+    <string name="select_attachment_type">Tagh seòrsa a’ cheanglachain</string>
+    <string name="too_large_to_attach_single">Cha ghabh faidhle nas motha na <xliff:g id="maxSize">%1$s</xliff:g> a cheangal ris.</string>
+    <string name="too_large_to_attach_multiple">Cha deach a h-uile faile a cheangal ris. Crìoch: <xliff:g id="maxSize">%1$s</xliff:g>.</string>
+    <string name="too_large_to_attach_additional">Cha deach am faidhle a cheangal ris. Ràinig thu a’ chrìoch de <xliff:g id="maxSize">%1$s</xliff:g>.</string>
+    <string name="generic_attachment_problem">Cha b’ urrainn dhuinn am faidhle a cheangal ris.</string>
+    <string name="attachment_permission_denied">Chaidh cead a dhiùltadh airson a’ cheanglachain.</string>
+    <string name="recipient_needed">Cuir faightear no dhà ris.</string>
+    <string name="confirm_send_message_with_no_subject">Chan eil teacsa sa chuspair.</string>
+    <string name="confirm_send_message_with_no_body">Chan eil teacsa ann am bodhaig na teachdaireachd.</string>
+    <string name="confirm_send_message">An cuir thu an teachdaireachd seo?</string>
+    <string name="message_discarded">Chaidh an teachdaireachd a thilgeil air falbh.</string>
+    <string name="signature">\n\n<xliff:g id="signature">%s</xliff:g></string>
+    <string name="custom_from_account_label">Cuir am post-d mar:</string>
+    <string name="send">Cuir</string>
     <string name="mark_read">Cuir comharra gun deach a leughadh</string>
     <string name="mark_unread">Cuir comharra nach deach a leughadh</string>
+    <string name="toggle_read_unread">Toglaich air leughadh/gun leughadh</string>
+    <string name="mute">Mùch</string>
     <string name="add_star">Cuir rionnag ris</string>
     <string name="remove_star">Thoir an rionnag air falbh</string>
+    <string name="remove_folder">Thoir air falbh o <xliff:g id="folderName">%1$s</xliff:g></string>
+    <string name="archive">Cuir san tasg-lann</string>
+    <string name="report_spam">Dèan aithris air spama</string>
+    <string name="mark_not_spam">Dèan aithris nach e spama a th’ ann</string>
+    <string name="report_phishing">Dèan aithris air fiasgach</string>
+    <string name="delete">Sguab às</string>
+    <string name="discard_drafts">Tilg na dreachdan air falbh</string>
+    <string name="discard_failed">Dh’fhàillig leis an tilgeil air falbh</string>
     <string name="refresh">Ath-nuadhaich</string>
+    <string name="reply">Freagair</string>
+    <string name="reply_all">Freagair na h-uile</string>
     <string name="resume_draft">Deasaich</string>
+    <string name="forward">Sìn air adhart</string>
     <string name="menu_compose">Sgrìobh</string>
+    <string name="menu_change_folders">Atharraich na pasganan</string>
+    <string name="menu_move_to">Gluais gu</string>
+    <string name="menu_move_to_inbox">Gluais dhan bhogsa a-steach</string>
+    <string name="menu_manage_folders">Roghainnean a’ phasgain</string>
+    <string name="menu_show_original">Till am meud fèin-obrachail</string>
     <string name="menu_settings">Roghainnean</string>
     <string name="menu_search">Lorg</string>
+    <string name="menu_toggle_drawer">Toglaich an drathair</string>
     <string name="drawer_title">Seòladaireachd</string>
+    <string name="mark_important">Comharraich gu bheil e cudromach</string>
+    <string name="mark_not_important">Comharraich nach eil e cudromach</string>
+    <string name="add_cc_label">Cuir Cc/Bcc ris</string>
+    <string name="add_bcc_label">Cuir Bcc ris</string>
+    <string name="quoted_text">Gabh a-steach às-earrann</string>
+    <string name="quoted_text_label">Teacsa às-earrainn</string>
+    <string name="respond_inline">Freagair am broinn na loidhne</string>
     <string name="attachment_image">Dealbh</string>
+    <string name="attachment_video">Video</string>
     <string name="attachment_audio">Fuaimean</string>
     <string name="attachment_text">Teacsa</string>
     <string name="attachment_application_msword">Sgrìobainn</string>
+    <string name="attachment_application_vnd_ms_powerpoint">Taisbeanadh</string>
+    <string name="attachment_application_vnd_ms_excel">Cliath-dhuilleag</string>
+    <string name="attachment_application_pdf">PDF</string>
+    <string name="attachment_unknown">Faidhle <xliff:g id="attachmentExtension">%s</xliff:g></string>
+    <string name="preview_attachment">Ro-sheall</string>
     <string name="save_attachment">Sàbhail</string>
+    <string name="download_again">Luchdaich a-nuas às ùr</string>
+    <string name="remove_attachment_desc">Thoir air falbh an ceanglachan <xliff:g id="attachmentName">%s</xliff:g></string>
     <string name="more_info_attachment">Fiosrachadh</string>
+    <string name="no_application_found">Chan eil aplacaid ann a sheallas an ceanglachan seo.</string>
+    <string name="fetching_attachment">A’ faighinn a’ cheanglachain</string>
     <string name="please_wait">Fuirich ort…</string>
+    <string name="download_failed">Cha b’ urrainn dhuinn seo a luchdadh a-nuas. Suath ris gus feuchainn ris a-rithist.</string>
     <string name="menu_photo_save_all">Sàbhail na h-uile</string>
     <string name="menu_photo_share">Co-roinn</string>
+    <string name="menu_photo_share_all">Co-roinn na h-uile</string>
+    <string name="menu_photo_print">Clò-bhuail</string>
     <string name="choosertitle_sharevia">Co-roinn slighe</string>
+    <string name="contextmenu_openlink">Fosgail sa bhrabhsair</string>
+    <string name="contextmenu_copy">Dèan lethbhreac</string>
     <string name="contextmenu_copylink">Dèan lethbhreac dhen URL</string>
     <string name="contextmenu_view_image">Seall an dealbh</string>
     <string name="contextmenu_dial_dot">Daitheal…</string>
+    <string name="contextmenu_sms_dot">SMS\u2026</string>
+    <string name="contextmenu_add_contact">Cuir luchd-aithne ris</string>
     <string name="contextmenu_send_mail">Cuir post-d</string>
     <string name="contextmenu_map">Mapa</string>
     <string name="contextmenu_sharelink">Co-roinn an ceangal</string>
+    <string name="content_description"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> mu <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g></string>
+    <string name="content_description_today"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> mu <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> aig <xliff:g id="time">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g></string>
+    <string name="content_description_with_folders"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> mu<xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g>, leubailean: <xliff:g id="folders">%7$s</xliff:g></string>
+    <string name="content_description_today_with_folders"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> mu <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> aig <xliff:g id="time">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g>, leubailean: <xliff:g id="folders">%7$s</xliff:g></string>
+    <string name="read_string">còmhradh air a leughadh</string>
+    <string name="unread_string">còmhradh gun leughadh</string>
+    <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
+    <string name="badge_and_subject"><xliff:g>%1$s</xliff:g> <xliff:g>%2$s</xliff:g></string>
     <plurals name="draft">
         <item quantity="one">Dreachd</item>
         <item quantity="two">Dreachdan</item>
         <item quantity="few">Dreachdan</item>
         <item quantity="other">Dreachdan</item>
     </plurals>
+    <string name="sending">’Ga chur\u2026</string>
+    <string name="message_retrying">’Ga fheuchainn a-rithist\u2026</string>
+    <string name="message_failed">Dh’fhàillig leis</string>
+    <string name="send_failed">Cha deach an teachdaireachd a chur.</string>
     <string name="me_object_pronoun">thugamsa</string>
     <string name="me_subject_pronoun">uamsa</string>
+    <plurals name="confirm_delete_conversation">
+        <item quantity="one">An sguab thu às an còmhradh seo?</item>
+        <item quantity="two">An sguab thu às an <xliff:g id="count">%1$d</xliff:g> chòmhradh seo?</item>
+        <item quantity="few">An sguab thu às na <xliff:g id="count">%1$d</xliff:g> còmhraidhean seo?</item>
+        <item quantity="other">An sguab thu às an <xliff:g id="count">%1$d</xliff:g> còmhradh seo?</item>
+    </plurals>
+    <plurals name="confirm_archive_conversation">
+        <item quantity="one">An cuir thu an còmhradh seo dhan tasg-lann?</item>
+        <item quantity="two">An cuir thu an <xliff:g id="count">%1$d</xliff:g> chòmhradh seo dhan tasg-lann?</item>
+        <item quantity="few">An cuir thu na <xliff:g id="count">%1$d</xliff:g> còmhraidhean seo dhan tasg-lann?</item>
+        <item quantity="other">An cuir thu an <xliff:g id="count">%1$d</xliff:g> còmhradh seo dhan tasg-lann?</item>
+    </plurals>
+    <plurals name="confirm_discard_drafts_conversation">
+        <item quantity="one">An tilg thu air falbh an teachdaireachd seo?</item>
+        <item quantity="two">An tilg thu air falbh an <xliff:g id="count">%1$d</xliff:g> theachdaireachd seo?</item>
+        <item quantity="few">An tilg thu air falbh na <xliff:g id="count">%1$d</xliff:g> teachdaireachdan seo?</item>
+        <item quantity="other">An tilg thu air falbh an <xliff:g id="count">%1$d</xliff:g> teachdaireachd seo?</item>
+    </plurals>
+    <string name="confirm_discard_text">An tilg thu air falbh an teachdaireachd seo?</string>
+    <string name="loading_conversations">’Ga luchdadh\u2026</string>
+    <string name="empty_inbox">Deiseil uile gu lèir!</string>
+    <string name="empty_search">Iochd! Cha do lorg sinn dad airson “<xliff:g id="search_query">%1$s</xliff:g>”.</string>
+    <string name="empty_spam_folder">Hò-rò, chan eil spama an-seo!</string>
+    <string name="empty_trash_folder">Chan eil sgudal ann. Mòran taing airson ath-chuairteachadh!</string>
+    <string name="empty_folder">Chan eil post-d ann.</string>
+    <string name="getting_messages">A’ faighinn nan teachdaireachdan agad</string>
     <string name="undo">Neo-dhèan</string>
+    <plurals name="conversation_unstarred">
+        <item quantity="one">A’ toirt an rionnag air falbh o <xliff:g id="count">%1$d</xliff:g> chòmhradh</item>
+        <item quantity="two">A’ toirt an rionnag air falbh o <xliff:g id="count">%1$d</xliff:g> chòmhradh</item>
+        <item quantity="few">A’ toirt an rionnag air falbh o <xliff:g id="count">%1$d</xliff:g> còmhraidhean</item>
+        <item quantity="other">A’ toirt an rionnag air falbh o <xliff:g id="count">%1$d</xliff:g> chòmhradh</item>
+    </plurals>
+    <plurals name="conversation_muted">
+        <item quantity="one">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a mhùchadh</item>
+        <item quantity="two">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a mhùchadh</item>
+        <item quantity="few">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a mhùchadh</item>
+        <item quantity="other">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a mhùchadh</item>
+    </plurals>
+    <plurals name="conversation_spammed">
+        <item quantity="one">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; aithris mar spama</item>
+        <item quantity="two">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; aithris mar spama</item>
+        <item quantity="few">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; aithris mar spama</item>
+        <item quantity="other">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; aithris mar spama</item>
+    </plurals>
+    <plurals name="conversation_not_spam">
+        <item quantity="one">Chaidh aithris air &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; nach e spama a th’ ann</item>
+        <item quantity="two">Chaidh aithris air &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; nach e spama a th’ annta</item>
+        <item quantity="few">Chaidh aithris air &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; nach e spama a th’ annta</item>
+        <item quantity="other">Chaidh aithris air &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; nach e spama a th’ annta</item>
+    </plurals>
+    <plurals name="conversation_not_important">
+        <item quantity="one">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a chomharradh nach eil e cudromach</item>
+        <item quantity="two">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a chomharradh nach eil iad cudromach</item>
+        <item quantity="few">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a chomharradh nach eil iad cudromach</item>
+        <item quantity="other">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a chomharradh nach eil iad cudromach</item>
+    </plurals>
+    <plurals name="conversation_phished">
+        <item quantity="one">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; aithris mar fhiasgach</item>
+        <item quantity="two">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; aithris mar fhiasgach</item>
+        <item quantity="few">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; aithris mar fhiasgach</item>
+        <item quantity="other">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; aithris mar fhiasgach</item>
+    </plurals>
+    <plurals name="conversation_archived">
+        <item quantity="one">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a chur san tasg-lann</item>
+        <item quantity="two">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a chur san tasg-lann</item>
+        <item quantity="few">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a chur san tasg-lann</item>
+        <item quantity="other">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a chur san tasg-lann</item>
+    </plurals>
+    <plurals name="conversation_deleted">
+        <item quantity="one">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a sguabadh às</item>
+        <item quantity="two">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a sguabadh às</item>
+        <item quantity="few">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a sguabadh às</item>
+        <item quantity="other">Chaidh &lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; a sguabadh às</item>
+    </plurals>
+    <string name="deleted">Chaidh a sguabadh às</string>
+    <string name="archived">Chaidh a chur san tasg-lann</string>
+    <string name="folder_removed">Chaidh a thoirt air falbh o <xliff:g id="folderName">%1$s</xliff:g></string>
+    <plurals name="conversation_folder_changed">
+        <item quantity="one">Chaidh am pasgan atharrachadh</item>
+        <item quantity="two">Chaidh na pasganan atharrachadh</item>
+        <item quantity="few">Chaidh na pasganan atharrachadh</item>
+        <item quantity="other">Chaidh na pasganan atharrachadh</item>
+    </plurals>
+    <string name="conversation_folder_moved">Chaidh a ghluasad gu <xliff:g id="folderName">%1$s</xliff:g></string>
     <string name="search_results_header">Toraidhean</string>
+    <string name="search_unsupported">Cha chuir an cunntas seo taic ris an lorg.</string>
+    <string name="search_suggestion_desc">Moladh: <xliff:g id="suggestion">%s</xliff:g></string>
+    <string name="add_label">Cuir pasgan ris</string>
+    <plurals name="new_incoming_messages">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> teachdaireachd ùr</item>
+        <item quantity="two"><xliff:g id="count">%1$d</xliff:g> theachdaireachd ùr</item>
+        <item quantity="few"><xliff:g id="count">%1$d</xliff:g> teachdaireachdan ùra</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> teachdaireachd ùr</item>
+    </plurals>
+    <string name="date_and_view_details"><xliff:g id="date">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Seall am mion-fhiosrachadh&lt;/a&gt;</string>
+    <string name="hide_details">Falaich am mion-fhiosrachadh</string>
+    <string name="to_message_header">gu <xliff:g id="recipients">%1$s</xliff:g></string>
+    <string name="bcc_header_for_recipient_summary">bcc:\u0020</string>
+    <string name="contact_info_string">Seall am fiosrachadh conaltraidh aig <xliff:g id="name">%1$s</xliff:g></string>
+    <string name="contact_info_string_default">Seall am fiosrachadh conaltraidh</string>
+    <plurals name="show_messages_read">
+        <item quantity="one">Leudaich <xliff:g id="count" example="4">%1$d</xliff:g> teachdaireachd roimhpe</item>
+        <item quantity="two">Leudaich <xliff:g id="count" example="4">%1$d</xliff:g> theachdaireachd roimhpe</item>
+        <item quantity="few">Leudaich <xliff:g id="count" example="4">%1$d</xliff:g> teachdaireachdan roimhpe</item>
+        <item quantity="other">Leudaich <xliff:g id="count" example="4">%1$d</xliff:g> teachdaireachd roimhpe</item>
+    </plurals>
+    <plurals name="super_collapsed_block_accessibility_announcement">
+        <item quantity="one">Chaidh <xliff:g id="count" example="4">%1$d</xliff:g> teachdaireachd roimhpe a leudachadh</item>
+        <item quantity="two">Chaidh <xliff:g id="count" example="4">%1$d</xliff:g> theachdaireachd roimhpe a leudachadh</item>
+        <item quantity="few">Chaidh <xliff:g id="count" example="4">%1$d</xliff:g> teachdaireachdan roimhpe a leudachadh</item>
+        <item quantity="other">Chaidh <xliff:g id="count" example="4">%1$d</xliff:g> teachdaireachd roimhpe a leudachadh</item>
+    </plurals>
+    <string name="from_heading">O:</string>
+    <string name="replyto_heading">Freagairt gu:</string>
+    <string name="to_heading">Gu:\u0020</string>
     <string name="to_heading_no_space">Gu:</string>
+    <string name="cc_heading">Cc:</string>
+    <string name="bcc_heading">Bcc:</string>
+    <string name="date_heading">Ceann-latha:</string>
+    <string name="show_images">Seall na dealbhan</string>
+    <string name="always_show_images">Seall na dealbhan on t-seòladair seo an-còmhnaidh</string>
+    <string name="always_show_images_toast">Thèid na dealbhan on t-seòladair seo a shealltainn gu fèin-obrachail.</string>
+    <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g></string>
+    <string name="address_display_format_with_via_domain"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g> slighe <xliff:g id="via_domain">%3$s</xliff:g></string>
+    <string name="message_saved">Chaidh dreachd dheth a shàbhaladh.</string>
     <string name="sending_message">A’ cur na teachdaireachd…</string>
+    <string name="invalid_recipient">Chan eil an seòladh <xliff:g id="wrongemail" example="foo@@gmail..com">%s</xliff:g> dligheach.</string>
+    <string name="show_elided">Seall às-earrannan dhen teacsa</string>
+    <string name="hide_elided">\u25BC Falaich teacsa na h-às-earrainn</string>
+    <string name="message_invite_title">Cuireadh mìosachain</string>
+    <string name="message_invite_calendar_view">Seall sa mhìosachan</string>
+    <string name="message_invite_label_attending">An dèid thu ann?</string>
+    <string name="message_invite_accept">Thèid</string>
     <string name="message_invite_tentative">Gun chinnt</string>
+    <string name="message_invite_decline">Cha dèid</string>
+    <string name="enumeration_comma">,\u0020</string>
+    <string name="send_anyway">Cuir e co-dhiù</string>
+    <string name="ok">Ceart ma-thà</string>
+    <string name="done">Deiseil</string>
+    <string name="cancel">Sguir dheth</string>
+    <string name="clear">Falamhaich</string>
     <string name="next">Air adhart</string>
+    <string name="previous">Air ais</string>
     <string-array name="sync_status">
-        <item>Success</item>
+        <item>Deiseil</item>
         <item>Chan eil ceangal ann</item>
-        <item>Couldn\'t sign in</item>
-        <item>Security error</item>
-        <item>Couldn\'t sync</item>
+        <item>Cha b’ urrainn dhuinn do chlàradh a-steach</item>
+        <item>Mearachd tèarainteachd</item>
+        <item>Cha b’ urrainn dhuinn a shioncronachadh</item>
         <item>Mearachd inntearnail</item>
-        <item>Server Error</item>
+        <item>Mearachd an fhrithealaiche</item>
     </string-array>
+    <string name="tap_to_configure">Suath ris gus a shuidheachadh</string>
+    <string name="non_synced_folder_description">Airson na còmhraidhean a shealltainn, sioncronaich am pasgan seo.</string>
+    <string name="tap_to_configure_folder_sync">Sioncronaich am pasgan</string>
+    <string name="widget_large_unread_count">%d+</string>
+    <string name="large_unseen_count"><xliff:g id="count" example="99">%d</xliff:g>+ ùr</string>
+    <string name="unseen_count"><xliff:g id="count" example="4">%d</xliff:g> ùr</string>
+    <plurals name="actionbar_unread_messages">
+        <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> gun leughadh</item>
+        <item quantity="two"><xliff:g id="count" example="4">%1$d</xliff:g> gun leughadh</item>
+        <item quantity="few"><xliff:g id="count" example="4">%1$d</xliff:g> gun leughadh</item>
+        <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> gun leughadh</item>
+    </plurals>
+    <string name="view_more_conversations">Seall barrachd chòmhraidhean</string>
+    <string name="loading_conversation">’Ga luchdadh\u2026</string>
+    <string name="activity_mailbox_selection">Tagh cunntas</string>
+    <string name="activity_folder_selection">Tagh pasgan</string>
+    <string name="folder_shortcut_widget_label">Pasgan a’ phuist-d</string>
+    <string name="change_folders_selection_dialog_title">Atharraich na pasganan</string>
+    <string name="move_to_selection_dialog_title">Gluais gu</string>
     <string name="search_hint">Lorg</string>
+    <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
+    <string name="voice_search_not_supported">Cha chuir an t-uidheam seo taic ri lorg gutha.</string>
+    <string name="search_back_desc">Dùin an lorg</string>
     <string name="search_voice_desc">Tòisich air lorg gutha</string>
+    <string name="search_clear_desc">Falamhaich an teacsa-luirg</string>
     <string name="network_error">Chan eil ceangal ann</string>
     <string name="retry">Feuch ris a-rithist</string>
+    <string name="load_more">Luchdaich barrachd dheth</string>
+    <string name="load_attachment">@string/load_more</string>
+    <string name="shortcut_name_title">Cuir ainm air ath-ghoirid pasgain</string>
+    <string name="wait_for_sync_title">A’ feitheamh air an t-sioncronachadh</string>
+    <string name="not_synced_title">Cha deach an cunntas a shioncronachadh</string>
+    <string name="wait_for_manual_sync_body">Cha deach sioncronachadh fèin-obrachail a shuidheachadh dhan chunntas seo.\nSuath ri <b>Sioncronaich an-dràsta</b> airson am post a shioncronachadh aon turas no ri <b>Atharraich roghainnean an t-sioncronachaidh</b> airson an sioncronachadh fèin-obrachail a shuidheachadh dhan chunntas seo.</string>
     <string name="manual_sync">Sioncronaich an-dràsta</string>
+    <string name="change_sync_settings">Atharraich roghainnean an t-sioncronachaidh</string>
+    <string name="photo_load_failed">Cha b’ urrainn dhuinn an dealbh a luchdadh</string>
+    <string name="cant_move_or_change_labels">Cha ghabh a ghluasad on a tha iomadh cunntas
+        am broinn a chaidh a thaghadh.</string>
+    <string name="multiple_new_message_notification_item"><b><xliff:g id="sender">%1$s</xliff:g></b>\u0020\u0020\u0020<xliff:g id="subject">%2$s</xliff:g></string>
+    <string name="single_new_message_notification_big_text"><xliff:g id="subject">%1$s</xliff:g>\n<xliff:g id="snippet">%2$s</xliff:g></string>
+    <string name="ignore_spam_warning">Leig seachad, tha earbsa agam san teachdaireachd seo</string>
+    <string name="via_domain">slighe <xliff:g id="viaDomain">%1$s</xliff:g></string>
+    <string name="signin">Clàraich a-steach</string>
     <string name="info">Fiosrachadh</string>
+    <string name="report">Dèan aithris air</string>
     <string name="show">Seall</string>
+    <string name="sync_error">Cha b’ urrainn dhuinn a shioncronachadh.</string>
+    <string name="sync_error_message">Chan eil àite gu leòr ann an stòras an uidheim agad ach an gabhadh a shioncronachadh.</string>
+    <string name="storage">Stòras</string>
+    <string name="senders_split_token">,\u00A0</string>
+    <string name="draft_count_format">\u00A0(<xliff:g id="count">%1$s</xliff:g>)</string>
+    <string name="all_folders_heading">Gach pasgan</string>
+    <string name="recent_folders_heading">Pasganan o chionn ghoirid</string>
+    <string name="message_details_title">Mion-fhiosrachadh mun teachdaireachd</string>
+    <string name="preference_advance_to_title">Rach gu fèin-obrachail</string>
+    <string-array name="prefEntries_autoAdvance">
+        <item>Gu fear às a dhèidh</item>
+        <item>Gu fear roimhe-san</item>
+        <item>Gu liosta nan còmhraidhean</item>
+    </string-array>
+    <string-array name="prefSummaries_autoAdvance">
+        <item>Seall còmhradh as ùire às dèidh fear a sguabadh às</item>
+        <item>Seall còmhradh as sine às dèidh fear a sguabadh às</item>
+        <item>Seall liosta nan còmhraidhean às dèidh fear a sguabadh às</item>
+    </string-array>
+    <string name="prefDialogTitle_autoAdvance">Rach gu</string>
+    <string name="clear_display_images_whitelist_title">Falamhaich an gabhail ri dealbhan</string>
+    <string name="clear_display_images_whitelist_dialog_title">Am falamhaich thu an gabhail ri dealbhan?</string>
+    <string name="clear_display_images_whitelist_dialog_message">Na seall dealbhan am broinn nan teachdaireachdan tuilleadh airson nan seòladairean a cheadaich thu cheana.</string>
+    <string name="sender_whitelist_cleared">Cha dèid na dealbhan a shealltainn gu fèin-obrachail.</string>
     <string name="preferences_signature_title">Earr-sgrìobhadh</string>
     <string name="preferences_signature_dialog_title">Earr-sgrìobhadh</string>
+    <string name="preferences_signature_summary_not_set">Cha deach a shuidheachadh</string>
+    <string name="notification_action_reply">Freagair</string>
+    <string name="notification_action_reply_all">Freagair na h-uile</string>
+    <string name="notification_action_archive">Cuir san tasg-lann</string>
+    <string name="notification_action_remove_label">Thoir an leubail air falbh</string>
+    <string name="notification_action_delete">Sguab às</string>
+    <string name="notification_action_undo_archive">Chaidh a chur san tasg-lann</string>
+    <string name="notification_action_undo_remove_label">Chaidh leubail a thoirt air falbh</string>
+    <string name="notification_action_undo_delete">Chaidh a sguabadh às</string>
+    <string name="label_notification_ticker">"<xliff:g id="label">%s</xliff:g>: <xliff:g id="notification">%s</xliff:g>"</string>
+    <plurals name="new_messages">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> teachdaireachd ùr</item>
+        <item quantity="two"><xliff:g id="count">%1$d</xliff:g> theachdaireachd ùr</item>
+        <item quantity="few"><xliff:g id="count">%1$d</xliff:g> teachdaireachdan ùra</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> teachdaireachd ùr</item>
+    </plurals>
+    <string name="single_new_message_notification_title"><xliff:g id="sender">%1$s</xliff:g>: <xliff:g id="subject">%2$s</xliff:g></string>
     <string name="silent_ringtone">’Na thost</string>
+    <string name="preference_removal_action_title">An gnìomh tùsail</string>
+    <string-array name="prefEntries_removal_action">
+        <item>Cuir san tasg-lann</item>
+        <item>Sguab às</item>
+    </string-array>
+    <string-array name="prefSummaries_removal_action_summary">
+        <item>Cuir san tasg-lann</item>
+        <item>Sguab às</item>
+    </string-array>
+    <string name="prefDialogTitle_removal_action">An gnìomh tùsail</string>
+    <string name="preferences_default_reply_all_title">Freagair na h-uile</string>
+    <string name="preferences_default_reply_all_summary_impl">Cleachd mar an roghainn thùsail air freagairtean do theachdaireachdan</string>
+    <string name="preference_swipe_title">Gnìomhan grad-shlaighdidh</string>
+    <string name="preference_swipe_description">Air liosta nan còmhraidhean</string>
+    <string name="preference_sender_image_title">Dealbh an t-seòladair</string>
+    <string name="preference_sender_image_description">Seall ri taobh ainm air liosta nan còmhraidhean</string>
     <string name="empty_trash">Falamhaich an sgudal</string>
+    <string name="empty_spam">Falamhaich an spama</string>
+    <string name="empty_trash_dialog_title">Am falamhaich thu an sgudal?</string>
+    <string name="empty_spam_dialog_title">Am falamhaich thu an spama?</string>
+    <plurals name="empty_folder_dialog_message">
+        <item quantity="one">Thèid <xliff:g id="count">%1$d</xliff:g> teachdaireachd a sguabadh às gu buan.</item>
+        <item quantity="two">Thèid <xliff:g id="count">%1$d</xliff:g> theachdaireachd a sguabadh às gu buan.</item>
+        <item quantity="few">Thèid <xliff:g id="count">%1$d</xliff:g> teachdaireachdan a sguabadh às gu buan.</item>
+        <item quantity="other">Thèid <xliff:g id="count">%1$d</xliff:g> teachdaireachd a sguabadh às gu buan.</item>
+    </plurals>
     <string name="drawer_open">Fosgail drathair na seòladaireachd</string>
     <string name="drawer_close">Dùin drathair na seòladaireachd</string>
-    <string name="phone">fòn</string>
+    <string name="conversation_photo_welcome_text">Suath ri dealbh faighteir airson an còmhradh ud a thaghadh.</string>
+    <string name="long_press_to_select_tip">Suath ris ⁊ cùm sìos airson còmhradh a thaghadh agus suath ri feadhainn eile an uairsin gus an taghadh cuideachd.</string>
+    <string name="folder_icon_desc">Ìomhaigheag pasgain</string>
+    <string name="add_account">Cuir cunntas ris</string>
+    <string name="dismiss_tip_hover_text">Leig seachad an gliocas</string>
+    <string name="auto_sync_off">Tha an sioncronachadh fèin-obrachail dheth. Suath ris gus a chur air.</string>
+    <string name="account_sync_off">Tha sioncronachadh a’ chunntais dheth. Cuir air e ann an &lt;a href=\'http://www.example.com\'&gt;Roghainnean\u00A0a’\u00A0chunntais.&lt;/a&gt;</string>
+    <string name="unsent_messages_in_outbox">Tha <xliff:g id="number">%1$s</xliff:g>
+    gun chur am broinn <xliff:g id="outbox">%2$s</xliff:g></string>
+    <string name="turn_auto_sync_on_dialog_title">An cuir thu an sioncronachadh fèin-obrachail air?</string>
+    <string name="turn_auto_sync_on_dialog_body">Thèid atharrachadh sam bith a nì thu air
+    aplacaid no cunntas sam bith, (chan ann Gmail a-mhàin) a shioncronachadh
+    eadar an lìon, na h-uidheaman eile agad agus <xliff:g id="phone_or_tablet">%1$s</xliff:g> agad.</string>
+    <string name="phone">am fòn</string>
+    <string name="tablet">an tablaid</string>
     <string name="turn_auto_sync_on_dialog_confirm_btn">Cuir air</string>
+    <string name="show_n_more_folders">Seall na pasganan (<xliff:g id="number">%1$s</xliff:g>)</string>
+    <string name="hide_folders">Falaich na pasganan</string>
+    <string name="print">Clò-bhuail</string>
+    <string name="print_all">Clò-bhuail na h-uile</string>
+    <plurals name="num_messages">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> teachdaireachd</item>
+        <item quantity="two"><xliff:g id="count">%1$d</xliff:g> theachdaireachd</item>
+        <item quantity="few"><xliff:g id="count">%1$d</xliff:g> teachdaireachdan</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> teachdaireachd</item>
+    </plurals>
+    <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> aig <xliff:g id="time">%2$s</xliff:g></string>
+    <string name="draft_to_heading">Dreachd gu:</string>
     <string name="draft_heading">Dreachd</string>
+    <string name="quoted_text_hidden_print">Chaidh teacsa às-earrainn fhalach</string>
+    <plurals name="num_attachments">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> cheanglachan</item>
+        <item quantity="two"><xliff:g id="count">%1$d</xliff:g> cheanglachan</item>
+        <item quantity="few"><xliff:g id="count">%1$d</xliff:g> ceanglachain</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> ceanglachan</item>
+    </plurals>
     <string name="no_subject">(gun chuspair)</string>
+    <string name="vacation_responder">Freagaraiche làithean-saora</string>
+    <string name="preferences_vacation_responder_title">Freagaraiche làithean-saora</string>
+    <string name="vacation_responder_body_hint_text">Teachdaireachd</string>
+    <string name="send_to_contacts_text">Na cuir ach dhan an luchd-aithne agam</string>
+    <string name="send_to_domain_text">Na cuir ach gu <xliff:g id="domain">%1$s</xliff:g></string>
     <string name="pick_start_date_title">Àm-tòiseachaidh</string>
+    <string name="pick_end_date_title">Àm-crìochnachaidh (roghainneil)</string>
+    <string name="date_not_set">Cha deach a shuidheachadh</string>
+    <string name="set_end_date_dialog_title">Ceann-là crìochnachaidh (roghainneil)</string>
     <string name="custom_date">Gnàthaichte</string>
+    <string name="date_none">Gun chrìoch</string>
+    <string name="discard_changes">An tilg thu na h-atharraichean air falbh?</string>
+    <string name="vacation_responder_changes_saved">Chaidh freagaraiche làithean-saora a shàbhaladh</string>
+    <string name="vacation_responder_changes_discarded">Chaidh na h-atharraichean air freagaraiche làithean-saora a thilgeil air falbh</string>
     <string name="vacation_responder_off">Dheth</string>
+    <string name="vacation_responder_on">Air, o <xliff:g id="date">%1$s</xliff:g></string>
+    <string name="vacation_responder_on_with_end_date">Air, o <xliff:g id="start-date">%1$s</xliff:g> gu <xliff:g id="end-date">%2$s</xliff:g></string>
+    <string name="vacation_responder_empty_subject_and_body_warning">Cuir cuspair no teachdaireachd ris</string>
+    <string name="view_entire_message">Seall an teachdaireachd shlàn</string>
+    <string name="eml_loader_error_toast">Cha ghabh am faidhle seo fhosgladh</string>
     <string name="help_and_info">Cobhair</string>
+    <string name="help_and_feedback">Taic ⁊ beachd thugainn</string>
+    <string name="feedback">Cuir do bheachd thugainn</string>
+    <string name="version"><xliff:g id="app_name" example="Email">%1$s</xliff:g> tionndadh <xliff:g id="version" example="2.2.1">%2$s</xliff:g></string>
+    <string name="print_dialog">Clò-bhuail\u2026</string>
+    <string name="copyright_information">Fiosrachadh mu chòir-lethbhreac</string>
+    <string name="privacy_policy">Poileasaidh prìobhaideachd</string>
     <string name="open_source_licenses">Ceadachasan Open Source</string>
+    <string name="reply_choice_yes">Seadh</string>
+    <string name="reply_choice_no">Chan eadh</string>
+    <string name="reply_choice_ok">Ceart ma-thà</string>
+    <string name="reply_choice_hehe">Èibhinn</string>
+    <string name="reply_choice_thanks">Mòran taing</string>
+    <string name="reply_choice_i_agree">Sin dìreach</string>
     <string name="reply_choice_nice">Snog</string>
+    <string name="reply_on_my_way">Air an t-slighe</string>
+    <string name="reply_choice_later">Cluinnidh tu uam</string>
+    <string name="reply_choice_smiling_face">:)</string>
+    <string name="reply_choice_frowning_face">:(</string>
+    <string name="preference_header_action_confirmations">Dearbhaidhean ghnìomhan</string>
+    <string name="preference_confirm_before_delete_title">Dearbh mus dèan thu sguabadh às</string>
+    <string name="preference_confirm_before_archive_title">Dearbh mus cuir thu nì san tasg-lann</string>
     <string name="preference_confirm_before_send_title">Dearbh mus dèid a chur</string>
+    <string name="preferences_conversation_mode_title">Crùbadh theachdaireachdan</string>
+    <string name="preferences_conversation_mode_summary">Crùb teachdaireachdan ach am freagair iad ri meud na sgrìn</string>
+    <string name="preferences_disable_snap_headers_title">Gnìomhan teachdaireachd</string>
+    <string-array name="prefSummaries_snapHeader">
+        <item>Seall gnìomhan teachdaireachd air bàrr na sgrìn</item>
+        <item>Na seall gnìomhan teachdaireachd air bàrr na sgrìn ach sa mhodh portraid</item>
+        <item>Na seall gnìomhan teachdaireachd taobh a-muigh bann-cinn na teachdaireachd</item>
+    </string-array>
     <string-array name="prefEntries_snapHeader">
-        <item>Always show</item>
-        <item>Only show in portrait</item>
+        <item>Seall an-còmhnaidh</item>
+        <item>Na seall ach sa mhodh portraid</item>
         <item>Na seall</item>
     </string-array>
     <string name="clear_history_title">Falamhaich eachdraidh nan lorg</string>
+    <string name="search_history_cleared">Chaidh eachdraidh nan lorg fhalamhachadh.</string>
+    <string name="clear_history_dialog_title">Am falamhaich thu eachdraidh nan lorg?</string>
+    <string name="clear_history_dialog_message">Thèid lorg sam bith a rinn thu cheana a thoirt air falbh.</string>
+    <string name="manage_accounts_menu_item">Stiùir na cunntasan</string>
+    <string name="general_preferences_title">Roghainnean coitcheann</string>
     <string name="activity_preferences">Roghainnean</string>
     <string name="overflow_description">Barrachd roghainnean</string>
+    <string name="security_hold_required_text">Tha <xliff:g id="email_address">%1$s</xliff:g> feumach air ùrachadh tèarainteachd</string>
+    <string name="update_security_text">ùraich an-dràsta</string>
+    <string name="forms_are_disabled">Tha foirmean dheth ann an Gmail</string>
 </resources>
