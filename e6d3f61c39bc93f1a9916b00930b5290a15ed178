@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5c0b1abc_70c85a21",
+        "filename": "res/values/themes.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 26076
+      },
+      "writtenOn": "2020-11-16T13:56:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ed298255_2a083d68",
+      "revId": "e6d3f61c39bc93f1a9916b00930b5290a15ed178",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a04e6eff_113c646b",
         "filename": "res/values/themes.xml",
         "patchSetId": 2
@@ -33,6 +51,24 @@
       "revId": "e6d3f61c39bc93f1a9916b00930b5290a15ed178",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a4a0051_6d20ad1e",
+        "filename": "res/values/themes.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 26076
+      },
+      "writtenOn": "2020-11-16T13:56:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a04e6eff_113c646b",
+      "revId": "e6d3f61c39bc93f1a9916b00930b5290a15ed178",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
