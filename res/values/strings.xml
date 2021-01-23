@@ -1119,6 +1119,12 @@
     <!--  Settings screen, disable snap headers setting title  [CHAR LIMIT=30] -->
     <string name="preferences_disable_snap_headers_title">Message actions</string>
 
+    <!--  Settings screen, Show recents folder setting title -->
+    <string name="preference_show_recent_folders_title">Show recent folders</string>
+
+    <!--  Settings screen, Show recents folder setting summary -->
+    <string name="preference_show_recent_folders_description">Recent folders will be shown in the drawer</string>
+
     <!-- The snap header summaries -->
     <string-array name="prefSummaries_snapHeader">
         <item>Always show message actions at the top of the screen</item>
@@ -1176,4 +1182,6 @@
 
     <!-- activity name of the photoviewer -->
     <string name="photo_view_activity" translatable="false">com.android.mail.photo.MailPhotoViewActivity</string>
+
+    <string name="option_needs_app_restart">You need to restart the app for this setting to be applied.</string>
 </resources>
