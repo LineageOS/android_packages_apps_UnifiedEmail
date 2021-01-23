@@ -77,6 +77,8 @@ public final class MailPrefs extends VersionedPrefs {
         private static final String CACHED_ACTIVE_NOTIFICATION_SET =
                 "cache-active-notification-set";
 
+        public static final String SHOW_RECENTS_IN_DRAWER = "show-recents-in-drawer";
+
         /**
          * A string indicating whether the conversation photo teaser has been previously
          * shown and dismissed. This is the third version of it (thus the three at the end).
@@ -329,6 +331,10 @@ public final class MailPrefs extends VersionedPrefs {
     public void cacheActiveNotificationSet(final Set<String> notificationSet) {
         getEditor().putStringSet(PreferenceKeys.CACHED_ACTIVE_NOTIFICATION_SET, notificationSet)
                 .apply();
+    }
+
+    public boolean getShowRecentFoldersInDrawer() {
+        return getSharedPreferences().getBoolean(PreferenceKeys.SHOW_RECENTS_IN_DRAWER, true);
     }
 
     /**

@@ -114,14 +114,18 @@ public class FolderListFragment extends ListFragment implements
     private ListView mListView;
     /** URI that points to the list of folders for the current account. */
     private Uri mFolderListUri;
+
     /**
-     * True if you want a divided FolderList. A divided folder list shows the following groups:
+     * A divided folder list shows by default the following groups:
      * Inboxes, Recent Folders, All folders.
+     * It is possible to show/hide Recent Folders group by changing mShowRecentFolders field below.
      *
      * An undivided FolderList shows all folders without any divisions and without recent folders.
      * This is true only for the drawer: for all others it is false.
      */
     protected boolean mIsDivided = false;
+    protected boolean mShowRecentFolders = mIsDivided;
+
     /**
      * True if the folder list belongs to a folder selection activity (one account only)
      * and the footer should not show.
@@ -1105,7 +1109,9 @@ public class FolderListFragment extends ListFragment implements
             addFolderDivision(itemList, inboxFolders, BLANK_HEADER_RESOURCE);
 
             // Add recent folders next.
-            addRecentsToList(itemList);
+            if (mShowRecentFolders) {
+                addRecentsToList(itemList);
+            }
 
             // Add the remaining folders.
             addFolderDivision(itemList, allFoldersList, R.string.all_folders_heading);

@@ -38,6 +38,13 @@
 
     <CheckBoxPreference
             android:defaultValue="true"
+            android:key="show-recents-in-drawer"
+            android:persistent="true"
+            android:summary="@string/preference_show_recent_folders_description"
+            android:title="@string/preference_show_recent_folders_title" />
+
+    <CheckBoxPreference
+            android:defaultValue="true"
             android:key="conversation-list-sender-image"
             android:persistent="true"
             android:summary="@string/preference_sender_image_description"
