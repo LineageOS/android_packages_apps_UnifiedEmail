@@ -125,6 +125,9 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
             final int prefsAutoAdvanceMode =
                     AUTO_ADVANCE_VALUES[mAutoAdvance.findIndexOfValue((String) newValue)];
             mMailPrefs.setAutoAdvanceMode(prefsAutoAdvanceMode);
+        } else if (PreferenceKeys.SHOW_RECENTS_IN_DRAWER.equals(key)) {
+            Toast.makeText(getContext(), R.string.option_needs_app_restart, Toast.LENGTH_SHORT)
+                    .show();
         } else if (!PreferenceKeys.CONVERSATION_LIST_SWIPE.equals(key) &&
                 !PreferenceKeys.SHOW_SENDER_IMAGES.equals(key) &&
                 !PreferenceKeys.DEFAULT_REPLY_ALL.equals(key) &&
@@ -203,6 +206,7 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
         listenForPreferenceChange(
                 PreferenceKeys.REMOVAL_ACTION,
                 PreferenceKeys.CONVERSATION_LIST_SWIPE,
+                PreferenceKeys.SHOW_RECENTS_IN_DRAWER,
                 PreferenceKeys.SHOW_SENDER_IMAGES,
                 PreferenceKeys.DEFAULT_REPLY_ALL,
                 PreferenceKeys.CONVERSATION_OVERVIEW_MODE,

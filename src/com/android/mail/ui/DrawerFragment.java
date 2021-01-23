@@ -17,7 +17,10 @@
 
 package com.android.mail.ui;
 
+import android.content.Context;
 import android.widget.ListView;
+
+import com.android.mail.preferences.MailPrefs;
 
 /**
  * A drawer that is shown in one pane mode, as a pull-out from the left.  All the
@@ -46,6 +49,12 @@ public class DrawerFragment extends FolderListFragment {
         mIsDivided = true;
         // The drawer shows the footer.
         mIsFolderSelectionActivity = false;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        mShowRecentFolders = MailPrefs.get(context).getShowRecentFoldersInDrawer();
+        super.onAttach(context);
     }
 
     @Override
