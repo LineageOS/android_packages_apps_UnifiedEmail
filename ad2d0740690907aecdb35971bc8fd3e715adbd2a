@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b3e87628_6c0d068f",
+        "filename": "src/com/android/mail/ui/DrawerFragment.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2021-01-24T16:32:34Z",
+      "side": 1,
+      "message": "I don\u0027t think the change to the comment is necessary",
+      "revId": "ad2d0740690907aecdb35971bc8fd3e715adbd2a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aacef300_194afd08",
+        "filename": "src/com/android/mail/ui/FolderListFragment.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2021-01-24T16:32:34Z",
+      "side": 1,
+      "message": "this should be \"mShowRecentFolders\" (see all other member variables) - don\u0027t forget to modify all other occurances as well when changing it (some only follow a review only by the word, so nvm if you already knew it  :) )",
+      "revId": "ad2d0740690907aecdb35971bc8fd3e715adbd2a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9a6d0b0_5bc8d0dd",
+        "filename": "src/com/android/mail/ui/settings/GeneralPrefsFragment.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2021-01-24T16:32:34Z",
+      "side": 1,
+      "message": "A line may not exced 100 characters, need to break manually",
+      "range": {
+        "startLine": 128,
+        "startChar": 12,
+        "endLine": 128,
+        "endChar": 103
+      },
+      "revId": "ad2d0740690907aecdb35971bc8fd3e715adbd2a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
