@@ -24,6 +24,7 @@ import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.StrictMode;
 
 import com.android.mail.MailIntentService;
 import com.android.mail.utils.LogTag;
@@ -61,7 +62,14 @@ public abstract class VersionedPrefs {
     protected VersionedPrefs(final Context context, final String sharedPrefsName) {
         mContext = context.getApplicationContext();
         mSharedPreferencesName = sharedPrefsName;
-        mSharedPreferences = context.getSharedPreferences(sharedPrefsName, Context.MODE_PRIVATE);
+        StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskReads();
+        try {
+            mSharedPreferences = context.getSharedPreferences(sharedPrefsName,
+                    Context.MODE_PRIVATE);
+        } finally {
+            StrictMode.setThreadPolicy(oldPolicy);
+        }
+
         mEditor = mSharedPreferences.edit();
 
         final int oldVersion = getCurrentVersion();

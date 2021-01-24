@@ -17,6 +17,7 @@
 package com.android.emailcommon;
 
 import android.content.Context;
+import android.os.StrictMode;
 
 import java.io.File;
 
@@ -28,7 +29,12 @@ public class TempDirectory {
     private static File sTempDirectory = null;
 
     public static void setTempDirectory(Context context) {
-        sTempDirectory = context.getCacheDir();
+        StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskWrites();
+        try {
+            sTempDirectory = context.getCacheDir();
+        } finally {
+            StrictMode.setThreadPolicy(oldPolicy);
+        }
     }
 
     public static File getTempDirectory() {
