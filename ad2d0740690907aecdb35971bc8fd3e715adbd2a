@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "cdc48acb_75828462",
+        "filename": "src/com/android/mail/ui/DrawerFragment.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 27305
+      },
+      "writtenOn": "2021-01-24T17:51:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0866b1d_572a07b1",
+      "revId": "ad2d0740690907aecdb35971bc8fd3e715adbd2a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aacef300_194afd08",
         "filename": "src/com/android/mail/ui/FolderListFragment.java",
         "patchSetId": 1
@@ -51,6 +69,24 @@
       "revId": "ad2d0740690907aecdb35971bc8fd3e715adbd2a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9c953b2_b4887cf0",
+        "filename": "src/com/android/mail/ui/FolderListFragment.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 27305
+      },
+      "writtenOn": "2021-01-24T17:51:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aacef300_194afd08",
+      "revId": "ad2d0740690907aecdb35971bc8fd3e715adbd2a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     },
     {
       "key": {
@@ -74,6 +110,30 @@
       "revId": "ad2d0740690907aecdb35971bc8fd3e715adbd2a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fbb7ad6a_e95007d4",
+        "filename": "src/com/android/mail/ui/settings/GeneralPrefsFragment.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 27305
+      },
+      "writtenOn": "2021-01-24T17:51:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9a6d0b0_5bc8d0dd",
+      "range": {
+        "startLine": 128,
+        "startChar": 12,
+        "endLine": 128,
+        "endChar": 103
+      },
+      "revId": "ad2d0740690907aecdb35971bc8fd3e715adbd2a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }

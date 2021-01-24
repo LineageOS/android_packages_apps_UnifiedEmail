@@ -34,6 +34,24 @@
       "revId": "6f125a2fcfc3ebdedd3ceda51dafa7c5f6890996",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc7365e4_2a741fca",
+        "filename": "src/com/android/mail/ui/settings/GeneralPrefsFragment.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 27305
+      },
+      "writtenOn": "2021-01-24T17:51:18Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "27b2e8b2_b54b9169",
+      "revId": "6f125a2fcfc3ebdedd3ceda51dafa7c5f6890996",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
