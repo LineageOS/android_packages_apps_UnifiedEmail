@@ -16,6 +16,24 @@
       "revId": "6f125a2fcfc3ebdedd3ceda51dafa7c5f6890996",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27b2e8b2_b54b9169",
+        "filename": "src/com/android/mail/ui/settings/GeneralPrefsFragment.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 27305
+      },
+      "writtenOn": "2021-01-24T17:37:11Z",
+      "side": 0,
+      "message": "Whoops! This was Android Studio optimizing imports automagically, it just slipped through",
+      "parentUuid": "ee0554e5_244a5f51",
+      "revId": "6f125a2fcfc3ebdedd3ceda51dafa7c5f6890996",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
     }
   ]
 }
