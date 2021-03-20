@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "05b474c6_66a49a41",
+        "filename": "src/com/android/mail/preferences/MailPrefs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2021-03-20T18:59:26Z",
+      "side": 1,
+      "message": "I don\u0027t think there is the need to change the method. Just change\nboolean displayImages \u003d  getSenderWhitelist().contains(sender) || getAlwaysDisplayImages();\n(will probably require a line break)\nThat way the change is much smaller and the tohe change isn\u0027t required at all",
+      "revId": "d19919676170f271b0763106d5ccdb74710df6a6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
