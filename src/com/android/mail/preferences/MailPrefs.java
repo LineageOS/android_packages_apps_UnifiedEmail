@@ -86,6 +86,7 @@ public final class MailPrefs extends VersionedPrefs {
         private static final String
                 CONVERSATION_PHOTO_TEASER_SHOWN = "conversation-photo-teaser-shown-three";
 
+        public static final String ALWAYS_DISPLAY_IMAGES = "always_display_images";
         public static final String DISPLAY_IMAGES = "display_images";
         public static final String DISPLAY_IMAGES_PATTERNS = "display_sender_images_patterns_set";
 
@@ -370,8 +371,17 @@ public final class MailPrefs extends VersionedPrefs {
         notifyBackupPreferenceChanged();
     }
 
+    public boolean getAlwaysDisplayImages() {
+        return getSharedPreferences().getBoolean(PreferenceKeys.ALWAYS_DISPLAY_IMAGES, false);
+    }
+
+    public void setAlwaysDisplayImages(boolean enable) {
+        getEditor().putBoolean(PreferenceKeys.ALWAYS_DISPLAY_IMAGES, enable).apply();
+    }
+
     /**
-     * Returns whether or not an email address is in the whitelist of senders to show images for.
+     * Returns whether or not an email address is in the whitelist of senders to show images for,
+     * or `true` when ALWAYS_DISPLAY_IMAGES option is enabled.
      * This method reads the entire whitelist, so if you have multiple emails to check, you should
      * probably call getSenderWhitelist() and check membership yourself.
      *
@@ -379,6 +389,9 @@ public final class MailPrefs extends VersionedPrefs {
      * @return whether we should show pictures for this sender
      */
     public boolean getDisplayImagesFromSender(String sender) {
+        if (getAlwaysDisplayImages()) {
+            return true;
+        }
         boolean displayImages = getSenderWhitelist().contains(sender);
         if (!displayImages) {
             final SharedPreferences sharedPreferences = getSharedPreferences();

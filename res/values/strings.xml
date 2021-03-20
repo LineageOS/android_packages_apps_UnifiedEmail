@@ -736,6 +736,12 @@
     <!-- Dialog title for the auto-advance list -->
     <string name="prefDialogTitle_autoAdvance">Advance to</string>
 
+    <string name="preference_displayImagesMode_title">Display images in emails</string>
+    <string-array name="prefEntries_displayImagesMode">
+        <item>Always</item>
+        <item>Only from approved senders</item>
+    </string-array>
+
     <!-- TODO: these pref keys that are never user visible should probably be
     moved to a donttranslate file -->
     <!-- The default auto-advance mode -->
@@ -746,6 +752,12 @@
         <item>newer</item>
         <item>older</item>
         <item>list</item>
+    </string-array>
+
+    <string translatable="false" name="prefDefault_displayImagesMode">only-approved-senders</string>
+    <string-array translatable="false" name="prefValues_displayImagesMode">
+        <item>always</item>
+        <item>only-approved-senders</item>
     </string-array>
 
     <!-- Settings screen, title of "Restore default for "Show pictures"" [CHAR LIMIT=1000]-->
