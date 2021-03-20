@@ -67,6 +67,15 @@
             android:title="@string/preference_advance_to_title"
             gm:entrySummaries="@array/prefSummaries_autoAdvance" />
 
+    <ListPreference
+            android:defaultValue="@string/prefDefault_displayImagesMode"
+            android:entries="@array/prefEntries_displayImagesMode"
+            android:entryValues="@array/prefValues_displayImagesMode"
+            android:key="display-images-mode"
+            android:persistent="false"
+            android:title="@string/preference_displayImagesMode_title"
+            android:summary="%s" />
+
     <PreferenceCategory
             android:title="@string/preference_header_action_confirmations"
             android:key="removal-actions-group">

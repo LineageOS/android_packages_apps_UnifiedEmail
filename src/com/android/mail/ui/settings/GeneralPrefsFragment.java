@@ -48,6 +48,7 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
 
     // Keys used to reference pref widgets which don't map directly to preference entries
     static final String AUTO_ADVANCE_WIDGET = "auto-advance-widget";
+    static final String DISPLAY_IMAGES_MODE = "display-images-mode";
 
     static final String CALLED_FROM_TEST = "called-from-test";
 
@@ -58,6 +59,7 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
 
     private AlertDialog mClearSearchHistoryDialog;
 
+    private ListPreference mDisplayImagesMode;
     private ListPreference mAutoAdvance;
     private static final int[] AUTO_ADVANCE_VALUES = {
             AutoAdvance.NEWER,
@@ -82,6 +84,7 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
         addPreferencesFromResource(R.xml.general_preferences);
 
         mAutoAdvance = (ListPreference) findPreference(AUTO_ADVANCE_WIDGET);
+        mDisplayImagesMode = (ListPreference) findPreference(DISPLAY_IMAGES_MODE);
     }
 
     @Override
@@ -121,6 +124,8 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
         if (PreferenceKeys.REMOVAL_ACTION.equals(key)) {
             final String removalAction = newValue.toString();
             mMailPrefs.setRemovalAction(removalAction);
+        } else if (DISPLAY_IMAGES_MODE.equals(key)) {
+            mMailPrefs.setAlwaysDisplayImages(newValue.equals("always"));
         } else if (AUTO_ADVANCE_WIDGET.equals(key)) {
             final int prefsAutoAdvanceMode =
                     AUTO_ADVANCE_VALUES[mAutoAdvance.findIndexOfValue((String) newValue)];
@@ -199,6 +204,7 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
         final int autoAdvanceModeIndex = prefValueToWidgetIndex(AUTO_ADVANCE_VALUES,
                 mMailPrefs.getAutoAdvanceMode(), AutoAdvance.DEFAULT);
         mAutoAdvance.setValueIndex(autoAdvanceModeIndex);
+        mDisplayImagesMode.setValueIndex(mMailPrefs.getAlwaysDisplayImages() ? 0 : 1);
 
         listenForPreferenceChange(
                 PreferenceKeys.REMOVAL_ACTION,
@@ -207,6 +213,7 @@ public class GeneralPrefsFragment extends MailPreferenceFragment
                 PreferenceKeys.DEFAULT_REPLY_ALL,
                 PreferenceKeys.CONVERSATION_OVERVIEW_MODE,
                 AUTO_ADVANCE_WIDGET,
+                DISPLAY_IMAGES_MODE,
                 PreferenceKeys.CONFIRM_DELETE,
                 PreferenceKeys.CONFIRM_ARCHIVE,
                 PreferenceKeys.CONFIRM_SEND
