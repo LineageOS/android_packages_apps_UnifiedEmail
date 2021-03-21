@@ -16,6 +16,24 @@
       "revId": "d19919676170f271b0763106d5ccdb74710df6a6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abbb5512_d5e639ec",
+        "filename": "src/com/android/mail/preferences/MailPrefs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 27305
+      },
+      "writtenOn": "2021-03-21T12:06:02Z",
+      "side": 1,
+      "message": "Done. In the end I used an if guard since it seemed easier to reason about (at least for me).",
+      "parentUuid": "05b474c6_66a49a41",
+      "revId": "d19919676170f271b0763106d5ccdb74710df6a6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
