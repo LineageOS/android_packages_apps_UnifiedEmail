@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aea694e8_b545c084",
+        "filename": "src/com/android/mail/preferences/MailPrefs.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 13028
+      },
+      "writtenOn": "2021-03-21T14:23:10Z",
+      "side": 1,
+      "message": "I still think this should just be OR\u0027ed in the next line. It does exactly the same, I don\u0027t see why an \"early return\" would be required if the rest of the code is already doing exactly that",
+      "range": {
+        "startLine": 392,
+        "startChar": 8,
+        "endLine": 394,
+        "endChar": 9
+      },
+      "revId": "03533cad8c70495f583cbe00755118bfa7a79906",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
