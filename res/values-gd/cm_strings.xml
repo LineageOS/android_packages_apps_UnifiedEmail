@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2015 The CyanogenMod Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <string name="prefDialogTitle_suggestedContactsMode">Modh</string>
+    <string name="prefDialogTitle_suggestedContactsMode_none">À comas</string>
+    <string name="prefDialogTitle_suggestedContactsMode_summary_none">Tha gleus nam molaidhean luchd-aithne à comas</string>
+    <string name="prefDialogTitle_suggestedContactsMode_recents">O chionn goirid</string>
+    <string name="prefDialogTitle_suggestedContactsMode_summary_recents">Cha ghabh ach molaidhean luchd-aithne a chaidh a dhèanamh o chionn goirid a thaghadh</string>
+    <string name="prefDialogTitle_suggestedContactsMode_all">Na h-uile</string>
+    <string name="prefDialogTitle_suggestedContactsMode_summary_all">Gabhaidh a h-uile moladh luchd-aithne a thaghadh</string>
+    <string name="preference_header_suggested_contacts">Molaidhean luchd-aithne</string>
+    <string name="preference_suggested_contacts_mode">Modh nam molaidhean luchd-aithne</string>
+    <string name="preference_suggested_contacts_clear_all">Falamhaich na molaidhean luchd-aithne</string>
+    <string name="suggested_contacts_cleared">Chaidh na molaidhean luchd-aithne fhalamhachadh.</string>
+    <string name="clear_suggested_contacts_dialog_title">A bheil thu airson na molaidhean luchd-aithne fhalamhachadh?</string>
+    <string name="clear_suggested_contacts_dialog_message">Thèid na molaidhean luchd-aithne uile a chaidh a stòradh roimhe a thoirt air falbh.</string>
+    <string name="edit_light_settings">Roghainnean solas a’ phasgain</string>
+    <string name="pulse_speed_title">Faide is luaths an fhrith-bhualaidh</string>
+    <string name="default_time">Àbhaisteach</string>
+    <string name="custom_time">Gnàthaichte</string>
+    <string name="dialog_delete_title">Sguab às</string>
+    <string name="dialog_delete_message">A bheil thu airson an nì a thagh thu a thoirt air falbh?</string>
+    <string name="pref_lights_default">Bun-roghainn</string>
+    <string name="pulse_length_always_on">Air an-còmhnaidh</string>
+    <string name="pulse_length_very_short">Glè ghoirid</string>
+    <string name="pulse_length_short">Goirid</string>
+    <string name="pulse_length_normal">Àbhaisteach</string>
+    <string name="pulse_length_long">Fada</string>
+    <string name="pulse_length_very_long">Glè fhada</string>
+    <string name="pulse_speed_very_fast">Glè luath</string>
+    <string name="pulse_speed_fast">Luath</string>
+    <string name="pulse_speed_normal">Àbhaisteach</string>
+    <string name="pulse_speed_slow">Slaodach</string>
+    <string name="pulse_speed_very_slow">Glè shlaodach</string>
+</resources>
