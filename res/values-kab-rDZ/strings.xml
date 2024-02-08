@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="from">Seg</string>
+    <string name="to">I</string>
+    <string name="cc">Cc</string>
+    <string name="bcc">Bcc</string>
+    <string name="subject_hint">Asentel</string>
+    <string name="save_draft">Sekles arewway</string>
+    <string name="discard">Ignorer</string>
+    <string name="compose">Aru</string>
+    <string name="compose_title">Aru</string>
+    <string-array name="compose_modes">
+        <item>Err</item>
+        <item>Err i meṛṛa</item>
+        <item>Ɣer zdat</item>
+    </string-array>
+    <string name="send">Azen</string>
+    <string name="mute">Sens asawad</string>
+    <string name="archive">Tarcivt</string>
+    <string name="delete">Mḥu</string>
+    <string name="refresh">Sismeḍ</string>
+    <string name="reply">Err</string>
+    <string name="reply_all">Err i meṛṛa</string>
+    <string name="resume_draft">Ẓreg</string>
+    <string name="forward">Ɣer zdat</string>
+    <string name="menu_compose">Aru</string>
+    <string name="menu_move_to">Senkez ar</string>
+    <string name="menu_settings">Iɣewwaṛen</string>
+    <string name="menu_search">Nadi</string>
+    <string name="drawer_title">Tunigin</string>
+    <string name="attachment_image">Tugna</string>
+    <string name="attachment_video">Tavidyut</string>
+    <string name="attachment_audio">Imesli</string>
+    <string name="attachment_text">Aḍris</string>
+    <string name="attachment_application_msword">isemli</string>
+    <string name="attachment_application_vnd_ms_powerpoint">PrÃ©sentation</string>
+    <string name="attachment_application_vnd_ms_excel">Tiferkit n usiḍen</string>
+    <string name="attachment_application_pdf">PDF</string>
+    <string name="preview_attachment">Timeẓriwt</string>
+    <string name="save_attachment">Sekles</string>
+    <string name="download_again">Sider tikelt nniḍen</string>
+    <string name="more_info_attachment">Talɣut</string>
+    <string name="please_wait">Ttxil-k rǧu\u2026</string>
+    <string name="menu_photo_share">Bḍu</string>
+    <string name="menu_photo_print">Siggez</string>
+    <string name="choosertitle_sharevia">Bḍu s</string>
+    <string name="contextmenu_copy">Nγel</string>
+    <string name="contextmenu_copylink">Nɣel URL n useɣwen</string>
+    <string name="contextmenu_view_image">Wali tugna</string>
+    <string name="contextmenu_dial_dot">Asuddes\u2026</string>
+    <string name="contextmenu_add_contact">Rnu anermis</string>
+    <string name="contextmenu_send_mail">Azen imayl</string>
+    <string name="contextmenu_map">Tagertilt</string>
+    <string name="contextmenu_sharelink">Bḍu aseɣwen</string>
+    <plurals name="draft">
+        <item quantity="one">Arewway</item>
+        <item quantity="other">Irewwayen</item>
+    </plurals>
+    <string name="message_failed">Yerreẓ</string>
+    <string name="me_object_pronoun">nekk</string>
+    <string name="me_subject_pronoun">nekk</string>
+    <string name="loading_conversations">Asali\u2026</string>
+    <string name="undo">Err-d</string>
+    <string name="deleted">Yettwakkes</string>
+    <string name="archived">Yeɣber</string>
+    <string name="search_results_header">Igemmuḍen</string>
+    <string name="add_label">Rnu akaram</string>
+    <string name="hide_details">Ffer tilɣa</string>
+    <string name="from_heading">Seg :</string>
+    <string name="to_heading">Γer :\u0020</string>
+    <string name="to_heading_no_space">Ar:</string>
+    <string name="date_heading">Azemz:</string>
+    <string name="sending_message">Tuzna n yizen\u2026</string>
+    <string name="message_invite_accept">Ih</string>
+    <string name="message_invite_tentative">Ahat</string>
+    <string name="message_invite_decline">Uhu</string>
+    <string name="ok">IH</string>
+    <string name="done">Immed</string>
+    <string name="cancel">Semmet</string>
+    <string name="clear">Sfeḍ</string>
+    <string name="next">Uḍfiṛ</string>
+    <string name="previous">Γer deffir</string>
+    <string-array name="sync_status">
+        <item>Yedda</item>
+        <item>ulac tuqna</item>
+        <item>Couldn\'t sign in</item>
+        <item>Security error</item>
+        <item>Couldn\'t sync</item>
+        <item>Tuccḍa tadigant</item>
+        <item>Tuccḍa n uqeddac</item>
+    </string-array>
+    <string name="widget_large_unread_count">%d+</string>
+    <string name="loading_conversation">Asali\u2026</string>
+    <string name="activity_folder_selection">Fren akaram</string>
+    <string name="move_to_selection_dialog_title">Senkez ar</string>
+    <string name="search_hint">Nadi</string>
+    <string name="search_back_desc">Mdel anadi</string>
+    <string name="search_voice_desc">Bdu anadi aɣectan</string>
+    <string name="network_error">ulac tuqna</string>
+    <string name="retry">Ɛref̣ tikelt-nniḍen</string>
+    <string name="load_more">Sali ugar</string>
+    <string name="manual_sync">Mtawi tura</string>
+    <string name="info">Talɣut</string>
+    <string name="report">Aneqqis</string>
+    <string name="show">Sken</string>
+    <string name="storage">Asekles</string>
+    <string name="message_details_title">Talqayt n yizen</string>
+    <string-array name="prefEntries_autoAdvance">
+        <item>Amaynut</item>
+        <item>Aqbuṛ</item>
+        <item>Conversation list</item>
+    </string-array>
+    <string name="preferences_signature_title">Azmul</string>
+    <string name="preferences_signature_dialog_title">Azmul</string>
+    <string name="preferences_signature_summary_not_set">Ur ittwasbadu ara</string>
+    <string name="notification_action_reply">Err</string>
+    <string name="notification_action_reply_all">Err i meṛṛa</string>
+    <string name="notification_action_archive">Tarcivt</string>
+    <string name="notification_action_remove_label">Kkes tabzimt</string>
+    <string name="notification_action_delete">Mḥu</string>
+    <string name="notification_action_undo_archive">Yeɣber</string>
+    <string name="notification_action_undo_delete">Yettwakkes</string>
+    <string name="silent_ringtone">Ulac sut</string>
+    <string-array name="prefEntries_removal_action">
+        <item>Tarcivt</item>
+        <item>Mḥu</item>
+    </string-array>
+    <string-array name="prefSummaries_removal_action_summary">
+        <item>Tarcivt</item>
+        <item>Mḥu</item>
+    </string-array>
+    <string name="preferences_default_reply_all_title">Err i meṛṛa</string>
+    <string name="empty_trash">Taqecwalt n iḍumman tilemt</string>
+    <string name="empty_spam">Kkes akk imcewwelen</string>
+    <string name="drawer_open">Ldi leqjeṛ n iminig</string>
+    <string name="drawer_close">Mdel leqjeṛ n iminig</string>
+    <string name="add_account">Rnu amiḍan</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn">Rmed</string>
+    <string name="hide_folders">Ffer ikaramen</string>
+    <string name="print">Siggez</string>
+    <string name="draft_heading">Arewway</string>
+    <string name="no_subject">(ulac asentel)</string>
+    <string name="vacation_responder_body_hint_text">Izen</string>
+    <string name="pick_start_date_title">Yebda</string>
+    <string name="date_not_set">Ur ittwasbadu ara</string>
+    <string name="custom_date">Udmawan</string>
+    <string name="date_none">Ulac</string>
+    <string name="discard_changes">Sefsex ibeddilen?</string>
+    <string name="vacation_responder_off">Insa</string>
+    <string name="help_and_info">Tallelt</string>
+    <string name="help_and_feedback">Tallelt &amp; tiktiwin</string>
+    <string name="feedback">Azen-d tikti i:</string>
+    <string name="privacy_policy">Tasertit tabaḍnit</string>
+    <string name="open_source_licenses">Turagin n uɣbalu yeldin</string>
+    <string name="reply_choice_yes">Ih</string>
+    <string name="reply_choice_no">Uhu</string>
+    <string name="reply_choice_ok">IH</string>
+    <string name="reply_choice_thanks">Tanemmirt</string>
+    <string name="reply_on_my_way">Aqliyin</string>
+    <string name="reply_choice_smiling_face">:)</string>
+    <string name="reply_choice_frowning_face">:(</string>
+    <string-array name="prefEntries_snapHeader">
+        <item>Always show</item>
+        <item>Only show in portrait</item>
+        <item>Ne pas afficher</item>
+    </string-array>
+    <string name="general_preferences_title">Iɣewwaṛen imuta</string>
+    <string name="activity_preferences">Iɣewwaṛen</string>
+    <string name="overflow_description">Ugar n iɣewwaṛen</string>
+</resources>

@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="permission_update_widget_label">Inzorne widget</string>
+    <string name="permission_update_widget_desc">Al permet ae aplicazion di ricevi notifichis cuant che il widget al à di sei inzornât, includûts il non dal account e il non de cartele.</string>
+    <string name="from">Di</string>
+    <string name="to">A</string>
+    <string name="cc">Cc</string>
+    <string name="bcc">Ccp</string>
+    <string name="subject_hint">Ogjet</string>
+    <string name="body_hint">Scrîf e-mail</string>
+    <string name="add_file_attachment">Zonte file</string>
+    <string name="add_photo_attachment">Zonte imagjin</string>
+    <string name="save_draft">Salve stampon</string>
+    <string name="discard">Scarte</string>
+    <string name="compose">Scrîf</string>
+    <string name="compose_title">Scrîf</string>
+    <string-array name="compose_modes">
+        <item>Rispuint</item>
+        <item>Rispuint a ducj</item>
+        <item>Mande indenant</item>
+    </string-array>
+    <string name="reply_attribution">Messaç di <xliff:g id="person">%2$s</xliff:g>, tal dì <xliff:g id="date">%1$s</xliff:g>:</string>
+    <string name="forward_attribution">---------- Messaç mandât indenant ----------&lt;br&gt;Di: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Ogjet: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;A: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
+    <string name="forward_attribution_no_headers">---------- Messaç mandât indenant ----------</string>
+    <string name="cc_attribution">Cc: <xliff:g id="cc">%1$s</xliff:g>&lt;br&gt;</string>
+    <string name="select_attachment_type">Sielç il gjenar di zonte</string>
+    <string name="too_large_to_attach_single">Impussibil zontâ files plui grancj di <xliff:g id="maxSize">%1$s</xliff:g></string>
+    <string name="too_large_to_attach_multiple">Un o plui files no son stâts zontâts. Limit <xliff:g id="maxSize">%1$s</xliff:g>.</string>
+    <string name="too_large_to_attach_additional">File no zontât. Limit di <xliff:g id="maxSize">%1$s</xliff:g> superât.</string>
+    <string name="generic_attachment_problem">Impussibil zontâ il file.</string>
+    <string name="attachment_permission_denied">Permès dineât pe zonte.</string>
+    <string name="recipient_needed">Zonte almancul un destinatari.</string>
+    <string name="confirm_send_message_with_no_subject">L\'ogjet dal messaç al è cence test.</string>
+    <string name="confirm_send_message_with_no_body">Il cuarp dal messaç al è cence test.</string>
+    <string name="confirm_send_message">Mandâ chest messaç?</string>
+    <string name="message_discarded">Messaç scartât.</string>
+    <string name="signature">\n\n<xliff:g id="signature">%s</xliff:g></string>
+    <string name="custom_from_account_label">Mande come:</string>
+    <string name="send">Mande</string>
+    <string name="mark_read">Segne come let</string>
+    <string name="mark_unread">Segne come di lei</string>
+    <string name="toggle_read_unread">Comute let/di lei</string>
+    <string name="mute">Cidine</string>
+    <string name="add_star">Zonte a Speciâi</string>
+    <string name="remove_star">Gjave di Speciâi</string>
+    <string name="remove_folder">Gjave di <xliff:g id="folderName">%1$s</xliff:g></string>
+    <string name="archive">Archivie</string>
+    <string name="report_spam">Segnale spam</string>
+    <string name="mark_not_spam">Segnale no spam</string>
+    <string name="report_phishing">Segnale phishing</string>
+    <string name="delete">Elimine</string>
+    <string name="discard_drafts">Scarte stampons</string>
+    <string name="discard_failed">Scarte messaçs no inviâts</string>
+    <string name="refresh">Inzorne</string>
+    <string name="reply">Rispuint</string>
+    <string name="reply_all">Rispuint a ducj</string>
+    <string name="resume_draft">Modifiche</string>
+    <string name="forward">Mande indenant</string>
+    <string name="menu_compose">Scrîf</string>
+    <string name="menu_change_folders">Cambie cartelis</string>
+    <string name="menu_move_to">Sposte in</string>
+    <string name="menu_move_to_inbox">Sposte in Pueste in jentrade</string>
+    <string name="menu_manage_folders">Impostazions cartele</string>
+    <string name="menu_show_original">Ripristine ridim. autom.</string>
+    <string name="menu_settings">Impostazions</string>
+    <string name="menu_search">Cîr</string>
+    <string name="menu_toggle_drawer">Vierç/Siere scansel</string>
+    <string name="drawer_title">Navigazion</string>
+    <string name="mark_important">Segne come impuartante</string>
+    <string name="mark_not_important">Segne come no impuartante</string>
+    <string name="add_cc_label">Zonte Cc/Ccp</string>
+    <string name="add_bcc_label">Zonte Ccp</string>
+    <string name="quoted_text">Inclût il test citât</string>
+    <string name="quoted_text_label">Cite il test</string>
+    <string name="respond_inline">Rispuint in linie</string>
+    <string name="bytes"><xliff:g id="count">%s</xliff:g> B</string>
+    <string name="kilobytes"><xliff:g id="count">%s</xliff:g> KB</string>
+    <string name="megabytes"><xliff:g id="count">%s</xliff:g> MB</string>
+    <string name="attachment_image">Imagjin</string>
+    <string name="attachment_video">Video</string>
+    <string name="attachment_audio">Audio</string>
+    <string name="attachment_text">Test</string>
+    <string name="attachment_application_msword">Document</string>
+    <string name="attachment_application_vnd_ms_powerpoint">Presentazion</string>
+    <string name="attachment_application_vnd_ms_excel">Sfuei di calcul</string>
+    <string name="attachment_application_pdf">PDF</string>
+    <string name="attachment_unknown">File <xliff:g id="attachmentExtension">%s</xliff:g></string>
+    <string name="preview_attachment">Anteprime</string>
+    <string name="save_attachment">Salve</string>
+    <string name="download_again">Torne discjame</string>
+    <string name="remove_attachment_desc">Gjave zonte <xliff:g id="attachmentName">%s</xliff:g></string>
+    <string name="more_info_attachment">Informazions</string>
+    <string name="no_application_found">Nissune aplicazion e pues vierzi cheste zonte par visualizâle.</string>
+    <string name="fetching_attachment">Daûr a recuperâ la zonte</string>
+    <string name="please_wait">Par plasê spiete\u2026</string>
+    <string name="saved">Salvât, <xliff:g id="size">%s</xliff:g></string>
+    <string name="download_failed">Impussibil discjariâ. Tocje par tornâ a provâ.</string>
+    <string name="menu_photo_save_all">Salve dut</string>
+    <string name="menu_photo_share">Condivît</string>
+    <string name="menu_photo_share_all">Condivît dut</string>
+    <string name="menu_photo_print">Stampe</string>
+    <string name="saving">Daûr a salvâ…</string>
+    <string name="choosertitle_sharevia">Condivît vie</string>
+    <string name="contextmenu_openlink">Vierç tal navigadôr</string>
+    <string name="contextmenu_copy">Copie</string>
+    <string name="contextmenu_copylink">Copie URL colegament</string>
+    <string name="contextmenu_view_image"> Visualize imagjin</string>
+    <string name="contextmenu_dial_dot">Compon\u2026</string>
+    <string name="contextmenu_sms_dot">SMS\u2026</string>
+    <string name="contextmenu_add_contact">Zonte contat</string>
+    <string name="contextmenu_send_mail">Mande e-mail</string>
+    <string name="contextmenu_map">Mape</string>
+    <string name="contextmenu_sharelink">Condivît colegament</string>
+    <string name="content_description"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> in merit a <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> in date <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g></string>
+    <string name="content_description_today"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> in merit a <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> ae ore <xliff:g id="time">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g></string>
+    <string name="content_description_with_folders"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> in merit a <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> in date <xliff:g id="date">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g>, cartelins: <xliff:g id="folders">%7$s</xliff:g></string>
+    <string name="content_description_today_with_folders"><xliff:g id="toHeader">%1$s</xliff:g><xliff:g id="participant">%2$s</xliff:g> in merit a <xliff:g id="subject">%3$s</xliff:g>, <xliff:g id="snippet">%4$s</xliff:g> ae ore <xliff:g id="time">%5$s</xliff:g>, <xliff:g id="readstate">%6$s</xliff:g>, cartelins: <xliff:g id="folders">%7$s</xliff:g></string>
+    <string name="read_string">conversazion lete</string>
+    <string name="unread_string">conversazion di lei</string>
+    <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
+    <string name="badge_and_subject"><xliff:g>%1$s</xliff:g> <xliff:g>%2$s</xliff:g></string>
+    <plurals name="draft">
+        <item quantity="one">Stampon</item>
+        <item quantity="other">Stampons</item>
+    </plurals>
+    <string name="sending">Daûr a mandâ\u2026</string>
+    <string name="message_retrying">Gnûf tentatîf\u2026</string>
+    <string name="message_failed">Erôr</string>
+    <string name="send_failed">Messaç no inviât.</string>
+    <string name="me_object_pronoun">me</string>
+    <string name="me_subject_pronoun">me</string>
+    <plurals name="confirm_delete_conversation">
+        <item quantity="one">Eliminâ cheste conversazion?</item>
+        <item quantity="other">Eliminâ chestis <xliff:g id="count">%1$d</xliff:g> conversazions?</item>
+    </plurals>
+    <plurals name="confirm_archive_conversation">
+        <item quantity="one">Archiviâ cheste conversazion?</item>
+        <item quantity="other">Archiviâ chestis <xliff:g id="count">%1$d</xliff:g> conversazions?</item>
+    </plurals>
+    <plurals name="confirm_discard_drafts_conversation">
+        <item quantity="one">Scartâ chest messaç?</item>
+        <item quantity="other">Scartâ chescj <xliff:g id="count">%1$d</xliff:g> messaçs?</item>
+    </plurals>
+    <string name="confirm_discard_text">Scartâ chest messaç?</string>
+    <string name="loading_conversations">Daûr a cjariâ\u2026</string>
+    <string name="empty_inbox">Tu âs finît! Buine zornade.</string>
+    <string name="empty_search">Orpo! No vin cjatât nuie par \"<xliff:g id="search_query">%1$s</xliff:g>\".</string>
+    <string name="empty_spam_folder">Vive, nuie spam achì!</string>
+    <string name="empty_trash_folder">La scovacere e je vueide. Graciis di riciclâ!</string>
+    <string name="empty_folder">Nissune mail achì.</string>
+    <string name="getting_messages">Daûr a recuperâ i tiei messaçs</string>
+    <string name="undo">Anule</string>
+    <plurals name="conversation_unstarred">
+        <item quantity="one">Daûr a gjavâ <xliff:g id="count">%1$d</xliff:g> conversazion dai Speciâi</item>
+        <item quantity="other">Daûr a gjavâ <xliff:g id="count">%1$d</xliff:g> conversazions dai Speciâi</item>
+    </plurals>
+    <plurals name="conversation_muted">
+        <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; cidinade</item>
+        <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; cidinadis</item>
+    </plurals>
+    <plurals name="conversation_spammed">
+        <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; segnalade tant che spam</item>
+        <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; segnaladis tant che spam</item>
+    </plurals>
+    <plurals name="conversation_not_spam">
+        <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; segnalade come no spam</item>
+        <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; segnaladis come no spam</item>
+    </plurals>
+    <plurals name="conversation_not_important">
+        <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; segnade come no impuartante</item>
+        <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; segnadis come no impuartantis</item>
+    </plurals>
+    <plurals name="conversation_phished">
+        <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; segnade tant che phishing</item>
+        <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; segnadis tant che phishing</item>
+    </plurals>
+    <plurals name="conversation_archived">
+        <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; archiviade</item>
+        <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; archiviadis</item>
+    </plurals>
+    <plurals name="conversation_deleted">
+        <item quantity="one">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; eliminade</item>
+        <item quantity="other">&lt;b&gt;<xliff:g id="count">%1$d</xliff:g>&lt;/b&gt; eliminadis</item>
+    </plurals>
+    <string name="deleted">Eliminade</string>
+    <string name="archived">Archiviade</string>
+    <string name="folder_removed">Gjavade di <xliff:g id="folderName">%1$s</xliff:g></string>
+    <plurals name="conversation_folder_changed">
+        <item quantity="one">Cartele cambiade</item>
+        <item quantity="other">Cartelis cambiadis</item>
+    </plurals>
+    <string name="conversation_folder_moved">Spostade in <xliff:g id="folderName">%1$s</xliff:g></string>
+    <string name="search_results_header">Risultâts</string>
+    <string name="search_unsupported">La ricercje no je supuartade su chest account.</string>
+    <string name="search_suggestion_desc">Sugjeriment: <xliff:g id="suggestion">%s</xliff:g></string>
+    <string name="add_label">Zonte cartele</string>
+    <plurals name="new_incoming_messages">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> gnûf messaç</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> gnûfs messaçs</item>
+    </plurals>
+    <string name="date_and_view_details"><xliff:g id="date">%1$s</xliff:g> &lt;a href=\'http://www.example.com\'&gt;Viôt detais&lt;/a&gt;</string>
+    <string name="hide_details">Plate detais</string>
+    <string name="to_message_header">a <xliff:g id="recipients">%1$s</xliff:g></string>
+    <string name="bcc_header_for_recipient_summary">ccp:\u0020</string>
+    <string name="contact_info_string">Mostre informazions di contat par <xliff:g id="name">%1$s</xliff:g></string>
+    <string name="contact_info_string_default">Mostre informazions di contat</string>
+    <plurals name="show_messages_read">
+        <item quantity="one">Slargje <xliff:g id="count" example="4">%1$d</xliff:g> messaç plui vecjo</item>
+        <item quantity="other">Slargje <xliff:g id="count" example="4">%1$d</xliff:g> messaçs plui vecjos</item>
+    </plurals>
+    <plurals name="super_collapsed_block_accessibility_announcement">
+        <item quantity="one">Slargjât <xliff:g id="count" example="4">%1$d</xliff:g> messaç plui vecjo</item>
+        <item quantity="other">Slargjâts <xliff:g id="count" example="4">%1$d</xliff:g> messaçs plui vecjos</item>
+    </plurals>
+    <string name="from_heading">Di:</string>
+    <string name="replyto_heading">Rispuint a:</string>
+    <string name="to_heading">A:\u0020</string>
+    <string name="to_heading_no_space">A:</string>
+    <string name="cc_heading">Cc:</string>
+    <string name="bcc_heading">Ccp:</string>
+    <string name="date_heading">Date:</string>
+    <string name="show_images">Mostre imagjins</string>
+    <string name="always_show_images">Mostre simpri lis imagjins di chest mitent</string>
+    <string name="always_show_images_toast">Lis imagjins di chest mitent a vignaran mostradis in automatic.</string>
+    <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g></string>
+    <string name="address_display_format_with_via_domain"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g> vie <xliff:g id="via_domain">%3$s</xliff:g></string>
+    <string name="message_saved">Messaç salvât come stampon.</string>
+    <string name="sending_message">Daûr a inviâ il messaç\u2026</string>
+    <string name="invalid_recipient">La direzion <xliff:g id="wrongemail" example="foo@@gmail..com">%s</xliff:g> no je valide.</string>
+    <string name="show_elided">Mostre il test citât</string>
+    <string name="hide_elided">\u25BC Plate il test citât</string>
+    <string name="message_invite_title">Invît di calendari</string>
+    <string name="message_invite_calendar_view">Visualize in Calendari</string>
+    <string name="message_invite_label_attending">Larâstu?</string>
+    <string name="message_invite_accept">Sì</string>
+    <string name="message_invite_tentative">Forsit</string>
+    <string name="message_invite_decline">No</string>
+    <string name="enumeration_comma">,\u0020</string>
+    <string name="send_anyway">Invie di istès</string>
+    <string name="ok">Va ben</string>
+    <string name="done">Fat</string>
+    <string name="cancel">Anule</string>
+    <string name="clear">Nete</string>
+    <string name="next">Indenant</string>
+    <string name="previous">Indaûr</string>
+    <string-array name="sync_status">
+        <item>Operazion lade a bon fin </item>
+        <item>Nissune conession</item>
+        <item>Impussibil jentrâ</item>
+        <item>Erôr di sigurece</item>
+        <item>Impussibil sincronizâ</item>
+        <item>Erôr interni</item>
+        <item>Erôr dal servidôr</item>
+    </string-array>
+    <string name="tap_to_configure">Tocje par configurâ</string>
+    <string name="non_synced_folder_description">Par viodi lis conversazions, sincronize cheste cartele.</string>
+    <string name="tap_to_configure_folder_sync">Sincronize cartele</string>
+    <string name="widget_large_unread_count">%d+</string>
+    <string name="large_unseen_count">+ di <xliff:g id="count" example="99">%d</xliff:g> gnûfs</string>
+    <string name="unseen_count"><xliff:g id="count" example="4">%d</xliff:g> gnûf</string>
+    <plurals name="actionbar_unread_messages">
+        <item quantity="one"><xliff:g id="count" example="4">%1$d</xliff:g> di lei</item>
+        <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> di lei</item>
+    </plurals>
+    <string name="view_more_conversations">Viôt plui conversazions</string>
+    <string name="loading_conversation">Daûr a cjariâ\u2026</string>
+    <string name="activity_mailbox_selection">Sielç account</string>
+    <string name="activity_folder_selection">Sielç cartele</string>
+    <string name="folder_shortcut_widget_label">Cartele di E-mail</string>
+    <string name="change_folders_selection_dialog_title">Cambie cartelis</string>
+    <string name="move_to_selection_dialog_title">Sposte in</string>
+    <string name="search_hint">Cîr te pueste</string>
+    <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
+    <string name="voice_search_not_supported">La ricercje vocâl no je supuartade su chest dispositîf.</string>
+    <string name="search_back_desc">Siere ricercje</string>
+    <string name="search_voice_desc">Scomence la ricercje vocâl</string>
+    <string name="search_clear_desc">Nete il test de ricercje</string>
+    <string name="network_error">Nissune conession</string>
+    <string name="retry">Torne prove</string>
+    <string name="load_more">Cjarie di plui</string>
+    <string name="load_attachment">@string/load_more</string>
+    <string name="shortcut_name_title">Da un non ae scurte de cartele</string>
+    <string name="wait_for_sync_title">In spiete de sincronizazion</string>
+    <string name="not_synced_title">Account no sincronizât</string>
+    <string name="wait_for_manual_sync_body">Chest account nol è configurât par sincronizâsi in automatic.\nTocje <b>Sincronize</b> par sincronizâ la pueste une volte opûr <b>Cambie impostaz. sincroniz.</b> par configurâ chest account in mût che la pueste si sincronizi in automatic.</string>
+    <string name="manual_sync">Sincronize</string>
+    <string name="change_sync_settings">Cambie impostaz. sincroniz.</string>
+    <string name="photo_load_failed">Impussibil cjariâ la imagjin</string>
+    <string name="cant_move_or_change_labels">Impussibil spostâ parcè che la selezion e conten plui
+        accounts.</string>
+    <string name="multiple_new_message_notification_item"><b><xliff:g id="sender">%1$s</xliff:g></b>\u0020\u0020\u0020<xliff:g id="subject">%2$s</xliff:g></string>
+    <string name="single_new_message_notification_big_text"><xliff:g id="subject">%1$s</xliff:g>\n<xliff:g id="snippet">%2$s</xliff:g></string>
+    <string name="ignore_spam_warning">Ignore, mi fidi di chest messaç</string>
+    <string name="via_domain">vie <xliff:g id="viaDomain">%1$s</xliff:g></string>
+    <string name="signin">Jentre</string>
+    <string name="info">Informazions</string>
+    <string name="report">Segnale</string>
+    <string name="show">Mostre</string>
+    <string name="sync_error">Impussibil sincronizâ.</string>
+    <string name="sync_error_message">Il to dispositîf nol à vonde spazi di archiviazion par sincronizâ.</string>
+    <string name="storage">Memorie</string>
+    <string name="senders_split_token">,\u00A0</string>
+    <string name="draft_count_format">\u00A0(<xliff:g id="count">%1$s</xliff:g>)</string>
+    <string name="all_folders_heading">Dutis lis cartelis</string>
+    <string name="recent_folders_heading">Cartelis resintis</string>
+    <string name="message_details_title">Detais dal messaç</string>
+    <string name="preference_advance_to_title">Avanzament automatic</string>
+    <string-array name="prefEntries_autoAdvance">
+        <item>Plui resint</item>
+        <item>Mancul resint</item>
+        <item>Liste di conversazions</item>
+    </string-array>
+    <string-array name="prefSummaries_autoAdvance">
+        <item>Mostre conversazion plui resinte dopo de eliminazion</item>
+        <item>Mostre conversazion mancul resinte dopo de eliminazion</item>
+        <item>Mostre liste di conversazion dopo de eliminazion</item>
+    </string-array>
+    <string name="prefDialogTitle_autoAdvance">Passe a</string>
+    <string name="clear_display_images_whitelist_title">Nete aprovazion imagjins</string>
+    <string name="clear_display_images_whitelist_dialog_title">Netâ vie lis aprovazions des imagjins?</string>
+    <string name="clear_display_images_whitelist_dialog_message">Smet di visualizâ lis imagjins incorporadis dai mitents che a son stâts consintûts in precedence.</string>
+    <string name="sender_whitelist_cleared">Lis imagjins no vignaran mostradis in automatic.</string>
+    <string name="preferences_signature_title">Firme</string>
+    <string name="preferences_signature_dialog_title">Firme</string>
+    <string name="preferences_signature_summary_not_set">No configurade</string>
+    <string name="notification_action_reply">Rispuint</string>
+    <string name="notification_action_reply_all">Rispuint a ducj</string>
+    <string name="notification_action_archive">Archivie</string>
+    <string name="notification_action_remove_label">Gjave etichete</string>
+    <string name="notification_action_delete">Elimine</string>
+    <string name="notification_action_undo_archive">Archiviât</string>
+    <string name="notification_action_undo_remove_label">Etichete gjavade</string>
+    <string name="notification_action_undo_delete">Eliminât</string>
+    <string name="label_notification_ticker">"<xliff:g id="label">%1$s</xliff:g>: <xliff:g id="notification">%2$s</xliff:g>"</string>
+    <plurals name="new_messages">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> gnûf messaç</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> gnûfs messaçs</item>
+    </plurals>
+    <string name="single_new_message_notification_title"><xliff:g id="sender">%1$s</xliff:g>: <xliff:g id="subject">%2$s</xliff:g></string>
+    <string name="silent_ringtone">Cidin</string>
+    <string name="preference_removal_action_title">Azion predefinide</string>
+    <string-array name="prefEntries_removal_action">
+        <item>Archivie</item>
+        <item>Elimine</item>
+    </string-array>
+    <string-array name="prefSummaries_removal_action_summary">
+        <item>Archivie</item>
+        <item>Elimine</item>
+    </string-array>
+    <string name="prefDialogTitle_removal_action">Azion predefinide</string>
+    <string name="preferences_default_reply_all_title">Rispuint a ducj</string>
+    <string name="preferences_default_reply_all_summary_impl">Dopre tant che predefinît pes rispuestis ai messaçs</string>
+    <string name="preference_swipe_title">Azions di scoriment</string>
+    <string name="preference_swipe_description">In liste di conversazions</string>
+    <string name="preference_sender_image_title">Imagjin mitent</string>
+    <string name="preference_sender_image_description">Mostre dongje dal non te liste des conversazions</string>
+    <string name="empty_trash">Disvuede scovacere</string>
+    <string name="empty_spam">Disvuede cartele spam</string>
+    <string name="empty_trash_dialog_title">Disvuedâ la scovacere?</string>
+    <string name="empty_spam_dialog_title">Disvuedâ la cartele spam?</string>
+    <plurals name="empty_folder_dialog_message">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> messaç al vignarà eliminât par simpri.</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> messaçs a vignaran eliminâts par simpri.</item>
+    </plurals>
+    <string name="drawer_open">Vierç il scansel di navigazion</string>
+    <string name="drawer_close">Siere il scansel di navigazion</string>
+    <string name="conversation_photo_welcome_text">Tocje une imagjin di mitent par selezionâ chê conversazion.</string>
+    <string name="long_press_to_select_tip">Tocje e ten fracât par selezionâ une conversazion, dopo tocje altris par selezionâlis.</string>
+    <string name="folder_icon_desc">Icone cartele</string>
+    <string name="add_account">Zonte account</string>
+    <string name="dismiss_tip_hover_text">Ignore sugjeriment</string>
+    <string name="auto_sync_off">La sincronizazion automatiche e je disativade. Tocje par ativâle.</string>
+    <string name="account_sync_off">La sincronizazion dal account e je disativade. Ativile in &lt;a href=\'http://www.example.com\'&gt;Account\u00A0impostazions.&lt;/a&gt;</string>
+    <string name="unsent_messages_in_outbox"><xliff:g id="number">%1$s</xliff:g>
+    no inviâts in <xliff:g id="outbox">%2$s</xliff:g></string>
+    <string name="turn_auto_sync_on_dialog_title">Ativâ la sincronizazion automatiche?</string>
+    <string name="turn_auto_sync_on_dialog_body">Lis modifichis che tu fasis
+    a dutis lis aplicazions e ai accounts, no dome Gmail, a vignaran sincronizadis
+    tra il web, i tiei altris dispositîfs e il to <xliff:g id="phone_or_tablet">%1$s</xliff:g></string>
+    <string name="phone">telefon</string>
+    <string name="tablet">tablet</string>
+    <string name="turn_auto_sync_on_dialog_confirm_btn">Ative</string>
+    <string name="show_n_more_folders">Mostre <xliff:g id="number">%1$s</xliff:g> cartelis</string>
+    <string name="hide_folders">Plate cartelis</string>
+    <string name="print">Stampe</string>
+    <string name="print_all">Stampe dut</string>
+    <plurals name="num_messages">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> messaç</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> messaçs</item>
+    </plurals>
+    <string name="date_message_received_print"><xliff:g id="day_and_date">%1$s</xliff:g> aes <xliff:g id="time">%2$s</xliff:g></string>
+    <string name="draft_to_heading">Mande stampon a:</string>
+    <string name="draft_heading">Stampon</string>
+    <string name="quoted_text_hidden_print">Test citât platât</string>
+    <plurals name="num_attachments">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> zonte</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> zontis</item>
+    </plurals>
+    <string name="no_subject">(nissun ogjet)</string>
+    <string name="vacation_responder">Rispuindidôr automatic</string>
+    <string name="preferences_vacation_responder_title">Rispuindidôr automatic</string>
+    <string name="vacation_responder_body_hint_text">Messaç</string>
+    <string name="send_to_contacts_text">Invie dome ai miei Contats</string>
+    <string name="send_to_domain_text">Invie dome a <xliff:g id="domain">%1$s</xliff:g></string>
+    <string name="pick_start_date_title">Inizi</string>
+    <string name="pick_end_date_title">Fin (facoltatîf)</string>
+    <string name="date_not_set">No stabilide</string>
+    <string name="set_end_date_dialog_title">Date di fin (facoltative)</string>
+    <string name="custom_date">Personalize</string>
+    <string name="date_none">Nissune</string>
+    <string name="discard_changes">Scartâ lis modifichis?</string>
+    <string name="vacation_responder_changes_saved">Modifichis al rispuindidôr automatic salvadis</string>
+    <string name="vacation_responder_changes_discarded">Modifichis al rispuindidôr automatic scartadis</string>
+    <string name="vacation_responder_off">Disativât</string>
+    <string name="vacation_responder_on">Atîf, dal/dai <xliff:g id="date">%1$s</xliff:g></string>
+    <string name="vacation_responder_on_with_end_date">Atîf, dal/dai <xliff:g id="start-date">%1$s</xliff:g> al/ai <xliff:g id="end-date">%2$s</xliff:g></string>
+    <string name="vacation_responder_empty_subject_and_body_warning">Zonte un ogjet o un messaç</string>
+    <string name="view_entire_message">Visualize messaç par intîr</string>
+    <string name="eml_loader_error_toast">Impussibil vierzi chest file</string>
+    <string name="help_and_info">Jutori</string>
+    <string name="help_and_feedback">Jutori e valutazions</string>
+    <string name="feedback">Mande opinion</string>
+    <string name="copyright">©<xliff:g id="year" example="2010">%1$d</xliff:g> Google Inc.</string>
+    <string name="version"><xliff:g id="app_name" example="Email">%1$s</xliff:g> version <xliff:g id="version" example="2.2.1">%2$s</xliff:g></string>
+    <string name="print_dialog">Stampe\u2026</string>
+    <string name="copyright_information">Informazions su copyright</string>
+    <string name="privacy_policy">Normis su la riservatece</string>
+    <string name="open_source_licenses">Licencis di codiç viert</string>
+    <string name="reply_choice_yes">Sì</string>
+    <string name="reply_choice_no">No</string>
+    <string name="reply_choice_ok">Va ben</string>
+    <string name="reply_choice_hehe">Haha</string>
+    <string name="reply_choice_thanks">Graciis</string>
+    <string name="reply_choice_i_agree">O concuardi</string>
+    <string name="reply_choice_nice">Biel</string>
+    <string name="reply_on_my_way">O rivi</string>
+    <string name="reply_choice_later">Va ben, fasimi tornâ lì di te</string>
+    <string name="reply_choice_smiling_face">:)</string>
+    <string name="reply_choice_frowning_face">:(</string>
+    <string name="preference_header_action_confirmations">Confermis di azions</string>
+    <string name="preference_confirm_before_delete_title">Conferme prime di eliminâ</string>
+    <string name="preference_confirm_before_archive_title">Conferme prime di archiviâ</string>
+    <string name="preference_confirm_before_send_title">Conferme prime di mandâ</string>
+    <string name="preferences_conversation_mode_title">Ridimensione messaçs</string>
+    <string name="preferences_conversation_mode_summary">Strice i messaçs par fâju stâ tal schermi</string>
+    <string name="preferences_disable_snap_headers_title">Azions sui messaçs</string>
+    <string-array name="prefSummaries_snapHeader">
+        <item>Mostre simpri lis azions sui messaçs te par superiôr dal schermi</item>
+        <item>Mostre lis azions sui messaçs dome te part superiôr dal schermi se voltât par verticâl</item>
+        <item>No sta mostrâ lis azions sui messaçs difûr de intestazion dal messaç</item>
+    </string-array>
+    <string-array name="prefEntries_snapHeader">
+        <item>Mostre simpri</item>
+        <item>Mostre dome in verticâl</item>
+        <item>No sta mostrâ</item>
+    </string-array>
+    <string name="clear_history_title">Nete cronologjie ricercjis</string>
+    <string name="search_history_cleared">Cronologjie di ricercje netade.</string>
+    <string name="clear_history_dialog_title">Netâ la cronologjie di ricercje?</string>
+    <string name="clear_history_dialog_message">Dutis lis ricercjis fatis in precedence a vignaran gjavadis.</string>
+    <string name="manage_accounts_menu_item">Gjestìs accounts</string>
+    <string name="general_preferences_title">Impostazions gjenerâls</string>
+    <string name="activity_preferences">Impostazions</string>
+    <string name="overflow_description">Altris opzions</string>
+    <string name="security_hold_required_text">Inzornament di sigurece necessari par <xliff:g id="email_address">%1$s</xliff:g></string>
+    <string name="update_security_text">inzorne cumò</string>
+    <string name="forms_are_disabled">I formularis a son disativâts in Gmail</string>
+</resources>
